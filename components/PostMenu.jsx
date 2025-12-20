@@ -1,0 +1,321 @@
+import { useEffect, useState, useRef } from "react";
+import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+import { FaEdit, FaTrashAlt, FaFlag } from "react-icons/fa";
+import { supabase } from "@/lib/supabaseClient";
+
+export default function PostMenu({ recentPost, user, setRecentPost, menuOpen, setMenuOpen }) {
+  const [modal, setModal] = useState(null);
+  const [editText, setEditText] = useState(recentPost?.content || "");
+  const [reportReason, setReportReason] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [editImages, setEditImages] = useState(recentPost?.images || []);
+  const editInputRef = useRef();
+  const menuRef = useRef(null);
+  const modalRef = useRef(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        !event.target.closest(".ellipsis-btn")
+      ) {
+        setMenuOpen(false);
+      }
+    }
+
+    if (menuOpen) document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [menuOpen, setMenuOpen]);
+
+  // Close modal when clicking outside
+  useEffect(() => {
+    function handleClickOutsideModal(event) {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        setModal(null);
+      }
+    }
+
+    if (modal) document.addEventListener("mousedown", handleClickOutsideModal);
+    return () => document.removeEventListener("mousedown", handleClickOutsideModal);
+  }, [modal]);
+
+  // Add selected files
+  const handleEditFiles = (e) => {
+    const files = Array.from(e.target.files);
+    const currentCount = editImages.length;
+    const total = currentCount + files.length;
+
+    if (total > 12) {
+      alert(`You can only upload up to 12 images. You can add ${12 - currentCount} more.`);
+      return;
+    }
+    setEditImages((prev) => [...prev, ...files]);
+  };
+
+  // Remove image at index
+  const removeEditImage = (idx) => {
+    setEditImages((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  // Edit post handler
+  const handleEdit = async () => {
+    if (!editText.trim() && editImages.length === 0)
+      return alert("Post cannot be empty!");
+
+    setUploading(true);
+    try {
+      const uploadedImages = [];
+      for (let i = 0; i < editImages.length; i++) {
+        const file = editImages[i];
+        if (file.url) {
+          uploadedImages.push(file);
+        } else {
+          const ext = file.name.split(".").pop();
+          const fileName = `${user.id}/${Date.now()}_${i}.${ext}`;
+          const { data, error: upError } = await supabase.storage
+            .from("post_images")
+            .upload(fileName, file, { cacheControl: "3600", upsert: false });
+          if (upError) throw upError;
+          const publicUrl = supabase.storage
+            .from("post_images")
+            .getPublicUrl(data.path).data.publicUrl;
+          uploadedImages.push({ url: publicUrl, path: data.path });
+        }
+      }
+
+      const { error } = await supabase
+        .from("posts")
+        .update({ content: editText, images: uploadedImages })
+        .eq("id", recentPost.id);
+
+      if (error) throw error;
+
+      setRecentPost((prev) => ({ ...prev, content: editText, images: uploadedImages }));
+      setModal(null);
+      setMenuOpen(false);
+    } catch (err) {
+      console.error(err);
+      alert("Error editing post: " + (err.message || JSON.stringify(err)));
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // Delete post handler
+  const handleDelete = async () => {
+    const { error } = await supabase.from("posts").delete().eq("id", recentPost.id);
+    if (error) return alert("Error deleting post");
+    setRecentPost(null);
+    setModal(null);
+    setMenuOpen(false);
+    alert("Post deleted successfully");
+  };
+
+  // Report post handler
+  const handleReport = async () => {
+    if (!reportReason.trim()) return alert("Please provide a reason");
+    const { error } = await supabase.from("post_reports").insert({
+      post_id: recentPost.id,
+      user_id: user.id,
+      reason: reportReason,
+    });
+    if (error) return alert("Error reporting post");
+    setModal(null);
+    setMenuOpen(false);
+    setReportReason("");
+    alert("Post reported successfully");
+  };
+
+  return (
+    <>
+      {menuOpen && (
+        <div
+          ref={menuRef}
+          className="absolute right-4 top-12 w-44 bg-white border rounded-xl shadow-lg z-30"
+        >
+          {recentPost.userinfo.id === user.id ? (
+            <>
+              <button
+                onClick={() => setModal("edit")}
+                className="w-full text-left px-3 py-2 hover:bg-farm-50 flex items-center gap-2 text-green-900"
+              >
+                <FaEdit /> Edit
+              </button>
+              <button
+                onClick={() => setModal("delete")}
+                className="w-full text-left px-3 py-2 hover:bg-farm-50 flex items-center gap-2 text-red-600"
+              >
+                <FaTrashAlt /> Delete
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={() => setModal("report")}
+              className="w-full text-left px-3 py-2 hover:bg-farm-50 flex items-center gap-2 text-yellow-700"
+            >
+              <FaFlag /> Report
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* MODALS */}
+      <AnimatePresence>
+        {modal === "edit" && (
+          <motion.div
+            className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              ref={modalRef}
+              className="bg-white rounded-2xl p-6 w-11/12 max-w-md shadow-xl max-h-[80vh] overflow-y-auto mt-28"
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
+            >
+              <h2 className="text-lg text-green-900 font-semibold mb-4">Edit Post</h2>
+              <textarea
+                value={editText}
+                onChange={(e) => setEditText(e.target.value)}
+                className="w-full h-32 p-3 border border-green-400 text-green-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-farm-600"
+              />
+
+              {/* ✅ Image Preview Section (Next.js <Image> used here) */}
+              <div className="flex flex-wrap gap-2 mt-3">
+                {editImages.map((img, idx) => (
+                  <div key={idx} className="relative w-24 h-24 rounded overflow-hidden">
+                    <div className="relative w-full h-full">
+                      <Image
+                        src={img.url ? img.url : URL.createObjectURL(img)}
+                        alt="edit-img"
+                        fill
+                        className="object-cover rounded"
+                      />
+                    </div>
+                    <button
+                      onClick={() => removeEditImage(idx)}
+                      className="absolute top-1 right-1 bg-black/50 text-white rounded-full p-1"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+                <button
+                  onClick={() => editInputRef.current.click()}
+                  className="w-24 h-24 flex flex-col items-center justify-center rounded-xl bg-gradient-to-r from-green-500 to-lime-600 text-white font-semibold shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300"
+                >
+                  <span className="text-2xl mb-1">+</span>
+                  <span className="text-sm">Add</span>
+                </button>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  ref={editInputRef}
+                  className="hidden"
+                  onChange={handleEditFiles}
+                />
+              </div>
+
+              <div className="flex justify-end gap-3 mt-4">
+                <button
+                  onClick={() => setModal(null)}
+                  className="px-4 py-2 rounded-lg bg-gradient-to-r from-red-500 to-red-700 text-white hover:bg-red-600 font-semibold text-sm sm:text-base"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleEdit}
+                  disabled={uploading}
+                  className={`px-4 py-2 rounded-lg text-white ${
+                    uploading ? "bg-green-300 cursor-not-allowed" : "bg-green-500 hover:bg-green-600"
+                  }`}
+                >
+                  {uploading ? "Saving..." : "Save"}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+
+        {modal === "delete" && (
+          <motion.div
+            className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              ref={modalRef}
+              className="bg-white rounded-2xl p-6 w-11/12 max-w-sm shadow-xl"
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
+            >
+              <h2 className="text-lg text-red-500 font-semibold mb-4">Delete Post?</h2>
+              <p className="text-gray-700 mb-4">This action cannot be undone.</p>
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={() => setModal(null)}
+                  className="px-4 py-2 rounded-lg bg-green-500 hover:bg-green-600"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600"
+                >
+                  Delete
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+
+        {modal === "report" && (
+          <motion.div
+            className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              ref={modalRef}
+              className="bg-white rounded-2xl p-6 w-11/12 max-w-md shadow-xl"
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
+            >
+              <h2 className="text-lg font-semibold mb-4">Report Post</h2>
+              <textarea
+                value={reportReason}
+                onChange={(e) => setReportReason(e.target.value)}
+                placeholder="Reason for reporting..."
+                className="w-full h-32 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              />
+              <div className="flex justify-end gap-3 mt-4">
+                <button
+                  onClick={() => setModal(null)}
+                  className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleReport}
+                  className="px-4 py-2 rounded-lg bg-yellow-500 text-white hover:bg-yellow-600"
+                >
+                  Report
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}

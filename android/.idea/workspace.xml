@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AndroidLayouts">
+    <shared>
+      <config />
+    </shared>
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="d2182f33-f1f9-45be-993c-add9d8d08897" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../ANDROID_BUILD_GUIDE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ANDROID_NOTIFICATIONS_IMPLEMENTATION.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ANDROID_SETUP_SUMMARY.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CHAT_IMPROVEMENTS_SUMMARY.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Context/WeatherContext.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Context/WeatherContext.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FCM_ENV_VARIABLES.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FCM_IMPLEMENTATION_GUIDE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FCM_SETUP_CHECKLIST.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FEATURE_ANALYSIS_AND_SUGGESTIONS.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GOOGLE_OAUTH_SETUP_GUIDE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GOVERNMENT_SCHEMES_README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../LAZY_LOADING_AUDIT.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../LAZY_LOADING_IMPLEMENTATION.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MARKET_FILTERS_IMPLEMENTATION.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MILK_RATE_DASHBOARD_README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NEWS_FEATURE_README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NOTIFICATIONS_FEATURE_IMPLEMENTATION.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../OAUTH_LOGIN_IMPLEMENTATION.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../OAUTH_TROUBLESHOOTING.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PUSH_NOTIFICATIONS_IMPLEMENTATION.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PUSH_NOTIFICATIONS_IMPLEMENTATION_SUMMARY.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PUSH_NOTIFICATION_OPPORTUNITIES.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../QUICK_FIREBASE_SETUP.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../REFACTORING_SUMMARY.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../RELATED_PRODUCTS_IMPLEMENTATION.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SERVICE_ACCOUNT_SETUP.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SUPABASE_REDIRECT_URL_SETUP.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TOAST_QUICK_REFERENCE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TOAST_SYSTEM_DOCUMENTATION.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TOAST_SYSTEM_IMPLEMENTATION.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.11.1/checksums/checksums.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.11.1/executionHistory/executionHistory.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.11.1/fileChanges/last-build.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.11.1/fileHashes/fileHashes.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.11.1/fileHashes/fileHashes.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.11.1/fileHashes/resourceHashesCache.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.11.1/gc.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/cache.properties" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/cache.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/config.properties" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/config.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/capacitor.build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/capacitor.build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/capacitor.config.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/assets/capacitor.config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/capacitor.plugins.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/assets/capacitor.plugins.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/reports/problems/problems-report.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/capacitor.settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/capacitor.settings.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/local.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/admin/send-notification/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../app/admin/send-notification/page.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/android/notifications/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/auth/callback/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/auth/phone-login/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/chat/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/chat/weather/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/comments/[id]/like/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/cost-profit/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/crops/[id]/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/crops/calculate/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/crops/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/fertilizer-planner/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/get-activefarmers/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/get-all-states/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/get-districts/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/get-market-prices/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/get-markets/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/get-weather/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/government-schemes/[id]/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/government-schemes/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/location-data/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/market-prices/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/milk-companies/[id]/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/milk-companies/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/news/[id]/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/news/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/notifications/[id]/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/notifications/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/planting-density/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/post-comment/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/posts-shared/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/posts/[id]/bookmark/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/posts/[id]/edit/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/posts/[id]/like/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/posts/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/products/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/register-fcm-token/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/reviews/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/search/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/seed-calculator/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/send-notifications/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/send-test/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/smart-farm/insights/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/test-notification/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/user-favorites/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/user/delete-account/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/verify-otp/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/water-calculator/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/weather-alerts/check-and-send/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/weather-alerts/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/api/yield-estimator/route.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/government-schemes/[id]/page.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/government-schemes/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../app/government-schemes/page.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/home/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../app/home/page.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/market-prices/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../app/market-prices/page.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/market/[id]/page.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/market/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../app/market/page.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/milk-rate-calculator/[id]/page.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/milk-rate-calculator/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../app/milk-rate-calculator/page.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/news/[id]/page.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/news/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../app/news/page.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/notifications/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../app/notifications/page.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/posts/[id]/page.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/posts/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../app/posts/page.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/profile/[id]/page.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/profile/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../app/profile/page.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/recents/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../app/recents/page.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/reviews/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../app/reviews/page.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/sell/choose/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../app/sell/choose/page.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/sell/selected/[category]/page.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../capacitor.config.json" beforeDir="false" afterPath="$PROJECT_DIR$/../capacitor.config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/CropProfileManager.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/CropProfileManager.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/FarmerDashboard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/FarmerDashboard.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/FullNewsPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/FullNewsPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/News.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/News.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/Posts.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/Posts.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/SearchBar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/SearchBar.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/Weather.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/Weather.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/chatbot/AIChatWindow.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/chatbot/AIChatWindow.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/explore/Tools&amp;Calculator.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/explore/Tools&amp;Calculator.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/government-schemes/SchemeCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/government-schemes/SchemeCard.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/home/Footer.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/home/Footer.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/login/OtpVerifyCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/login/OtpVerifyCard.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/market-prices/MarketFilters.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/market-prices/MarketFilters.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/milk-rate/MilkCompanyCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/milk-rate/MilkCompanyCard.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/mobile/AppShell.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/mobile/AppShell.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/mobile/MobileHome.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/mobile/MobileHome.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/mobile/hooks/useMobileLocation.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/mobile/utils/openLocationSettings.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/news/NewsCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/news/NewsCard.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/smart-farm/SmartFarmDashboard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/smart-farm/SmartFarmDashboard.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/ui/market/ProductCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/ui/market/ProductCard.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/ui/market/RelatedProducts.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/ui/market/RelatedProducts.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/ui/post/PostHeader.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/ui/post/PostHeader.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/LazyLoadingExamples.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../examples/LazyLoadingExamples.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hooks/useFavoritesPaginated.js" beforeDir="false" afterPath="$PROJECT_DIR$/../hooks/useFavoritesPaginated.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hooks/useFcmToken.js" beforeDir="false" afterPath="$PROJECT_DIR$/../hooks/useFcmToken.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hooks/useNativeFcm.js" beforeDir="false" afterPath="$PROJECT_DIR$/../hooks/useNativeFcm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hooks/useNativeFcmToken.js" beforeDir="false" afterPath="$PROJECT_DIR$/../hooks/useNativeFcmToken.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hooks/usePosts.js" beforeDir="false" afterPath="$PROJECT_DIR$/../hooks/usePosts.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hooks/usePostsPaginated.js" beforeDir="false" afterPath="$PROJECT_DIR$/../hooks/usePostsPaginated.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hooks/useProducts.js" beforeDir="false" afterPath="$PROJECT_DIR$/../hooks/useProducts.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hooks/useProductsPaginated.js" beforeDir="false" afterPath="$PROJECT_DIR$/../hooks/useProductsPaginated.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/supabaseClient.js" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/supabaseClient.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../middleware.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../next.config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/../next.config.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../utils/apiHelpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/../utils/apiHelpers.js" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=W8ORGUZ5QKTOHYU8)]" />
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="36vG22kBdaBbKPRnle6cd6FgOOC" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Android App.app.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;dev-new&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RunManager">
+    <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
+      <module name="android.app" />
+      <option name="ANDROID_RUN_CONFIGURATION_SCHEMA_VERSION" value="1" />
+      <option name="DEPLOY" value="true" />
+      <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
+      <option name="DEPLOY_AS_INSTANT" value="false" />
+      <option name="ARTIFACT_NAME" value="" />
+      <option name="PM_INSTALL_OPTIONS" value="" />
+      <option name="ALL_USERS" value="false" />
+      <option name="ALWAYS_INSTALL_WITH_PM" value="false" />
+      <option name="ALLOW_ASSUME_VERIFIED" value="false" />
+      <option name="CLEAR_APP_STORAGE" value="false" />
+      <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="" />
+      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
+      <option name="MODE" value="default_activity" />
+      <option name="RESTORE_ENABLED" value="false" />
+      <option name="RESTORE_FILE" value="" />
+      <option name="RESTORE_FRESH_INSTALL_ONLY" value="false" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
+      <option name="TARGET_SELECTION_MODE" value="DEVICE_AND_SNAPSHOT_COMBO_BOX" />
+      <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
+      <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="" />
+      <option name="DEBUGGER_TYPE" value="Auto" />
+      <Auto>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
+        <option name="DEBUG_SANDBOX_SDK" value="false" />
+      </Auto>
+      <Hybrid>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
+        <option name="DEBUG_SANDBOX_SDK" value="false" />
+      </Hybrid>
+      <Java>
+        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
+        <option name="DEBUG_SANDBOX_SDK" value="false" />
+      </Java>
+      <Native>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
+        <option name="DEBUG_SANDBOX_SDK" value="false" />
+      </Native>
+      <Profilers>
+        <option name="ADVANCED_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_CONFIGURATION_NAME" value="Java/Kotlin Method Sample (legacy)" />
+        <option name="STARTUP_NATIVE_MEMORY_PROFILING_ENABLED" value="false" />
+        <option name="NATIVE_MEMORY_SAMPLE_RATE_BYTES" value="2048" />
+      </Profilers>
+      <option name="DEEP_LINK" value="" />
+      <option name="ACTIVITY" value="" />
+      <option name="ACTIVITY_CLASS" value="" />
+      <option name="SEARCH_ACTIVITY_IN_GLOBAL_SCOPE" value="false" />
+      <option name="SKIP_ACTIVITY_VALIDATION" value="false" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="d2182f33-f1f9-45be-993c-add9d8d08897" name="Changes" comment="" />
+      <created>1765879435341</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1765879435341</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="play_dynamic_filters_status">
+    <option name="appIdToCheckInfo">
+      <map>
+        <entry key="com.hrishikesh.agrogram">
+          <value>
+            <CheckInfo lastCheckTimestamp="1765955511138" />
+          </value>
+        </entry>
+        <entry key="com.hrishikesh.agrogram.test">
+          <value>
+            <CheckInfo lastCheckTimestamp="1765955511009" />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

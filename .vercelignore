@@ -1,0 +1,27 @@
+# Exclude Android directory (mobile app, not needed for web deployment)
+# This directory is 123+ MB and not needed for web serverless functions
+android/
+
+# Note: data/AllState/ is NOT excluded because it's needed at runtime
+# by the /api/location-data route. However, it's excluded from bundling
+# via outputFileTracingExcludes in next.config.mjs
+
+# Exclude large public files that aren't needed in serverless functions
+# These are static assets that should be served from CDN, not bundled
+public/AllStates/
+public/notices_*.zip
+public/*.csv
+public/*.pdf
+public/*.xlsx
+public/Gemini_Generated_Image*.png
+public/banners/
+
+# Exclude build artifacts
+.next/
+node_modules/
+*.log
+
+# Exclude development files
+.env.local
+.env.development
+

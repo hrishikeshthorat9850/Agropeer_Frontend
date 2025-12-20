@@ -1,0 +1,2879 @@
+[
+  {
+    "State Name": "GOA",
+    "District Name": "GOA",
+    "Sub District": "GOA",
+    "Area Name": "GOA",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "North Goa",
+    "Area Name": "North Goa",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Pernem",
+    "Area Name": "Pernem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Pernem",
+    "Area Name": "Tiracol",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Pernem",
+    "Area Name": "Querim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Pernem",
+    "Area Name": "Paliem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Pernem",
+    "Area Name": "Corgao",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Pernem",
+    "Area Name": "Pernem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Pernem",
+    "Area Name": "Poroscodem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Pernem",
+    "Area Name": "Casnem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Pernem",
+    "Area Name": "Varconda",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Pernem",
+    "Area Name": "Amberem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Pernem",
+    "Area Name": "Uguem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Pernem",
+    "Area Name": "Tamboxem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Pernem",
+    "Area Name": "Torxem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Pernem",
+    "Area Name": "Mopa",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Pernem",
+    "Area Name": "Chandel",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Pernem",
+    "Area Name": "Alorna",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Pernem",
+    "Area Name": "Ibrampur",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Pernem",
+    "Area Name": "Cansarvornem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Pernem",
+    "Area Name": "Ozorim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Pernem",
+    "Area Name": "Dargalim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Pernem",
+    "Area Name": "Virnora",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Pernem",
+    "Area Name": "Tuem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Pernem",
+    "Area Name": "Chopdem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Pernem",
+    "Area Name": "Agarvado",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Pernem",
+    "Area Name": "Arambol (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Pernem",
+    "Area Name": "Mandrem (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Pernem",
+    "Area Name": "Parcem (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Pernem",
+    "Area Name": "Morjim (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Bardez",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Oxel",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Camurlim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Revora",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Nadora",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Pirna",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Moitem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Assonora",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Sircaim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Tivim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Marna",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Assagao",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Arpora",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Nagoa",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Parra",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Verla",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Canca",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Bastora",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Paliem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Punola",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Ucassaim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Nachinola",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Corjuem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Ponolem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Calvim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Olaulim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Pomburpa",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Sangolda",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Marra",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Siolim (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Colvale (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Moira (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Guirim (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Anjuna (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Calangute (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Saligao (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Candolim (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Nerul (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Reis Magos (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Pilerne (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Penha-de-Franca (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Salvador do Mundo (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Socorro (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bardez",
+    "Area Name": "Aldona (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Tiswadi",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Ambarim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Chorao",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Caraim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Capao",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Navelim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Goltim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Malar",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Naroa",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Gandaulim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Ella",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Bainguinim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Talaulim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Goalim Moula",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Carambolim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Azossim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Mandur",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Gancim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Batim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Curca",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Siridao",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Neura-O-Pequeno",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Neura-O-Grande",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Jua (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Cumbarjua (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Corlim (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Chimbel (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Murda (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Calapor (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Bambolim (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Goa Velha (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Mercurim (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Panelim (OG)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Morambi-O-Grande (Merces) (OG)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Renovadi (OG)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Morambi-O-Pequeno (Merces) (OG)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Cujira (OG)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Taleigao (OG) (Part)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Tiswadi",
+    "Area Name": "Durgawadi (OG) (Part)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bicholim",
+    "Area Name": "Bicholim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bicholim",
+    "Area Name": "Mencurem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bicholim",
+    "Area Name": "Dumacem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bicholim",
+    "Area Name": "Salem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bicholim",
+    "Area Name": "Latambarcem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bicholim",
+    "Area Name": "Adwalpale",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bicholim",
+    "Area Name": "Sirigao",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bicholim",
+    "Area Name": "Mulgao",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bicholim",
+    "Area Name": "Ona",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bicholim",
+    "Area Name": "Maulinguem North",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bicholim",
+    "Area Name": "Curchirem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bicholim",
+    "Area Name": "Sarvona",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bicholim",
+    "Area Name": "Maem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bicholim",
+    "Area Name": "Vainguinim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bicholim",
+    "Area Name": "Aturli",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bicholim",
+    "Area Name": "Naroa",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bicholim",
+    "Area Name": "Piligao",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bicholim",
+    "Area Name": "Cudnem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bicholim",
+    "Area Name": "Amone",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bicholim",
+    "Area Name": "Navelim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bicholim",
+    "Area Name": "Cotombi",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bicholim",
+    "Area Name": "Surla",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bicholim",
+    "Area Name": "Velguem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bicholim",
+    "Area Name": "Carapur (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Bicholim",
+    "Area Name": "Pale (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Satari",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Podocem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Poriem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Ravona",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Gonteli",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Siroli",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Anjunem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Quelaudem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Ponsuli",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Choraundem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Ivrem-Buzruco",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Ivrem-Curdo",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Golauli",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Surla",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Satrem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Derodem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Codal",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Rivem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Dongurli",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Pale",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Gululem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Querim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Morlem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Saleli",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Zormen",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Dabem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Compordem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Edorem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Naneli",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Carambolim- Brama",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Xelopo-Buzruco",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Sigonem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Maloli",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Nanorem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Vainguinim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Zarani",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Ustem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Davem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Bombedem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Ambedem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Nagargao",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Satorem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Mauzi",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Buimpal",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Cumarconda",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Pissurlem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Sonus-Vonvoliem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Vaguriem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Codiem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Naguem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Ansolem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Cudcem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Sanvordem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Sonal",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Codvol",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Pendral",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Caranzol",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Carambolim-Bozruco",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Velguem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Codqui",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Sanvorcem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Advoi",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Ponocem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Vantem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Guleli",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Padeli",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Birondem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Damocem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Cotorem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Xelopo-Curdo",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Siranguli",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Sirsodem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Assodem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Govanem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Malpona",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Ambeli",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Melauli",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Conquirem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Satari",
+    "Area Name": "Onda (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Ponda",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Tivrem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Betqui",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Volvoi",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Savoi-Verem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Adcolna",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Boma",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Cuncoliem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Querim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Vagurbem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Gangem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Candepar",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Velinga",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Cundaim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Durbhat",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Telaulim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Vadi",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Betora",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Codar",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Nirancal",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Conxem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Siroda",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Ponchavadi",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Candola (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Orgao (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Marcaim (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Priol (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Bandora (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Curti (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Quela (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Borim (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "North Goa",
+    "Sub District": "Ponda",
+    "Area Name": "Usgao (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "South Goa",
+    "Area Name": "South Goa",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Mormugao",
+    "Area Name": "Mormugao",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Mormugao",
+    "Area Name": "Dabolim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Mormugao",
+    "Area Name": "Sao Jacinto Island",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Mormugao",
+    "Area Name": "Quelossim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Mormugao",
+    "Area Name": "Cuelim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Mormugao",
+    "Area Name": "Pale",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Mormugao",
+    "Area Name": "Issorcim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Mormugao",
+    "Area Name": "Chicolna",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Mormugao",
+    "Area Name": "Sao Jorge Island",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Mormugao",
+    "Area Name": "Velsao",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Mormugao",
+    "Area Name": "Cansaulim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Mormugao",
+    "Area Name": "Arossim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Mormugao",
+    "Area Name": "Chicalim (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Mormugao",
+    "Area Name": "Sancoale (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Mormugao",
+    "Area Name": "Cortalim (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Salcete",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Nagoa",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Loutulim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Camurlim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Calata",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Majorda",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Utorda",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Gonsua",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Betalbatim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Gandaulim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Colva",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Vanelim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Seraulim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Duncolim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Rachol",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Macasana",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Guirdolim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Cana",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Sernabatim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Adsulim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Talaulim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Dramapur",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Dicarpale",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Cavorim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Chandor",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Paroda",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Mulem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Sarzora",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Sirlim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Orlim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Carmona",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Deussua",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Assolna",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Cavelossim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Velim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Ambelim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Verna (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Nuvem (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Raia (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Curtorim (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Sao Jose de Areal (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Davorlim (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Aquem (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Navelim (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Benaulim (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Varca (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Salcete",
+    "Area Name": "Chinchinim (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Quepem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Assolda",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Xic-Xelvona",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Xelvona",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Odar",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Cotombi",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Avedem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Chaifi",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Sirvoi",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Nagvem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Zanodem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Undorna",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Molcopona",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Molcarnem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Ambaulim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Adnem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Bali",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Fatorpa",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Quitol",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Naquerim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Morpila",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Tiloi",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Bendordem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Cavorem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Maina",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Cordem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Padi",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Quedem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Barcem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Gocoldem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Quisconda",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Pirla",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Sulcorna",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Corla",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Cazur",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Mangal",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Quepem",
+    "Area Name": "Xeldem (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Sanguem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Piliem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Darbandora",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Sancordem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Aglote",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Surla",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Molem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Caranzol",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Colem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Sigao",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Sangod",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Cormonem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Codli",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Camarconda",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Moissal",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Bandoli",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Rumbrem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Antoriem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Santona",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Calem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Sonauli",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Boma",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Oxel",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Dongurli",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Patiem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Maulinguem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Dudal",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Costi",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Coranginim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Comproi",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Muguli",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Cotarli",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Xelpem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Salauli",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Uguem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Tudou",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Potrem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Bati",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Cumbari",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Viliena",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Dongor",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Naiquinim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Porteem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Curdi",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Colomba",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Rivona",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Curpem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Vichundrem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Sigonem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Netorli",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Nundem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Verlem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Sanguem",
+    "Area Name": "Sanvordem (CT)",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Canacona",
+    "Area Name": "Canacona",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Canacona",
+    "Area Name": "Cola",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Canacona",
+    "Area Name": "Agonda",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Canacona",
+    "Area Name": "Canacona",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Canacona",
+    "Area Name": "Gaodongrem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Canacona",
+    "Area Name": "Poinguinim",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Canacona",
+    "Area Name": "Loliem",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Canacona",
+    "Area Name": "Cotigao",
+    "__source_sheet": "Village Directory"
+  },
+  {
+    "State Name": "GOA",
+    "District Name": "South Goa",
+    "Sub District": "Canacona",
+    "Area Name": "Anjadip",
+    "__source_sheet": "Village Directory"
+  }
+]

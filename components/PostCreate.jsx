@@ -1,0 +1,523 @@
+"use client";
+import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
+import { supabase } from "@/lib/supabaseClient";
+import RecentPost from "./ui/RecentPost";
+import { formatName } from "@/utils/formatName";
+import {
+  FaImage,
+  FaVideo,
+  FaMapMarkerAlt,
+  FaSmile,
+  FaPaperPlane,
+  FaPlus,
+  FaTimes,
+} from "react-icons/fa";
+import { useLogin } from "@/Context/logincontext";
+import { v4 as uuidv4 } from "uuid";
+import { motion, AnimatePresence } from "framer-motion";
+import useToast from "@/hooks/useToast";
+export default function PostCreation({ onPosted }) {
+  const { user } = useLogin();
+  const { showToast } = useToast();
+  const photoinputRef = useRef();
+  const videoinputRef = useRef();
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [postText, setPostText] = useState("");
+
+  const [files, setFiles] = useState([]);
+  const [previews, setPreviews] = useState([]);
+  const [uploading, setUploading] = useState(false);
+
+  const [posts, setPosts] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [liked, setLiked] = useState(false);
+  const [commentText, setCommentText] = useState("");
+  const [alertMessage, setAlertMessage] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
+  const [recentPost,setRecentPost] = useState({});
+
+  const userRecentPost = async ()=>{
+    // Optimized: select specific fields to reduce egress
+    const { data, error } = await supabase
+    .from("posts")
+    .select(`
+      id,
+      user_id,
+      caption,
+      images,
+      created_at,
+      updated_at,
+      userinfo(id, firstName, lastName, display_name, profile_url, avatar_url),
+      post_comments(id, comment, created_at, user_id, post_id),
+      post_likes(id, user_id, post_id, created_at)
+    `)
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .single();
+
+    if(!error) setRecentPost(data);
+  }
+
+  useEffect(()=>{
+    fetchPosts();
+    userRecentPost();
+  },[user?.id]);
+
+  const fetchPosts = async () => {
+    // Optimized: select specific fields to reduce egress
+    const { data, error } = await supabase
+      .from("posts")
+      .select(`
+        id,
+        user_id,
+        caption,
+        images,
+        created_at,
+        updated_at,
+        userinfo(id, firstName, lastName, display_name, profile_url, avatar_url),
+        post_comments(id, comment, created_at, user_id, post_id),
+        post_likes(id, user_id, post_id, created_at)
+      `)
+      .order("created_at", { ascending: false })
+      .limit(50); // Add limit to reduce egress
+
+    if (!error) setPosts(data);
+  };
+
+  const handleFiles = (e) => {
+    const selected = Array.from(e.target.files || []).map(file => ({
+      file,
+      preview: URL.createObjectURL(file),
+      type: file.type.startsWith("video/") ? "video" : "image",
+    }));
+
+    const total = [...files, ...selected];
+    if (total.length > 12) {
+      setAlertMessage("You can only upload up to 12 files.");
+      setShowAlert(true);
+      showToast("error", "You can only upload up to 12 files.");
+      setTimeout(() => setShowAlert(false), 3000);
+      return;
+    }
+    setFiles(total);
+    setPreviews(total); 
+  };
+  const removeImage = (idx) => {
+    setFiles(f => f.filter((_, i) => i !== idx));
+    setPreviews(p => p.filter((_, i) => i !== idx));
+  };
+
+  const uploadAndCreatePost = async () => {
+    if (!user) {
+      showToast("error", "Please login to post.");
+      return;
+    }
+    if (!files.length && !postText.trim()) {
+      showToast("error", "Add image or text.");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const uploadedFiles = [];
+      for (let i = 0; i < files.length; i++) {
+        const fileObj = files[i]; 
+        const file = fileObj.file; 
+        const ext = file.name.split(".").pop(); 
+        const fileName = `${user.id}/${Date.now()}_${i}_${uuidv4()}.${ext}`;
+        
+        const { data: uploadData, error: upError } = await supabase.storage
+          .from("post_images")
+          .upload(fileName, file, { cacheControl: "3600", upsert: false });
+
+        if (upError) throw upError;
+
+        const publicUrl = supabase.storage.from("post_images").getPublicUrl(uploadData.path).data.publicUrl;
+        uploadedFiles.push({ url: publicUrl, path: uploadData.path, type: fileObj.type });
+      }
+      const { data: inserted } = await supabase
+        .from("posts")
+        .insert([{ user_id: user.id, caption: postText || null, images: uploadedFiles }])
+        .select()
+        .single();
+
+      // Optimized: select specific fields to reduce egress
+      const { data: newPostWithRelations } = await supabase
+        .from("posts")
+        .select(`
+          id,
+          user_id,
+          caption,
+          images,
+          created_at,
+          updated_at,
+          userinfo(id, firstName, lastName, display_name, profile_url, avatar_url),
+          post_comments(id, comment, created_at, user_id, post_id),
+          post_likes(id, user_id, post_id, created_at)
+        `)
+        .eq("id", inserted.id)
+        .single();
+
+      const finalPost = newPostWithRelations || inserted;
+      const prepared = {
+        ...finalPost,
+        images: finalPost.images || uploadedFiles,
+        userinfo: finalPost.userinfo || { id: user.id, firstName: user.name || "You", lastName: "", profile_url: user.avatar || null },
+        post_comments: finalPost.post_comments || [],
+        post_likes: finalPost.post_likes || [],
+        created_at: finalPost.created_at || new Date().toISOString()
+      };
+
+      setPosts(prev => [prepared, ...prev]);
+      setFiles([]); setPreviews([]); setPostText(""); setCurrentIndex(0); setMenuOpen(false); setLiked(false);
+      showToast("success", "Post created successfully! 🌾");
+      if (onPosted) onPosted(prepared);
+    } catch (err) {
+      console.error(err);
+      showToast("error", "Error creating post: " + (err.message || "Please try again."));
+    } finally { setUploading(false); }
+  };
+
+  // const handleLikeClick = async (postId) => {
+  //   if (!user) return alert("Please login to like posts.");
+  //   const { data: existing } = await supabase
+  //     .from("post_likes")
+  //     .select("*")
+  //     .eq("post_id", postId)
+  //     .eq("user_id", user.id)
+  //     .maybeSingle();
+
+  //   if (existing) {
+  //     await supabase.from("post_likes").delete().eq("id", existing.id);
+  //     setLiked(false);
+  //     setPosts((prev) => ({
+  //       ...prev,
+  //       post_likes: prev.post_likes.filter((l) => l.user_id !== user.id),
+  //     }));
+  //   } else {
+  //     await supabase.from("post_likes").insert([{ post_id: postId, user_id: user.id }]);
+  //     setLiked(true);
+  //     setPosts((prev) => ({
+  //       ...prev,
+  //       post_likes: [...(prev.post_likes || []), { user_id: user.id }],
+  //     }));
+  //   }
+  // };
+
+
+  const handleLikeClick = async (postId) => {
+    if (!user) {
+      showToast("error", "Please login to like posts.");
+      return;
+    }
+
+    const post = posts.find(p => p.id === postId);
+    const hasLiked = post?.post_likes?.some(like => like.user_id === user.id);
+
+    // Optimistic UI update
+    const updatedLikes = hasLiked
+      ? post.post_likes.filter(l => l.user_id !== user.id)
+      : [...(post.post_likes || []), { user_id: user.id }];
+
+    setPosts(prevPosts =>
+      prevPosts.map(p => p.id === postId ? { ...p, post_likes: updatedLikes } : p)
+    );
+
+    try {
+      if (hasLiked) {
+        // Remove like
+        const { error } = await supabase
+          .from("post_likes")
+          .delete()
+          .eq("post_id", postId)
+          .eq("user_id", user.id);
+        if (error) throw error;
+      } else {
+        // Add like (upsert avoids duplicates)
+        const { error } = await supabase
+          .from("post_likes")
+          .upsert([{ post_id: postId, user_id: user.id }], { onConflict: "post_id,user_id" });
+        if (error) throw error;
+      }
+    } catch (err) {
+      console.error("Error updating like:", err);
+      // Rollback UI
+      setPosts(prevPosts =>
+        prevPosts.map(p => p.id === postId ? post : p)
+      );
+    }
+  };
+
+  const toggleLike = async (postId) => {
+    if (!user) {
+      showToast("error", "Please login to like posts.");
+      return;
+    }
+    const { data: existing } = await supabase.from("post_likes").select("*").eq("post_id", postId).eq("user_id", user.id).maybeSingle();
+    if (existing) await supabase.from("post_likes").delete().eq("id", existing.id);
+    else await supabase.from("post_likes").insert([{ post_id: postId, user_id: user.id }]);
+    const { data: updated } = await supabase.from("post_likes").select("*").eq("post_id", postId);
+    setLiked(!existing);
+    setPosts(prev => prev.map(p => 
+      p.id === postId ? { ...p, post_likes: updated || [] } : p
+    ));
+  };
+
+  const addComment = async (postId,text) => {
+    if (!user || !text.trim()) return;
+
+    try {
+      const { data: inserted, error } = await supabase
+        .from("post_comments")
+        .insert([{ post_id: postId, user_id: user.id, comment: text }])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Update posts state
+      setPosts(prev =>
+        prev.map(p =>
+          p.id === postId
+            ? { ...p, post_comments: [...(p.post_comments || []), inserted] }
+            : p
+        )
+      );
+
+      // Update recentPost if needed
+      if (recentPost.id === postId) {
+        setRecentPost(prev => ({
+          ...prev,
+          post_comments: [...(prev.post_comments || []), inserted]
+        }));
+      }
+
+      setCommentText("");
+      showToast("success", "Comment added successfully!");
+    } catch (err) {
+      console.error("Failed to add comment:", err);
+      showToast("error", "Failed to add comment: " + (err.message || "Please try again."));
+    }
+  };
+
+  // const formatDate = (iso) => { try { return new Date(iso).toLocaleString(); } catch { return ""; } };
+  // const previewImages = previews.map(i => i.preview);
+
+  return (
+    <motion.section
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="w-full max-w-2xl mx-auto mb-6 sm:px-4 md:px-3"
+    >
+      <div className="relative">
+        {/* Main Post Card */}
+        <motion.div
+          layout
+          className="farm-card p-4 sm:p-6 relative overflow-hidden rounded-2xl"
+          style={{
+            background:
+              "linear-gradient(135deg, #ffffff 0%, #f8fafc 25%, #f1f5f9 50%, #e2e8f0 75%, #cbd5e1 100%)",
+            border: "1px solid rgba(255,255,255,0.2)",
+            boxShadow:
+              "0 25px 50px -12px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.05)",
+          }}
+        >
+          {/* Background Animation */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute -top-10 -right-10 w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-farm-200/30 to-farm-300/30 rounded-full animate-pulse"></div>
+            <div className="absolute -bottom-5 -left-5 w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-sunset-200/30 to-sunset-300/30 rounded-full animate-pulse delay-1000"></div>
+            <div className="absolute top-1/2 right-1/4 w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-sky-200/30 to-sky-300/30 rounded-full animate-bounce"></div>
+          </div>
+
+          <div className="relative z-10">
+            {/* Header */}
+            <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6 flex-wrap">
+              <div className="relative">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-farm-400 to-farm-600 rounded-full flex items-center justify-center shadow-lg">
+                  <span className="text-white font-bold text-base sm:text-lg">U</span>
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-green-500 rounded-full border-2 border-white"></div>
+              </div>
+              <div className="flex-1 min-w-[60%]">
+                <h3 className="text-base sm:text-lg font-bold text-farm-900 leading-tight">
+                  Share Your Farm Story
+                </h3>
+                <p className="text-xs sm:text-sm text-farm-600">
+                  What's happening on your farm today?
+                </p>
+              </div>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="p-1.5 sm:p-2 rounded-full bg-farm-100 hover:bg-farm-200 transition-colors"
+              >
+                {isExpanded ? <FaTimes className="w-4 h-4 text-farm-600" /> : <FaPlus className="w-4 h-4 text-farm-600" />}
+              </motion.button>
+            </div>
+
+            {/* Textarea Section */}
+            <motion.div initial={false} animate={{ height: isExpanded ? "auto" : "55px" }} transition={{ duration: 0.3 }} className="overflow-hidden">
+              <div className="relative">
+                <textarea
+                  value={postText}
+                  onChange={(e) => setPostText(e.target.value)}
+                  placeholder="Share what's happening on your farm... 🌱"
+                  className="w-full p-3 sm:p-4 pr-10 rounded-2xl border-0 resize-none focus:outline-none text-farm-800 placeholder-farm-500 transition-all duration-300 text-sm sm:text-base"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.8) 100%)",
+                    backdropFilter: "blur(20px)",
+                    boxShadow: "inset 0 2px 8px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.1)",
+                    border: "1px solid rgba(255,255,255,0.3)",
+                  }}
+                  rows={isExpanded ? 4 : 1}
+                  onFocus={() => setIsExpanded(true)}
+                />
+                <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
+                  <FaSmile className="w-4 h-4 sm:w-5 sm:h-5 text-farm-400" />
+                </div>
+              </div>
+
+              {/* Expanded Options */}
+              <AnimatePresence>
+                {isExpanded && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="mt-4 space-y-4"
+                  >
+
+                    {/* Upload Buttons */}
+                    <div className="flex flex-wrap gap-3 justify-between">
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          className="p-2 sm:p-3 rounded-xl bg-sky-100 hover:bg-sky-200"
+                          onClick={() => photoinputRef.current?.click()}
+                        >
+                          <FaImage className="w-4 h-4 sm:w-5 sm:h-5 text-sky-600" />
+                        </motion.button>
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          className="p-2 sm:p-3 rounded-xl bg-sunset-100 hover:bg-sunset-200"
+                          onClick={() => videoinputRef.current?.click()}
+                        >
+                          <FaVideo className="w-4 h-4 sm:w-5 sm:h-5 text-sunset-600" />
+                        </motion.button>
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          className="p-2 sm:p-3 rounded-xl bg-farm-100 hover:bg-farm-200"
+                        >
+                          <FaMapMarkerAlt className="w-4 h-4 sm:w-5 sm:h-5 text-farm-600" />
+                        </motion.button>
+                        <input ref={photoinputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFiles}/>
+                        <input ref={videoinputRef} type="file" accept="video/*" className="hidden" onChange={handleFiles}/>
+
+                      </div>
+
+                      <div className="flex items-center gap-2 sm:gap-3 flex-wrap justify-end">
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          onClick={uploadAndCreatePost}
+                          disabled={!postText.trim() && files.length === 0 || uploading}
+                          className="px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-farm-500 to-farm-600 text-white rounded-xl font-semibold shadow-lg text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                        >
+                          {uploading ? "Posting..." : <><FaPaperPlane /> Post</>}
+                        </motion.button>
+                      </div>
+                    </div>
+
+                    {/* Preview Images */}
+                    {previews.length > 0 && (
+                      <div className="mt-3 grid grid-cols-3 gap-2">
+                        {previews.map((item, idx) => (
+                          <div key={idx} className="relative rounded overflow-hidden group">
+                            {item.type === "image" ? (
+                              <div className="relative w-full h-28">
+                                <Image src={item.preview} alt={`preview-${idx}`} fill className="object-cover rounded" unoptimized />
+                              </div>
+                            ) : (
+                              <video src={item.preview} controls className="object-cover w-full h-28" />
+                            )}
+                            <button
+                              onClick={() => removeImage(idx)}
+                              className="absolute top-1 right-1 bg-black bg-opacity-50 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+
+            {/* Collapsed State */}
+            {!isExpanded && (
+              <div className="flex flex-wrap items-center justify-between mt-4 gap-2">
+                <div className="flex items-center gap-2 sm:gap-4">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-sky-100 hover:bg-sky-200 text-sky-700 text-sm sm:text-base font-medium"
+                    onClick={() => photoinputRef.current.click()}
+                  >
+                    <FaImage className="w-4 h-4" /> Photo
+                  </motion.button>
+                  <input
+                    ref={photoinputRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="hidden"
+                    onChange={handleFiles}
+                  />
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-sunset-100 hover:bg-sunset-200 text-sunset-700 text-sm sm:text-base font-medium"
+                    onClick={() => videoinputRef.current.click()}
+                  >
+                    <FaVideo className="w-4 h-4" /> Video
+                  </motion.button>
+                  <input
+                    ref={videoinputRef}
+                    type="file"
+                    accept="video/*"
+                    className="hidden"
+                    onChange={handleFiles}
+                  />                  
+                </div>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    onClick={uploadAndCreatePost}
+                    disabled={!postText.trim() && files.length === 0 || uploading}
+                    className="px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-farm-500 to-farm-600 text-white rounded-xl font-semibold shadow-lg text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  >
+                    {uploading ? "Posting..." : <><FaPaperPlane /> Post</>}
+                  </motion.button>
+              </div>
+            )}
+          </div>
+        </motion.div>
+      </div>
+      {recentPost && recentPost.id && (
+        <RecentPost
+          post={recentPost}
+          user={user}
+          onLike={handleLikeClick}
+          onAddComment={addComment}
+          formatName={formatName}
+        />
+      )}
+    </motion.section>
+  );
+}

@@ -1,0 +1,147 @@
+[
+  {
+    "name": "Amul",
+    "description": "Gujarat Cooperative Milk Marketing Federation Ltd. - Leading dairy cooperative in India, known for quality milk products.",
+    "milk_type": "Cow",
+    "region": "Gujarat",
+    "category": "Cooperative",
+    "fat_rate": 1.50,
+    "snf_rate": 1.00,
+    "base_rate": 33.00,
+    "fat_multiplier": 1.50,
+    "snf_multiplier": 1.00,
+    "per_liter_rate": null,
+    "contact_info": {
+      "website": "https://www.amul.com"
+    }
+  },
+  {
+    "name": "Mother Dairy",
+    "description": "A wholly owned subsidiary of National Dairy Development Board, providing quality milk and dairy products.",
+    "milk_type": "Cow",
+    "region": "Delhi",
+    "category": "Government",
+    "fat_rate": 1.40,
+    "snf_rate": 1.20,
+    "base_rate": 34.00,
+    "fat_multiplier": 1.40,
+    "snf_multiplier": 1.20,
+    "per_liter_rate": null,
+    "contact_info": {
+      "website": "https://www.motherdairy.com"
+    }
+  },
+  {
+    "name": "Gokul",
+    "description": "Kolhapur District Co-operative Milk Producers' Union - Serving farmers in Maharashtra with competitive rates.",
+    "milk_type": "Cow",
+    "region": "Maharashtra",
+    "category": "Cooperative",
+    "fat_rate": 1.30,
+    "snf_rate": 1.10,
+    "base_rate": 32.00,
+    "fat_multiplier": 1.30,
+    "snf_multiplier": 1.10,
+    "per_liter_rate": null,
+    "contact_info": {}
+  },
+  {
+    "name": "Parag",
+    "description": "Parag Milk Foods - Premium quality milk and dairy products manufacturer.",
+    "milk_type": "Cow",
+    "region": "Maharashtra",
+    "category": "Private",
+    "fat_rate": 1.60,
+    "snf_rate": 1.30,
+    "base_rate": 35.00,
+    "fat_multiplier": 1.60,
+    "snf_multiplier": 1.30,
+    "per_liter_rate": null,
+    "contact_info": {}
+  },
+  {
+    "name": "Saras",
+    "description": "Saras Dairy - Regional dairy cooperative serving local farmers with fair pricing.",
+    "milk_type": "Buffalo",
+    "region": "Gujarat",
+    "category": "Cooperative",
+    "fat_rate": 1.20,
+    "snf_rate": 1.00,
+    "base_rate": 31.00,
+    "fat_multiplier": 1.20,
+    "snf_multiplier": 1.00,
+    "per_liter_rate": null,
+    "contact_info": {}
+  },
+  {
+    "name": "VRS",
+    "description": "VRS Dairy - Premium dairy company offering competitive rates for quality milk.",
+    "milk_type": "Cow",
+    "region": "Maharashtra",
+    "category": "Private",
+    "fat_rate": 1.70,
+    "snf_rate": 1.40,
+    "base_rate": 36.00,
+    "fat_multiplier": 1.70,
+    "snf_multiplier": 1.40,
+    "per_liter_rate": null,
+    "contact_info": {}
+  },
+  {
+    "name": "Warana",
+    "description": "Warana Cooperative Dairy - Serving farmers in Kolhapur and surrounding areas with competitive rates.",
+    "milk_type": "Cow",
+    "region": "Maharashtra",
+    "category": "Cooperative",
+    "fat_rate": 1.50,
+    "snf_rate": 1.00,
+    "base_rate": 33.00,
+    "fat_multiplier": 1.50,
+    "snf_multiplier": 1.00,
+    "per_liter_rate": null,
+    "contact_info": {}
+  },
+  {
+    "name": "Nandini",
+    "description": "Karnataka Cooperative Milk Producers' Federation - Leading dairy brand in Karnataka.",
+    "milk_type": "Cow",
+    "region": "Karnataka",
+    "category": "Cooperative",
+    "fat_rate": 1.40,
+    "snf_rate": 1.20,
+    "base_rate": 34.00,
+    "fat_multiplier": 1.40,
+    "snf_multiplier": 1.20,
+    "per_liter_rate": null,
+    "contact_info": {}
+  },
+  {
+    "name": "Aavin",
+    "description": "Tamil Nadu Cooperative Milk Producers' Federation - Serving dairy farmers across Tamil Nadu.",
+    "milk_type": "Cow",
+    "region": "Tamil Nadu",
+    "category": "Cooperative",
+    "fat_rate": 1.30,
+    "snf_rate": 1.10,
+    "base_rate": 32.00,
+    "fat_multiplier": 1.30,
+    "snf_multiplier": 1.10,
+    "per_liter_rate": null,
+    "contact_info": {}
+  },
+  {
+    "name": "Milma",
+    "description": "Kerala Cooperative Milk Marketing Federation - Premium dairy brand in Kerala.",
+    "milk_type": "Cow",
+    "region": "Kerala",
+    "category": "Cooperative",
+    "fat_rate": 1.60,
+    "snf_rate": 1.30,
+    "base_rate": 35.00,
+    "fat_multiplier": 1.60,
+    "snf_multiplier": 1.30,
+    "per_liter_rate": null,
+    "contact_info": {}
+  }
+]
+

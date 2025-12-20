@@ -1,0 +1,178 @@
+[
+  {
+    "title": "PM-Kisan Samman Nidhi",
+    "tagline": "Direct income support for farmers",
+    "description": "PM-Kisan is a Central Sector Scheme with 100% funding from Government of India. The scheme aims to provide income support to all landholding farmers' families in the country to enable them to take care of expenses related to agriculture and allied activities as well as domestic needs.",
+    "category": "Agriculture",
+    "state": null,
+    "icon": "🌾",
+    "benefits": [
+      "Direct income support of Rs. 6,000 per year",
+      "Paid in three equal installments of Rs. 2,000 each",
+      "Directly transferred to bank accounts",
+      "No middlemen involved"
+    ],
+    "eligibility": [
+      "All landholding farmers",
+      "Small and marginal farmers",
+      "Farmers with cultivable land"
+    ],
+    "documents": [
+      "Aadhaar card",
+      "Bank account details",
+      "Land ownership documents",
+      "Identity proof"
+    ],
+    "application_steps": [
+      "Visit the official PM-Kisan website",
+      "Click on Farmer Registration",
+      "Fill in the required details",
+      "Submit the form with documents",
+      "Wait for verification"
+    ],
+    "official_links": [
+      {
+        "label": "Official Website",
+        "url": "https://pmkisan.gov.in/"
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Who is eligible for PM-Kisan?",
+        "answer": "All landholding farmers are eligible for PM-Kisan scheme."
+      },
+      {
+        "question": "How much money will I receive?",
+        "answer": "You will receive Rs. 6,000 per year in three installments of Rs. 2,000 each."
+      }
+    ]
+  },
+  {
+    "title": "Pradhan Mantri Fasal Bima Yojana",
+    "tagline": "Comprehensive crop insurance for farmers",
+    "description": "PMFBY is a crop insurance scheme that provides financial support to farmers in case of crop loss due to natural calamities, pests, and diseases. It aims to stabilize farmers' income and encourage them to adopt innovative farming practices.",
+    "category": "Insurance",
+    "state": null,
+    "icon": "🛡️",
+    "benefits": [
+      "Comprehensive coverage against crop loss",
+      "Affordable premium rates",
+      "Quick claim settlement",
+      "Coverage for all food and oilseed crops"
+    ],
+    "eligibility": [
+      "All farmers growing notified crops",
+      "Farmers with insurable interest in the crop",
+      "Farmers who have taken loan from financial institutions"
+    ],
+    "documents": [
+      "Aadhaar card",
+      "Bank account details",
+      "Land records",
+      "Crop details"
+    ],
+    "application_steps": [
+      "Contact your nearest bank or insurance company",
+      "Fill the application form",
+      "Submit required documents",
+      "Pay the premium",
+      "Receive insurance certificate"
+    ],
+    "official_links": [
+      {
+        "label": "Official Website",
+        "url": "https://pmfby.gov.in/"
+      }
+    ],
+    "faqs": [
+      {
+        "question": "What crops are covered?",
+        "answer": "All food crops, oilseeds, and annual commercial/horticultural crops are covered under PMFBY."
+      }
+    ]
+  },
+  {
+    "title": "Kisan Credit Card (KCC)",
+    "tagline": "Easy credit for agricultural needs",
+    "description": "KCC scheme provides farmers with timely access to credit for their agricultural needs including crop production, maintenance of farm assets, and other related expenses. It offers flexible repayment options and lower interest rates.",
+    "category": "Kisan Credit",
+    "state": null,
+    "icon": "💳",
+    "benefits": [
+      "Easy access to credit",
+      "Lower interest rates",
+      "Flexible repayment options",
+      "Can be used for multiple purposes"
+    ],
+    "eligibility": [
+      "Farmers who own cultivable land",
+      "Tenant farmers",
+      "Oral lessees",
+      "Sharecroppers"
+    ],
+    "documents": [
+      "Aadhaar card",
+      "Land ownership documents",
+      "Bank account details",
+      "Identity proof",
+      "Address proof"
+    ],
+    "application_steps": [
+      "Visit your nearest bank branch",
+      "Fill the KCC application form",
+      "Submit required documents",
+      "Get your KCC card after approval"
+    ],
+    "official_links": [
+      {
+        "label": "RBI Guidelines",
+        "url": "https://www.rbi.org.in/scripts/NotificationUser.aspx?Id=12031"
+      }
+    ],
+    "faqs": [
+      {
+        "question": "What is the interest rate?",
+        "answer": "The interest rate is typically 4% per annum for loans up to Rs. 3 lakhs."
+      }
+    ]
+  },
+  {
+    "title": "Maharashtra Krishi Sanjivani Yojana",
+    "tagline": "State-specific agricultural support",
+    "description": "A comprehensive scheme by Maharashtra government to support farmers with various agricultural activities, subsidies, and financial assistance.",
+    "category": "Agriculture",
+    "state": "Maharashtra",
+    "icon": "🌱",
+    "benefits": [
+      "Subsidy on agricultural equipment",
+      "Financial assistance for crop production",
+      "Support for organic farming",
+      "Training and capacity building"
+    ],
+    "eligibility": [
+      "Farmers registered in Maharashtra",
+      "Landholding farmers",
+      "Farmers with valid documents"
+    ],
+    "documents": [
+      "Maharashtra farmer registration certificate",
+      "Land documents",
+      "Aadhaar card",
+      "Bank account details"
+    ],
+    "application_steps": [
+      "Visit the nearest agriculture office",
+      "Get the application form",
+      "Fill and submit with documents",
+      "Wait for approval"
+    ],
+    "official_links": [
+      {
+        "label": "Maharashtra Agriculture Portal",
+        "url": "https://mahaagri.gov.in/"
+      }
+    ],
+    "faqs": []
+  }
+]
+
