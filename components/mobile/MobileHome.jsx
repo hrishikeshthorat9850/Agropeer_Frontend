@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useLocation, LOCATION } from "./hooks/useLocation";
 import {
   FaLeaf,
@@ -18,9 +18,21 @@ import {
 import { FaIndianRupeeSign } from "react-icons/fa6";
 import { useWeather } from "@/Context/WeatherContext";
 import { openAppSettings } from "./utils/openAppSettings";
+import HomeBanner from "./HomeBanner";
 
 export default function MobileHome() {
   const { weather, loading, getWeather } = useWeather();
+
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // ✅ memoized success handler
   const onLocationSuccess = useCallback((lat, lng) => {
@@ -38,67 +50,63 @@ export default function MobileHome() {
       temp: weather.temperature?.toFixed(1) ?? "--",
     };
   }, [weather]);
+  
   return (
-    <div className="md:hidden pb-1 min-h-screen bg-[#FAF7F2] dark:bg-[#0d0d0d]">
+    <div className="md:hidden pb-1 min-h-screen bg-[#FAF7F2] dark:bg-[#0d0d0d] relative">
 
       {/* ================================================================= */}
       {/*                        TOP HEADER SECTION                         */}
       {/* ================================================================= */}
 
-      <div className="relative w-full">
-
-        {/* BACKGROUND ILLUSTRATION */}
-        <div className="relative w-full h-[220px]">
+      {/* ================= TOP HEADER + FLOATING CARD ================= */}
+      <div
+        className="relative w-full transition-all duration-500 ease-out overflow-visible z-10"
+        style={{
+          transform: `translateY(${Math.min(scrollY * 0.5, 300)}px) scale(${Math.max(
+            0.95,
+            1 - scrollY / 800
+          )})`,
+          opacity: Math.max(1 - scrollY / 400, 0),
+          filter: `blur(${Math.min(scrollY / 100, 2)}px)`,
+        }}
+      >
+        {/* BACKGROUND IMAGE */}
+        <div className="relative w-full h-[240px]">
           <Image
             src="/banners/FarmOld.jpg"
             alt="Farm Landscape"
             fill
-            className="object-cover dark:opacity-80"
+            className="object-cover"
           />
-
-          {/* FARMER CHARACTER */}
-          <div className="absolute bottom-0 left-0 right-0 flex justify-center">
-            <div className="relative w-40 h-40">
-              <Image
-                src="/banners/Tractor.jpg"
-                alt="Farmer"
-                fill
-                className="object-contain dark:opacity-90"
-              />
-            </div>
-          </div>
+          <div className="absolute inset-0 bg-gradient-to-br from-green-900/40 via-transparent to-blue-900/30" />
         </div>
 
-        {/* FLOATING WHITE CARD */}
-        <div className="absolute w-[90%] left-1/2 -translate-x-1/2 -bottom-40">
-          <div className="
-            bg-white dark:bg-[#1a1a1a]
-            rounded-3xl p-5 
-            shadow-[0_4px_20px_rgba(0,0,0,0.10)]
-            dark:shadow-[0_4px_25px_rgba(0,0,0,0.5)]
-            border border-white/70 dark:border-[#333]
-          ">
-            <h2 className="text-[20px] font-bold text-gray-900 dark:text-white">
-              Smart Farm Tools & Calculators.
+        {/* FLOATING CARD */}
+        <div className="absolute w-[92%] left-1/2 -translate-x-1/2 -bottom-44 z-30">
+          <div className="bg-white dark:bg-sky-950 rounded-3xl p-6 shadow-xl">
+            <h2 className="text-[22px] font-bold bg-gradient-to-r from-green-600 via-green-500 to-blue-600 bg-clip-text text-transparent dark:from-green-400 dark:via-green-300 dark:to-blue-400">
+              🚀 Smart Farm Tools & Calculators
             </h2>
-
-            <p className="text-sm text-gray-600 dark:text-gray-300 mt-2 leading-relaxed">
+            <p className="text-sm text-gray-600 dark:text-gray-300 mt-3">
               Plan smarter using seed, fertilizer, water & yield calculators.
             </p>
-
             <Link
               href="/explore"
-              className="inline-block mt-4 bg-green-600 text-white px-5 py-2 rounded-full shadow-md active:scale-95"
+              className="inline-flex items-center gap-2 mt-5 bg-green-600 text-white px-6 py-3 rounded-full"
             >
-              Use Tools
+              Use Tools ⚡
             </Link>
-
           </div>
         </div>
       </div>
 
-      {/* SPACER */}
-      <div className="h-40" />
+      {/* 🔑 SPACER — REQUIRED */}
+      <div className="h-56" />
+
+      {/* ================= HOME BANNER (FULLY OPAQUE) ================= */}
+      <div className="relative w-full overflow-hidden z-20 opacity-100">
+        <HomeBanner />
+      </div>
 
       {/* =============================================================== */}
       {/*                        PREMIUM WEATHER CARD                     */}
@@ -195,24 +203,66 @@ export default function MobileHome() {
       </div>
 
       {/* ================================================================= */}
-      {/*                        WELCOME TITLE SECTION                      */}
+      {/*                    MODERN WELCOME HERO SECTION                    */}
       {/* ================================================================= */}
 
-      <div className="text-center mt-4 px-6">
-        <h1 className="text-2xl font-bold text-green-800 dark:text-green-400">
-          Welcome to AgroPeer.
-        </h1>
+      <div className="relative mt-8 px-4 sm:px-6 lg:px-8">
+        {/* BACKGROUND DECORATIVE ELEMENTS */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-10 -left-10 w-20 h-20 bg-gradient-to-br from-green-400/20 to-blue-500/20 rounded-full blur-xl animate-pulse" />
+          <div className="absolute -bottom-10 -right-10 w-16 h-16 bg-gradient-to-br from-yellow-400/20 to-orange-500/20 rounded-full blur-lg animate-bounce" />
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-gradient-to-br from-purple-400/10 to-pink-500/10 rounded-full blur-2xl animate-ping" />
+        </div>
 
-        <p className="text-gray-700 dark:text-gray-300 text-sm mt-2 leading-relaxed">
-          Connect, share and grow with fellow farmers — explore useful tools.
-        </p>
+        {/* MAIN WELCOME CONTENT */}
+        <div className="relative z-10 text-center py-8 sm:py-12 lg:py-16">
+          {/* ANIMATED ICON */}
+          <div className="flex justify-center mb-4">
+            <div className="relative">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-2xl animate-bounce">
+                <span className="text-2xl sm:text-3xl lg:text-4xl">🌱</span>
+              </div>
+              <div className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full animate-ping" />
+              <div className="absolute -bottom-1 -left-1 w-4 h-4 bg-blue-400 rounded-full animate-pulse" />
+            </div>
+          </div>
+
+          {/* GRADIENT TITLE */}
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold mb-4 sm:mb-6 lg:mb-8 animate-fadeInUp">
+            <span className="text-3xl bg-gradient-to-r from-green-600 via-green-500 to-blue-600 bg-clip-text text-transparent dark:from-green-400 dark:via-green-300 dark:to-blue-400">
+              Welcome to 
+            </span>&nbsp;
+            <span className="text-3xl bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent dark:from-blue-400 dark:via-purple-400 dark:to-green-400 animate-pulse">
+              AgroPeer
+            </span>
+            <span className="text-2xl sm:text-3xl lg:text-4xl ml-2 animate-bounce">🚀</span>
+          </h1>
+
+          {/* ENHANCED DESCRIPTION */}
+          <div className="max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg lg:text-xl text-gray-700 dark:text-gray-300 leading-relaxed mb-6 sm:mb-8 lg:mb-10 animate-fadeInUp animation-delay-200">
+              🌾 <strong>Connect, share and grow</strong> with fellow farmers worldwide
+              <br className="hidden sm:block" />
+              — explore <span className="text-green-600 dark:text-green-400 font-semibold">AI-powered tools</span> and insights
+            </p>
+          </div>
+
+          {/* DECORATIVE LINE */}
+          <div className="flex justify-center items-center gap-4 animate-fadeInUp animation-delay-600">
+            <div className="w-8 sm:w-12 lg:w-16 h-0.5 bg-gradient-to-r from-transparent via-green-500 to-transparent" />
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+            <div className="w-4 sm:w-6 lg:w-8 h-0.5 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
+            <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-ping" />
+            <div className="w-6 sm:w-8 lg:w-12 h-0.5 bg-gradient-to-r from-transparent via-purple-500 to-transparent" />
+          </div>
+        </div>
       </div>
 
       {/* ================================================================= */}
       {/*                        FEATURE GRID (10)                         */}
       {/* ================================================================= */}
 
-      <div className="mt-8 px-4 space-y-4">
+      <div className="mt-4 px-4 space-y-4">
         <FeatureGrid />
       </div>
 
@@ -349,22 +399,37 @@ function FeatureCard({ href, icon, bg, label }) {
     <Link
       href={href}
       className="
-        p-4 rounded-2xl 
-        bg-white dark:bg-[#1c1c1c]
-        border border-gray-200 dark:border-[#333]
-        shadow-md dark:shadow-[0_4px_12px_rgba(0,0,0,0.6)]
-        flex items-center gap-3 
-        active:scale-95 transition
+        p-4 rounded-2xl
+        relative overflow-hidden
+        bg-gradient-to-br from-white/90 via-white/95 to-white/80
+        dark:from-[#1c1c1c] dark:via-[#0a0a0a] dark:to-[#272727]
+        backdrop-blur-sm
+        shadow-lg dark:shadow-[0_6px_20px_rgba(0,0,0,0.4)]
+        border border-white/50 dark:border-gray-700/50
+        flex items-center gap-3
+        active:scale-95 transition-all duration-200
+        hover:shadow-xl hover:scale-105
+        group
       "
     >
-      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${bg}`}>
+      {/* ANIMATED BACKGROUND GRADIENT */}
+      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-transparent dark:via-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+      {/* SUBTLE PATTERN OVERLAY */}
+      <div className="absolute inset-0 opacity-5 dark:opacity-10">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(0,0,0,0.15)_1px,transparent_0)] bg-[length:20px_20px]" />
+      </div>
+
+      {/* GLOWING BORDER EFFECT */}
+      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500/20 via-purple-500/10 to-green-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm" />
+
+      <div className={`relative z-10 w-10 h-10 rounded-xl flex items-center justify-center ${bg} shadow-inner group-hover:scale-110 transition-transform duration-200`}>
         {icon}
       </div>
 
-      <span className="font-semibold text-gray-800 dark:text-gray-200 text-[15px]">
+      <span className="relative z-10 font-semibold text-gray-800 dark:text-gray-200 text-[15px] group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-200">
         {label}
       </span>
     </Link>
   );
 }
-

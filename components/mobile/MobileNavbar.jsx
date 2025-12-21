@@ -46,8 +46,8 @@ export default function MobileNavbar() {
 
   return (
     <div
-      className="md:hidden fixed top-0 left-0 right-0 z-50 bg-gradient-to-br from-[#2E7D32] to-[#E8F5E9]
-      dark:bg-white/10 backdrop-blur-2xl dark:border-white/10"
+      className="md:hidden fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-[#2E7D32] to-[#1B5E20]
+      dark:bg-white/10 backdrop-blur-2xl rounded-bl-xl rounded-br-xl"
       style={{
         paddingTop: "env(safe-area-inset-top)",
       }}
@@ -63,7 +63,7 @@ export default function MobileNavbar() {
           onClick={openSidebar} 
           className="p-2 active:scale-95 transition"
         >
-          <FaBars className="text-[22px] text-green-700 dark:text-white" />
+          <FaBars className="text-[22px]" />
         </button>
 
         {/* LOGO + TITLE */}
@@ -76,7 +76,7 @@ export default function MobileNavbar() {
             <FaSeedling className="text-sm" />
           </div>
 
-          <span className="text-green-800 dark:text-white font-bold text-xl tracking-tight">
+          <span className="font-bold text-xl tracking-tight">
             AgroPeer
           </span>
         </div>
@@ -87,7 +87,7 @@ export default function MobileNavbar() {
           {/* Notifications */}
           {user && (
             <Link href="/notifications" className="relative p-2 active:scale-95">
-              <FaBell className="text-[20px] text-green-700 dark:text-white" />
+              <FaBell className="text-[20px]" />
               {unreadNotifications > 0 && (
                 <div className="absolute -top-2 -right-1">
                   <NotificationBadge unreadCount={unreadNotifications} />
@@ -98,7 +98,7 @@ export default function MobileNavbar() {
 
           {/* Chats */}
           <Link href="/chats" className="relative p-2 active:scale-95">
-            <FaComments className="text-[20px] text-green-700 dark:text-white" />
+            <FaComments className="text-[20px]" />
             {unreadChats > 0 && (
               <div className="absolute -top-2 -right-1">
                 <NotificationBadge unreadCount={unreadChats} />
@@ -112,7 +112,7 @@ export default function MobileNavbar() {
               onClick={() => setLangOpen(!langOpen)}
               className="p-2 active:scale-95"
             >
-              <FaLanguage className="text-[27px] text-green-700 dark:text-white" />
+              <FaLanguage className="text-[27px]" />
             </button>
 
             <AnimatePresence>
@@ -152,7 +152,7 @@ export default function MobileNavbar() {
           </div>
 
           {/* PROFILE MODAL */}
-          <ProfileModal className="!text-green-700 dark:!text-white" />
+          <ProfileModal />
         </div>
       </div>
     </div>
