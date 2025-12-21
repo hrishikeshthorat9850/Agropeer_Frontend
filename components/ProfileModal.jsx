@@ -31,7 +31,7 @@ export default function ProfileModal({ className = "" }) {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 z-[999]">
+        <div className="absolute right-0 mt-2 z-[9999]">
           <UserSidebar onClose={() => setIsOpen(false)} />
         </div>
       )}

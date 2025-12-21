@@ -46,16 +46,21 @@ export default function MobileNavbar() {
 
   return (
     <div
-      className="md:hidden fixed top-0 left-0 right-0 z-50 bg-gradient-to-br from-[#2E7D32] to-[#E8F5E9]
+      className="md:hidden fixed top-0 left-0 right-0 z-[100] bg-gradient-to-br from-[#2E7D32] to-[#E8F5E9]
       dark:bg-white/10 backdrop-blur-2xl dark:border-white/10"
       style={{
         paddingTop: "env(safe-area-inset-top)",
+        height: "calc(56px + env(safe-area-inset-top, 0px))",
+        maxHeight: "calc(56px + env(safe-area-inset-top, 0px))",
+        overflow: "visible",
       }}
     >
       <div
         className="
           flex items-center justify-between 
           py-2 px-2
+          h-[56px]
+          flex-shrink-0
         "
       >
         {/* MENU / SIDEBAR BUTTON */}

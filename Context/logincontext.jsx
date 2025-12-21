@@ -65,7 +65,7 @@ export const LoginProvider = ({ children }) => {
   }, [user, loading]); // ✅ include both
 
   return (
-    <LoginContext.Provider value={{ user, session, loading, userinfo }}>
+    <LoginContext.Provider value={{ user, session, loading, userinfo,accessToken: session?.access_token ?? null, }}>
       {children}
     </LoginContext.Provider>
   );

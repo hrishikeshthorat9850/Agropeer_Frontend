@@ -25,7 +25,7 @@ import ScheduleTab from "./farmer-dashboard/ScheduleTab";
 const FarmerDashboard = () => {
   const { weather, loading: weatherLoading, getWeather, error: weatherError } = useWeather();
   const { position } = useGeolocation();
-  const { user, loading: authLoading } = useLogin();
+  const { user, loading: authLoading,accessToken ,session} = useLogin();
   const [activeTab, setActiveTab] = useState("crops");
   const [selectedCrop, setSelectedCrop] = useState(null);
   const [weatherData, setWeatherData] = useState(null);
@@ -33,10 +33,11 @@ const FarmerDashboard = () => {
   const [insightsLoading, setInsightsLoading] = useState(false);
   const [insightsError, setInsightsError] = useState(null);
   const [weatherFetched, setWeatherFetched] = useState(false);
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   const oldNavRef = useRef(null);
   const [showBottomNav, setShowBottomNav] = useState(false);
-
+  console.log("Session is :",session);
+  console.log("Access Token is :",accessToken);
   /** 🔥 PREMIUM FAB MENU UI */
   const [fabOpen, setFabOpen] = useState(false);
 
@@ -95,6 +96,9 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
         const response = await fetch(`${BASE_URL}/api/smart-farm/insights?farmerId=${user.id}`, {
           signal: controller.signal,
           cache: "no-store",
+          headers : {
+            Authorization : `Bearer ${accessToken}`
+          }
         });
 
         if (!response.ok) {

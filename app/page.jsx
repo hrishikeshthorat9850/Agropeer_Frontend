@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLogin } from "@/Context/logincontext";
 import MobileHome from "@/components/mobile/MobileHome";
+import { Capacitor } from "@capacitor/core";
 // import Loader from "@/components/Loader";
 
 export default function RootPage() {
   const router = useRouter();
   const { user, loading } = useLogin();
   const [isMobile, setIsMobile] = useState(null);
-
+  const isNative = Capacitor.isNativePlatform();
   // Detect device size
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -32,7 +33,8 @@ export default function RootPage() {
 
   }, [loading, user, isMobile, router]);
 
-  if (user && isMobile) return <MobileHome />;
+  // Show MobileHome for mobile devices regardless of login status
+  if (isMobile) return <MobileHome />;
 
   return null;
 }

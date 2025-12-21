@@ -14,6 +14,7 @@ import ToolsSection from "@/components/explore/Tools&Calculator";
 import FarmerStories from "@/components/explore/FarmerStories";
 import CropDiscoverySection from "@/components/explore/CropDiscoverySection";
 import LoadingSpinner from "@/components/ui/market/LoadingSpinner";
+import MobilePageContainer from "@/components/mobile/MobilePageContainer";
 
 // ✅ Number formatter
 const formatNumber = (num) => {
@@ -105,13 +106,17 @@ export default function ExplorePage() {
   // ✅ Show loading spinner while page loads
   if (loadingPage)
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <LoadingSpinner />
-      </div>
+      <MobilePageContainer>
+        <div className="flex justify-center items-center min-h-screen py-20">
+          <LoadingSpinner />
+        </div>
+      </MobilePageContainer>
     );
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-2 py-8">
+    <MobilePageContainer>
+      <div className="py-4">
+        <div className="w-full max-w-7xl mx-auto">
       {/* 🌾 Header Section */}
       <div className="text-center mb-8">
         {/* PAGE HEADER — PREMIUM */}
@@ -208,6 +213,8 @@ export default function ExplorePage() {
 
       {/* 🌾 Crop Detail Modal */}
       <CropDetailModal crop={selectedCrop} onClose={() => setSelectedCrop(null)} />
-    </div>
+        </div>
+      </div>
+    </MobilePageContainer>
   );
 }

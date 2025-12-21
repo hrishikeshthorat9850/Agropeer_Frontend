@@ -55,18 +55,6 @@ export default function MobileHome() {
             fill
             className="object-cover dark:opacity-80"
           />
-
-          {/* FARMER CHARACTER */}
-          <div className="absolute bottom-0 left-0 right-0 flex justify-center">
-            <div className="relative w-40 h-40">
-              <Image
-                src="/banners/Tractor.jpg"
-                alt="Farmer"
-                fill
-                className="object-contain dark:opacity-90"
-              />
-            </div>
-          </div>
         </div>
 
         {/* FLOATING WHITE CARD */}

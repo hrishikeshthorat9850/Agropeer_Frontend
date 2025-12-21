@@ -8,6 +8,7 @@ import { PostSkeleton } from "@/components/skeletons";
 import { motion } from "framer-motion";
 import { FaUsers } from "react-icons/fa";
 import useToast from "@/hooks/useToast";
+import MobilePageContainer from "@/components/mobile/MobilePageContainer";
 
 export default function RecentsPage() {
   const { user } = useLogin();
@@ -58,17 +59,18 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   }, [user?.id]);
 
   return (
-    <>
-      <div className="w-full max-w-2xl mx-auto mt-6 mb-4 px-4 text-center">
-        <h1 className="text-3xl font-extrabold text-farm-900 dark:text-white">
-          Recent Activity
-        </h1>
-        <p className="text-gray-600 dark:text-gray-300 text-sm mt-2">
-          See all your latest posts and updates in one place.
-        </p>
-      </div>
+    <MobilePageContainer>
+      <div className="py-4">
+        <div className="w-full max-w-2xl mx-auto mb-6 text-center">
+          <h1 className="text-2xl md:text-3xl font-extrabold text-farm-900 dark:text-white">
+            Recent Activity
+          </h1>
+          <p className="text-gray-600 dark:text-gray-300 text-sm mt-2">
+            See all your latest posts and updates in one place.
+          </p>
+        </div>
  
-      <main className="flex flex-col justify-center w-full max-w-4xl mx-auto md:px-4">
+        <main className="flex flex-col justify-center w-full max-w-4xl mx-auto">
         <div className="flex flex-col items-center w-full max-w-2xl mx-auto">
 
           {/* Post Create */}
@@ -132,6 +134,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
           )}
         </div>
       </main>
-    </>
+      </div>
+    </MobilePageContainer>
   );
 }

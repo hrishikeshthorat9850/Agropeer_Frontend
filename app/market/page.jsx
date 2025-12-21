@@ -16,6 +16,7 @@ import { useLogin } from "@/Context/logincontext";
 import { ProductSkeleton } from "@/components/skeletons";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import PlantLoader from "@/components/PlantLoader";
+import MobilePageContainer from "@/components/mobile/MobilePageContainer";
 
 // Lazy load heavy components that are only shown on user interaction or below the fold
 const SellForm = dynamic(() => import("@/components/SellForm"), {
@@ -512,8 +513,10 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     );
 
     return (
-      <div className="w-full min-h-screen flex flex-col items-center justify-start bg-[linear-gradient(145deg,_#e8f5e9cc_0%,_#c8e6c9cc_100%)] py-10 dark:bg-none dark:bg-[#0a0a0a]">
-        <div className="flex items-center justify-center gap-3 mb-8 px-4">
+      <MobilePageContainer noPadding>
+        <div className="w-full min-h-screen flex flex-col items-center justify-start bg-[linear-gradient(145deg,_#e8f5e9cc_0%,_#c8e6c9cc_100%)] dark:bg-[#0a0a0a] py-6">
+          <div className="w-full px-4">
+            <div className="flex items-center justify-center gap-3 mb-6">
           <svg 
             xmlns="http://www.w3.org/2000/svg" 
             className="w-8 h-8 text-farm-600 dark:text-green-400" 
@@ -533,8 +536,8 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
           </h1>
         </div>
 
-        <div className="w-full max-w-7xl mx-auto px-2">
-          <div className="w-full mb-8 space-y-4">
+            <div className="w-full max-w-7xl mx-auto">
+              <div className="w-full mb-6 space-y-4">
             <div className="w-full">
               <ProductSearch
                 products={productDetailSearchProducts}
@@ -619,14 +622,17 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
             />
           </Suspense>
         )}
-      </div>
+          </div>
+        </div>
+      </MobilePageContainer>
     );
   }
 
   // List view
   return (
-    <div className="min-h-[calc(100vh-122px)] flex justify-center py-12 px-2 relative">
-      <div className="w-full max-w-7xl flex flex-col gap-12">
+    <MobilePageContainer>
+      <div className="py-4">
+        <div className="w-full max-w-7xl mx-auto flex flex-col gap-6 md:gap-8">
         <motion.div
           className="relative w-full flex flex-col items-center justify-center text-center px-4 py-2"
           initial={{ opacity: 0, y: -15 }}
@@ -705,12 +711,12 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
         )}
 
         {/* <div className="flex gap-8"> */}
-          {/* Product Grid */}
+            {/* Product Grid */}
           {productsLoading ? (
             <ProductSkeleton count={8} />
           ) : (
             <motion.div 
-              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8" 
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6" 
               initial={{ opacity: 0 }} 
               animate={{ opacity: 1 }}
             >
@@ -772,7 +778,8 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
           sellerId={chatModal.sellerId}
           sellerInfo={chatModal.sellerInfo}
         />
+        </div>
       </div>
-    </div>
+    </MobilePageContainer>
   );
 }

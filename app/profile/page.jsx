@@ -8,6 +8,7 @@ import { formatName } from "@/utils/formatName";
 import { useLanguage } from "@/Context/languagecontext";
 import { ProfileSkeleton } from "@/components/skeletons";
 import { supabase } from "@/lib/supabaseClient";
+import MobilePageContainer from "@/components/mobile/MobilePageContainer";
 
 // Formatter: links, mentions, hashtags, line breaks
 function formatBio(text) {
@@ -137,9 +138,10 @@ export default function ProfilePage() {
     const isOwnProfile = user?.id === visitorId;
 
     return (
-      <div className="min-h-[calc(100vh-122px)] py-4 px-2">
-        <div className="max-w-4xl mx-auto bg-green-50 shadow-lg rounded-2xl overflow-hidden border border-gray-100 dark:bg-[#272727] dark:border-gray-600">
-          <div className="px-6 pt-4">
+      <MobilePageContainer>
+        <div className="py-4">
+          <div className="max-w-4xl mx-auto bg-green-50 shadow-lg rounded-2xl overflow-hidden border border-gray-100 dark:bg-[#272727] dark:border-gray-600">
+            <div className="px-4 md:px-6 pt-4">
             <button
               onClick={() => router.back()}
               className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition"
@@ -261,13 +263,18 @@ export default function ProfilePage() {
             </div>
           </div>
         </div>
-      </div>
+        </div>
+      </MobilePageContainer>
     );
   }
 
   // Own profile view
   if (loading || infoLoading)
-    return <ProfileSkeleton />;
+    return (
+      <MobilePageContainer>
+        <ProfileSkeleton />
+      </MobilePageContainer>
+    );
 
   const displayName = formatName(userinfo) || userinfo?.display_name;
 
@@ -288,8 +295,9 @@ export default function ProfilePage() {
   const shortFormatted = formatBio(shortRaw);
 
   return (
-    <div className="min-h-[calc(100vh-122px)] py-4 px-2">
-      <div className="max-w-4xl mx-auto bg-green-50 shadow-lg rounded-2xl overflow-hidden border border-gray-100 dark:bg-[#272727] dark:border-gray-600">
+    <MobilePageContainer>
+      <div className="py-4">
+        <div className="max-w-4xl mx-auto bg-green-50 shadow-lg rounded-2xl overflow-hidden border border-gray-100 dark:bg-[#272727] dark:border-gray-600">
 
         {/* HEADER WITH BIO LABEL */}
         <div className="bg-gradient-to-r from-green-700 to-green-500 relative px-6 pb-16 pt-4 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 sm:pb-4">
@@ -402,6 +410,7 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </MobilePageContainer>
   );
 }

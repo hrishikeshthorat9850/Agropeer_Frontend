@@ -12,6 +12,7 @@ import Pagination from "@/components/ui/Pagination";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { PostSkeleton } from "@/components/skeletons";
 import { supabase } from "@/lib/supabaseClient";
+import MobilePageContainer from "@/components/mobile/MobilePageContainer";
 
 const ClientModalWrapper = dynamic(() => import("@/components/ui/post/ClientModalWrapper"), {
   loading: () => null,
@@ -110,110 +111,114 @@ export default function PostsPage() {
   if (postId) {
     if (postLoading) {
       return (
-        <div className="min-h-[calc(100vh-122px)] flex items-center justify-center">
-          <LoadingSpinner />
-        </div>
+        <MobilePageContainer>
+          <div className="min-h-screen flex items-center justify-center py-20">
+            <LoadingSpinner />
+          </div>
+        </MobilePageContainer>
       );
     }
 
     if (postError || !selectedPost) {
       return (
-        <div className="min-h-[calc(100vh-122px)] flex items-center justify-center">
-          <div className="text-center">
-            <h2 className="text-2xl font-bold text-farm-800 mb-2">Post Not Found</h2>
-            <p className="text-farm-600 mb-4">{postError || "The post you're looking for doesn't exist."}</p>
-            <button
-              onClick={() => router.push("/posts")}
-              className="px-4 py-2 bg-farm-500 text-white rounded-lg hover:bg-farm-600 transition-colors"
-            >
-              Back to Posts
-            </button>
+        <MobilePageContainer>
+          <div className="min-h-screen flex items-center justify-center py-20">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-farm-800 dark:text-white mb-2">Post Not Found</h2>
+              <p className="text-farm-600 dark:text-gray-300 mb-4">{postError || "The post you're looking for doesn't exist."}</p>
+              <button
+                onClick={() => router.push("/posts")}
+                className="px-6 py-3 bg-farm-500 text-white rounded-lg hover:bg-farm-600 transition-colors font-semibold"
+              >
+                Back to Posts
+              </button>
+            </div>
           </div>
-        </div>
+        </MobilePageContainer>
       );
     }
 
     return (
-      <div className="min-h-[calc(100vh-122px)] pt-8 pb-12">
-        <div className="w-full max-w-2xl mx-auto px-4">
-          <Posts post={selectedPost} idx={0} />
-          <Suspense fallback={null}>
-            <ClientModalWrapper post={selectedPost} onUpdated={handlePostUpdated} />
-          </Suspense>
+      <MobilePageContainer>
+        <div className="py-4">
+          <div className="w-full max-w-2xl mx-auto">
+            <Posts post={selectedPost} idx={0} />
+            <Suspense fallback={null}>
+              <ClientModalWrapper post={selectedPost} onUpdated={handlePostUpdated} />
+            </Suspense>
+          </div>
         </div>
-      </div>
+      </MobilePageContainer>
     );
   }
 
   // List view
   return (
     <ErrorBoundary>
-      <div className="min-h-[calc(100vh-122px)] pt-8 pb-12">
-        <div className="w-full max-w-4xl mx-auto">
-          <div className="px-4">
-            {/* Header */}
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-8"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h1 className="text-3xl md:text-4xl font-display font-bold text-farm-900 mb-2">
-                    All Posts
-                  </h1>
-                  <p className="text-farm-600 text-lg">
-                    Discover posts from farmers across the community
-                  </p>
-                </div>
-
-                {/* Total Posts */}
-                <div className="flex items-center gap-2 text-sm font-semibold text-farm-700 bg-farm-50 px-4 py-2 rounded-full">
-                  <FaUsers className="w-4 h-4" />
-                  <span>{pagination.total} posts</span>
-                </div>
+      <MobilePageContainer>
+        <div className="py-4">
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6"
+          >
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+              <div>
+                <h1 className="text-2xl md:text-3xl font-display font-bold text-farm-900 dark:text-white mb-2">
+                  All Posts
+                </h1>
+                <p className="text-farm-600 dark:text-gray-300 text-base">
+                  Discover posts from farmers across the community
+                </p>
               </div>
 
-              {/* Add / Close Button BELOW TOTAL POSTS */}
-              <div className="mt-4 w-full">
-                {!isCreating ? (
-                  <button
-                    onClick={() => setIsCreating(true)}
-                    className="w-full md:w-auto bg-farm-700 text-white px-4 py-3 rounded-full shadow hover:bg-farm-800 transition flex items-center justify-center gap-2"
-                  >
-                    <FaPlus className="w-4 h-4" /> Add Post
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => setIsCreating(false)}
-                    className="w-full md:w-auto bg-red-600 text-white px-4 py-3 rounded-full shadow hover:bg-red-700 transition flex items-center justify-center gap-2"
-                  >
-                    Close
-                  </button>
-                )}
+              {/* Total Posts */}
+              <div className="flex items-center gap-2 text-sm font-semibold text-farm-700 dark:text-farm-300 bg-farm-50 dark:bg-farm-900/30 px-4 py-2 rounded-full">
+                <FaUsers className="w-4 h-4" />
+                <span>{pagination.total} posts</span>
               </div>
+            </div>
 
-              {/* Post Creation Form */}
-              {isCreating && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mt-6 mb-10"
+            {/* Add / Close Button */}
+            <div className="mt-4 w-full">
+              {!isCreating ? (
+                <button
+                  onClick={() => setIsCreating(true)}
+                  className="w-full md:w-auto bg-farm-700 text-white px-6 py-3 rounded-full shadow-lg hover:bg-farm-800 transition flex items-center justify-center gap-2 font-semibold active:scale-95"
                 >
-                  <PostCreation
-                    onSuccess={() => {
-                      setIsCreating(false);
-                      refreshPosts();
-                    }}
-                  />
-                </motion.div>
+                  <FaPlus className="w-4 h-4" /> Add Post
+                </button>
+              ) : (
+                <button
+                  onClick={() => setIsCreating(false)}
+                  className="w-full md:w-auto bg-red-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-red-700 transition flex items-center justify-center gap-2 font-semibold active:scale-95"
+                >
+                  Close
+                </button>
               )}
-            </motion.div>
-          </div>
+            </div>
+
+            {/* Post Creation Form */}
+            {isCreating && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-6 mb-6"
+              >
+                <PostCreation
+                  onSuccess={() => {
+                    setIsCreating(false);
+                    refreshPosts();
+                  }}
+                />
+              </motion.div>
+            )}
+          </motion.div>
 
           {/* Loading State */}
           {loading && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-6">
               <PostSkeleton count={5} />
             </motion.div>
           )}
@@ -223,14 +228,17 @@ export default function PostsPage() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="farm-card p-8 text-center mb-8"
+              className="bg-white dark:bg-gray-800 rounded-2xl p-8 text-center mb-6 shadow-lg"
             >
               <div className="text-6xl mb-4">⚠️</div>
-              <h3 className="text-xl font-semibold text-farm-700 mb-2">
+              <h3 className="text-xl font-semibold text-farm-700 dark:text-white mb-2">
                 Something went wrong
               </h3>
-              <p className="text-farm-600 mb-4">{error}</p>
-              <button onClick={refreshPosts} className="farm-button">
+              <p className="text-farm-600 dark:text-gray-300 mb-4">{error}</p>
+              <button 
+                onClick={refreshPosts} 
+                className="px-6 py-3 bg-farm-500 text-white rounded-lg hover:bg-farm-600 transition-colors font-semibold active:scale-95"
+              >
                 Try Again
               </button>
             </motion.div>
@@ -243,25 +251,24 @@ export default function PostsPage() {
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="farm-card p-12 text-center"
+                  className="bg-white dark:bg-gray-800 rounded-2xl p-12 text-center shadow-lg"
                 >
                   <div className="text-6xl mb-4">🌱</div>
-                  <h3 className="text-xl font-semibold text-farm-700 mb-2">
+                  <h3 className="text-xl font-semibold text-farm-700 dark:text-white mb-2">
                     No posts yet
                   </h3>
-                  <p className="text-farm-600">
+                  <p className="text-farm-600 dark:text-gray-300">
                     Be the first to share something amazing from your farm!
                   </p>
                 </motion.div>
               ) : (
-                <div className="space-y-6 mb-8">
+                <div className="space-y-4 mt-6">
                   {posts.map((post, idx) => (
                     <motion.div
                       key={post.id}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: idx * 0.05, duration: 0.4 }}
-                      className="hover-lift"
                     >
                       <Posts
                         post={post}
@@ -279,7 +286,7 @@ export default function PostsPage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.3 }}
-                  className="mt-8"
+                  className="mt-8 mb-4"
                 >
                   <Pagination
                     currentPage={pagination.page}
@@ -293,7 +300,7 @@ export default function PostsPage() {
             </>
           )}
         </div>
-      </div>
+      </MobilePageContainer>
     </ErrorBoundary>
   );
 }

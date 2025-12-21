@@ -16,6 +16,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { LOCALE_NAMES } from "@/lib/locales";
 import useToast from "@/hooks/useToast";
 import AccountDeleteModal from "@/components/ui/AccountDeleteModal";
+import MobilePageContainer from "@/components/mobile/MobilePageContainer";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -67,8 +68,9 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-122px)] py-8 px-2 flex flex-col items-center">
-      <div className="max-w-3xl w-full bg-white dark:bg-[#272727] shadow-lg rounded-2xl p-6 border border-green-100 dark:border-gray-800">
+    <MobilePageContainer>
+      <div className="py-4">
+        <div className="max-w-3xl w-full mx-auto bg-white dark:bg-[#272727] shadow-lg rounded-2xl p-4 md:p-6 border border-green-100 dark:border-gray-800">
         
         {/* Header */}
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
@@ -198,11 +200,13 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {/* Account Delete Modal */}
-      <AccountDeleteModal
-        isOpen={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-      />
-    </div>
+        {/* Account Delete Modal */}
+        <AccountDeleteModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+        />
+        </div>
+      </div>
+    </MobilePageContainer>
   );
 }

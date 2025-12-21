@@ -5,6 +5,7 @@ import useSWR from "swr";
 import debounce from "lodash.debounce";
 import dynamic from "next/dynamic";
 import MarketFilters from "@/components/market-prices/MarketFilters";
+import MobilePageContainer from "@/components/mobile/MobilePageContainer";
 
 // Lazy load MarketList to improve initial render
 const MarketList = dynamic(() => import("@/components/market-prices/MarketList"), {
@@ -151,8 +152,9 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   const totalPages = Math.ceil(total / limit);
 
   return (
-    <div className="min-h-screen py-8 px-2">
-      <div className="max-w-7xl mx-auto">
+    <MobilePageContainer>
+      <div className="py-4">
+        <div className="max-w-7xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-5xl font-bold text-gray-800 mb-3">
             📊 Market Prices
@@ -239,7 +241,8 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
             Next →
           </button>
         </div>
+        </div>
       </div>
-    </div>
+    </MobilePageContainer>
   );
 }

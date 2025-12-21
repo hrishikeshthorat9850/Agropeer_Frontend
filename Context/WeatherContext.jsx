@@ -9,7 +9,7 @@ export function WeatherProvider({ children }) {
   const getWeather = async (latitude, longitude) => {
     // Prevent multiple simultaneous calls
     if (loading) {
-      return weather; // Return existing weather if already loading
+      return weather;
     }
 
     try {

@@ -3,7 +3,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import AppProviders from "./AppProviders";
-import { StatusBar } from "@capacitor/status-bar";
+import { StatusBar, Style } from "@capacitor/status-bar";
 import Navbar from "../components/Navbar";
 import TopLoader from "../components/TopLoader";
 import OfflineBanner from "../components/OfflineBanner";
@@ -19,8 +19,10 @@ import ToastContainer from "@/components/ui/toast/ToastContainer";
 import MobileNavbar from "@/components/mobile/MobileNavbar";
 import MobileBottomNav from "@/components/mobile/MobileBottomNav";
 import MobileSidebar from "@/components/mobile/MobileSidebar";
+import MobilePageLayout from "@/components/mobile/MobilePageLayout";
 
 import { useState, useEffect } from "react";
+import { Capacitor } from "@capacitor/core";
 
 // 🔥 ADD YOUR POPUP MODAL HERE
 import PopupModal from "@/components/popup/PopupModal";
@@ -46,25 +48,40 @@ export default function ClientLayout({ children }) {
     return () => window.removeEventListener("resize", update);
   }, []);
 
-  // ⭐ FIX STATUS BAR OVERLAY HERE
+  // Add Capacitor platform class for Android scrollbar hiding
   useEffect(() => {
-    StatusBar.setOverlaysWebView({ overlay: false }).catch(() => {});
+    if (Capacitor.isNativePlatform()) {
+      const platform = Capacitor.getPlatform();
+      document.documentElement.classList.add(`capacitor-platform-${platform}`);
+      document.body.classList.add(`capacitor-platform-${platform}`);
+      return () => {
+        document.documentElement.classList.remove(`capacitor-platform-${platform}`);
+        document.body.classList.remove(`capacitor-platform-${platform}`);
+      };
+    }
   }, []);
-  
+
+  // ⭐ FIX STATUS BAR - Make it overlay and match navbar color
   useEffect(() => {
-  async function applyStatusBar() {
-    try {
-      // Make status bar dark icons (black)
-      await StatusBar.setStyle({ style: Style.Dark });
+    async function applyStatusBar() {
+      try {
+        if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android') {
+          // Set status bar to overlay the webview so navbar shows through
+          await StatusBar.setOverlaysWebView({ overlay: true });
+          
+          // Set status bar background to match navbar gradient (green)
+          await StatusBar.setBackgroundColor({ color: "#2E7D32" });
+          
+          // Use light style (white icons) for dark green navbar background
+          await StatusBar.setStyle({ style: Style.Light });
+        }
+      } catch (e) {
+        console.error('StatusBar error:', e);
+      }
+    }
 
-      // Set a visible background color (slightly darker green)
-      await StatusBar.setBackgroundColor({ color: "#E1F5E0" });
-      // You can change this color based on your theme
-    } catch (e) {}
-  }
-
-  applyStatusBar();
-}, []);
+    applyStatusBar();
+  }, []);
   // 🔥 Mobile redirect from /home
   useEffect(() => {
     if (isMobile && pathname.startsWith("/home")) {
@@ -115,22 +132,23 @@ export default function ClientLayout({ children }) {
             <MobileNavbar onOpenAI={() => setAiOpen(true)} />
           )}
 
-          {/* <main
-            className={`w-full ${
-              isMobile && showNavbar
-                ? "pt-[calc(56px+env(safe-area-inset-top,0))] pb-[calc(70px+env(safe-area-inset-bottom,0))]"
-                : ""
-            }`}
-          > */}
+          {/* Main Content Area */}
           <main
-            className={`w-full ${
-              isMobile && showNavbar
-                ? "pb-[calc(70px+env(safe-area-inset-bottom,0))]"
-                : ""
-            }`}
+            className={`
+              w-full min-h-screen
+              ${isMobile ? "" : computedPadding}
+            `}
           >
-            <div className={`flex flex-col ${computedPadding}`}>
-              <PageTransition>{children}</PageTransition>
+            <div className="flex flex-col w-full">
+              <PageTransition>
+                {isMobile && Capacitor.isNativePlatform() ? (
+                  <MobilePageLayout>
+                    {children}
+                  </MobilePageLayout>
+                ) : (
+                  children
+                )}
+              </PageTransition>
 
               {!isMobile && showNavbar && !isChatsPage && <Footer />}
             </div>
@@ -157,7 +175,7 @@ export default function ClientLayout({ children }) {
 
       <NotificationHandler />
       <AndroidNotificationHandler />
-      <ToastContainer position="top-right" maxToasts={5} />
+      <ToastContainer position="top-right mt-10" maxToasts={5} />
     </AppProviders>
   );
 }

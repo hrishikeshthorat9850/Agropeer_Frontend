@@ -8,6 +8,7 @@ import { FaRegBookmark, FaBox } from "react-icons/fa";
 import SavedPosts from "@/components/favorites/SavedPosts";
 import SavedProducts from "@/components/favorites/SavedProducts";
 import { PostSkeleton, ProductSkeleton } from "@/components/skeletons";
+import MobilePageContainer from "@/components/mobile/MobilePageContainer";
 
 export default function FavoritesPage() {
   const [loading, setLoading] = useState(false);
@@ -131,7 +132,9 @@ export default function FavoritesPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-122px)] flex flex-col items-center py-10 px-2 sm:px-6 md:px-10">
+    <MobilePageContainer>
+      <div className="py-4">
+        <div className="w-full max-w-4xl mx-auto">
       {/* 🌿 Animated Navbar */}
       <div className="relative flex justify-center items-center mb-10 bg-white shadow-lg rounded-full px-2 py-1.5 sm:px-3 sm:py-2 w-full max-w-md dark:bg-[#272727]">
         <div className="flex relative w-full justify-between">
@@ -198,8 +201,8 @@ export default function FavoritesPage() {
             )}
           </motion.div>
         </AnimatePresence>
+        </div>
       </div>
-
-    </div>
+    </MobilePageContainer>
   );
 }

@@ -15,6 +15,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { usePagination } from "@/hooks/usePagination";
 import { apiRequest } from "@/utils/apiHelpers";
 import { formatDistanceToNow } from "date-fns";
+import MobilePageContainer from "@/components/mobile/MobilePageContainer";
 
 export default function NewsPage() {
   const router = useRouter();
@@ -201,8 +202,9 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     return (
       <ErrorBoundary>
-        <div className="">
-          <div className="md:hidden px-4 mt-2 mb-8">
+        <MobilePageContainer>
+          <div className="py-4">
+            <div className="md:hidden px-4 mb-6">
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -398,7 +400,8 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
               </motion.div>
             )}
           </div>
-        </div>
+          </div>
+        </MobilePageContainer>
       </ErrorBoundary>
     );
   }
@@ -406,7 +409,8 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   // List view
   return (
     <ErrorBoundary>
-      <div className="min-h-[calc(100vh-122px)] pt-6 pb-12">
+      <MobilePageContainer>
+        <div className="py-4">
 
         {/* ================= MOBILE HEADER (Premium UI) ================= */}
         <div className="md:hidden px-4 mb-8">
@@ -522,7 +526,8 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
             </motion.div>
           )}
         </div>
-      </div>
+        </div>
+      </MobilePageContainer>
     </ErrorBoundary>
   );
 }

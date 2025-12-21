@@ -9,6 +9,7 @@ import { FaBell, FaCheck, FaCheckDouble, FaTrashAlt } from "react-icons/fa";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import useToast from "@/hooks/useToast";
+import MobilePageContainer from "@/components/mobile/MobilePageContainer";
 export default function NotificationsPage() {
   const router = useRouter();
   const { user, loading: authLoading } = useLogin();
@@ -134,12 +135,14 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   // -----------------------------------------------------
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-neutral-900">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-farm-600 dark:border-farm-500 mx-auto"></div>
-          <p className="mt-4 text-farm-600 dark:text-farm-400">Loading...</p>
+      <MobilePageContainer>
+        <div className="min-h-screen flex items-center justify-center py-20">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-farm-600 dark:border-farm-500 mx-auto"></div>
+            <p className="mt-4 text-farm-600 dark:text-farm-400">Loading...</p>
+          </div>
         </div>
-      </div>
+      </MobilePageContainer>
     );
   }
 
@@ -148,19 +151,21 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   // -----------------------------------------------------
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4 bg-white dark:bg-neutral-900">
-        <div className="text-center max-w-md">
-          <FaBell className="text-6xl text-farm-400 dark:text-farm-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-farm-800 dark:text-farm-200 mb-2">Please Login</h2>
-          <p className="text-farm-600 dark:text-farm-400 mb-6">You need to be logged in to view notifications.</p>
-          <Link
-            href="/login"
-            className="inline-block px-6 py-3 bg-farm-600 dark:bg-farm-500 text-white rounded-xl hover:bg-farm-700 dark:hover:bg-farm-600 transition-colors font-semibold"
-          >
-            Go to Login
-          </Link>
+      <MobilePageContainer>
+        <div className="min-h-screen flex items-center justify-center py-20">
+          <div className="text-center max-w-md">
+            <FaBell className="text-6xl text-farm-400 dark:text-farm-500 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-farm-800 dark:text-farm-200 mb-2">Please Login</h2>
+            <p className="text-farm-600 dark:text-farm-400 mb-6">You need to be logged in to view notifications.</p>
+            <Link
+              href="/login"
+              className="inline-block px-6 py-3 bg-farm-600 dark:bg-farm-500 text-white rounded-xl hover:bg-farm-700 dark:hover:bg-farm-600 transition-colors font-semibold active:scale-95"
+            >
+              Go to Login
+            </Link>
+          </div>
         </div>
-      </div>
+      </MobilePageContainer>
     );
   }
 
@@ -169,12 +174,13 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   // -----------------------------------------------------
 
   return (
-    <div className="max-w-4xl mx-auto pt-2 h-[calc(100vh-120px)] flex flex-col overflow-hidden">
+    <MobilePageContainer>
+      <div className="max-w-4xl mx-auto py-4 min-h-screen flex flex-col">
 
       {/* -------------------------------------------------- */}
       {/* STICKY HEADER */}
       {/* -------------------------------------------------- */}
-      <div className="sticky top-0 z-20 bg-white/80 dark:bg-neutral-900/80">
+      <div className="sticky top-0 z-20 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-md">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -458,6 +464,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </MobilePageContainer>
   );
 }

@@ -48,7 +48,7 @@ export default function UserSidebar({ onClose } = {}) {
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: 100, opacity: 0 }}
       transition={{ type: "spring", stiffness: 80 }}
-      className="w-80 bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100 flex flex-col"
+      className="w-80 bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100 flex flex-col z-[9999]"
     >
       {/* Header */}
       {user?.id ? (
@@ -86,7 +86,7 @@ export default function UserSidebar({ onClose } = {}) {
               {t("login")}
             </span>
           </Link>
-          <Link href="/signup" className="sunset-gradient text-white font-semibold px-8 py-3 rounded-xl shadow-sunset hover:shadow-glow-sunset transition-all duration-300 transform hover:scale-105 group">
+          <Link href="/signup" className="sunset-gradient bg-red-500 text-white font-semibold px-8 py-3 rounded-xl shadow-sunset hover:shadow-glow-sunset transition-all duration-300 transform hover:scale-105 group">
             <span className="flex items-center gap-2">
               <FaSeedling className="group-hover:animate-bounce" />
               {t("signup")}
