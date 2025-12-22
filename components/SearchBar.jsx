@@ -82,7 +82,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     return (
       <div className="relative w-full" ref={searchRef}>
         <form
-          className="w-full text-green-950"
+          className="w-full"
           onSubmit={(e) => {
             e.preventDefault();
             handleSubmit();
@@ -97,26 +97,46 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                 setIsFocused(true);
                 setShowSuggestions(true);
               }}
+              onBlur={() => {
+                // Delay to allow click events on suggestions
+                setTimeout(() => setIsFocused(false), 200);
+              }}
               type="text"
-              placeholder="Search posts, farmers, or tags..."
-              className="w-full pl-10 pr-10 py-2 rounded-full border-0 focus:outline-none text-sm transition-all duration-300"
+              placeholder="Search..."
+              className={`w-full pl-9 pr-8 py-1.5 rounded-full border-0 focus:outline-none text-sm transition-all duration-300 ${
+                isFocused ? 'shadow-lg' : 'shadow-sm'
+              }`}
               style={{
-                background: "linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.8) 100%)",
-                backdropFilter: "blur(20px)",
-                boxShadow: "inset 0 2px 8px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.1)",
-                border: "1px solid rgba(255,255,255,0.3)",
+                background: isFocused 
+                  ? "rgba(255,255,255,0.98)" 
+                  : "rgba(255,255,255,0.95)",
+                backdropFilter: "blur(12px)",
+                boxShadow: isFocused
+                  ? "0 4px 12px rgba(0,0,0,0.15), inset 0 1px 2px rgba(255,255,255,0.8)"
+                  : "0 2px 6px rgba(0,0,0,0.1), inset 0 1px 2px rgba(255,255,255,0.6)",
+                border: isFocused 
+                  ? "1px solid rgba(72, 236, 80, 0.4)" 
+                  : "1px solid rgba(255,255,255,0.5)",
+                fontSize: "14px",
+                fontWeight: "500",
+                color: "#1a1a1a",
               }}
             />
-            <button type="button" className="absolute left-3 top-1/2 -translate-y-1/2 text-farm-500">
-              <FaSearch className="w-4 h-4" />
+            <button 
+              type="button" 
+              className="absolute left-2.5 top-1/2 -translate-y-1/2 text-green-700 opacity-80 active:opacity-100 transition-opacity"
+              aria-label="Search"
+            >
+              <FaSearch className="w-3.5 h-3.5" />
             </button>
             {q && (
               <button
                 type="button"
                 onClick={clearSearch}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-farm-400 hover:text-farm-600"
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 active:scale-95 transition-all p-0.5 rounded-full hover:bg-gray-100"
+                aria-label="Clear search"
               >
-                <FaTimes className="w-4 h-4" />
+                <FaTimes className="w-3 h-3" />
               </button>
             )}
           </div>
@@ -126,11 +146,15 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
         <AnimatePresence>
           {showSuggestions && (q || recentSearches.length > 0 || searchresults.length > 0) && (
             <motion.div
-              initial={{ opacity: 0, y: -10, scale: 0.95 }}
+              initial={{ opacity: 0, y: -8, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -10, scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-              className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl border border-farm-200 dark:border-neutral-700 overflow-hidden z-50 max-h-96 overflow-y-auto"
+              exit={{ opacity: 0, y: -8, scale: 0.98 }}
+              transition={{ duration: 0.15, ease: "easeOut" }}
+              className="absolute top-full left-0 right-0 mt-1.5 bg-white dark:bg-neutral-800 rounded-xl shadow-2xl border border-gray-200 dark:border-neutral-700 overflow-hidden z-[200] max-h-[70vh] overflow-y-auto"
+              style={{
+                backdropFilter: "blur(20px)",
+                boxShadow: "0 10px 40px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05)",
+              }}
             >
               {/* Search Results */}
               {searchresults.length > 0 && q && (
@@ -226,7 +250,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                           key={index}
                           type="button"
                           onClick={handleResultClick}
-                          className="w-full text-left p-3 rounded-lg hover:bg-farm-50 dark:hover:bg-neutral-700 transition-colors flex items-center gap-3 cursor-pointer"
+                          className="w-full text-left p-2.5 rounded-lg active:bg-green-50 dark:active:bg-neutral-700 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors flex items-center gap-2.5 cursor-pointer touch-manipulation"
                         >
                           <span className="text-lg flex-shrink-0">
                             {resultType === 'post' || resultType === 'posts' ? '📝' : 
@@ -288,7 +312,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                         key={index}
                         type="button"
                         onClick={() => handleSuggestionClick({ text: search })}
-                        className="w-full text-left p-2 rounded-lg hover:bg-farm-50 dark:hover:bg-neutral-700 transition-colors text-sm text-farm-700 dark:text-farm-300"
+                        className="w-full text-left p-2.5 rounded-lg active:bg-green-50 dark:active:bg-neutral-700 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors text-sm text-gray-700 dark:text-gray-300 touch-manipulation"
                       >
                         {search}
                       </button>
@@ -312,7 +336,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                           key={i}
                           type="button"
                           onClick={() => handleSuggestionClick(s)}
-                          className="w-full text-left p-3 rounded-lg hover:bg-farm-50 dark:hover:bg-neutral-700 flex items-center gap-3"
+                          className="w-full text-left p-2.5 rounded-lg active:bg-green-50 dark:active:bg-neutral-700 hover:bg-gray-50 dark:hover:bg-neutral-700 flex items-center gap-2.5 touch-manipulation transition-colors"
                         >
                           <span className="text-lg">{s.icon}</span>
                           <div>

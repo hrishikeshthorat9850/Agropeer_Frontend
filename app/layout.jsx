@@ -3,6 +3,7 @@ import "./globals.css";
 import { Geist, Geist_Mono } from "next/font/google";
 import ClientLayout from "./LayoutClient";
 import AppShell from "@/components/mobile/AppShell";
+import { MobileOAuthHandler } from "@/Mobile/MobileOAuthHandler";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -49,7 +50,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased `}>
-        <ClientLayout><AppShell>{children}</AppShell></ClientLayout>
+        <ClientLayout><AppShell><MobileOAuthHandler />{children}</AppShell></ClientLayout>
       </body>
     </html>
   );

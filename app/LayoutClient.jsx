@@ -9,7 +9,7 @@ import TopLoader from "../components/TopLoader";
 import OfflineBanner from "../components/OfflineBanner";
 import PageTransition from "../components/PageTransition";
 import Footer from "../components/home/Footer";
-
+import { Browser } from "@capacitor/browser";
 import AIChatbotButton from "@/components/chatbot/AIChatbotButton";
 import AIChatWindow from "@/components/chatbot/AIChatWindow";
 import NotificationHandler from "@/components/NotificationHandler";
@@ -26,6 +26,8 @@ import { Capacitor } from "@capacitor/core";
 
 // 🔥 ADD YOUR POPUP MODAL HERE
 import PopupModal from "@/components/popup/PopupModal";
+import { App } from "@capacitor/app";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function ClientLayout({ children }) {
   const pathname = usePathname();
@@ -39,6 +41,53 @@ export default function ClientLayout({ children }) {
   const noUIRoutes = ["/login", "/signup", "/register", "/admin/login", "/forgot-password"];
   const showNavbar = !noUIRoutes.includes(pathname);
   const isChatsPage = pathname.startsWith("/chats");
+
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+
+    const sub = App.addListener("appUrlOpen", async ({ url }) => {
+      console.log("🔗 Deep link received:", url);
+
+      if (!url.includes("login-callback")) return;
+
+      // Convert scheme URL to parsable URL
+      const parsed = new URL(
+        url.replace("agropeer://", "https://callback/")
+      );
+
+      const hashParams = new URLSearchParams(parsed.hash.substring(1));
+
+      const access_token = hashParams.get("access_token");
+      const refresh_token = hashParams.get("refresh_token");
+      const expires_in = hashParams.get("expires_in");
+
+      if (!access_token || !refresh_token) {
+        console.error("❌ Tokens missing in hash");
+        return;
+      }
+
+      const { error } = await supabase.auth.setSession({
+        access_token,
+        refresh_token,
+      });
+
+      if (error) {
+        console.error("❌ setSession failed:", error);
+        window.location.replace("/login?error=oauth_failed");
+        return;
+      }
+
+      try {
+        await Browser.close();
+      } catch {}
+
+      window.location.replace("/home");
+    });
+
+    return () => {
+      sub.then((h) => h.remove());
+    };
+  }, []);
 
   // Detect mobile screen
   useEffect(() => {
@@ -135,7 +184,7 @@ export default function ClientLayout({ children }) {
           {/* Main Content Area */}
           <main
             className={`
-              w-full min-h-screen
+              w-full min-h-screen mt-[-33px]
               ${isMobile ? "" : computedPadding}
             `}
           >

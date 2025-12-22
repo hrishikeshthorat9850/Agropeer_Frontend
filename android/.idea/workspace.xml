@@ -11,8 +11,28 @@
   <component name="ChangeListManager">
     <list default="true" id="d2182f33-f1f9-45be-993c-add9d8d08897" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/capacitor.config.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/assets/capacitor.config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/capacitor.build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/capacitor.build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/capacitor.plugins.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/assets/capacitor.plugins.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/capacitor.settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/capacitor.settings.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/LayoutClient.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../app/LayoutClient.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/auth/callback/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../app/auth/callback/page.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/../app/globals.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/layout.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../app/layout.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/login/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../app/login/page.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/signup/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../app/signup/page.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../capacitor.config.json" beforeDir="false" afterPath="$PROJECT_DIR$/../capacitor.config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/SearchBar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/SearchBar.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/SignupForm.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/SignupForm.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/login/LoginForm.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/login/LoginForm.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/login/OAuthButtons.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/login/OAuthButtons.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/mobile/MobileHome.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/mobile/MobileHome.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/mobile/MobileNavbar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/mobile/MobileNavbar.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/mobile/MobileSidebar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/mobile/MobileSidebar.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,7 +42,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=W8ORGUZ5QKTOHYU8)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\skkk\.android\avd\Pixel_6.avd)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -47,20 +67,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Android App.app.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "cf.first.check.clang-format": "false",
-    "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "main-clean",
-    "kotlin-language-version-configured": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Android App.app.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Merging main-clean&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
       <module name="android.app" />
