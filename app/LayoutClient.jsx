@@ -23,7 +23,7 @@ import MobilePageLayout from "@/components/mobile/MobilePageLayout";
 
 import { useState, useEffect } from "react";
 import { Capacitor } from "@capacitor/core";
-
+import { useKeyboardOpen } from "@/Mobile/hooks/useKeyboardOpen";
 // 🔥 ADD YOUR POPUP MODAL HERE
 import PopupModal from "@/components/popup/PopupModal";
 import { App } from "@capacitor/app";
@@ -32,6 +32,8 @@ import { supabase } from "@/lib/supabaseClient";
 export default function ClientLayout({ children }) {
   const pathname = usePathname();
   const router = useRouter();
+  const keyboardOpen = useKeyboardOpen();
+
   const [isMobile, setIsMobile] = useState(false);
   const [aiOpen, setAiOpen] = useState(false);
 
@@ -204,9 +206,10 @@ export default function ClientLayout({ children }) {
           </main>
 
           {/* Mobile Bottom Nav */}
-          {isMobile && showNavbar && (
+          {isMobile && showNavbar && !keyboardOpen ?
+          (
             <MobileBottomNav onAI={() => setAiOpen(true)} />
-          )}
+          ) : null}
 
           {isMobile && <MobileSidebar />}
 

@@ -584,7 +584,7 @@ const pickNumberOrFallback = (value, fallback) => {
                   </select>
                 </div>
 
-                <div>
+                {/* <div>
                   <label className="block text-sm font-semibold text-farm-700 mb-2">
                     Latitude (optional)
                   </label>
@@ -612,7 +612,7 @@ const pickNumberOrFallback = (value, fallback) => {
                     placeholder="e.g., 75.7139"
                     className="w-full p-3 rounded-xl border text-farm-500 border-farm-200 focus:outline-none focus:ring-2 focus:ring-farm-400"
                   />
-                </div>
+                </div> */}
 
                 <div>
                   <label className="block text-sm font-semibold text-farm-700 mb-2">

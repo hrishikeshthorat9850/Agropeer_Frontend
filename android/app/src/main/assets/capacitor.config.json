@@ -2,7 +2,7 @@
 	"appId": "com.hrishikesh.agrogram",
 	"appName": "AgroGram",
 	"server": {
-		"url": "http://192.168.31.74:3000"
+		"url": "http://10.194.199.161:3000"
 	},
 	"plugins": {
 		"SplashScreen": {
@@ -20,7 +20,7 @@
 			"backgroundColor": "#000000"
 		},
 		"Keyboard": {
-			"resize": "body",
+			"resize": "native",
 			"style": "dark",
 			"resizeOnFullScreen": true
 		},

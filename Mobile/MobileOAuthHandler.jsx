@@ -15,12 +15,15 @@ export function MobileOAuthHandler() {
       console.log("URL:", url);
 
       // Check if this is an OAuth callback
-      const isOAuthCallback = 
-        url.includes("auth/callback") || 
+      const isOAuthCallback =
+        url.includes("auth/callback") ||
         url.includes("login-callback") ||
         url.includes("#access_token") ||
         url.includes("#code=") ||
         url.includes("?code=");
+
+      // 🛑 Critical: Ignore reset-password links (handled by MobileResetPasswordHandler)
+      if (url.includes("reset-password")) return;
 
       if (isOAuthCallback) {
         try {
@@ -38,7 +41,7 @@ export function MobileOAuthHandler() {
           let cleanUrl = url;
           let hash = "";
           let searchParams = "";
-          
+
           // Handle custom scheme URLs (agropeer://auth/callback#access_token=...)
           if (url.startsWith("agropeer://")) {
             cleanUrl = url.replace("agropeer://", "https://");
@@ -113,7 +116,7 @@ export function MobileOAuthHandler() {
               window.location.hash = `#${hash}`;
               await new Promise(resolve => setTimeout(resolve, 300));
             }
-            
+
             // Try to get session (Supabase might have auto-parsed the hash)
             const { data: { session }, error: sessionError } = await supabase.auth.getSession();
             if (sessionError || !session) {

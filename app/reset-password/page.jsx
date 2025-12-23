@@ -8,6 +8,7 @@ import useToast from "@/hooks/useToast";
 export default function ResetPasswordPage() {
   const { showToast } = useToast();
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [status, setStatus] = useState("idle");
   const [message, setMessage] = useState("");
 
@@ -20,6 +21,13 @@ export default function ResetPasswordPage() {
       setStatus("error");
       setMessage("Password must be at least 6 characters.");
       showToast("error", "Password must be at least 6 characters.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setStatus("error");
+      setMessage("Passwords do not match.");
+      showToast("error", "Passwords do not match.");
       return;
     }
 
@@ -65,13 +73,26 @@ export default function ResetPasswordPage() {
             />
           </div>
 
+          <div>
+            <label className="block text-sm font-semibold text-farm-700 mb-2">
+              Confirm Password
+            </label>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="farm-input w-full text-farm-600"
+              placeholder="Confirm new password"
+              required
+            />
+          </div>
+
           {message && (
             <div
-              className={`rounded-lg p-3 text-center text-sm ${
-                status === "success"
+              className={`rounded-lg p-3 text-center text-sm ${status === "success"
                   ? "bg-green-50 border border-green-200 text-green-700"
                   : "bg-red-50 border border-red-200 text-red-600"
-              }`}
+                }`}
             >
               {message}
             </div>
@@ -80,9 +101,8 @@ export default function ResetPasswordPage() {
           <button
             type="submit"
             disabled={status === "loading"}
-            className={`w-full farm-button ${
-              status === "loading" ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+            className={`w-full farm-button ${status === "loading" ? "opacity-50 cursor-not-allowed" : ""
+              }`}
           >
             {status === "loading" ? "Updating..." : "Update Password"}
           </button>

@@ -22,7 +22,7 @@
       "backgroundColor": "#000000"
     },
     "Keyboard": {
-      "resize": "body",
+      "resize": "native",
       "style": "dark",
       "resizeOnFullScreen": true
     },

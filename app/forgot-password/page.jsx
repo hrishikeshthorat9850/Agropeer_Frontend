@@ -3,7 +3,7 @@ import { useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { FaEnvelope, FaCheckCircle } from "react-icons/fa";
+import { FaEnvelope, FaCheckCircle, FaArrowRight } from "react-icons/fa";
 import useToast from "@/hooks/useToast";
 
 export default function ForgotPasswordPage() {
@@ -25,14 +25,19 @@ export default function ForgotPasswordPage() {
     }
 
     try {
+      // Use the deep link scheme for Android
+      const redirectTo = "agropeer://reset-password";
+      console.log("Reset password redirect URL:", redirectTo);
+
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`,
+        redirectTo,
       });
 
       if (error) throw error;
+
       setStatus("success");
       setMessage("Reset link sent! Check your email.");
-      showToast("success", "Reset link sent! Check your email. 📧");
+      showToast("success", "Reset link sent! Check your email.");
     } catch (err) {
       setStatus("error");
       setMessage(err.message || "Something went wrong.");
@@ -41,21 +46,26 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-120px)] flex items-center justify-center farm-pattern">
+    <div className="min-h-[calc(100vh-120px)] flex items-center justify-center farm-pattern p-4">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.6 }}
-        className="w-full max-w-md farm-card p-8 mx-4 border-farm-500 shadow-xl"
+        className="w-full max-w-md farm-card p-8 mx-4 border-farm-500 shadow-xl bg-white rounded-xl"
       >
-        <h1 className="text-2xl font-bold text-farm-800 text-center mb-4">
-          Forgot Password
-        </h1>
-        <p className="text-center text-farm-600 mb-6">
-          Enter your registered email to get a reset link.
-        </p>
+        <div className="text-center mb-6">
+          <div className="bg-farm-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+            <FaEnvelope className="text-2xl text-farm-600" />
+          </div>
+          <h1 className="text-2xl font-bold text-farm-800">
+            Forgot Password
+          </h1>
+          <p className="text-farm-600 mt-2 text-sm">
+            Enter your registered email to receive a password reset link.
+          </p>
+        </div>
 
-        <form onSubmit={handleResetPassword} className="space-y-5">
+        <form onSubmit={handleResetPassword} className="space-y-6">
           <div>
             <label className="block text-sm font-semibold text-farm-700 mb-2">
               Email address
@@ -66,38 +76,38 @@ export default function ForgotPasswordPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="farm-input w-full text-farm-600"
+                className="farm-input w-full pl-4 text-farm-600"
                 required
               />
-              <FaEnvelope className="absolute right-3 top-1/2 -translate-y-1/2 text-farm-500" />
             </div>
           </div>
 
           {message && (
-            <div
-              className={`text-center rounded-lg p-3 text-sm ${
-                status === "success"
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`text-center rounded-lg p-3 text-sm flex items-center justify-center gap-2 ${status === "success"
                   ? "bg-green-50 border border-green-200 text-green-700"
                   : "bg-red-50 border border-red-200 text-red-600"
-              }`}
+                }`}
             >
-              {status === "success" && <FaCheckCircle className="inline mr-2" />}
+              {status === "success" && <FaCheckCircle />}
               {message}
-            </div>
+            </motion.div>
           )}
 
           <button
             type="submit"
             disabled={status === "loading"}
-            className={`w-full farm-button ${
-              status === "loading" ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+            className={`w-full farm-button py-3 flex items-center justify-center gap-2 ${status === "loading" ? "opacity-70 cursor-wait" : ""
+              }`}
           >
             {status === "loading" ? "Sending..." : "Send Reset Link"}
+            {status !== "loading" && <FaArrowRight />}
           </button>
         </form>
 
-        <div className="text-center mt-6">
+        <div className="text-center mt-8">
           <Link
             href="/login"
             className="text-sm font-medium text-farm-600 hover:text-farm-700 underline underline-offset-2 hover:decoration-farm-500 transition-all"
