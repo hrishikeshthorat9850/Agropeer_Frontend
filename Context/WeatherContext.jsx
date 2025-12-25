@@ -6,6 +6,7 @@ export function WeatherProvider({ children }) {
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  
   const getWeather = async (latitude, longitude) => {
     // Prevent multiple simultaneous calls
     if (loading) {

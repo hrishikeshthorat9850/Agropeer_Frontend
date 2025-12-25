@@ -25,10 +25,9 @@ import ScheduleTab from "./farmer-dashboard/ScheduleTab";
 const FarmerDashboard = () => {
   const { weather, loading: weatherLoading, getWeather, error: weatherError } = useWeather();
   const { position } = useGeolocation();
-  const { user, loading: authLoading,accessToken ,session} = useLogin();
+  const { user, loading: authLoading, accessToken, session } = useLogin();
   const [activeTab, setActiveTab] = useState("crops");
   const [selectedCrop, setSelectedCrop] = useState(null);
-  const [weatherData, setWeatherData] = useState(null);
   const [insightsData, setInsightsData] = useState(null);
   const [insightsLoading, setInsightsLoading] = useState(false);
   const [insightsError, setInsightsError] = useState(null);
@@ -36,8 +35,7 @@ const FarmerDashboard = () => {
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   const oldNavRef = useRef(null);
   const [showBottomNav, setShowBottomNav] = useState(false);
-  console.log("Session is :",session);
-  console.log("Access Token is :",accessToken);
+
   /** 🔥 PREMIUM FAB MENU UI */
   const [fabOpen, setFabOpen] = useState(false);
 
@@ -51,32 +49,20 @@ const FarmerDashboard = () => {
     return () => document.removeEventListener("click", handleClick);
   }, [fabOpen]);
 
-  // Weather fetch
+  // ✅ Refactored to use global weather context directly (like MobileHome)
   useEffect(() => {
-    if (weatherLoading) return;
-    if (!position) return;
-    if (weatherFetched) return;
-    if (weatherError && weatherError.includes("limit exceeded")) return;
-
-    let isMounted = true;
-    async function fetchWeather() {
-      try {
-        const data = await getWeather(position.latitude, position.longitude);
-        if (isMounted && data) {
-          setWeatherData(data);
-          setWeatherFetched(true);
-        }
-      } catch (error) {
-        if (error.message?.includes("limit exceeded")) {
-          setWeatherFetched(true);
-        }
-      }
+    if (!position?.latitude || !position?.longitude) return;
+    // Only fetch if we don't have weather data yet
+    if (!weather && !weatherLoading) {
+      getWeather(position.latitude, position.longitude);
     }
-    fetchWeather();
-    return () => (isMounted = false);
-  }, [position?.latitude, position?.longitude]);
+  }, [position, weather, weatherLoading, getWeather]);
+
 
   // Insights fetch
+
+  console.log("Weather is :", weather);
+
   useEffect(() => {
     if (authLoading) return;
 
@@ -96,8 +82,8 @@ const FarmerDashboard = () => {
         const response = await fetch(`${BASE_URL}/api/smart-farm/insights?farmerId=${user.id}`, {
           signal: controller.signal,
           cache: "no-store",
-          headers : {
-            Authorization : `Bearer ${accessToken}`
+          headers: {
+            Authorization: `Bearer ${accessToken}`
           }
         });
 
@@ -157,7 +143,7 @@ const FarmerDashboard = () => {
         return <CropProfileManager onSelectCrop={handleCropSelect} selectedCrop={selectedCrop} />;
 
       case "weather":
-        return <PersonalizedWeatherGuide selectedCrop={selectedCrop} weatherData={weatherData || weather} />;
+        return <PersonalizedWeatherGuide selectedCrop={selectedCrop} weatherData={weather} />;
 
       case "irrigation":
         return <IrrigationTab selectedCrop={selectedCrop} data={insightsData?.irrigation} loading={insightsLoading} error={insightsError} />;
@@ -176,12 +162,13 @@ const FarmerDashboard = () => {
     }
   };
 
+
   const cleanTemp =
-    typeof weatherData?.temperature === "number" ? weatherData.temperature.toFixed(1) : "--";
+    typeof weather?.temperature === "number" ? weather.temperature.toFixed(1) : "--";
 
   const rainChance =
-    typeof weatherData?.forecast?.[0]?.rainChance === "number"
-      ? weatherData.forecast[0].rainChance
+    typeof weather?.forecast?.[0]?.rainChance === "number"
+      ? weather.forecast[0].rainChance
       : "--";
 
   // UI Render

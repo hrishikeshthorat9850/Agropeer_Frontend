@@ -10,26 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d2182f33-f1f9-45be-993c-add9d8d08897" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../Context/SocketContext.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Context/SocketContext.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/capacitor.config.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/assets/capacitor.config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/LayoutClient.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../app/LayoutClient.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../components/AndroidNotificationHandler.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/AndroidNotificationHandler.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../components/chat/ChatHeader.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/chat/ChatHeader.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../components/login/OAuthButtons.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/login/OAuthButtons.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../components/mobile/MobileNavbar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/mobile/MobileNavbar.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../components/mobile/MobilePageLayout.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/mobile/MobilePageLayout.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../components/mobile/MobileSidebar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/mobile/MobileSidebar.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/androidNotificationService.js" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/androidNotificationService.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/../server/server.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../utils/capacitorNotifications.js" beforeDir="false" afterPath="$PROJECT_DIR$/../utils/capacitorNotifications.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../utils/socket.js" beforeDir="false" afterPath="$PROJECT_DIR$/../utils/socket.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -6,8 +6,10 @@ export default function useGeolocation(options = {}) {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Default fallback (New Delhi)
+  const DEFAULT_LOCATION = { latitude: 28.6139, longitude: 77.2090 };
+
   useEffect(() => {
-    // ✅ Correct condition
     if (!("geolocation" in navigator)) {
       setError(new Error("Geolocation is not supported in your browser"));
       return;
@@ -15,23 +17,45 @@ export default function useGeolocation(options = {}) {
 
     setLoading(true);
 
+    // 1. Try to get cached location first (instant load)
+    const cached = localStorage.getItem("cached_position");
+    if (cached) {
+      try {
+        setPosition(JSON.parse(cached));
+      } catch (e) {
+        console.error("Error parsing cached location", e);
+      }
+    }
+
+    // 2. Try to get real location
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
-        setPosition({ latitude, longitude });
+        const newPos = { latitude, longitude };
+
+        setPosition(newPos);
         setLoading(false);
+
+        // Cache success
+        localStorage.setItem("cached_position", JSON.stringify(newPos));
       },
       (err) => {
+        console.warn("Location error, using fallback:", err.message);
         setError(err);
         setLoading(false);
+
+        // 3. On error, if no cache exists, use DEFAULT
+        if (!localStorage.getItem("cached_position")) {
+          setPosition(DEFAULT_LOCATION);
+        }
       },
       {
         enableHighAccuracy: true,
         timeout: 10000,
-        ...options, // ✅ Keep spreading user options last
+        ...options,
       }
     );
-  }, []); // ✅ Runs only once when mounted
+  }, []);
 
   return { position, error, loading };
 }
