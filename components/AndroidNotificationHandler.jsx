@@ -3,14 +3,13 @@
 import { useEffect, useCallback } from "react";
 import { useAndroidNotifications } from "@/hooks/useAndroidNotifications";
 import useNativeFcmToken from "@/hooks/useNativeFcmToken";
-import { showAndroidNotification } from "@/utils/capacitorNotifications";
 import { useLogin } from "@/Context/logincontext";
 
 export default function AndroidNotificationHandler() {
   const { user } = useLogin();
   const { isAndroid, isReady } = useAndroidNotifications();
-
   const handleForegroundPush = useCallback(async (notification) => {
+    const { showAndroidNotification } = await import("@/utils/capacitorNotifications");
     const payload = notification.notification ?? notification;
     const data = payload?.data ?? notification.data ?? {};
 

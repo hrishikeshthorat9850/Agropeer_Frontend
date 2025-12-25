@@ -8,12 +8,12 @@ let Capacitor = null;
 // Lazy load Capacitor plugins only when needed
 async function initCapacitor() {
   if (typeof window === 'undefined') return false;
-  
+
   try {
     // Check if running in Capacitor
     const { Capacitor: Cap } = await import('@capacitor/core');
     Capacitor = Cap;
-    
+
     if (!Capacitor.isNativePlatform()) {
       return false; // Not on native platform
     }
@@ -21,7 +21,7 @@ async function initCapacitor() {
     // Load Local Notifications plugin
     const { LocalNotifications: LocalNotif } = await import('@capacitor/local-notifications');
     LocalNotifications = LocalNotif;
-    
+
     return true;
   } catch (error) {
     console.warn('Capacitor plugins not available:', error);
@@ -34,7 +34,7 @@ async function initCapacitor() {
  */
 export async function requestAndroidNotificationPermission() {
   if (typeof window === 'undefined') return false;
-  
+
   const isCapacitor = await initCapacitor();
   if (!isCapacitor || !LocalNotifications) return false;
 
@@ -62,13 +62,19 @@ export async function requestAndroidNotificationPermission() {
  */
 export async function showAndroidNotification({ title, body, data = {}, id = null }) {
   if (typeof window === 'undefined') return false;
-  
+
   const isCapacitor = await initCapacitor();
   if (!isCapacitor || !LocalNotifications) return false;
 
   try {
-    const notificationId = id || Date.now();
-    
+    // Always make notification ID a number
+    let notificationId = Number(id);
+
+    if (!notificationId || isNaN(notificationId)) {
+      notificationId = Math.floor(Date.now() / 1000); // fallback number
+    }
+
+
     await LocalNotifications.schedule({
       notifications: [
         {
@@ -79,8 +85,7 @@ export async function showAndroidNotification({ title, body, data = {}, id = nul
           data,
           // Android-specific options
           channelId: 'agrogram_chat',
-          smallIcon: 'ic_notification',
-          largeIcon: 'ic_launcher',
+          smallIcon: 'ic_launcher',
           // Action buttons (optional)
           actionTypeId: 'OPEN_APP',
         },
@@ -99,10 +104,10 @@ export async function showAndroidNotification({ title, body, data = {}, id = nul
  */
 export async function isAndroidPlatform() {
   if (typeof window === 'undefined') return false;
-  
+
   const isCapacitor = await initCapacitor();
   if (!isCapacitor || !Capacitor) return false;
-  
+
   return Capacitor.getPlatform() === 'android';
 }
 
@@ -111,13 +116,24 @@ export async function isAndroidPlatform() {
  */
 export async function setupAndroidNotificationChannel() {
   if (typeof window === 'undefined') return false;
-  
+
   const isCapacitor = await initCapacitor();
   if (!isCapacitor || !LocalNotifications) return false;
 
   try {
     // Create notification channel for Android
-    // This is handled automatically by Capacitor, but we can customize it
+    await LocalNotifications.createChannel({
+      id: 'agrogram_chat',
+      name: 'Chat Notifications',
+      description: 'Notifications for chat messages',
+      importance: 5, // high priority
+      sound: 'default',
+      visibility: 1,
+      lights: true,
+      vibration: true,
+    });
+
+    // Register action types (optional but good to keep)
     await LocalNotifications.registerActionTypes({
       types: [
         {

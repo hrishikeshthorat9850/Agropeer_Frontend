@@ -28,7 +28,7 @@ import { useKeyboardOpen } from "@/Mobile/hooks/useKeyboardOpen";
 import PopupModal from "@/components/popup/PopupModal";
 import { App } from "@capacitor/app";
 import { supabase } from "@/lib/supabaseClient";
-
+import { setupAndroidNotificationChannel } from "@/utils/capacitorNotifications";
 export default function ClientLayout({ children }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -44,6 +44,11 @@ export default function ClientLayout({ children }) {
   const showNavbar = !noUIRoutes.includes(pathname);
   const isChatsPage = pathname.startsWith("/chats");
 
+  useEffect(() => {
+    if(Capacitor.isNativePlatform()){
+      setupAndroidNotificationChannel();  // 📢 Create channel when app loads
+    }
+  }, []);
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
 
@@ -81,7 +86,7 @@ export default function ClientLayout({ children }) {
 
       try {
         await Browser.close();
-      } catch {}
+      } catch { }
 
       window.location.replace("/home");
     });
@@ -119,10 +124,10 @@ export default function ClientLayout({ children }) {
         if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android') {
           // Set status bar to overlay the webview so navbar shows through
           await StatusBar.setOverlaysWebView({ overlay: true });
-          
+
           // Set status bar background to match navbar gradient (green)
           await StatusBar.setBackgroundColor({ color: "#2E7D32" });
-          
+
           // Use light style (white icons) for dark green navbar background
           await StatusBar.setStyle({ style: Style.Light });
         }
@@ -145,8 +150,8 @@ export default function ClientLayout({ children }) {
   const computedPadding = noUIRoutes.includes(pathname)
     ? ""
     : isMobile
-    ? ""
-    : "pt-[120px]";
+      ? ""
+      : "pt-[120px]";
 
   // Body padding adjustments for mobile no-padding routes
   useEffect(() => {
@@ -207,9 +212,9 @@ export default function ClientLayout({ children }) {
 
           {/* Mobile Bottom Nav */}
           {isMobile && showNavbar && !keyboardOpen ?
-          (
-            <MobileBottomNav onAI={() => setAiOpen(true)} />
-          ) : null}
+            (
+              <MobileBottomNav onAI={() => setAiOpen(true)} />
+            ) : null}
 
           {isMobile && <MobileSidebar />}
 

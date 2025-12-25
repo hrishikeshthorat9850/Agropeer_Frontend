@@ -296,7 +296,6 @@ export function SocketProvider({ loggedInUser, children }) {
         markAsRead,
         sendTyping,
         findOrCreateConversation,
-
       }}
     >
       {children}

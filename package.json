@@ -14,6 +14,8 @@
     "check-firebase-env": "node scripts/check-firebase-env.js",
     "cap:sync": "npx cap sync android",
     "cap:open": "npx cap open android",
+    "android:dev": "node scripts/update-capacitor-config.js dev && npx cap copy android && npx cap open android",
+    "android:prod": "node scripts/update-capacitor-config.js prod && npm run build:android -- --apk",
     "android:build": "cd android && ./gradlew assembleRelease",
     "android:build:debug": "cd android && ./gradlew assembleDebug"
   },

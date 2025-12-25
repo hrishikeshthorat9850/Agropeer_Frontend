@@ -9,17 +9,42 @@ dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
-const allowedOrigins = process.env.FRONTEND_URL
-  ? process.env.FRONTEND_URL.split(",").map((origin) => origin.trim())
-  : ["http://localhost:3000", "http://localhost:4000"];
+
+const normalize = (url) => url?.replace(/\/$/, "");
+
+// const allowedOrigins = process.env.FRONTEND_URL
+//   ? process.env.FRONTEND_URL
+//       .split(",")
+//       .map((o) => normalize(o.trim()))
+//   : [
+//       "http://localhost:3000",
+//       "http:192.168.31.74:3000",
+//       "capacitor://localhost",
+//       "agropeer://localhost",
+//     ];
+
+const allowedOrigins = "http://192.168.31.74:3000" || "capacitor://localhost" || "agropeer://localhost";
+
 
 const io = new Server(server, {
+  transports: ["websocket", "polling"],
   cors: {
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
 
-    origin: allowedOrigins,
-    methods: ["GET", "POST"],
+      const normalizedOrigin = normalize(origin);
+
+      if (allowedOrigins.includes(normalizedOrigin)) {
+        return callback(null, true);
+      }
+
+      console.log("❌ Blocked CORS origin:", origin);
+      callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
   },
 });
+
 
 const supabase = createClient(
   process.env.SUPABASE_URL,

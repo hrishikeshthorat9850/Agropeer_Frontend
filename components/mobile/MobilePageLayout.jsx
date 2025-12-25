@@ -16,7 +16,7 @@ import { Capacitor } from "@capacitor/core";
 export default function MobilePageLayout({ children, className = "" }) {
   const pathname = usePathname();
   const isNative = Capacitor.isNativePlatform();
-  
+
   // Routes that should have no padding (full screen)
   const noPaddingRoutes = [
     "/login",

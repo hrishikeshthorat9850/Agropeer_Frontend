@@ -11,7 +11,6 @@ import { formatName } from "@/utils/formatName";
 import ChatOptionsMenu from "@/components/chat/ChatOptionsMenu";
 import { useSocket } from "@/Context/SocketContext";
 import { formatLastSeen } from "@/utils/formatLastSeen";
-
 export default function ChatHeader({ selected }) {
   const { onlineUsers, lastSeen } = useSocket();
   const [status, setStatus] = useState({ isOnline: false, lastSeen: null });
@@ -20,10 +19,16 @@ export default function ChatHeader({ selected }) {
     if (!selected?.id) return;
 
     setStatus({
-      isOnline: onlineUsers[selected.id] === true,
-      lastSeen: lastSeen[selected.id] || null
+      isOnline: onlineUsers[selected?.id] === true,
+      lastSeen: lastSeen[selected?.id] || null
     });
   }, [onlineUsers, lastSeen, selected?.id]);
+
+  useEffect(()=>{
+    console.log("onlineUsers are :",onlineUsers);
+    console.log("lastSeen is :",lastSeen);
+    console.log("Selected is :",selected);
+  },[selected])
 
   if (!selected) {
     return (
@@ -74,8 +79,8 @@ export default function ChatHeader({ selected }) {
           <div className="text-xs text-gray-500">
             {status.isOnline
               ? "Online"
-              : status.lastSeen
-                ? `Last seen: ${formatLastSeen(status.lastSeen)}`
+              : status?.lastSeen
+                ? `Last seen: ${formatLastSeen(status?.lastSeen)}`
                 : "Offline"}
           </div>
         </div>

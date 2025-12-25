@@ -49,14 +49,7 @@ export default function MobileNavbar() {
 
   return (
     <div
-      className="pt-safe-top md:hidden fixed top-0 left-0 right-0 z-[100] bg-gradient-to-r from-[#48ec50] to-[#77c37c] dark:bg-white/10 backdrop-blur-2xl rounded-bl-xl rounded-br-xl"
-      style={{
-        paddingTop: "env(safe-area-inset-top)",
-        height: "calc(56px + env(safe-area-inset-top, 0px))",
-        maxHeight: "calc(56px + env(safe-area-inset-top, 0px))",
-        overflow: "visible",
-      }}
-    >
+      className="pt-safe-top md:hidden fixed top-0 left-0 right-0 z-[100] bg-gradient-to-r from-[#48ec50] to-[#77c37c] dark:bg-white/10 backdrop-blur-2xl rounded-bl-xl rounded-br-xl">
       <div
         className="
           flex items-center justify-between 
@@ -96,14 +89,16 @@ export default function MobileNavbar() {
           )}
 
           {/* Chats */}
-          <Link href="/chats" className="relative p-2 active:scale-95">
-            <FaComments className="text-[20px]" />
-            {unreadChats > 0 && (
-              <div className="absolute -top-2 -right-1">
-                <NotificationBadge unreadCount={unreadChats} />
-              </div>
-            )}
-          </Link>
+          {user &&          
+            <Link href="/chats" className="relative p-2 active:scale-95">
+              <FaComments className="text-[20px]" />
+              {unreadChats > 0 && (
+                <div className="absolute -top-2 -right-1">
+                  <NotificationBadge unreadCount={unreadChats} />
+                </div>
+              )}
+            </Link>
+          }
 
           {/* LANGUAGE DROPDOWN */}
           <div ref={langRef} className="relative">

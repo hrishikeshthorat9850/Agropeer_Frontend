@@ -66,7 +66,7 @@ export default function MobileSidebar() {
     };
   }, [open]);
 
-    useEffect(() => {
+  useEffect(() => {
     if (open) {
       // Sidebar OPEN → white text/icons
       StatusBar.setStyle({ style: Style.Dark });
@@ -162,10 +162,10 @@ export default function MobileSidebar() {
                       className="group relative block"
                     >
                       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-rose-500/20 via-pink-500/15 to-orange-500/20 backdrop-blur-md border border-white/20 p-5 hover:bg-gradient-to-br hover:from-rose-500/30 hover:via-pink-500/25 hover:to-orange-500/30 transition-all duration-500 hover:scale-105 hover:-translate-y-1 hover:shadow-2xl hover:shadow-rose-500/25"
-                      style={{
-                        clipPath: 'polygon(0% 15%, 15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%)'
-                      }}
-                    >
+                        style={{
+                          clipPath: 'polygon(0% 15%, 15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%)'
+                        }}
+                      >
                         {/* Animated Background Pattern */}
                         <div className="absolute inset-0 opacity-20">
                           <div className="absolute top-2 right-2 w-3 h-3 bg-rose-400 rounded-full animate-bounce delay-100"></div>
@@ -202,10 +202,10 @@ export default function MobileSidebar() {
                       className="group relative block"
                     >
                       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-500/20 via-purple-500/15 to-blue-500/20 backdrop-blur-md border border-white/20 p-5 hover:bg-gradient-to-br hover:from-indigo-500/30 hover:via-purple-500/25 hover:to-blue-500/30 transition-all duration-500 hover:scale-105 hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-500/25"
-                      style={{
-                        clipPath: 'polygon(0% 15%, 15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%)'
-                      }}
-                    >
+                        style={{
+                          clipPath: 'polygon(0% 15%, 15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%)'
+                        }}
+                      >
                         {/* Animated Background Pattern */}
                         <div className="absolute inset-0 opacity-20">
                           <div className="absolute top-2 right-2 w-3 h-3 bg-indigo-50 rounded-full animate-bounce delay-100"></div>
@@ -242,10 +242,10 @@ export default function MobileSidebar() {
                       className="group relative block"
                     >
                       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500/20 via-teal-500/15 to-green-500/20 backdrop-blur-md border border-white/20 p-5 hover:bg-gradient-to-br hover:from-emerald-500/30 hover:via-teal-500/25 hover:to-green-500/30 transition-all duration-500 hover:scale-105 hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-500/25"
-                      style={{
-                        clipPath: 'polygon(0% 15%, 15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%)'
-                      }}
-                    >
+                        style={{
+                          clipPath: 'polygon(0% 15%, 15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%)'
+                        }}
+                      >
                         {/* Animated Background Pattern */}
                         <div className="absolute inset-0 opacity-20">
                           <div className="absolute top-2 right-2 w-3 h-3 bg-emerald-400 rounded-full animate-bounce delay-100"></div>
