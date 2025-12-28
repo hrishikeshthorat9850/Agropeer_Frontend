@@ -192,7 +192,7 @@ const defaultFormState = {
 
 const createInitialFormState = () => ({ ...defaultFormState });
 const CropProfileManager = ({ onSelectCrop,selectedCrop }) => {
-  const {user,userinfo} = useLogin();
+  const {user,accessToken} = useLogin();
   const { showToast } = useToast();
   const [crops, setCrops] = useState([]);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -351,7 +351,10 @@ const pickNumberOrFallback = (value, fallback) => {
     try {
       const response = await fetch(`${BASE_URL}/api/crops`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization" : `Bearer ${accessToken}`
+        },
         body: JSON.stringify({
           user_id: currentUserId,
           crop_type: formData.cropType,
@@ -438,7 +441,8 @@ const pickNumberOrFallback = (value, fallback) => {
       const res = await fetch(`${BASE_URL}/api/crops/${cropId}`,{
         method : "DELETE",
         headers : {
-          "Content-Type" : "application/json"
+          "Content-Type" : "application/json",
+          "Authorization" : `Bearer ${accessToken}`
         }
       });
       const data = await res.json();
@@ -970,7 +974,7 @@ const pickNumberOrFallback = (value, fallback) => {
                     <FaEdit className="w-4 h-4 text-farm-600" />
                   </button>
                   <button
-                    onClick={() => handleDelete(crop.id)}
+                    onClick={() => handleDelete(crop?.id)}
                     className="p-2 rounded-lg bg-red-100 hover:bg-red-200 transition-colors"
                   >
                     <FaTrash className="w-4 h-4 text-red-600" />

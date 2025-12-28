@@ -41,6 +41,7 @@ const STATE_FILES = {
 
 // Cache for loaded state data
 const stateDataCache = {};
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 /**
  * Load and process state data from JSON file
@@ -61,15 +62,15 @@ export async function loadStateData(stateName) {
 
   try {
     // Fetch from API route
-    const response = await fetch(`/api/location-data?state=${encodeURIComponent(stateName)}`);
+    const response = await fetch(`${BASE_URL}/api/location-data?state=${encodeURIComponent(stateName)}`);
     if (!response.ok) {
       throw new Error(`Failed to load ${stateName}`);
     }
     const processedData = await response.json();
-    
+
     // Cache the processed data
     stateDataCache[stateName] = processedData;
-    
+
     return processedData;
   } catch (error) {
     console.error(`Error loading state data for ${stateName}:`, error);

@@ -7,7 +7,6 @@ import { motion } from "framer-motion";
 import { useLogin } from "@/Context/logincontext";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import OptionsPopup from "@/components/ui/menu/OptionsPopup";
-import { useEffect } from "react";
 
 export default function PostHeader({ 
   post, 
@@ -92,6 +91,7 @@ export default function PostHeader({
           </motion.button>
           {showOptions ?   
             <OptionsPopup
+              post={post}
               open={showOptions}
               onClose={onOptionsClick}
               onEdit={onEdit}

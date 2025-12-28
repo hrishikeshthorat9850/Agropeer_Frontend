@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useLocation, LOCATION } from "./hooks/useLocation";
+import useGeolocation from "@/hooks/useGeolocation";
 import {
   FaLeaf,
   FaTractor,
@@ -21,8 +22,8 @@ import { openAppSettings } from "./utils/openAppSettings";
 import HomeBanner from "./HomeBanner";
 
 export default function MobileHome() {
-  const { weather, loading, getWeather } = useWeather();
-
+  const { weather, loading: weatherLoading, getWeather, error: weatherError } = useWeather();
+  const { position } = useGeolocation();
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
@@ -33,6 +34,14 @@ export default function MobileHome() {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+  // ✅ Refactored to use global weather context directly (like MobileHome)
+  useEffect(() => {
+    if (!position?.latitude || !position?.longitude) return;
+    // Only fetch if we don't have weather data yet
+    if (!weather && !weatherLoading) {
+      getWeather(position.latitude, position.longitude);
+    }
+  }, [position, weather, weatherLoading, getWeather]);
 
   // ✅ memoized success handler
   const onLocationSuccess = useCallback((lat, lng) => {
@@ -41,16 +50,18 @@ export default function MobileHome() {
 
   const { status, retry } = useLocation(onLocationSuccess);
 
-  const todaysWeather = useMemo(() => {
-    if (!weather) return null;
-    return {
-      rainChance: weather.forecast?.[0]?.rainChance ?? "--",
-      wind: weather.windspeed?.toFixed(1) ?? "--",
-      humidity: weather.humidity ?? "--",
-      temp: weather.temperature?.toFixed(1) ?? "--",
-    };
-  }, [weather]);
-  
+  const cleanTemp =
+    typeof weather?.temperature === "number" ? weather.temperature.toFixed(1) : "--";
+
+  const rainChance =
+    typeof weather?.forecast?.[0]?.rainChance === "number"
+      ? weather.forecast[0].rainChance
+      : "--";
+
+  const humidity = typeof weather?.humidity === "number" ? weather?.humidity : "--";
+
+  const windSpeed = typeof weather?.windspeed === "number" ? weather?.windspeed?.toFixed(1) : "--";
+
   return (
     <div className="md:hidden pb-1 min-h-screen bg-[#FAF7F2] dark:bg-[#0d0d0d] relative">
 
@@ -159,28 +170,20 @@ export default function MobileHome() {
           <div className="mt-4 flex items-center justify-between">
             <div>
               <h3 className="text-4xl font-extrabold text-slate-900 dark:text-white">
-                {loading
-                  ? "..."
-                  : todaysWeather?.temp
-                  ? `${todaysWeather?.temp}°C`
-                  : "--"}
+                {cleanTemp}°C
               </h3>
             </div>
 
             <div className="text-right">
               <p className="text-[13px] text-slate-600 dark:text-slate-300">
-                Humidity: {todaysWeather?.humidity ?? "--"}%
+                Humidity: {humidity}%
               </p>
               <p className="text-[13px] text-slate-600 dark:text-slate-300">
                 Rain Chance: 
-                {loading
-                  ? "..."
-                  : todaysWeather?.rainChance !== undefined
-                    ? todaysWeather?.rainChance + "%"
-                    : "--"}
+                {rainChance}
               </p>
               <p className="text-[13px] text-slate-600 dark:text-slate-300">
-                WindSpeed: {todaysWeather?.wind ?? "--"} km/h
+                WindSpeed: {windSpeed} km/h
               </p>
             </div>
           </div>

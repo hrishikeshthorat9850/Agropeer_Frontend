@@ -5,11 +5,13 @@ import PersonalizedWeatherGuide from "@/components/PersonalizedWeatherGuide";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaSeedling, FaToggleOn, FaToggleOff } from "react-icons/fa";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
-
+import { useWeather } from "@/Context/WeatherContext";
+import useGeolocation from "@/hooks/useGeolocation";
 export default function WeatherPage() {
+  const { weather, loading: weatherLoading, getWeather, error: weatherError } = useWeather();
+  const { position } = useGeolocation();
   const [showPersonalized, setShowPersonalized] = useState(false);
   const [selectedCrop, setSelectedCrop] = useState(null);
-  const [weatherData, setWeatherData] = useState(null);
 
   // Load selected crop from localStorage
   useEffect(() => {
@@ -19,6 +21,13 @@ export default function WeatherPage() {
     }
   }, []);
 
+  // useEffect(() => {
+  //   if (!position?.latitude || !position?.longitude) return;
+  //   // Only fetch if we don't have weather data yet
+  //   if (!weather && !weatherLoading) {
+  //     getWeather(position.latitude, position.longitude);
+  //   }
+  // }, [position, weather, weatherLoading, getWeather]);
 
   return (
     <MobilePageContainer>
@@ -57,7 +66,7 @@ export default function WeatherPage() {
             >
               <PersonalizedWeatherGuide 
                 selectedCrop={selectedCrop}
-                weatherData={weatherData}
+                weatherData={weather}
               />
             </motion.div>
           ) : (

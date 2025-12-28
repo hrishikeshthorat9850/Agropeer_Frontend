@@ -54,7 +54,7 @@ const StyledListItem = styled(ListItemButton)(({ theme }) => ({
   },
 }));
 
-export default function OptionsPopup({ open, onClose, onEdit, onDelete, onReport }) {
+export default function OptionsPopup({ open, onClose, onEdit, onDelete, onReport,post }) {
   const { user } = useLogin();
 
   return (
@@ -69,23 +69,25 @@ export default function OptionsPopup({ open, onClose, onEdit, onDelete, onReport
         >
           <DialogContent sx={{ p: 0 }}>
             {/* ✏️ EDIT - Professional Blue */}
-            <StyledListItem
-              onClick={onEdit}
-              sx={{
-                "& .MuiListItemIcon-root": { color: "#2563eb" }, // blue
-                "& .MuiListItemText-primary": { color: "#1e3a8a" },
-                "&:hover": { backgroundColor: "#dbeafe" }, // light blue hover
-              }}
-            >
-              <ListItemIcon>
-                <FaEdit />
-              </ListItemIcon>
-              <ListItemText primary="Edit Post" />
-            </StyledListItem>
+            {post?.user_id === user?.id &&(
+              <StyledListItem
+                onClick={onEdit}
+                sx={{
+                  "& .MuiListItemIcon-root": { color: "#2563eb" }, // blue
+                  "& .MuiListItemText-primary": { color: "#1e3a8a" },
+                  "&:hover": { backgroundColor: "#dbeafe" }, // light blue hover
+                }}
+              >
+                <ListItemIcon>
+                  <FaEdit />
+                </ListItemIcon>
+                <ListItemText primary="Edit Post" />
+              </StyledListItem>
+            )}
 
             <Divider variant="middle" />
 
-            {/* 🚩 REPORT - Amber/Orange */}
+            {/* REPORT - Amber/Orange */}
             <StyledListItem
               onClick={onReport}
               sx={{
@@ -101,21 +103,22 @@ export default function OptionsPopup({ open, onClose, onEdit, onDelete, onReport
             </StyledListItem>
 
             <Divider variant="middle" />
-
             {/* 🗑️ DELETE - Red (danger) */}
-            <StyledListItem
-              onClick={onDelete}
-              sx={{
-                "& .MuiListItemIcon-root": { color: "#dc2626" }, // red
-                "& .MuiListItemText-primary": { color: "#991b1b" },
-                "&:hover": { backgroundColor: "#fee2e2" }, // light red hover
-              }}
-            >
-              <ListItemIcon>
-                <FaTrashAlt />
-              </ListItemIcon>
-              <ListItemText primary="Delete Post" />
-            </StyledListItem>
+            {post?.user_id === user?.id &&(       
+              <StyledListItem
+                onClick={onDelete}
+                sx={{
+                  "& .MuiListItemIcon-root": { color: "#dc2626" }, // red
+                  "& .MuiListItemText-primary": { color: "#991b1b" },
+                  "&:hover": { backgroundColor: "#fee2e2" }, // light red hover
+                }}
+              >
+                <ListItemIcon>
+                  <FaTrashAlt />
+                </ListItemIcon>
+                <ListItemText primary="Delete Post" />
+              </StyledListItem>
+            )}
           </DialogContent>
         </StyledDialog>
       )}

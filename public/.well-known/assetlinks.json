@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.hrishikesh.agrogram",
+      "sha256_cert_fingerprints": [
+        "E2:5D:75:58:DE:E8:C1:CE:A8:68:55:82:6E:13:9E:75:67:56:CB:45:7B:3F:31:07:B2:EF:48:DB:64:13:26:AC"
+      ]
+    }
+  }
+]

@@ -1,6 +1,4 @@
 "use client";
-
-
 import { usePathname, useRouter } from "next/navigation";
 import AppProviders from "./AppProviders";
 import { StatusBar, Style } from "@capacitor/status-bar";
@@ -12,7 +10,6 @@ import Footer from "../components/home/Footer";
 import { Browser } from "@capacitor/browser";
 import AIChatbotButton from "@/components/chatbot/AIChatbotButton";
 import AIChatWindow from "@/components/chatbot/AIChatWindow";
-import NotificationHandler from "@/components/NotificationHandler";
 import AndroidNotificationHandler from "@/components/AndroidNotificationHandler";
 import ToastContainer from "@/components/ui/toast/ToastContainer";
 
@@ -166,6 +163,21 @@ export default function ClientLayout({ children }) {
     }
   }, [pathname]);
 
+  useEffect(() => {
+    const handler = (event) => {
+      const url = event.detail;
+      const match = url.match(/post\/(\d+)/);
+      const postId = match?.[1];
+
+      if (postId) {
+        window.location.href = `/post/${postId}`;
+      }
+    };
+
+    window.addEventListener("appUrlOpen", handler);
+    return () => window.removeEventListener("appUrlOpen", handler);
+  }, []);
+
   return (
     <AppProviders>
       <TopLoader />
@@ -229,8 +241,6 @@ export default function ClientLayout({ children }) {
           )}
         </>
       )}
-
-      <NotificationHandler />
       <AndroidNotificationHandler />
       <ToastContainer position="top-right mt-10" maxToasts={5} />
     </AppProviders>

@@ -60,9 +60,6 @@ const FarmerDashboard = () => {
 
 
   // Insights fetch
-
-  console.log("Weather is :", weather);
-
   useEffect(() => {
     if (authLoading) return;
 

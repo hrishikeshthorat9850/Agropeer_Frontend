@@ -142,7 +142,7 @@ export default function PostsPage() {
       <MobilePageContainer>
         <div className="py-4">
           <div className="w-full max-w-2xl mx-auto">
-            <Posts post={selectedPost} idx={0} />
+            <Posts post={selectedPost} idx={0} refreshPosts={refreshPosts}/>
             <Suspense fallback={null}>
               <ClientModalWrapper post={selectedPost} onUpdated={handlePostUpdated} />
             </Suspense>

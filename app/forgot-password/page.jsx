@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { FaEnvelope, FaCheckCircle, FaArrowRight } from "react-icons/fa";
 import useToast from "@/hooks/useToast";
+import { Capacitor } from "@capacitor/core";
 
 export default function ForgotPasswordPage() {
   const { showToast } = useToast();
@@ -26,7 +27,14 @@ export default function ForgotPasswordPage() {
 
     try {
       // Use the deep link scheme for Android
-      const redirectTo = "agropeer://reset-password";
+
+      // Use correct redirect based on platform
+      const isNative = Capacitor.isNativePlatform();
+
+      const redirectTo = isNative
+        ? "agropeer://reset-password" // Android app (deep link)
+        : `${window.location.origin}/reset-password`; // Web & localhost
+
       console.log("Reset password redirect URL:", redirectTo);
 
       const { error } = await supabase.auth.resetPasswordForEmail(email, {

@@ -2,7 +2,7 @@
 const nextConfig = {
   // REQUIRED for Capacitor static routing
   trailingSlash: true,
-
+  output: "export",
   // REQUIRED for static export
   images: {
     unoptimized: true,

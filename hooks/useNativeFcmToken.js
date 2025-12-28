@@ -1,16 +1,17 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useLogin } from "@/Context/logincontext";
-const BASE_URL = process.env.BASE_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 async function registerNativeToken(token, userId) {
   if (!token) return;
-
   try {
     const response = await fetch(`${BASE_URL}/api/register-fcm-token`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
       body: JSON.stringify({
         token,
         deviceType: "android",
@@ -32,7 +33,7 @@ export default function useNativeFcmToken(options = {}) {
   const { onMessage, onAction } = options;
   const [token, setToken] = useState(null);
   const [permission, setPermission] = useState("prompt");
-  const { user } = useLogin();
+  const { user, accessToken } = useLogin();
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -52,8 +53,8 @@ export default function useNativeFcmToken(options = {}) {
         }
 
         let permStatus = await PushNotifications.checkPermissions();
+        console.log("Permission Status is :",permStatus);
         let receiveState = permStatus.receive;
-
         if (receiveState !== "granted") {
           permStatus = await PushNotifications.requestPermissions();
           receiveState = permStatus.receive;
@@ -74,6 +75,7 @@ export default function useNativeFcmToken(options = {}) {
           await PushNotifications.addListener("registration", async (tokenResult) => {
             if (!isMounted) return;
             const nativeToken = tokenResult.value;
+            console.log("🔍 TEST_TRACE [useNativeFcmToken]: Received Token", nativeToken);
             setToken(nativeToken);
             await registerNativeToken(nativeToken, user?.id);
           })
@@ -107,7 +109,7 @@ export default function useNativeFcmToken(options = {}) {
             if (data.url) {
               window.location.href = data.url;
             } else if (data.conversationId) {
-              window.location.href = `/chats?conversation=${data.conversationId}`;
+              window.location.href = `/chats?conversation=${data?.conversationId}`;
             }
           })
         );

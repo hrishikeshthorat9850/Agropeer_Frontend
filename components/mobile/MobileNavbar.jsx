@@ -5,29 +5,177 @@ import {
   FaBars,
   FaBell,
   FaComments,
-  FaSeedling,
   FaLanguage,
 } from "react-icons/fa";
 import Link from "next/link";
 import NotificationBadge from "../chat/NotificationBadge";
 import { useLogin } from "@/Context/logincontext";
-import { useNotifications } from "@/hooks/useNotifications";
 import { useUnreadMessagesCount } from "@/hooks/useUnreadMessagesCount";
 import { useLanguage } from "@/Context/languagecontext";
 import ProfileModal from "@/components/ProfileModal";
 import { motion, AnimatePresence } from "framer-motion";
 import { StatusBar, Style } from '@capacitor/status-bar';
 import SearchBar from "../SearchBar";
+import { supabase } from "@/lib/supabaseClient";
 export default function MobileNavbar() {
   const { user } = useLogin();
   const unreadChats = useUnreadMessagesCount();
-  const { unreadCount: unreadNotifications } = useNotifications(user?.id, 5);
-
+  const [notificationsUnreadCount, setNotificationsUnreadCount] = useState(0);
   const { locale, setLocale, LOCALE_NAMES, SUPPORTED_LOCALES } = useLanguage();
   const [langOpen, setLangOpen] = useState(false);
+  
   const langRef = useRef(null);
   StatusBar.setOverlaysWebView({ overlay: true });
   StatusBar.setStyle({ style: Style.Light });
+
+  // Fetch total unread notifications count from database (not limited)
+  useEffect(() => {
+    // Reset count immediately when user changes or when no user
+    setNotificationsUnreadCount(0);
+    
+    if (!user?.id) {
+      return;
+    }
+
+    async function fetchTotalUnreadNotifications() {
+      try {
+        const { count, error } = await supabase
+          .from("notifications")
+          .select("*", { count: "exact", head: true })
+          .eq("user_id", user.id)
+          .eq("seen", false);
+
+        if (error) {
+          // If table doesn't exist, set to 0
+          if (error.code === '42P01' || error.message.includes('does not exist')) {
+            setNotificationsUnreadCount(0);
+            return;
+          }
+          console.error("Error fetching unread notifications count:", error);
+          setNotificationsUnreadCount(0); // Reset to 0 on error
+          return;
+        }
+
+        // Ensure count is a valid number, default to 0
+        const unreadCount = typeof count === 'number' ? count : 0;
+        setNotificationsUnreadCount(unreadCount);
+      } catch (err) {
+        console.error("Error in fetchTotalUnreadNotifications:", err);
+        setNotificationsUnreadCount(0); // Reset to 0 on error
+      }
+    }
+
+    // Initial fetch
+    fetchTotalUnreadNotifications();
+
+    // Set up real-time subscription to update count when notifications change
+    const channel = supabase
+      .channel(`mobile-navbar-notifications:${user.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'notifications',
+          filter: `user_id=eq.${user.id}`,
+        },
+        (payload) => {
+          // Only increment count if the new notification is unread
+          if (payload.new && !payload.new.seen) {
+            setNotificationsUnreadCount((prev) => {
+              const newCount = (prev || 0) + 1;
+              return newCount;
+            });
+          }
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'notifications',
+          filter: `user_id=eq.${user.id}`,
+        },
+        (payload) => {
+          // Update count when notification seen status changes
+          if (payload.new && payload.old) {
+            if (payload.new.seen && !payload.old.seen) {
+              setNotificationsUnreadCount((prev) => Math.max(0, (prev || 0) - 1));
+            } else if (!payload.new.seen && payload.old.seen) {
+              setNotificationsUnreadCount((prev) => (prev || 0) + 1);
+            }
+          }
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'DELETE',
+          schema: 'public',
+          table: 'notifications',
+          filter: `user_id=eq.${user.id}`,
+        },
+        async (payload) => {
+          // When a notification is deleted, refetch the count to ensure accuracy
+          // This is more reliable than trying to track the deleted notification's seen status
+          try {
+            const { count, error } = await supabase
+              .from("notifications")
+              .select("*", { count: "exact", head: true })
+              .eq("user_id", user.id)
+              .eq("seen", false);
+
+            if (error) {
+              console.error("Error refetching count after delete:", error);
+              // Fallback: decrement if we know it was unread
+              if (payload.old && !payload.old.seen) {
+                setNotificationsUnreadCount((prev) => Math.max(0, (prev || 0) - 1));
+              }
+              return;
+            }
+
+            // Ensure count is a valid number
+            const unreadCount = typeof count === 'number' ? count : 0;
+            setNotificationsUnreadCount(unreadCount);
+          } catch (err) {
+            console.error("Error refetching count after delete:", err);
+            // Fallback: decrement if we know it was unread
+            if (payload.old && !payload.old.seen) {
+              setNotificationsUnreadCount((prev) => Math.max(0, (prev || 0) - 1));
+            }
+          }
+        }
+      )
+      .subscribe();
+
+    // Periodic refetch as fallback (every 5 seconds) to catch missed real-time events
+    // This is especially important for DELETE events that might not fire reliably
+    const intervalId = setInterval(() => {
+      fetchTotalUnreadNotifications();
+    }, 5000);
+
+    // Refetch when window/tab becomes visible (user comes back to app)
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        fetchTotalUnreadNotifications();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // Refetch when page regains focus
+    const handleFocus = () => {
+      fetchTotalUnreadNotifications();
+    };
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      supabase.removeChannel(channel);
+      clearInterval(intervalId);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [user?.id]);
 
   useEffect(() => {
     const close = (e) => {
@@ -60,12 +208,12 @@ export default function MobileNavbar() {
         "
       >
         {/* MENU / SIDEBAR BUTTON */}
-        <button 
-          onClick={openSidebar} 
+        <button
+          onClick={openSidebar}
           className="p-2 active:scale-95 transition flex-shrink-0"
           aria-label="Open menu"
         >
-          <FaBars className="text-[22px] text-white"/>
+          <FaBars className="text-[22px] text-white" />
         </button>
 
         {/* SEARCH BAR - Takes available space */}
@@ -80,16 +228,16 @@ export default function MobileNavbar() {
           {user && (
             <Link href="/notifications" className="relative p-2 active:scale-95">
               <FaBell className="text-[20px]" />
-              {unreadNotifications > 0 && (
+              {notificationsUnreadCount > 0 && (
                 <div className="absolute -top-2 -right-1">
-                  <NotificationBadge unreadCount={unreadNotifications} />
+                  <NotificationBadge unreadCount={notificationsUnreadCount} />
                 </div>
               )}
             </Link>
           )}
 
           {/* Chats */}
-          {user &&          
+          {user &&
             <Link href="/chats" className="relative p-2 active:scale-95">
               <FaComments className="text-[20px]" />
               {unreadChats > 0 && (
@@ -102,7 +250,7 @@ export default function MobileNavbar() {
 
           {/* LANGUAGE DROPDOWN */}
           <div ref={langRef} className="relative">
-            <button 
+            <button
               onClick={() => setLangOpen(!langOpen)}
               className="p-2 active:scale-95"
             >

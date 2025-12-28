@@ -11,9 +11,12 @@ import CommentsSection from "./ui/post/CommentsSection";
 import useToast from "@/hooks/useToast";
 import { supabase } from "@/lib/supabaseClient";
 import { apiRequest, validateComment, sanitizeComment } from "@/utils/apiHelpers";
+import { Capacitor } from "@capacitor/core";
 
-export default function PostCard({ post, comment, idx }) {
-  const { user, userinfo } = useLogin();
+
+
+export default function PostCard({ post, comment, idx , refreshPosts }) {
+  const { user,accessToken} = useLogin();
   const { showToast } = useToast();
   
   // State management
@@ -43,7 +46,30 @@ export default function PostCard({ post, comment, idx }) {
   const [loadingComments, setLoadingComments] = useState(false);
   const [loadingLike, setLoadingLike] = useState(false);
   const [loadingBookmark, setLoadingBookmark] = useState(false);
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
+
+  const copyToClipboard = useCallback(async (text) => {
+    try {
+      if (Capacitor.isNativePlatform()) {
+        // Native clipboard for Capacitor Android
+        const { Clipboard } = await import("@capacitor/clipboard");
+        await Clipboard.write({ string: text });
+        showToast("success", "Link copied");
+        return;
+      }
+
+      // Browser clipboard
+      await navigator.clipboard.writeText(text);
+      showToast("success", "Link copied");
+
+    } catch (err) {
+      console.error("Clipboard error:", err);
+      showToast("error", "Clipboard blocked. Try again.");
+    }
+  }, [showToast]);
+
+
 
   // Initialize post data - use stable references
   useEffect(() => {
@@ -190,7 +216,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   // Refresh comments function - remove showToast dependency to prevent rebuilds
   const refreshComments = useCallback(async () => {
     await fetchComments();
-    showToast("info", "Comments refreshed");
+    // showToast("info", "Comments refreshed");
   }, [fetchComments]);
 
   // Comment handlers
@@ -216,8 +242,11 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     try {
       const sanitizedComment = sanitizeComment(com);
       
-      const { data, error: apiError } = await apiRequest(`${BASE_URL}/api/post-comment"`, {
+      const { data, error: apiError } = await apiRequest(`${BASE_URL}/api/post-comment`, {
         method: "POST",
+        headers : {
+          "Authorization" : `Bearer ${accessToken}`
+        },
         body: JSON.stringify({
           post_id: post.id,
           comment: sanitizedComment,
@@ -242,7 +271,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
       setCom("");
       await refreshComments();
-      showToast("success", "Comment saved successfully");
+      // showToast("success", "Comment saved successfully");
     } catch (e) {
       setError("Network error occurred");
       showToast("error", "Network error. Please try again.");
@@ -278,6 +307,9 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     try {
       const { data, error: apiError } = await apiRequest(`${BASE_URL}/api/posts/${post.id}/like`, {
         method: "POST",
+        headers : {
+          "Authorization" : `Bearer ${accessToken}`
+        },
         body: JSON.stringify({ user_id: user.id })
       });
 
@@ -320,6 +352,9 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     try {
       const { data, error: apiError } = await apiRequest(`${BASE_URL}/api/posts/${post.id}/bookmark`, {
         method: "POST",
+        headers : {
+          "Authorization" : `Bearer ${accessToken}`
+        },
         body: JSON.stringify({ user_id: user.id })
       });
 
@@ -347,24 +382,45 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     }
   }, [user?.id, isBookmarked, post?.id, loadingBookmark]);
 
-  const handleShareClick = useCallback(() => {
-    if (navigator.share) {
-      navigator.share({
-        title: 'Farm Post',
-        text: postCaption || post.text,
-        url: window.location.href
-      }).catch(err => {
-        console.error("Error sharing:", err);
+  const handleShareClick = useCallback(async () => {
+    const postId = post?.id;
+    const appLink = `agropeer://post/${postId}`;
+    const webLink = `https://agrogram-wheat.vercel.app/post/${postId}`;
+    const shareUrl = `${appLink}\n\nIf app doesn't open, try:\n${webLink}`;
+
+    // 1️⃣ Native Share (Capacitor App)
+    try {
+      const { Share } = await import("@capacitor/share");
+      await Share.share({
+        title: "Farm Post",
+        text: postCaption || post?.text,
+        url: shareUrl
       });
-    } else {
-      navigator.clipboard.writeText(window.location.href).then(() => {
-        showToast("success", "Link copied to clipboard");
-      }).catch(err => {
-        console.error("Error copying to clipboard:", err);
-        showToast("error", "Failed to copy link");
-      });
+      return; // STOP HERE if successful
+    } catch (err) {
+      console.log("Capacitor Share not available", err);
     }
-  }, [postCaption, post?.text]);
+
+    // 2️⃣ Web Share API (Chrome mobile / browsers that support it)
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "Farm Post",
+          text: postCaption || post?.text,
+          url: webLink
+        });
+        return;
+      } catch (err) {
+        console.log("Web share cancelled", err);
+      }
+    }
+
+    // 3️⃣ LAST RESORT → copy link
+    await copyToClipboard(webLink);
+    showToast("info", "Link copied to clipboard");
+  }, [postCaption, post?.text, post?.id]);
+
+
 
   // Reply handlers
   const handleSendReply = useCallback(async () => {
@@ -382,6 +438,9 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
       
       const { data, error: apiError } = await apiRequest(`${BASE_URL}/api/post-comment`, {
         method: "POST",
+        headers : {
+          "Authorization" : `Bearer ${accessToken}`
+        },
         body: JSON.stringify({
           post_id: post.id,
           comment: sanitizedReply,
@@ -417,6 +476,9 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     try {
       const { data, error: apiError } = await apiRequest(`${BASE_URL}/api/comments/${commentId}/like`, {
         method: "POST",
+        headers : {
+          "Authorization" : `Bearer ${accessToken}`
+        },
         body: JSON.stringify({ user_id: user.id })
       });
 
@@ -460,6 +522,9 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     try {
       const { data, error: apiError } = await apiRequest(`${BASE_URL}/api/comments/${replyId}/like`, {
         method: "POST",
+        headers : {
+          "Authorization" : `Bearer ${accessToken}`
+        },
         body: JSON.stringify({ user_id: user.id })
       });
 

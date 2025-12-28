@@ -133,8 +133,7 @@ export default function FavoritesPage() {
 
   return (
     <MobilePageContainer>
-      <div className="py-4">
-        <div className="w-full max-w-4xl mx-auto">
+      <div className="w-full max-w-4xl mx-auto">
       {/* 🌿 Animated Navbar */}
       <div className="relative flex justify-center items-center mb-10 bg-white shadow-lg rounded-full px-2 py-1.5 sm:px-3 sm:py-2 w-full max-w-md dark:bg-[#272727]">
         <div className="flex relative w-full justify-between">

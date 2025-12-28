@@ -198,15 +198,13 @@ export default function SettingsPage() {
             {t("delete_account")}
           </button>
         </div>
-      </div>
-
         {/* Account Delete Modal */}
         <AccountDeleteModal
           isOpen={showDeleteModal}
           onClose={() => setShowDeleteModal(false)}
         />
-        </div>
+      </div>
       </div>
     </MobilePageContainer>
-  );
+);
 }

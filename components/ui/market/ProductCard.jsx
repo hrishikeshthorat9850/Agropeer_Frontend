@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaHeart, FaEllipsisH, FaEdit, FaTrash, FaComments, FaRupeeSign, FaMapMarkerAlt } from "react-icons/fa";
 import { formatName } from "@/utils/formatName";
-
+import { useLogin } from "@/Context/logincontext";
 export default function ProductCard({
   product,
   isFavorite = false,
@@ -18,6 +18,7 @@ export default function ProductCard({
   showChatButton = true,
   currentUserId,
 }) {
+  const {user} = useLogin();
   const [imageError, setImageError] = useState(false);
   const firstPhoto =
     product.photos?.length > 0 && !imageError
@@ -66,52 +67,55 @@ export default function ProductCard({
           </motion.button>
 
           {/* Menu */}
-          <div className="relative">
-            <motion.button
-              whileHover={{ scale: 1.08 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => onMenuClick?.(product.id)}
-              className="w-9 h-9 flex items-center justify-center bg-white/90 text-gray-700 rounded-full shadow-md hover:bg-white backdrop-blur-md"
-            >
-              <FaEllipsisH className="w-4 h-4" />
-            </motion.button>
+          {product?.user_id === user?.id &&
+            <div className="relative">
+              <motion.button
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => onMenuClick?.(product?.id)}
+                className="w-9 h-9 flex items-center justify-center bg-white/90 text-gray-700 rounded-full shadow-md hover:bg-white backdrop-blur-md"
+              >
+                <FaEllipsisH className="w-4 h-4" />
+              </motion.button>
 
-            {/* Dropdown */}
-            <AnimatePresence>
-              {menuOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                  transition={{ duration: 0.2 }}
-                  className="absolute right-0 mt-2 w-44 bg-white shadow-2xl rounded-xl overflow-hidden z-50 border border-gray-100"
-                >
-                  <motion.button
-                    whileHover={{ backgroundColor: "#f0fdf4" }}
-                    onClick={() => {
-                      onEditClick?.(product);
-                      onMenuClick?.(product.id);
-                    }}
-                    className="flex items-center gap-2 px-4 py-3 w-full hover:bg-green-50 text-green-900 font-medium transition-colors"
-                  >
-                    <FaEdit className="w-3.5 h-3.5" />
-                    Edit
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ backgroundColor: "#fef2f2" }}
-                    onClick={() => {
-                      onDeleteClick?.(product.id);
-                      onMenuClick?.(product.id);
-                    }}
-                    className="flex items-center gap-2 px-4 py-3 w-full text-red-600 hover:bg-red-50 font-medium transition-colors border-t border-gray-100"
-                  >
-                    <FaTrash className="w-3.5 h-3.5" />
-                    Delete
-                  </motion.button>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+              {/* Dropdown */}
+                <AnimatePresence>
+                  {menuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute right-0 mt-2 w-44 bg-white shadow-2xl rounded-xl overflow-hidden z-50 border border-gray-100"
+                    >
+                          <motion.button
+                            whileHover={{ backgroundColor: "#f0fdf4" }}
+                            onClick={() => {
+                              onEditClick?.(product);
+                              onMenuClick?.(product.id);
+                            }}
+                            className="flex items-center gap-2 px-4 py-3 w-full hover:bg-green-50 text-green-900 font-medium transition-colors"
+                          >
+                            <FaEdit className="w-3.5 h-3.5" />
+                            Edit
+                          </motion.button>
+
+                          <motion.button
+                            whileHover={{ backgroundColor: "#fef2f2" }}
+                            onClick={() => {
+                              onDeleteClick?.(product.id);
+                              onMenuClick?.(product.id);
+                            }}
+                            className="flex items-center gap-2 px-4 py-3 w-full text-red-600 hover:bg-red-50 font-medium transition-colors border-t border-gray-100"
+                          >
+                            <FaTrash className="w-3.5 h-3.5" />
+                            Delete
+                          </motion.button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+            </div>
+          }
         </div>
       </div>
 

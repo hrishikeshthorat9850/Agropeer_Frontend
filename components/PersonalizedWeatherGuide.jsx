@@ -22,10 +22,8 @@ const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
   const [alerts, setAlerts] = useState([]);
   const [irrigationAdvice, setIrrigationAdvice] = useState(null);
 
-  useEffect(()=>{
-    console.log("Selected crop is :",selectedCrop);
-  },[selectedCrop]);
-  
+
+
   useEffect(() => {
     if (selectedCrop && weatherData) {
       generateGuidance();
@@ -50,7 +48,7 @@ const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
       : (cropInfo.pests ? [cropInfo.pests] : ["None listed"]);
 
     // 🌡️ Temperature-based guidance
-    if (weather.temperature < tempRange.min) {
+    if (weather?.temperature < tempRange.min) {
       newAlerts.push({
         type: "warning",
         icon: FaThermometer,

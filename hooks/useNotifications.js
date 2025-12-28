@@ -94,14 +94,31 @@ export function useNotifications(userId, limit = 30) {
           });
         }
       )
+      .on(
+        'postgres_changes',
+        {
+          event: 'DELETE', // 🔥 Add this
+          schema: 'public',
+          table: 'notifications',
+          filter: `user_id=eq.${userId}`,
+        },
+        (payload) => {
+          setNotifications((prev) => {
+            const updated = prev.filter((n) => n.id !== payload.old.id);
+            // Recalculate count based on the remaining notifications
+            setUnreadCount(updated.filter(n => !n.seen).length);
+            return updated;
+          });
+        }
+      )
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
   }, [userId, limit]);
-  
-  return { notifications, unreadCount, loading, error ,};
+
+  return { notifications, unreadCount, loading, error };
 }
 
 /**

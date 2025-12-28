@@ -30,8 +30,10 @@ export default function Navbar() {
   
   // Fetch total unread notifications count from database (not limited to 5)
   useEffect(() => {
+    // Reset count immediately when user changes or when no user
+    setNotificationsUnreadCount(0);
+    
     if (!user?.id) {
-      setNotificationsUnreadCount(0);
       return;
     }
 
@@ -50,12 +52,16 @@ export default function Navbar() {
             return;
           }
           console.error("Error fetching unread notifications count:", error);
+          setNotificationsUnreadCount(0); // Reset to 0 on error
           return;
         }
 
-        setNotificationsUnreadCount(count ?? 0);
+        // Ensure count is a valid number, default to 0
+        const unreadCount = typeof count === 'number' ? count : 0;
+        setNotificationsUnreadCount(unreadCount);
       } catch (err) {
         console.error("Error in fetchTotalUnreadNotifications:", err);
+        setNotificationsUnreadCount(0); // Reset to 0 on error
       }
     }
 
@@ -72,9 +78,14 @@ export default function Navbar() {
           table: 'notifications',
           filter: `user_id=eq.${user.id}`,
         },
-        () => {
-          // Increment count when new notification is inserted
-          setNotificationsUnreadCount((prev) => prev + 1);
+        (payload) => {
+          // Only increment count if the new notification is unread
+          if (payload.new && !payload.new.seen) {
+            setNotificationsUnreadCount((prev) => {
+              const newCount = (prev || 0) + 1;
+              return newCount;
+            });
+          }
         }
       )
       .on(
@@ -87,17 +98,81 @@ export default function Navbar() {
         },
         (payload) => {
           // Update count when notification seen status changes
-          if (payload.new.seen && !payload.old.seen) {
-            setNotificationsUnreadCount((prev) => Math.max(0, prev - 1));
-          } else if (!payload.new.seen && payload.old.seen) {
-            setNotificationsUnreadCount((prev) => prev + 1);
+          if (payload.new && payload.old) {
+            if (payload.new.seen && !payload.old.seen) {
+              setNotificationsUnreadCount((prev) => Math.max(0, (prev || 0) - 1));
+            } else if (!payload.new.seen && payload.old.seen) {
+              setNotificationsUnreadCount((prev) => (prev || 0) + 1);
+            }
+          }
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'DELETE',
+          schema: 'public',
+          table: 'notifications',
+          filter: `user_id=eq.${user.id}`,
+        },
+        async (payload) => {
+          // When a notification is deleted, refetch the count to ensure accuracy
+          // This is more reliable than trying to track the deleted notification's seen status
+          try {
+            const { count, error } = await supabase
+              .from("notifications")
+              .select("*", { count: "exact", head: true })
+              .eq("user_id", user.id)
+              .eq("seen", false);
+
+            if (error) {
+              console.error("Error refetching count after delete:", error);
+              // Fallback: decrement if we know it was unread
+              if (payload.old && !payload.old.seen) {
+                setNotificationsUnreadCount((prev) => Math.max(0, (prev || 0) - 1));
+              }
+              return;
+            }
+
+            // Ensure count is a valid number
+            const unreadCount = typeof count === 'number' ? count : 0;
+            setNotificationsUnreadCount(unreadCount);
+          } catch (err) {
+            console.error("Error refetching count after delete:", err);
+            // Fallback: decrement if we know it was unread
+            if (payload.old && !payload.old.seen) {
+              setNotificationsUnreadCount((prev) => Math.max(0, (prev || 0) - 1));
+            }
           }
         }
       )
       .subscribe();
 
+    // Periodic refetch as fallback (every 5 seconds) to catch missed real-time events
+    // This is especially important for DELETE events that might not fire reliably
+    const intervalId = setInterval(() => {
+      fetchTotalUnreadNotifications();
+    }, 5000);
+
+    // Refetch when window/tab becomes visible (user comes back to app)
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        fetchTotalUnreadNotifications();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // Refetch when page regains focus
+    const handleFocus = () => {
+      fetchTotalUnreadNotifications();
+    };
+    window.addEventListener('focus', handleFocus);
+
     return () => {
       supabase.removeChannel(channel);
+      clearInterval(intervalId);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleFocus);
     };
   }, [user?.id]);
 

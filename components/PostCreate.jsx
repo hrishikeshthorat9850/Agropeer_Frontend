@@ -17,7 +17,7 @@ import { useLogin } from "@/Context/logincontext";
 import { v4 as uuidv4 } from "uuid";
 import { motion, AnimatePresence } from "framer-motion";
 import useToast from "@/hooks/useToast";
-export default function PostCreation({ onPosted }) {
+export default function PostCreation({ onSuccess }) {
   const { user } = useLogin();
   const { showToast } = useToast();
   const photoinputRef = useRef();
@@ -174,7 +174,7 @@ export default function PostCreation({ onPosted }) {
       setPosts(prev => [prepared, ...prev]);
       setFiles([]); setPreviews([]); setPostText(""); setCurrentIndex(0); setMenuOpen(false); setLiked(false);
       showToast("success", "Post created successfully! 🌾");
-      if (onPosted) onPosted(prepared);
+      if (onSuccess) onSuccess(prepared);
     } catch (err) {
       console.error(err);
       showToast("error", "Error creating post: " + (err.message || "Please try again."));
