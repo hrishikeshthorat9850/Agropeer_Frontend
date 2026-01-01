@@ -61,7 +61,7 @@ export default function PostActions({
         </div>
 
         {/* ------------------- RIGHT SIDE BUTTONS ------------------- */}
-        <div className="flex items-center pr-2 md:gap-2">
+        {/* <div className="flex items-center pr-2 md:gap-2">
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -81,7 +81,7 @@ export default function PostActions({
             <FaBalanceScale className="text-lg" />
             <span className="font-medium">Compare</span>
           </motion.button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

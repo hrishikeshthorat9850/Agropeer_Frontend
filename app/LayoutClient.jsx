@@ -1,3 +1,4 @@
+
 "use client";
 import { usePathname, useRouter } from "next/navigation";
 import AppProviders from "./AppProviders";
@@ -46,51 +47,99 @@ export default function ClientLayout({ children }) {
       setupAndroidNotificationChannel();  // 📢 Create channel when app loads
     }
   }, []);
+  
+  //global handler
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
 
-    const sub = App.addListener("appUrlOpen", async ({ url }) => {
-      console.log("🔗 Deep link received:", url);
+    (async () => {
+      const result = await App.getLaunchUrl();
+      if (!result || !result.url) return;
 
-      if (!url.includes("login-callback")) return;
+      const url = result.url;
+      console.log("🔥 Initial launch deep link:", url);
 
-      // Convert scheme URL to parsable URL
-      const parsed = new URL(
-        url.replace("agropeer://", "https://callback/")
-      );
+      if (!url.startsWith("agropeer://") && !url.startsWith("com.hrishikesh.agrogram://")) return;
 
-      const hashParams = new URLSearchParams(parsed.hash.substring(1));
+      const safeUrl = url
+        .replace("agropeer://", "https://app.local/")
+        .replace("com.hrishikesh.agrogram://", "https://app.local/");
 
-      const access_token = hashParams.get("access_token");
-      const refresh_token = hashParams.get("refresh_token");
-      const expires_in = hashParams.get("expires_in");
+      const redirectPath = "/posts"; // because you only have /posts/page.jsx
 
-      if (!access_token || !refresh_token) {
-        console.error("❌ Tokens missing in hash");
-        return;
-      }
+      console.log("➡️ Cold start redirect to:", redirectPath);
+      router.replace(redirectPath);
+    })();
+  }, [router]);
+// 🌍 Handle deep links when app is already running
+useEffect(() => {
+  if (!Capacitor.isNativePlatform()) return;
 
-      const { error } = await supabase.auth.setSession({
-        access_token,
-        refresh_token,
-      });
+  const sub = App.addListener("appUrlOpen", ({ url }) => {
+    console.log("📩 Deep link received:", url);
+    router.replace("/posts");
+  });
 
-      if (error) {
-        console.error("❌ setSession failed:", error);
-        window.location.replace("/login?error=oauth_failed");
-        return;
-      }
+  return () => sub.remove();
+}, [router]);
 
+
+  //oAuth listener
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+
+    (async () => {
       try {
-        await Browser.close();
-      } catch { }
+        const listener = App.addListener("appUrlOpen", async ({ url }) => {
+          try {
+            console.log("🔗 Deep link received:", url);
 
-      window.location.replace("/home");
-    });
+            if (!url.includes("login-callback")) return;
 
-    return () => {
-      sub.then((h) => h.remove());
-    };
+            // Convert scheme URL to parsable URL
+            const parsed = new URL(
+              url.replace("agropeer://", "https://callback/")
+            );
+
+            const hashParams = new URLSearchParams(parsed.hash.substring(1));
+
+            const access_token = hashParams.get("access_token");
+            const refresh_token = hashParams.get("refresh_token");
+            const expires_in = hashParams.get("expires_in");
+
+            if (!access_token || !refresh_token) {
+              console.error("❌ Tokens missing in hash");
+              return;
+            }
+
+            const { error } = await supabase.auth.setSession({
+              access_token,
+              refresh_token,
+            });
+
+            if (error) {
+              console.error("❌ setSession failed:", error);
+              window.location.replace("/login?error=oauth_failed");
+              return;
+            }
+
+            try {
+              await Browser.close();
+            } catch { }
+
+            window.location.replace("/home");
+          } catch (error) {
+            console.error("❌ Error handling OAuth callback:", error);
+          }
+        });
+
+        return () => {
+          listener.then((l) => l.remove());
+        };
+      } catch (error) {
+        console.error("❌ Error setting up OAuth listener:", error);
+      }
+    })();
   }, []);
 
   // Detect mobile screen
@@ -136,14 +185,15 @@ export default function ClientLayout({ children }) {
     applyStatusBar();
   }, []);
   // 🔥 Mobile redirect from /home
-  useEffect(() => {
-    if (isMobile && pathname.startsWith("/home")) {
-      window.location.replace("/");
-    }
-  }, [isMobile, pathname]);
+  // useEffect(() => {
+  //   if (isMobile && pathname.startsWith("/home")) {
+  //     window.location.replace("/");
+  //   }
+  // }, [isMobile, pathname]);
 
-  const shouldBlockHome = isMobile && pathname.startsWith("/home");
+  // const shouldBlockHome = isMobile && pathname.startsWith("/home");
 
+  const shouldBlockHome = false;
   const computedPadding = noUIRoutes.includes(pathname)
     ? ""
     : isMobile
@@ -163,20 +213,6 @@ export default function ClientLayout({ children }) {
     }
   }, [pathname]);
 
-  useEffect(() => {
-    const handler = (event) => {
-      const url = event.detail;
-      const match = url.match(/post\/(\d+)/);
-      const postId = match?.[1];
-
-      if (postId) {
-        window.location.href = `/post/${postId}`;
-      }
-    };
-
-    window.addEventListener("appUrlOpen", handler);
-    return () => window.removeEventListener("appUrlOpen", handler);
-  }, []);
 
   return (
     <AppProviders>

@@ -15,6 +15,11 @@ const nextConfig = {
         ? { exclude: ["error", "warn"] }
         : false,
   },
+
+  // Turbopack configuration for better compatibility
+  turbopack: {},
+  // Enable production client source maps to map runtime errors to original source
+  productionBrowserSourceMaps: true,
 };
 
 export default nextConfig;

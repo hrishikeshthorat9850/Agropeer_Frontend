@@ -12,9 +12,7 @@ import useToast from "@/hooks/useToast";
 import { supabase } from "@/lib/supabaseClient";
 import { apiRequest, validateComment, sanitizeComment } from "@/utils/apiHelpers";
 import { Capacitor } from "@capacitor/core";
-
-
-
+import { shareContent } from "@/utils/shareHandler";
 export default function PostCard({ post, comment, idx , refreshPosts }) {
   const { user,accessToken} = useLogin();
   const { showToast } = useToast();
@@ -48,6 +46,16 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
   const [loadingBookmark, setLoadingBookmark] = useState(false);
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
+  function sanitizeCaption(str) {
+    if (!str) return "";
+    return str
+      .replace(/[`]/g, "'")       // escape backticks
+      .replace(/["]/g, "'")       // escape quotes
+      .replace(/\(/g, "&#40;")    // escape (
+      .replace(/\)/g, "&#41;")    // escape )
+      .replace(/→/g, "\u2192")    // safe arrow
+      .replace(/\n/g, "<br/>");   // safe line breaks
+  }
 
   const copyToClipboard = useCallback(async (text) => {
     try {
@@ -68,9 +76,7 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
       showToast("error", "Clipboard blocked. Try again.");
     }
   }, [showToast]);
-
-
-
+  
   // Initialize post data - use stable references
   useEffect(() => {
     if (!user || !post) return;
@@ -382,47 +388,34 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
     }
   }, [user?.id, isBookmarked, post?.id, loadingBookmark]);
 
-  const handleShareClick = useCallback(async () => {
+    const handleShareClick = useCallback(async () => {
     const postId = post?.id;
-    const appLink = `agropeer://post/${postId}`;
-    const webLink = `https://agrogram-wheat.vercel.app/post/${postId}`;
-    const shareUrl = `${appLink}\n\nIf app doesn't open, try:\n${webLink}`;
 
-    // 1️⃣ Native Share (Capacitor App)
-    try {
-      const { Share } = await import("@capacitor/share");
-      await Share.share({
-        title: "Farm Post",
-        text: postCaption || post?.text,
-        url: shareUrl
-      });
-      return; // STOP HERE if successful
-    } catch (err) {
-      console.log("Capacitor Share not available", err);
+    const result = await shareContent({
+      title: "Farm Post",
+      text: postCaption || post?.text,
+      postId,
+      type: "posts", // <--- this decides links like /post/ or /market/
+    });
+
+    // 📌 Utility returned results - you just respond:
+    if (result.platform === "native") {
+      console.log("✔ Shared via native bottom sheet");
     }
 
-    // 2️⃣ Web Share API (Chrome mobile / browsers that support it)
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: "Farm Post",
-          text: postCaption || post?.text,
-          url: webLink
-        });
-        return;
-      } catch (err) {
-        console.log("Web share cancelled", err);
-      }
+    if (result.platform === "web") {
+      console.log("🌍 Shared via browser share dialog");
     }
 
-    // 3️⃣ LAST RESORT → copy link
-    await copyToClipboard(webLink);
-    showToast("info", "Link copied to clipboard");
+    if (result.platform === "copy") {
+      showToast("info", "📋 Link copied to clipboard!");
+    }
+
+    if (!result.success) {
+      return;
+    }
   }, [postCaption, post?.text, post?.id]);
-
-
-
-  // Reply handlers
+  
   const handleSendReply = useCallback(async () => {
     if (!replyText.trim() || !user || !replyingTo) return;
 
@@ -602,6 +595,7 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
 
   return (
     <motion.article
+      id={`post-${post?.id}`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: idx * 0.1 }}
@@ -630,9 +624,10 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
 
       {/* Post Content */}
       <div className="px-4 pb-3 dark:bg-[#272727]">
-        <p className="text-farm-700 text-base leading-relaxed font-sans">
-          {postCaption}
-        </p>
+        <p
+          className="text-farm-700 text-base leading-relaxed font-sans"
+          dangerouslySetInnerHTML={{ __html: sanitizeCaption(postCaption) }}
+        />
       </div>
 
       {/* Post Media */}

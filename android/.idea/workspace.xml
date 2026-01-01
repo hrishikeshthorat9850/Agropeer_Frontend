@@ -11,39 +11,18 @@
   <component name="ChangeListManager">
     <list default="true" id="d2182f33-f1f9-45be-993c-add9d8d08897" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/assets/capacitor.config.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/assets/capacitor.config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/capacitor-cordova-android-plugins/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/capacitor-cordova-android-plugins/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/public/Gemini_Generated_Image_p8b2n0p8b2n0p8b2 (3).png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../app/LayoutClient.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../app/LayoutClient.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/favorites/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../app/favorites/page.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/notifications/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../app/notifications/page.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/layout.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../app/layout.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../app/posts/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../app/posts/page.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/settings/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../app/settings/page.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/weather/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../app/weather/page.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../capacitor.config.json" beforeDir="false" afterPath="$PROJECT_DIR$/../capacitor.config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../components/CropProfileManager.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/CropProfileManager.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../components/FarmerDashboard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/FarmerDashboard.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../components/Navbar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/Navbar.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../components/NotificationHandler.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../components/Notifications/EnbleNotifications.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../components/PersonalizedWeatherGuide.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/PersonalizedWeatherGuide.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../components/PostCreate.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/PostCreate.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../components/Posts.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/Posts.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../components/mobile/AppShell.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/mobile/AppShell.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../components/mobile/MobileHome.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/mobile/MobileHome.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../components/mobile/MobileNavbar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/mobile/MobileNavbar.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../components/ui/market/ProductCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/ui/market/ProductCard.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../components/ui/menu/OptionsPopup.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/ui/menu/OptionsPopup.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../components/ui/post/PostHeader.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/ui/post/PostHeader.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../components/ui/toast/ToastContainer.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/ui/toast/ToastContainer.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hooks/useFcmToken.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hooks/useNativeFcm.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hooks/useNativeFcmToken.js" beforeDir="false" afterPath="$PROJECT_DIR$/../hooks/useNativeFcmToken.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hooks/useNotifications.js" beforeDir="false" afterPath="$PROJECT_DIR$/../hooks/useNotifications.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../next.config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/../next.config.mjs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../utils/locationData.js" beforeDir="false" afterPath="$PROJECT_DIR$/../utils/locationData.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/ui/post/PostActions.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/ui/post/PostActions.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../public/Gemini_Generated_Image_p8b2n0p8b2n0p8b2 (3).png" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,22 +60,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Android App.app.executor": "Debug",
-    "ApkExportedModule": "android.app",
-    "BundleExportedModule": "android.app",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "cf.first.check.clang-format": "false",
-    "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "main-clean",
-    "kotlin-language-version-configured": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Android App.app.executor&quot;: &quot;Debug&quot;,
+    &quot;ApkExportedModule&quot;: &quot;android.app&quot;,
+    &quot;BundleExportedModule&quot;: &quot;android.app&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main-clean&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
       <module name="android.app" />
