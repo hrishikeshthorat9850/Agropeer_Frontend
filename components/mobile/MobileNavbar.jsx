@@ -14,7 +14,6 @@ import { useUnreadMessagesCount } from "@/hooks/useUnreadMessagesCount";
 import { useLanguage } from "@/Context/languagecontext";
 import ProfileModal from "@/components/ProfileModal";
 import { motion, AnimatePresence } from "framer-motion";
-import { StatusBar, Style } from '@capacitor/status-bar';
 import SearchBar from "../SearchBar";
 import { supabase } from "@/lib/supabaseClient";
 export default function MobileNavbar() {
@@ -25,8 +24,6 @@ export default function MobileNavbar() {
   const [langOpen, setLangOpen] = useState(false);
   
   const langRef = useRef(null);
-  StatusBar.setOverlaysWebView({ overlay: true });
-  StatusBar.setStyle({ style: Style.Light });
 
   // Fetch total unread notifications count from database (not limited)
   useEffect(() => {

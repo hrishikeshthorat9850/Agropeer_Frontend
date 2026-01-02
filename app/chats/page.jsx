@@ -438,6 +438,26 @@ export default function ChatsPage() {
     }
   }, [loggedInUser?.id]);
 
+useEffect(() => {
+  const onPopState = (e) => {
+    // 🔒 Intercept ONLY if chat is open
+    if (isChatOpenRef.current) {
+      e.preventDefault?.(); // safe guard
+
+      isChatOpenRef.current = false;
+      setShowContacts(true);
+      setSelected(null);
+
+      // 🚫 STOP further navigation
+      window.history.pushState({}, "");
+    }
+  };
+
+  window.addEventListener("popstate", onPopState);
+  return () => window.removeEventListener("popstate", onPopState);
+}, []);
+
+
   const handleSelectUser = useCallback((contact) => {
     if (!contact || !contact.id) return;
 

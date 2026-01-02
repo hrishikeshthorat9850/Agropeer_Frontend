@@ -10,6 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d2182f33-f1f9-45be-993c-add9d8d08897" name="Changes" comment="">
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/../Admin/AdminDashboard.jsx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../Admin/AdminLogin.jsx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../Context/admincontext.jsx" beforeDir="false" />
@@ -71,6 +72,9 @@
       <change beforePath="$PROJECT_DIR$/../components/admin/AdminStatsCard.jsx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../components/chat/ChatArea.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/chat/ChatArea.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../components/ui/market/RelatedProducts.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/ui/market/RelatedProducts.jsx" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+>>>>>>> f2a75b4 (Deep link Working for all routes , oAuth and reset password page)
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

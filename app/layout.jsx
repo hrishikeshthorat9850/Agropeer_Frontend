@@ -5,6 +5,9 @@ import ClientLayout from "./LayoutClient";
 import AppShell from "@/components/mobile/AppShell";
 import { MobileOAuthHandler } from "@/Mobile/MobileOAuthHandler";
 import { MobileResetPasswordHandler } from "@/Mobile/MobileResetPasswordHandler";
+import { StatusBar, Style } from "@capacitor/status-bar";
+import { Capacitor } from "@capacitor/core";
+// import DeepLinkHandler from "./deepLinkHandler";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -18,7 +21,6 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "AgroPeer - Grow Together",
   description: "AgroPeer Description",
-  viewport: "width=device-width, initial-scale=1, viewport-fit=cover",
   icons: {
     icon: [
       { url: "/favicon.png", sizes: "any", type: "image/png" }, // Primary fallback
@@ -47,11 +49,22 @@ export const metadata = {
   },
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover", // 🔥 important for Capacitor safe-area
+};
+
 export default function RootLayout({ children }) {
+  if (Capacitor.isNativePlatform()) {
+    StatusBar.setStyle({ style: Style.Light });
+    StatusBar.setOverlaysWebView({ overlay: true });
+  }
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased `}>
-        <ClientLayout><AppShell><MobileOAuthHandler /> <MobileResetPasswordHandler /> {children}</AppShell></ClientLayout>
+        <ClientLayout><AppShell>{children}</AppShell></ClientLayout>
       </body>
     </html>
   );

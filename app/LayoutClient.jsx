@@ -1,96 +1,44 @@
 "use client";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import AppProviders from "./AppProviders";
-import { StatusBar, Style } from "@capacitor/status-bar";
 import Navbar from "../components/Navbar";
 import TopLoader from "../components/TopLoader";
 import OfflineBanner from "../components/OfflineBanner";
 import PageTransition from "../components/PageTransition";
 import Footer from "../components/home/Footer";
-import { Browser } from "@capacitor/browser";
 import AIChatbotButton from "@/components/chatbot/AIChatbotButton";
 import AIChatWindow from "@/components/chatbot/AIChatWindow";
 import AndroidNotificationHandler from "@/components/AndroidNotificationHandler";
 import ToastContainer from "@/components/ui/toast/ToastContainer";
-
+import { StatusBar, Style } from "@capacitor/status-bar";
 import MobileNavbar from "@/components/mobile/MobileNavbar";
 import MobileBottomNav from "@/components/mobile/MobileBottomNav";
 import MobileSidebar from "@/components/mobile/MobileSidebar";
 import MobilePageLayout from "@/components/mobile/MobilePageLayout";
-
 import { useState, useEffect } from "react";
 import { Capacitor } from "@capacitor/core";
 import { useKeyboardOpen } from "@/Mobile/hooks/useKeyboardOpen";
-// 🔥 ADD YOUR POPUP MODAL HERE
 import PopupModal from "@/components/popup/PopupModal";
-import { App } from "@capacitor/app";
-import { supabase } from "@/lib/supabaseClient";
 import { setupAndroidNotificationChannel } from "@/utils/capacitorNotifications";
+import DeepLinkManager from "@/components/Deeplink/DeeplinkManager";
+
 export default function ClientLayout({ children }) {
   const pathname = usePathname();
-  const router = useRouter();
   const keyboardOpen = useKeyboardOpen();
 
   const [isMobile, setIsMobile] = useState(false);
   const [aiOpen, setAiOpen] = useState(false);
-
+  const [isChatSidebarOpen, setChatSidebarOpen] = useState(false);
   // 🔥 Popup State → Always show on fresh load
   const [showPopup, setShowPopup] = useState(true);
 
   const noUIRoutes = ["/login", "/signup", "/register", "/admin/login", "/forgot-password"];
   const showNavbar = !noUIRoutes.includes(pathname);
   const isChatsPage = pathname.startsWith("/chats");
-
   useEffect(() => {
     if(Capacitor.isNativePlatform()){
       setupAndroidNotificationChannel();  // 📢 Create channel when app loads
     }
-  }, []);
-  useEffect(() => {
-    if (!Capacitor.isNativePlatform()) return;
-
-    const sub = App.addListener("appUrlOpen", async ({ url }) => {
-      console.log("🔗 Deep link received:", url);
-
-      if (!url.includes("login-callback")) return;
-
-      // Convert scheme URL to parsable URL
-      const parsed = new URL(
-        url.replace("agropeer://", "https://callback/")
-      );
-
-      const hashParams = new URLSearchParams(parsed.hash.substring(1));
-
-      const access_token = hashParams.get("access_token");
-      const refresh_token = hashParams.get("refresh_token");
-      const expires_in = hashParams.get("expires_in");
-
-      if (!access_token || !refresh_token) {
-        console.error("❌ Tokens missing in hash");
-        return;
-      }
-
-      const { error } = await supabase.auth.setSession({
-        access_token,
-        refresh_token,
-      });
-
-      if (error) {
-        console.error("❌ setSession failed:", error);
-        window.location.replace("/login?error=oauth_failed");
-        return;
-      }
-
-      try {
-        await Browser.close();
-      } catch { }
-
-      window.location.replace("/home");
-    });
-
-    return () => {
-      sub.then((h) => h.remove());
-    };
   }, []);
 
   // Detect mobile screen
@@ -179,9 +127,17 @@ export default function ClientLayout({ children }) {
   }, []);
 
   return (
-    <AppProviders>
-      <TopLoader />
-      <OfflineBanner />
+    <>
+      <DeepLinkManager
+        navState={{
+          isChatSidebarOpen,
+          setChatSidebarOpen,
+        }}
+      />
+      <AppProviders>
+
+        <TopLoader />
+        <OfflineBanner />
 
       {/* 🔥 Popup Only on First Layout Mount */}
       {showPopup && !noUIRoutes.includes(pathname) && (
@@ -244,5 +200,6 @@ export default function ClientLayout({ children }) {
       <AndroidNotificationHandler />
       <ToastContainer position="top-right mt-10" maxToasts={5} />
     </AppProviders>
+    </>
   );
 }
