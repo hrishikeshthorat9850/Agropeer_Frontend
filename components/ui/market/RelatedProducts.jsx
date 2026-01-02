@@ -24,6 +24,7 @@ export default function RelatedProducts({ category, currentProductId, limit = 6 
   const [error, setError] = useState(null);
   const [favorites, setFavorites] = useState([]);
   const [menuOpen, setMenuOpen] = useState(null);
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   // Fetch related products
   useEffect(() => {
@@ -45,7 +46,7 @@ export default function RelatedProducts({ category, currentProductId, limit = 6 
           order: "desc",
         });
 
-        const { data, error: apiError } = await apiRequest(`/api/products?${params.toString()}`);
+        const { data, error: apiError } = await apiRequest(`${BASE_URL}/api/products?${params.toString()}`);
 
         if (apiError) {
           console.error("Error fetching related products:", apiError);

@@ -2,7 +2,6 @@
 
 import { LoginProvider, useLogin } from "@/Context/logincontext";
 import { ThemeProvider } from "@/Context/themecontext";
-import { AdminProvider } from "@/Context/admincontext";
 import { ViewProvider } from "@/Context/ViewContext";
 import { LanguageProvider } from "@/Context/languagecontext";
 import { SocketProvider } from "@/Context/SocketContext";
@@ -22,7 +21,6 @@ function InnerProviders({ children }) {
 
   return (
     <ThemeProvider>
-      <AdminProvider>
         <ViewProvider>
           <LanguageProvider>
             <ToastProvider>
@@ -34,7 +32,6 @@ function InnerProviders({ children }) {
             </ToastProvider>
           </LanguageProvider>
         </ViewProvider>
-      </AdminProvider>
     </ThemeProvider>
   );
 }

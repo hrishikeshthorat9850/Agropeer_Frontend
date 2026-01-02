@@ -24,7 +24,8 @@ export default function ChatsPage() {
   const [unreadMessagesCount,setunreadMessagesCount] = useState(0);  
   const conversationsRef = useRef([]);
   const isNative = Capacitor.isNativePlatform();
-  
+  const isChatOpenRef = useRef(false);
+
   const fetchMessages = useCallback(async () => {
     if (!loggedInUser?.id) return;
 
@@ -436,6 +437,26 @@ export default function ChatsPage() {
     }
   }, [loggedInUser?.id]);
 
+useEffect(() => {
+  const onPopState = (e) => {
+    // 🔒 Intercept ONLY if chat is open
+    if (isChatOpenRef.current) {
+      e.preventDefault?.(); // safe guard
+
+      isChatOpenRef.current = false;
+      setShowContacts(true);
+      setSelected(null);
+
+      // 🚫 STOP further navigation
+      window.history.pushState({}, "");
+    }
+  };
+
+  window.addEventListener("popstate", onPopState);
+  return () => window.removeEventListener("popstate", onPopState);
+}, []);
+
+
   const handleSelectUser = useCallback((contact) => {
     if (!contact || !contact.id) return;
 
@@ -473,7 +494,12 @@ export default function ChatsPage() {
       conversation_id: conversationId,
       id: contact.id, // Ensure ID is set for matching
     });
-    
+
+    window.history.pushState({ chatOpen: true }, "");
+    isChatOpenRef.current = true;
+    setShowContacts(false);
+
+
     // Optimistically reset unread count when selecting conversation
     setContacts((prevContacts) => {
       if (!Array.isArray(prevContacts)) return prevContacts;
@@ -500,14 +526,15 @@ export default function ChatsPage() {
     fetchMessages();
   }, [loading, loggedInUser?.id, fetchMessages]);
 
-  useEffect(() => {
-    if (!selected && Array.isArray(contacts) && contacts.length > 0 && Object.keys(contactToConversationMap).length > 0) {
-      const firstContact = contacts[0];
-      if (firstContact && firstContact.id) {
-        handleSelectUser(firstContact);
-      }
-    }
-  }, [contacts, contactToConversationMap, selected, handleSelectUser]);
+  // Remove auto-selection of first contact - let user click to open chat
+  // useEffect(() => {
+  //   if (!selected && Array.isArray(contacts) && contacts.length > 0 && Object.keys(contactToConversationMap).length > 0) {
+  //     const firstContact = contacts[0];
+  //     if (firstContact && firstContact.id) {
+  //       handleSelectUser(firstContact);
+  //     }
+  //   }
+  // }, [contacts, contactToConversationMap, selected, handleSelectUser]);
 
   const handleFaTimesClick = () => {
     setShowContacts(false);
