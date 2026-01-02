@@ -2,6 +2,7 @@
 import { motion } from "framer-motion";
 import { FaChartLine, FaChartBar, FaChartPie, FaArrowUp, FaArrowDown, FaSeedling, FaTint, FaBug } from "react-icons/fa";
 import { FaIndianRupeeSign } from "react-icons/fa6";
+import { useLanguage } from "@/Context/languagecontext";
 
 const iconMap = {
   FaSeedling,
@@ -11,6 +12,7 @@ const iconMap = {
 };
 
 const AnalyticsTab = ({ data, loading, error }) => {
+  const { t } = useLanguage();
   const kpiCards = data?.kpis || [];
   const monthlyStats = data?.monthlyStats || [];
   const cropPerformance = data?.cropPerformance || [];
@@ -20,7 +22,7 @@ const AnalyticsTab = ({ data, loading, error }) => {
   if (loading) {
     return (
       <div className="bg-white/40 backdrop-blur-lg rounded-2xl p-6 border border-white/30 shadow-md dark:bg-[#272727]">
-        <p className="text-farm-700 dark:text-gray-200">Loading analytics...</p>
+        <p className="text-farm-700 dark:text-gray-200">{t("loading_analytics")}</p>
       </div>
     );
   }
@@ -41,10 +43,10 @@ const AnalyticsTab = ({ data, loading, error }) => {
           <div>
             <h2 className="text-2xl font-bold text-farm-900 dark:text-white flex items-center gap-2">
               <FaChartLine className="text-pink-500" />
-              Farm Analytics
+              {t("farm_analytics_title")}
             </h2>
             <p className="text-farm-700 dark:text-gray-300 mt-1">
-              Comprehensive insights into your farm performance
+              {t("farm_analytics_desc")}
             </p>
           </div>
         </div>
@@ -55,30 +57,29 @@ const AnalyticsTab = ({ data, loading, error }) => {
         {kpiCards.map((kpi, index) => {
           const IconComponent = iconMap[kpi.icon] || FaChartLine;
           return (
-          <motion.div
-            key={kpi.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="bg-white/40 backdrop-blur-lg rounded-xl p-5 border border-white/30 shadow-md dark:bg-[#272727]"
-          >
-            <div className="flex items-center justify-between mb-3">
-              <div className={`w-12 h-12 bg-gradient-to-r ${kpi.color || "from-green-400 to-green-600"} rounded-lg flex items-center justify-center`}>
-                <IconComponent className="w-6 h-6 text-white" />
+            <motion.div
+              key={kpi.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="bg-white/40 backdrop-blur-lg rounded-xl p-5 border border-white/30 shadow-md dark:bg-[#272727]"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <div className={`w-12 h-12 bg-gradient-to-r ${kpi.color || "from-green-400 to-green-600"} rounded-lg flex items-center justify-center`}>
+                  <IconComponent className="w-6 h-6 text-white" />
+                </div>
+                <div
+                  className={`flex items-center gap-1 text-sm font-semibold ${kpi.trend === "up" ? "text-green-600" : "text-red-600"
+                    }`}
+                >
+                  {kpi.trend === "up" ? <FaArrowUp /> : <FaArrowDown />}
+                  {kpi.change}
+                </div>
               </div>
-              <div
-                className={`flex items-center gap-1 text-sm font-semibold ${
-                  kpi.trend === "up" ? "text-green-600" : "text-red-600"
-                }`}
-              >
-                {kpi.trend === "up" ? <FaArrowUp /> : <FaArrowDown />}
-                {kpi.change}
-              </div>
-            </div>
-            <h3 className="text-sm text-farm-700 dark:text-gray-300 mb-1">{kpi.title}</h3>
-            <p className="text-2xl font-bold text-farm-900 dark:text-white">{kpi.value}</p>
-          </motion.div>
-        );
+              <h3 className="text-sm text-farm-700 dark:text-gray-300 mb-1">{kpi.title}</h3>
+              <p className="text-2xl font-bold text-farm-900 dark:text-white">{kpi.value}</p>
+            </motion.div>
+          );
         })}
       </div>
 
@@ -88,7 +89,7 @@ const AnalyticsTab = ({ data, loading, error }) => {
         <div className="bg-white/40 backdrop-blur-lg rounded-2xl p-6 border border-white/30 shadow-md dark:bg-[#272727]">
           <h3 className="text-xl font-bold text-farm-900 dark:text-white mb-4 flex items-center gap-2">
             <FaChartBar className="text-blue-500" />
-            Monthly Performance
+            {t("monthly_performance")}
           </h3>
           <div className="space-y-4">
             {monthlyStats.map((stat, index) => (
@@ -96,7 +97,7 @@ const AnalyticsTab = ({ data, loading, error }) => {
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-farm-700 dark:text-gray-300 font-medium">{stat.month}</span>
                   <div className="flex items-center gap-4">
-                    <span className="text-farm-900 dark:text-white">Yield: {stat.yield}%</span>
+                    <span className="text-farm-900 dark:text-white">{t("yield_label")}: {stat.yield}%</span>
                     <span className="text-green-600 dark:text-green-400">₹{stat.revenue.toLocaleString()}</span>
                   </div>
                 </div>
@@ -107,8 +108,8 @@ const AnalyticsTab = ({ data, loading, error }) => {
                   ></div>
                 </div>
                 <div className="flex items-center justify-between text-xs text-farm-600 dark:text-gray-400">
-                  <span>Revenue: ₹{stat.revenue.toLocaleString()}</span>
-                  <span>Expenses: ₹{stat.expenses.toLocaleString()}</span>
+                  <span>{t("revenue")}: ₹{stat.revenue.toLocaleString()}</span>
+                  <span>{t("expenses")}: ₹{stat.expenses.toLocaleString()}</span>
                 </div>
               </div>
             ))}
@@ -119,7 +120,7 @@ const AnalyticsTab = ({ data, loading, error }) => {
         <div className="bg-white/40 backdrop-blur-lg rounded-2xl p-6 border border-white/30 shadow-md dark:bg-[#272727]">
           <h3 className="text-xl font-bold text-farm-900 dark:text-white mb-4 flex items-center gap-2">
             <FaChartPie className="text-purple-500" />
-            Growth Metrics
+            {t("growth_metrics")}
           </h3>
           <div className="space-y-4">
             {growthMetrics.map((metric, index) => (
@@ -152,17 +153,17 @@ const AnalyticsTab = ({ data, loading, error }) => {
       <div className="bg-white/40 backdrop-blur-lg rounded-2xl p-6 border border-white/30 shadow-md dark:bg-[#272727]">
         <h3 className="text-xl font-bold text-farm-900 dark:text-white mb-4 flex items-center gap-2">
           <FaSeedling className="text-green-500" />
-          Crop Performance
+          {t("crop_performance")}
         </h3>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-farm-200 dark:border-gray-700">
-                <th className="text-left py-3 px-4 text-farm-700 dark:text-gray-300 font-semibold">Crop</th>
-                <th className="text-left py-3 px-4 text-farm-700 dark:text-gray-300 font-semibold">Yield</th>
-                <th className="text-left py-3 px-4 text-farm-700 dark:text-gray-300 font-semibold">Growth</th>
-                <th className="text-left py-3 px-4 text-farm-700 dark:text-gray-300 font-semibold">Health</th>
-                <th className="text-left py-3 px-4 text-farm-700 dark:text-gray-300 font-semibold">Revenue</th>
+                <th className="text-left py-3 px-4 text-farm-700 dark:text-gray-300 font-semibold">{t("crop_col")}</th>
+                <th className="text-left py-3 px-4 text-farm-700 dark:text-gray-300 font-semibold">{t("yield_label")}</th>
+                <th className="text-left py-3 px-4 text-farm-700 dark:text-gray-300 font-semibold">{t("growth_col")}</th>
+                <th className="text-left py-3 px-4 text-farm-700 dark:text-gray-300 font-semibold">{t("health_col")}</th>
+                <th className="text-left py-3 px-4 text-farm-700 dark:text-gray-300 font-semibold">{t("revenue")}</th>
               </tr>
             </thead>
             <tbody>
@@ -239,7 +240,7 @@ const AnalyticsTab = ({ data, loading, error }) => {
             <div className="space-y-3">
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm text-farm-700 dark:text-gray-300">Yield</span>
+                  <span className="text-sm text-farm-700 dark:text-gray-300">{t("yield_label")}</span>
                   <span className="text-farm-900 dark:text-white font-semibold">{field.yield}%</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
@@ -251,7 +252,7 @@ const AnalyticsTab = ({ data, loading, error }) => {
               </div>
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm text-farm-700 dark:text-gray-300">Efficiency</span>
+                  <span className="text-sm text-farm-700 dark:text-gray-300">{t("efficiency")}</span>
                   <span className="text-farm-900 dark:text-white font-semibold">{field.efficiency}%</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
@@ -263,17 +264,16 @@ const AnalyticsTab = ({ data, loading, error }) => {
               </div>
               <div className="pt-2 border-t border-farm-200 dark:border-gray-700">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-farm-700 dark:text-gray-300">Profit</span>
+                  <span className="text-sm text-farm-700 dark:text-gray-300">{t("profit")}</span>
                   <span className="text-green-600 dark:text-green-400 font-bold">
                     ₹{field.profit.toLocaleString()}
                   </span>
                 </div>
                 <span
-                  className={`inline-block mt-2 px-2 py-1 rounded text-xs ${
-                    field.status === "excellent"
+                  className={`inline-block mt-2 px-2 py-1 rounded text-xs ${field.status === "excellent"
                       ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
                       : "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
-                  }`}
+                    }`}
                 >
                   {field.status}
                 </span>

@@ -2,12 +2,12 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLogin } from "@/Context/logincontext";
-import { 
-  FaPlus, 
-  FaEdit, 
-  FaTrash, 
-  FaSeedling, 
-  FaCalendarAlt, 
+import {
+  FaPlus,
+  FaEdit,
+  FaTrash,
+  FaSeedling,
+  FaCalendarAlt,
   FaMapMarkerAlt,
   FaSun,
   FaCheck,
@@ -22,6 +22,7 @@ import { CROP_DATABASE } from "../data/CROP_DATABASE";
 import Select from "react-select";
 import { supabase } from "@/lib/supabaseClient";
 import useToast from "@/hooks/useToast";
+import { useLanguage } from "@/Context/languagecontext";
 
 const priceLookup = {
   Cereal: 22,
@@ -128,8 +129,8 @@ const deriveAutoValues = (formState, cropInfoOverride) => {
     formState.scoutingFrequency !== ""
       ? Number(formState.scoutingFrequency)
       : expectedYieldKg > 2000
-      ? 5
-      : 7;
+        ? 5
+        : 7;
 
   const pestRiskLevel =
     formState.pestRiskLevel ||
@@ -191,15 +192,16 @@ const defaultFormState = {
 };
 
 const createInitialFormState = () => ({ ...defaultFormState });
-const CropProfileManager = ({ onSelectCrop,selectedCrop }) => {
-  const {user,accessToken} = useLogin();
+const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
+  const { user, accessToken } = useLogin();
+  const { t } = useLanguage();
   const { showToast } = useToast();
   const [crops, setCrops] = useState([]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingCrop, setEditingCrop] = useState(null);
-  const[loading,setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-    // Load crops for this user when component mounts or user changes
+  // Load crops for this user when component mounts or user changes
   useEffect(() => {
     if (!user?.id) return;
 
@@ -225,7 +227,7 @@ const CropProfileManager = ({ onSelectCrop,selectedCrop }) => {
   const [calculatedData, setCalculatedData] = useState(null);
   const [calculating, setCalculating] = useState(false);
   const numberFormatter = useMemo(() => new Intl.NumberFormat("en-IN"), []);
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   // Auto-calculate when required fields change
   useEffect(() => {
@@ -295,11 +297,11 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     return value === null || value === undefined || value === "" ? fallback : value;
   };
 
-const pickNumberOrFallback = (value, fallback) => {
-  if (value === null || value === undefined || value === "") return fallback;
-  const numeric = Number(value);
-  return Number.isFinite(numeric) ? numeric : fallback;
-};
+  const pickNumberOrFallback = (value, fallback) => {
+    if (value === null || value === undefined || value === "") return fallback;
+    const numeric = Number(value);
+    return Number.isFinite(numeric) ? numeric : fallback;
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -310,30 +312,30 @@ const pickNumberOrFallback = (value, fallback) => {
   };
 
   const calculateGrowthStage = (plantingDate, cropType) => {
-  if (!plantingDate || !cropType) return { stage: "Unknown", progress: 0 };
+    if (!plantingDate || !cropType) return { stage: "Unknown", progress: 0 };
 
-  const planted = new Date(plantingDate);
-  const now = new Date();
-  const daysSincePlanting = Math.floor((now - planted) / (1000 * 60 * 60 * 24));
+    const planted = new Date(plantingDate);
+    const now = new Date();
+    const daysSincePlanting = Math.floor((now - planted) / (1000 * 60 * 60 * 24));
 
-  const cropInfo = Array.isArray(CROP_DATABASE)
-    ? CROP_DATABASE.find(c => c.name === cropType)
-    : Object.values(CROP_DATABASE).find(c => c.name === cropType);
+    const cropInfo = Array.isArray(CROP_DATABASE)
+      ? CROP_DATABASE.find(c => c.name === cropType)
+      : Object.values(CROP_DATABASE).find(c => c.name === cropType);
 
-  if (!cropInfo) return { stage: "Unknown", progress: 0 };
+    if (!cropInfo) return { stage: "Unknown", progress: 0 };
 
-  const totalDays = cropInfo.growthDays || 100;
-  const stages = cropInfo.stages || ["Sowing", "Germination", "Vegetative", "Flowering", "Harvest"];
+    const totalDays = cropInfo.growthDays || 100;
+    const stages = cropInfo.stages || ["Sowing", "Germination", "Vegetative", "Flowering", "Harvest"];
 
-  const progress = daysSincePlanting / totalDays;
+    const progress = daysSincePlanting / totalDays;
 
-  const stageIndex = Math.floor(progress * stages.length);
-  const stage = stages[Math.min(stageIndex, stages.length - 1)];
+    const stageIndex = Math.floor(progress * stages.length);
+    const stage = stages[Math.min(stageIndex, stages.length - 1)];
 
-  return {
-    stage,
-    progress: Math.min(progress * 100, 100).toFixed(1)  // percent
-  };
+    return {
+      stage,
+      progress: Math.min(progress * 100, 100).toFixed(1)  // percent
+    };
   };
 
   const handleSubmit = async (e) => {
@@ -342,7 +344,7 @@ const pickNumberOrFallback = (value, fallback) => {
 
     const currentUserId = user?.id;
     if (!currentUserId) {
-      showToast("error", "Please sign in to add crops");
+      showToast("error", t("signin_to_add_error"));
       setLoading(false);
       return;
     }
@@ -351,9 +353,9 @@ const pickNumberOrFallback = (value, fallback) => {
     try {
       const response = await fetch(`${BASE_URL}/api/crops`, {
         method: "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
-          "Authorization" : `Bearer ${accessToken}`
+          "Authorization": `Bearer ${accessToken}`
         },
         body: JSON.stringify({
           user_id: currentUserId,
@@ -389,7 +391,7 @@ const pickNumberOrFallback = (value, fallback) => {
 
       // Reset form
       resetFormState();
-      showToast("success", editingCrop ? "Crop updated successfully! 🌾" : "Crop saved successfully! 🌾");
+      showToast("success", editingCrop ? t("crop_updated_success") : t("crop_saved_success"));
     } catch (error) {
       console.error("Save error:", error);
       showToast("error", error.message || "Failed to save crop. Please try again.");
@@ -434,28 +436,28 @@ const pickNumberOrFallback = (value, fallback) => {
   };
 
   const handleDelete = async (cropId) => {
-    if (!confirm("Are you sure you want to delete this crop?")) return;
-    
+    if (!confirm(t("delete_confirm"))) return;
+
     setLoading(true);
-    try{
-      const res = await fetch(`${BASE_URL}/api/crops/${cropId}`,{
-        method : "DELETE",
-        headers : {
-          "Content-Type" : "application/json",
-          "Authorization" : `Bearer ${accessToken}`
+    try {
+      const res = await fetch(`${BASE_URL}/api/crops/${cropId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${accessToken}`
         }
       });
       const data = await res.json();
-      if(!res.ok) {
+      if (!res.ok) {
         showToast("error", "Failed to delete crop");
         return;
       }
       setCrops(prev => prev.filter(crop => crop.id !== cropId));
-      showToast("success", "Crop deleted successfully! 🗑️");
-    }catch(e){
-      console.log("Error is :",e);
+      showToast("success", t("delete_success"));
+    } catch (e) {
+      console.log("Error is :", e);
       showToast("error", "Failed to delete crop. Please try again.");
-    }finally{
+    } finally {
       setLoading(false);
     }
   };
@@ -471,7 +473,7 @@ const pickNumberOrFallback = (value, fallback) => {
   };
 
   const cropOptions = Object.values(CROP_DATABASE)
-    .filter((crop, index, self) => 
+    .filter((crop, index, self) =>
       index === self.findIndex(c => c.name === crop.name)
     )
     .map(crop => ({
@@ -489,8 +491,8 @@ const pickNumberOrFallback = (value, fallback) => {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h2 className="text-3xl font-bold text-farm-900 mb-2">🌾 My Crop Profiles</h2>
-          <p className="text-farm-700">Manage your crops and get personalized weather guidance</p>
+          <h2 className="text-3xl font-bold text-farm-900 mb-2">{t("my_crop_profiles")}</h2>
+          <p className="text-farm-700">{t("crop_profiles_desc")}</p>
         </div>
         <motion.button
           whileHover={{ scale: 1.05 }}
@@ -499,7 +501,7 @@ const pickNumberOrFallback = (value, fallback) => {
           className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-farm-500 to-farm-700 text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
         >
           <FaPlus className="w-5 h-5" />
-          Add Crop
+          {t("add_crop_btn")}
         </motion.button>
       </div>
 
@@ -515,7 +517,7 @@ const pickNumberOrFallback = (value, fallback) => {
             <div className="bg-white/30 backdrop-blur-lg rounded-2xl p-6 border border-white/20 shadow-lg dark:bg-[#272727]">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold text-farm-900">
-                  {editingCrop ? "Edit Crop" : "Add New Crop"}
+                  {editingCrop ? t("edit_crop_title") : t("add_crop_title")}
                 </h3>
                 <button
                   onClick={resetFormState}
@@ -528,23 +530,23 @@ const pickNumberOrFallback = (value, fallback) => {
               <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2 pt-2">
                   <p className="text-xs font-semibold uppercase tracking-wide text-farm-500">
-                    Essential Details
+                    {t("essential_details")}
                   </p>
                   <p className="text-sm text-farm-600">
-                    Enter just the basics—everything else is auto-generated from our crop database.
+                    {t("essential_details_desc")}
                   </p>
                 </div>
 
                 <div>
                   <label className="block text-sm font-semibold text-farm-700 mb-2">
-                    Field Name *
+                    {t("field_name_label")}
                   </label>
                   <input
                     type="text"
                     name="fieldName"
                     value={formData.fieldName}
                     onChange={handleInputChange}
-                    placeholder="e.g., North Field"
+                    placeholder={t("field_name_placeholder")}
                     required
                     className="w-full p-3 rounded-xl border text-farm-500 border-farm-200 focus:outline-none focus:ring-2 focus:ring-farm-400"
                   />
@@ -552,21 +554,21 @@ const pickNumberOrFallback = (value, fallback) => {
 
                 <div>
                   <label className="block text-sm font-semibold text-farm-700 mb-2">
-                    Field Location
+                    {t("field_location_label")}
                   </label>
                   <input
                     type="text"
                     name="location"
                     value={formData.location}
                     onChange={handleInputChange}
-                    placeholder="Village / District / Notes (optional)"
+                    placeholder={t("field_location_placeholder")}
                     className="w-full p-3 rounded-xl border text-farm-500 border-farm-200 focus:outline-none focus:ring-2 focus:ring-farm-400"
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-semibold text-farm-700 mb-2">
-                    Soil Type *
+                    {t("soil_type_label")}
                   </label>
                   <select
                     name="soilType"
@@ -575,16 +577,16 @@ const pickNumberOrFallback = (value, fallback) => {
                     required
                     className="w-full p-3 rounded-xl border text-farm-500 border-farm-200 focus:outline-none focus:ring-2 focus:ring-farm-400"
                   >
-                    <option value="">Select soil type...</option>
-                    <option value="Well-drained loamy soil">Well-drained loamy soil</option>
-                    <option value="Clay soil">Clay soil</option>
-                    <option value="Sandy soil">Sandy soil</option>
-                    <option value="Sandy loam">Sandy loam</option>
-                    <option value="Clay loam">Clay loam</option>
-                    <option value="Silt loam">Silt loam</option>
-                    <option value="Red soil">Red soil</option>
-                    <option value="Black soil">Black soil</option>
-                    <option value="Alluvial soil">Alluvial soil</option>
+                    <option value="">{t("select_soil_placeholder")}</option>
+                    <option value="Well-drained loamy soil">{t("soil_well_drained")}</option>
+                    <option value="Clay soil">{t("soil_clay")}</option>
+                    <option value="Sandy soil">{t("soil_sandy")}</option>
+                    <option value="Sandy loam">{t("soil_sandy_loam")}</option>
+                    <option value="Clay loam">{t("soil_clay_loam")}</option>
+                    <option value="Silt loam">{t("soil_silt_loam")}</option>
+                    <option value="Red soil">{t("soil_red")}</option>
+                    <option value="Black soil">{t("soil_black")}</option>
+                    <option value="Alluvial soil">{t("soil_alluvial")}</option>
                   </select>
                 </div>
 
@@ -620,14 +622,14 @@ const pickNumberOrFallback = (value, fallback) => {
 
                 <div>
                   <label className="block text-sm font-semibold text-farm-700 mb-2">
-                    Field Area (acres) *
+                    {t("field_area_label")}
                   </label>
                   <input
                     type="number"
                     name="area"
                     value={formData.area}
                     onChange={handleInputChange}
-                    placeholder="e.g., 2.5"
+                    placeholder={t("area_placeholder")}
                     min="0.1"
                     step="0.1"
                     required
@@ -637,21 +639,21 @@ const pickNumberOrFallback = (value, fallback) => {
 
                 <div>
                   <label className="block text-sm font-semibold text-farm-700 mb-2">
-                    Variety (optional)
+                    {t("variety_label")}
                   </label>
                   <input
                     type="text"
                     name="variety"
                     value={formData.variety}
                     onChange={handleInputChange}
-                    placeholder="e.g., Golden Wheat, Basmati Rice"
+                    placeholder={t("variety_placeholder")}
                     className="w-full p-3 rounded-xl border text-farm-500 border-farm-200 focus:outline-none focus:ring-2 focus:ring-farm-400"
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-semibold text-farm-700 mb-2">
-                    Crop Name *
+                    {t("crop_name_label")}
                   </label>
                   <Select
                     options={cropOptions}
@@ -659,7 +661,7 @@ const pickNumberOrFallback = (value, fallback) => {
                     onChange={(selectedOption) =>
                       setFormData(prev => ({ ...prev, cropType: selectedOption.value }))
                     }
-                    placeholder="Search or select crop..."
+                    placeholder={t("select_crop_placeholder")}
                     isSearchable={true}
                     required
                     styles={{
@@ -708,15 +710,15 @@ const pickNumberOrFallback = (value, fallback) => {
                         backgroundColor: isSelected
                           ? "#16a34a"
                           : isFocused
-                          ? selectProps.isDark
-                            ? "#262626"
-                            : "#dcfce7"
-                          : "transparent",
+                            ? selectProps.isDark
+                              ? "#262626"
+                              : "#dcfce7"
+                            : "transparent",
                         color: isSelected
                           ? "white"
                           : selectProps.isDark
-                          ? "#d4d4d8"
-                          : "#14532d",
+                            ? "#d4d4d8"
+                            : "#14532d",
                         cursor: "pointer",
                         padding: "10px 12px",
                       }),
@@ -736,7 +738,7 @@ const pickNumberOrFallback = (value, fallback) => {
 
                 <div>
                   <label className="block text-sm font-semibold text-farm-700 mb-2">
-                    Planting Date *
+                    {t("planting_date_label")}
                   </label>
                   <input
                     type="date"
@@ -750,13 +752,13 @@ const pickNumberOrFallback = (value, fallback) => {
 
                 <div className="md:col-span-2">
                   <label className="block text-sm font-semibold text-farm-700 mb-2">
-                    Notes
+                    {t("notes_label")}
                   </label>
                   <textarea
                     name="notes"
                     value={formData.notes}
                     onChange={handleInputChange}
-                    placeholder="Any additional notes about this crop..."
+                    placeholder={t("notes_placeholder")}
                     rows={3}
                     className="w-full p-3 rounded-xl border text-gray-500 border-farm-200 focus:outline-none focus:ring-2 focus:ring-farm-400 resize-none"
                   />
@@ -766,10 +768,10 @@ const pickNumberOrFallback = (value, fallback) => {
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-wide text-farm-500">
-                        Auto-generated Blueprint
+                        {t("auto_generated_blueprint")}
                       </p>
                       <p className="text-sm text-farm-600">
-                        Derived from crop intelligence. You can always edit these later from the dashboard.
+                        {t("blueprint_desc")}
                       </p>
                     </div>
                   </div>
@@ -777,7 +779,7 @@ const pickNumberOrFallback = (value, fallback) => {
 
                 {calculating && (
                   <div className="md:col-span-2 text-center py-4">
-                    <p className="text-farm-600">Calculating crop data...</p>
+                    <p className="text-farm-600">{t("calculating_data")}</p>
                   </div>
                 )}
 
@@ -785,41 +787,41 @@ const pickNumberOrFallback = (value, fallback) => {
                   <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {[
                       {
-                        label: "Soil Type",
+                        label: t("soil_type_label").replace("*", "").trim(),
                         value: calculatedData.soil_type || displayData.soilType,
                         icon: FaSeedling,
                       },
                       {
-                        label: "Irrigation Method",
+                        label: t("irrigation_method_label"),
                         value: calculatedData.irrigation_method || displayData.irrigationMethod,
                         icon: FaTint,
                       },
                       {
-                        label: "Moisture Range",
+                        label: t("moisture_range_label"),
                         value: `${calculatedData.moisture_threshold_min || displayData.moistureThresholdMin}% – ${calculatedData.moisture_threshold_max || displayData.moistureThresholdMax}%`,
                         icon: FaWater,
                       },
                       {
-                        label: "Water / Cycle",
+                        label: t("water_per_cycle"),
                         value: `${numberFormatter.format(calculatedData.default_water_amount_liters || displayData.defaultWaterAmountLiters || 0)} L`,
                         icon: FaSun,
                       },
                     ].map(({ label, value, icon: Icon }) => (
-                    <div
-                      key={label}
-                      className="bg-white/60 dark:bg-[#1a1a1a] rounded-xl p-4 border border-white/20 shadow-sm flex items-start gap-3"
-                    >
-                      <div className="p-2 rounded-lg bg-farm-100">
-                        <Icon className="w-4 h-4 text-farm-600" />
+                      <div
+                        key={label}
+                        className="bg-white/60 dark:bg-[#1a1a1a] rounded-xl p-4 border border-white/20 shadow-sm flex items-start gap-3"
+                      >
+                        <div className="p-2 rounded-lg bg-farm-100">
+                          <Icon className="w-4 h-4 text-farm-600" />
+                        </div>
+                        <div>
+                          <p className="text-xs uppercase tracking-wider text-farm-500">{label}</p>
+                          <p className="text-base font-semibold text-farm-900">
+                            {formatDisplayValue(value)}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-xs uppercase tracking-wider text-farm-500">{label}</p>
-                        <p className="text-base font-semibold text-farm-900">
-                          {formatDisplayValue(value)}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
                   </div>
                 )}
 
@@ -827,38 +829,38 @@ const pickNumberOrFallback = (value, fallback) => {
                   <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
                     {[
                       {
-                        label: "Expected Yield",
+                        label: t("est_yield_label"),
                         value: `${numberFormatter.format(calculatedData.expected_yield_kg || displayData.expectedYieldKg || 0)} kg`,
                         icon: FaChartLine,
                       },
                       {
-                        label: "Market Price",
+                        label: t("market_price_label"),
                         value: calculatedData.expected_price_per_kg || displayData.expectedPricePerKg
                           ? `₹${numberFormatter.format(calculatedData.expected_price_per_kg || displayData.expectedPricePerKg)} / kg`
                           : "₹— / kg",
                         icon: FaSeedling,
                       },
                       {
-                        label: "Cost / Acre",
+                        label: t("est_cost_label"),
                         value: `₹${numberFormatter.format(calculatedData.estimated_cost_per_acre || displayData.estimatedCostPerAcre || 0)}`,
                         icon: FaSun,
                       },
                     ].map(({ label, value, icon: Icon }) => (
-                    <div
-                      key={label}
-                      className="bg-white/60 dark:bg-[#1a1a1a] rounded-xl p-4 border border-white/20 shadow-sm flex items-start gap-3"
-                    >
-                      <div className="p-2 rounded-lg bg-farm-100">
-                        <Icon className="w-4 h-4 text-farm-600" />
+                      <div
+                        key={label}
+                        className="bg-white/60 dark:bg-[#1a1a1a] rounded-xl p-4 border border-white/20 shadow-sm flex items-start gap-3"
+                      >
+                        <div className="p-2 rounded-lg bg-farm-100">
+                          <Icon className="w-4 h-4 text-farm-600" />
+                        </div>
+                        <div>
+                          <p className="text-xs uppercase tracking-wider text-farm-500">{label}</p>
+                          <p className="text-base font-semibold text-farm-900">
+                            {formatDisplayValue(value)}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-xs uppercase tracking-wider text-farm-500">{label}</p>
-                        <p className="text-base font-semibold text-farm-900">
-                          {formatDisplayValue(value)}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
                   </div>
                 )}
 
@@ -866,41 +868,41 @@ const pickNumberOrFallback = (value, fallback) => {
                   <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-4 gap-4">
                     {[
                       {
-                        label: "Expected Harvest",
+                        label: t("expected_harvest_label"),
                         value: formatDateForDisplay(calculatedData.expected_harvest || displayData.expectedHarvest),
                         icon: FaCalendarAlt,
                       },
                       {
-                        label: "Fertilization",
+                        label: t("fertilization_label"),
                         value: formatDateForDisplay(calculatedData.next_fertilization_date || displayData.nextFertilizationDate),
                         icon: FaClock,
                       },
                       {
-                        label: "Scouting Cycle",
-                        value: `${formatDisplayValue(calculatedData.scouting_frequency_days || displayData.scoutingFrequencyDays)} days`,
+                        label: t("scouting_cycle_label"),
+                        value: `${formatDisplayValue(calculatedData.scouting_frequency_days || displayData.scoutingFrequencyDays)} ${t("days")}`,
                         icon: FaBug,
                       },
                       {
-                        label: "Pest Risk",
+                        label: t("pest_risk_label"),
                         value: (calculatedData.pest_risk_level || displayData.pestRiskLevel || "medium").toUpperCase(),
                         icon: FaBug,
                       },
                     ].map(({ label, value, icon: Icon }) => (
-                    <div
-                      key={label}
-                      className="bg-white/60 dark:bg-[#1a1a1a] rounded-xl p-4 border border-white/20 shadow-sm flex items-start gap-3"
-                    >
-                      <div className="p-2 rounded-lg bg-farm-100">
-                        <Icon className="w-4 h-4 text-farm-600" />
+                      <div
+                        key={label}
+                        className="bg-white/60 dark:bg-[#1a1a1a] rounded-xl p-4 border border-white/20 shadow-sm flex items-start gap-3"
+                      >
+                        <div className="p-2 rounded-lg bg-farm-100">
+                          <Icon className="w-4 h-4 text-farm-600" />
+                        </div>
+                        <div>
+                          <p className="text-xs uppercase tracking-wider text-farm-500">{label}</p>
+                          <p className="text-base font-semibold text-farm-900">
+                            {formatDisplayValue(value)}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-xs uppercase tracking-wider text-farm-500">{label}</p>
-                        <p className="text-base font-semibold text-farm-900">
-                          {formatDisplayValue(value)}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
                   </div>
                 )}
 
@@ -910,7 +912,7 @@ const pickNumberOrFallback = (value, fallback) => {
                     onClick={resetFormState}
                     className="flex-1 sm:flex-none px-4 py-2 rounded-xl text-black bg-gray-50 hover:bg-gray-100 border border-gray-200"
                   >
-                    Cancel
+                    {t("cancel_btn")}
                   </button>
                   <motion.button
                     whileHover={{ scale: 1.05 }}
@@ -919,7 +921,7 @@ const pickNumberOrFallback = (value, fallback) => {
                     className="px-6 py-3 bg-gradient-to-r from-farm-500 to-farm-700 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
                   >
                     <FaCheck className="w-4 h-4" />
-                    {editingCrop ? "Update Crop" : "Add Crop"}
+                    {editingCrop ? t("update_crop_btn") : t("add_crop_btn")}
                   </motion.button>
                 </div>
               </form>
@@ -986,7 +988,7 @@ const pickNumberOrFallback = (value, fallback) => {
                 <div className="flex items-center gap-2">
                   <FaCalendarAlt className="w-4 h-4 text-farm-500" />
                   <span>
-                    Planted:{" "}
+                    {t("planted_label")}{" "}
                     {plantingDate ? new Date(plantingDate).toLocaleDateString() : "—"}
                   </span>
                 </div>
@@ -997,40 +999,40 @@ const pickNumberOrFallback = (value, fallback) => {
                 {areaDisplay && (
                   <div className="flex items-center gap-2">
                     <FaSun className="w-4 h-4 text-farm-500" />
-                    <span>Area: {formatDisplayValue(areaDisplay)} acres</span>
+                    <span>{t("area_label")} {formatDisplayValue(areaDisplay)} acres</span>
                   </div>
                 )}
                 {soilType && (
                   <div className="flex items-center gap-2">
                     <FaSeedling className="w-4 h-4 text-farm-500" />
-                    <span>Soil: {soilType}</span>
+                    <span>{t("soil_label")} {soilType}</span>
                   </div>
                 )}
                 {irrigationMethod && (
                   <div className="flex items-center gap-2">
                     <FaTint className="w-4 h-4 text-farm-500" />
-                    <span>Irrigation: {irrigationMethod}</span>
+                    <span>{t("irrigation_label")} {irrigationMethod}</span>
                   </div>
                 )}
                 {(moistureMin || moistureMax) && (
                   <div className="flex items-center gap-2">
                     <FaWater className="w-4 h-4 text-farm-500" />
                     <span>
-                      Moisture range: {formatDisplayValue(moistureMin)}% - {formatDisplayValue(moistureMax)}%
+                      {t("moisture_range_label_short")} {formatDisplayValue(moistureMin)}% - {formatDisplayValue(moistureMax)}%
                     </span>
                   </div>
                 )}
                 {expectedYield && (
                   <div className="flex items-center gap-2">
                     <FaChartLine className="w-4 h-4 text-farm-500" />
-                    <span>Expected yield: {formatDisplayValue(expectedYield)} kg</span>
+                    <span>{t("expected_yield_label_short")} {formatDisplayValue(expectedYield)} kg</span>
                   </div>
                 )}
                 {nextFertilization && (
                   <div className="flex items-center gap-2">
                     <FaClock className="w-4 h-4 text-farm-500" />
                     <span>
-                      Next fertilization:{" "}
+                      {t("next_fertilization_label")}{" "}
                       {new Date(nextFertilization).toLocaleDateString()}
                     </span>
                   </div>
@@ -1038,7 +1040,7 @@ const pickNumberOrFallback = (value, fallback) => {
                 {pestRisk && (
                   <div className="flex items-center gap-2">
                     <FaBug className="w-4 h-4 text-farm-500" />
-                    <span>Pest risk: {pestRisk}</span>
+                    <span>{t("pest_risk_label_short")} {pestRisk}</span>
                   </div>
                 )}
               </div>
@@ -1048,18 +1050,17 @@ const pickNumberOrFallback = (value, fallback) => {
                 whileTap={{ scale: 0.95 }}
                 onClick={() => {
                   if (selectedCrop && selectedCrop.id === crop.id) {
-                    onSelectCrop(null); 
+                    onSelectCrop(null);
                   } else {
                     onSelectCrop(crop);
                   }
                 }}
-                className={`w-full mt-4 py-2 rounded-xl font-semibold transition-all duration-300 ${
-                  selectedCrop && selectedCrop.id === crop.id
-                    ? "bg-gradient-to-r from-farm-500 to-farm-600 text-white shadow-lg"
-                    : "bg-farm-100 text-farm-700 hover:bg-farm-200"
-                }`}
+                className={`w-full mt-4 py-2 rounded-xl font-semibold transition-all duration-300 ${selectedCrop && selectedCrop.id === crop.id
+                  ? "bg-gradient-to-r from-farm-500 to-farm-600 text-white shadow-lg"
+                  : "bg-farm-100 text-farm-700 hover:bg-farm-200"
+                  }`}
               >
-                {selectedCrop && selectedCrop.id === crop.id ? "Selected" : "Select for Weather Guidance"}
+                {selectedCrop && selectedCrop.id === crop.id ? t("selected_status") : t("select_for_guidance")}
               </motion.button>
             </motion.div>
           );
@@ -1076,9 +1077,9 @@ const pickNumberOrFallback = (value, fallback) => {
           <div className="w-24 h-24 bg-farm-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <FaSeedling className="w-12 h-12 text-farm-600" />
           </div>
-          <h3 className="text-xl font-bold text-farm-900 mb-2">No Crops Added Yet</h3>
+          <h3 className="text-xl font-bold text-farm-900 mb-2">{t("no_crops_added_title")}</h3>
           <p className="text-farm-700 mb-6">
-            Add your first crop to get personalized weather guidance and farming tips.
+            {t("add_first_crop_desc")}
           </p>
           <motion.button
             whileHover={{ scale: 1.05 }}
@@ -1086,7 +1087,7 @@ const pickNumberOrFallback = (value, fallback) => {
             onClick={() => setShowAddForm(true)}
             className="px-6 py-3 bg-gradient-to-r from-farm-500 to-farm-700 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
           >
-            Add Your First Crop
+            {t("add_first_crop_btn")}
           </motion.button>
         </motion.div>
       )}

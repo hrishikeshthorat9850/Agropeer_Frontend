@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useWeather } from "@/Context/WeatherContext";
 import useGeolocation from "@/hooks/useGeolocation";
 import { useLogin } from "@/Context/logincontext";
+import { useLanguage } from "@/Context/languagecontext";
 import {
   FaSeedling,
   FaCloudSun,
@@ -23,6 +24,7 @@ import PestControlTab from "./farmer-dashboard/PestControlTab";
 import ScheduleTab from "./farmer-dashboard/ScheduleTab";
 
 const FarmerDashboard = () => {
+  const { t } = useLanguage();
   const { weather, loading: weatherLoading, getWeather, error: weatherError } = useWeather();
   const { position } = useGeolocation();
   const { user, loading: authLoading, accessToken, session } = useLogin();
@@ -65,7 +67,7 @@ const FarmerDashboard = () => {
 
     if (!user?.id) {
       setInsightsData(null);
-      setInsightsError("Sign in to view your farm insights.");
+      setInsightsError(t("signin_insight_error"));
       setInsightsLoading(false);
       return;
     }
@@ -126,12 +128,12 @@ const FarmerDashboard = () => {
   };
 
   const tabs = [
-    { id: "crops", name: "My Crops", icon: FaSeedling },
-    { id: "weather", name: "Weather Guide", icon: FaCloudSun },
-    { id: "irrigation", name: "Irrigation", icon: FaTint },
-    { id: "pests", name: "Pest Control", icon: FaBug },
-    { id: "schedule", name: "Schedule", icon: FaCalendarAlt },
-    { id: "analytics", name: "Analytics", icon: FaChartLine },
+    { id: "crops", name: t("tab_my_crops"), icon: FaSeedling },
+    { id: "weather", name: t("tab_weather"), icon: FaCloudSun },
+    { id: "irrigation", name: t("tab_irrigation"), icon: FaTint },
+    { id: "pests", name: t("tab_pest_control"), icon: FaBug },
+    { id: "schedule", name: t("tab_schedule"), icon: FaCalendarAlt },
+    { id: "analytics", name: t("tab_analytics"), icon: FaChartLine },
   ];
 
   const renderTabContent = () => {
@@ -182,8 +184,8 @@ const FarmerDashboard = () => {
             </div>
 
             <div>
-              <h1 className="text-3xl font-bold text-farm-900">Farmer Dashboard</h1>
-              <p className="text-farm-700 text-sm">Personalized farming guidance & weather insights</p>
+              <h1 className="text-3xl font-bold text-farm-900">{t("dashboard_title")}</h1>
+              <p className="text-farm-700 text-sm">{t("dashboard_subtitle")}</p>
             </div>
           </div>
 
@@ -194,17 +196,17 @@ const FarmerDashboard = () => {
               <div className="text-2xl font-bold text-green-900 dark:text-white">
                 {insightsData?.meta?.totalCrops ?? "--"}
               </div>
-              <div className="text-sm text-green-900 dark:text-white">Active Crops</div>
+              <div className="text-sm text-green-900 dark:text-white">{t("active_crops")}</div>
             </div>
 
             <div className="text-center">
               <div className="text-2xl font-bold text-green-900 dark:text-white">{cleanTemp}°C</div>
-              <div className="text-sm text-green-900 dark:text-white">Current Temp</div>
+              <div className="text-sm text-green-900 dark:text-white">{t("current_temp")}</div>
             </div>
 
             <div className="text-center">
               <div className="text-2xl font-bold text-green-900 dark:text-white">{rainChance}%</div>
-              <div className="text-sm text-green-900 dark:text-white">Rain Chance</div>
+              <div className="text-sm text-green-900 dark:text-white">{t("rain_chance")}</div>
             </div>
 
           </div>
@@ -237,7 +239,7 @@ const FarmerDashboard = () => {
 
             {selectedCrop && (
               <div className="mt-6 p-4 bg-farm-100 rounded-xl shadow-inner dark:bg-[#0a0a0a]">
-                <h4 className="font-semibold mb-2 text-green-900">Selected Crop</h4>
+                <h4 className="font-semibold mb-2 text-green-900">{t("selected_crop")}</h4>
                 <div className="flex items-center">
                   <span className="text-2xl text-farm-600">{selectedCrop?.crop_info?.icon}</span>
                   <div>
@@ -250,7 +252,7 @@ const FarmerDashboard = () => {
                   onClick={() => setSelectedCrop(null)}
                   className="mt-2 text-xs underline text-farm-700"
                 >
-                  Change Crop
+                  {t("change_crop")}
                 </button>
               </div>
             )}

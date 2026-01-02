@@ -108,7 +108,7 @@ export default function EditProfilePage() {
           {/* BIO WITH LIMIT */}
           <div>
             <label className="block text-sm font-medium text-green-700 mb-1 dark:text-gray-200">
-              {t("bio")}<span className="text-gray-500 text-xs"> (You can add links, hashtags, mentions, emojis, text)</span>
+              {t("bio")} <span className="text-gray-500 text-xs">{t("bio_hint")}</span>
             </label>
 
             <textarea
@@ -124,7 +124,7 @@ export default function EditProfilePage() {
 
             {/* Character Counter */}
             <p className="text-xs text-gray-600 mt-1">
-              {formData.bio.length} / {BIO_LIMIT} characters
+              {formData.bio.length} / {BIO_LIMIT} {t("characters_count")}
             </p>
           </div>
 

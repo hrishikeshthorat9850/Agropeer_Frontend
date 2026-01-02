@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, Suspense } from "react";
+import { useLanguage } from "@/Context/languagecontext";
 import { FaTimes } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
@@ -18,6 +19,7 @@ const RichTextEditor = dynamic(() => import("@/components/RichTextEditor"), {
 
 export default function StoryFormModal({ open, onClose, story }) {
   const router = useRouter();
+  const { t } = useLanguage();
   const [author, setAuthor] = useState("");
   const [title, setTitle] = useState("");
   const [contentHTML, setContentHTML] = useState("");
@@ -76,7 +78,7 @@ export default function StoryFormModal({ open, onClose, story }) {
   }, [story]);
 
   const handleSubmit = () => {
-    if (!author || !title || !contentHTML) return alert("Please fill all fields!");
+    if (!author || !title || !contentHTML) return alert(t("fill_all_fields_alert"));
     const newStory = {
       id: story?.id || Date.now(),
       author,
@@ -138,7 +140,7 @@ export default function StoryFormModal({ open, onClose, story }) {
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
           >
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold text-green-800">{story ? "Edit Story" : "Add Story"}</h2>
+              <h2 className="text-xl font-bold text-green-800">{story ? t("edit_story_title") : t("add_story")}</h2>
               <button onClick={onClose} className="p-2 rounded-full text-farm-600 hover:text-farm-900 hover:bg-gray-100">
                 <FaTimes />
               </button>
@@ -151,7 +153,7 @@ export default function StoryFormModal({ open, onClose, story }) {
               animate="visible"
             >
               <motion.div variants={fieldVariants} className="flex flex-col">
-                <label className="text-green-900 font-medium text-sm mb-1 dark:text-gray-200">Author Name</label>
+                <label className="text-green-900 font-medium text-sm mb-1 dark:text-gray-200">{t("author_name_label")}</label>
                 <input
                   className="p-3 border rounded-xl shadow-sm focus:ring-2 text-green-700 focus:ring-green-400"
                   value={author}
@@ -160,7 +162,7 @@ export default function StoryFormModal({ open, onClose, story }) {
               </motion.div>
 
               <motion.div variants={fieldVariants} className="flex flex-col">
-                <label className="text-green-900 font-medium text-sm mb-1 dark:text-gray-200">Story Title</label>
+                <label className="text-green-900 font-medium text-sm mb-1 dark:text-gray-200">{t("table_story_title")}</label>
                 <input
                   className="p-3 border rounded-xl shadow-sm focus:ring-2 text-green-700 focus:ring-green-400"
                   value={title}
@@ -169,7 +171,7 @@ export default function StoryFormModal({ open, onClose, story }) {
               </motion.div>
 
               <motion.div variants={fieldVariants} className="flex flex-col">
-                <label className="text-green-900 font-medium text-sm mb-1 dark:text-gray-200">Story Description</label>
+                <label className="text-green-900 font-medium text-sm mb-1 dark:text-gray-200">{t("story_desc_label")}</label>
                 <Suspense
                   fallback={
                     <div className="w-full h-64 border rounded-xl flex items-center justify-center bg-gray-50">
@@ -180,7 +182,7 @@ export default function StoryFormModal({ open, onClose, story }) {
                   <RichTextEditor
                     value={contentHTML}
                     onChange={setContentHTML}
-                    placeholder="Write your story..."
+                    placeholder={t("story_placeholder")}
                   />
                 </Suspense>
               </motion.div>
@@ -190,13 +192,13 @@ export default function StoryFormModal({ open, onClose, story }) {
                   onClick={onClose}
                   className="flex-1 px-4 py-2 rounded-xl text-black bg-gray-50 hover:bg-gray-100 border border-gray-200"
                 >
-                  Cancel
+                  {t("btn_cancel")}
                 </button>
                 <button
                   onClick={handleSubmit}
                   className="flex-1 bg-gradient-to-r from-green-500 to-green-700 text-white px-4 py-2 rounded-xl shadow-lg transform transition-transform hover:scale-105"
                 >
-                  {story ? "Update Story" : "Submit Story"}
+                  {story ? t("update_story_btn") : t("submit_story_btn")}
                 </button>
               </motion.div>
             </motion.div>

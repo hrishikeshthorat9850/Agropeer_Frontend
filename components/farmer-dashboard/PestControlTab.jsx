@@ -12,8 +12,10 @@ import {
   FaSearch,
   FaTimes,
 } from "react-icons/fa";
+import { useLanguage } from "@/Context/languagecontext";
 
 const PestControlTab = ({ data, loading, error }) => {
+  const { t } = useLanguage();
   const [selectedPest, setSelectedPest] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -69,7 +71,7 @@ const PestControlTab = ({ data, loading, error }) => {
   if (loading) {
     return (
       <div className="bg-white/40 backdrop-blur-lg rounded-2xl p-6 border border-white/30 shadow-md dark:bg-[#272727]">
-        <p className="text-farm-700 dark:text-gray-200">Loading pest intelligence...</p>
+        <p className="text-farm-700 dark:text-gray-200">{t("loading_pest")}</p>
       </div>
     );
   }
@@ -90,10 +92,10 @@ const PestControlTab = ({ data, loading, error }) => {
           <div>
             <h2 className="text-2xl font-bold text-farm-900 dark:text-white flex items-center gap-2">
               <FaBug className="text-orange-500" />
-              Pest Control Management
+              {t("pest_management")}
             </h2>
             <p className="text-farm-700 dark:text-gray-300 mt-1">
-              Monitor, identify, and manage pests in your fields
+              {t("pest_desc")}
             </p>
           </div>
         </div>
@@ -103,53 +105,52 @@ const PestControlTab = ({ data, loading, error }) => {
       <div className="bg-white/40 backdrop-blur-lg rounded-2xl p-6 border border-white/30 shadow-md dark:bg-[#272727]">
         <h3 className="text-xl font-bold text-farm-900 dark:text-white mb-4 flex items-center gap-2">
           <FaExclamationTriangle className="text-red-500" />
-          Active Pest Alerts
+          {t("active_pest_alerts")}
         </h3>
         {activeAlerts.length === 0 ? (
           <p className="text-farm-700 dark:text-gray-300">
-            No active pest alerts. Keep scouting regularly to stay ahead.
+            {t("no_active_alerts")}
           </p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {activeAlerts.map((alert) => (
-            <motion.div
-              key={alert.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              onClick={() => setSelectedPest(alert)}
-              className={`bg-white/60 dark:bg-[#1a1a1a] rounded-xl p-5 border-l-4 cursor-pointer hover:shadow-lg transition-all ${
-                selectedPest?.id === alert.id
+              <motion.div
+                key={alert.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                onClick={() => setSelectedPest(alert)}
+                className={`bg-white/60 dark:bg-[#1a1a1a] rounded-xl p-5 border-l-4 cursor-pointer hover:shadow-lg transition-all ${selectedPest?.id === alert.id
                   ? "ring-2 ring-orange-500"
                   : ""
-              } ${getSeverityColor(alert.severity)}`}
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <h4 className="font-bold text-lg text-farm-900 dark:text-white">{alert.pest}</h4>
-                  <p className="text-sm text-farm-600 dark:text-gray-400">{alert.field}</p>
+                  } ${getSeverityColor(alert.severity)}`}
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div>
+                    <h4 className="font-bold text-lg text-farm-900 dark:text-white">{alert.pest}</h4>
+                    <p className="text-sm text-farm-600 dark:text-gray-400">{alert.field}</p>
+                  </div>
+                  <span className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(alert.status)}`}>
+                    {alert.status}
+                  </span>
                 </div>
-                <span className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(alert.status)}`}>
-                  {alert.status}
-                </span>
-              </div>
-              <div className="space-y-2 text-sm">
-                <div className="flex items-center justify-between">
-                  <span className="text-farm-700 dark:text-gray-300">Severity:</span>
-                  <span className="font-semibold text-farm-900 dark:text-white capitalize">{alert.severity}</span>
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-farm-700 dark:text-gray-300">{t("severity")}:</span>
+                    <span className="font-semibold text-farm-900 dark:text-white capitalize">{alert.severity}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-farm-700 dark:text-gray-300">{t("affected_area")}:</span>
+                    <span className="font-semibold text-farm-900 dark:text-white">{alert.affectedArea}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-farm-700 dark:text-gray-300">{t("detected")}:</span>
+                    <span className="font-semibold text-farm-900 dark:text-white">{alert.detected}</span>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-farm-700 dark:text-gray-300">Affected Area:</span>
-                  <span className="font-semibold text-farm-900 dark:text-white">{alert.affectedArea}</span>
+                <div className="mt-3 pt-3 border-t border-farm-200 dark:border-gray-700">
+                  <p className="text-xs text-farm-600 dark:text-gray-400 line-clamp-2">{alert.description}</p>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-farm-700 dark:text-gray-300">Detected:</span>
-                  <span className="font-semibold text-farm-900 dark:text-white">{alert.detected}</span>
-                </div>
-              </div>
-              <div className="mt-3 pt-3 border-t border-farm-200 dark:border-gray-700">
-                <p className="text-xs text-farm-600 dark:text-gray-400 line-clamp-2">{alert.description}</p>
-              </div>
-            </motion.div>
+              </motion.div>
             ))}
           </div>
         )}
@@ -176,24 +177,24 @@ const PestControlTab = ({ data, loading, error }) => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h4 className="font-semibold text-farm-900 dark:text-white mb-2">Description</h4>
+              <h4 className="font-semibold text-farm-900 dark:text-white mb-2">{t("description")}</h4>
               <p className="text-farm-700 dark:text-gray-300 mb-4">{selectedPest.description}</p>
-              <h4 className="font-semibold text-farm-900 dark:text-white mb-2">Details</h4>
+              <h4 className="font-semibold text-farm-900 dark:text-white mb-2">{t("details")}</h4>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-farm-600 dark:text-gray-400">Severity:</span>
+                  <span className="text-farm-600 dark:text-gray-400">{t("severity")}:</span>
                   <span className="font-medium text-farm-900 dark:text-white capitalize">{selectedPest.severity}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-farm-600 dark:text-gray-400">Affected Area:</span>
+                  <span className="text-farm-600 dark:text-gray-400">{t("affected_area")}:</span>
                   <span className="font-medium text-farm-900 dark:text-white">{selectedPest.affectedArea}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-farm-600 dark:text-gray-400">Detected:</span>
+                  <span className="text-farm-600 dark:text-gray-400">{t("detected")}:</span>
                   <span className="font-medium text-farm-900 dark:text-white">{selectedPest.detected}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-farm-600 dark:text-gray-400">Status:</span>
+                  <span className="text-farm-600 dark:text-gray-400">{t("status_label")}</span>
                   <span className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(selectedPest.status)}`}>
                     {selectedPest.status}
                   </span>
@@ -203,7 +204,7 @@ const PestControlTab = ({ data, loading, error }) => {
             <div>
               <h4 className="font-semibold text-farm-900 dark:text-white mb-2 flex items-center gap-2">
                 <FaSprayCan className="text-blue-500" />
-                Recommended Treatment
+                {t("recommended_treatment")}
               </h4>
               <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
                 <p className="text-farm-700 dark:text-gray-300">{selectedPest.recommendedTreatment}</p>
@@ -218,7 +219,7 @@ const PestControlTab = ({ data, loading, error }) => {
         <div className="bg-white/40 backdrop-blur-lg rounded-2xl p-6 border border-white/30 shadow-md dark:bg-[#272727]">
           <h3 className="text-xl font-bold text-farm-900 dark:text-white mb-4 flex items-center gap-2">
             <FaSearch className="text-green-500" />
-            Pest Identification Database
+            {t("pest_db_title")}
           </h3>
           <div className="mb-4">
             <div className="relative">
@@ -227,7 +228,7 @@ const PestControlTab = ({ data, loading, error }) => {
 
                 <input
                   type="text"
-                  placeholder="Search pests..."
+                  placeholder={t("search_pests")}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="bg-transparent outline-none flex-1 text-sm text-gray-700 dark:text-gray-200"
@@ -236,37 +237,37 @@ const PestControlTab = ({ data, loading, error }) => {
             </div>
           </div>
           {filteredPestDatabase.length === 0 ? (
-            <p className="text-farm-700 dark:text-gray-400">No pest records from recent alerts.</p>
+            <p className="text-farm-700 dark:text-gray-400">{t("no_pest_records")}</p>
           ) : (
             <div className="space-y-3 max-h-96 overflow-y-auto">
               {filteredPestDatabase.map((pest) => (
-              <motion.div
-                key={pest.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="bg-white/60 dark:bg-[#1a1a1a] rounded-lg p-4 border border-white/20 hover:shadow-md transition-all"
-              >
-                <div className="flex items-start gap-3">
-                  <span className="text-2xl">{pest.image}</span>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-semibold text-farm-900 dark:text-white">{pest.name}</h4>
-                      <span className="text-xs px-2 py-1 bg-farm-100 dark:bg-farm-800 rounded text-farm-700 dark:text-gray-300">
-                        {pest.type}
-                      </span>
+                <motion.div
+                  key={pest.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="bg-white/60 dark:bg-[#1a1a1a] rounded-lg p-4 border border-white/20 hover:shadow-md transition-all"
+                >
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl">{pest.image}</span>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="font-semibold text-farm-900 dark:text-white">{pest.name}</h4>
+                        <span className="text-xs px-2 py-1 bg-farm-100 dark:bg-farm-800 rounded text-farm-700 dark:text-gray-300">
+                          {pest.type}
+                        </span>
+                      </div>
+                      <p className="text-sm text-farm-600 dark:text-gray-400 mb-2">
+                        <span className="font-medium">{t("crops_label")}</span> {pest.crops.join(", ")}
+                      </p>
+                      <p className="text-xs text-farm-700 dark:text-gray-300 mb-2">
+                        <span className="font-medium">{t("symptoms")}:</span> {pest.symptoms}
+                      </p>
+                      <p className="text-xs text-farm-700 dark:text-gray-300">
+                        <span className="font-medium">{t("treatment")}:</span> {pest.treatment}
+                      </p>
                     </div>
-                    <p className="text-sm text-farm-600 dark:text-gray-400 mb-2">
-                      <span className="font-medium">Crops:</span> {pest.crops.join(", ")}
-                    </p>
-                    <p className="text-xs text-farm-700 dark:text-gray-300 mb-2">
-                      <span className="font-medium">Symptoms:</span> {pest.symptoms}
-                    </p>
-                    <p className="text-xs text-farm-700 dark:text-gray-300">
-                      <span className="font-medium">Treatment:</span> {pest.treatment}
-                    </p>
                   </div>
-                </div>
-              </motion.div>
+                </motion.div>
               ))}
             </div>
           )}
@@ -278,43 +279,43 @@ const PestControlTab = ({ data, loading, error }) => {
           <div className="bg-white/40 backdrop-blur-lg rounded-2xl p-6 border border-white/30 shadow-md dark:bg-[#272727]">
             <h3 className="text-xl font-bold text-farm-900 dark:text-white mb-4 flex items-center gap-2">
               <FaClock className="text-purple-500" />
-              Treatment History
+              {t("treatment_history")}
             </h3>
             {treatmentHistory.length === 0 ? (
-              <p className="text-farm-700 dark:text-gray-400">No recorded treatments yet.</p>
+              <p className="text-farm-700 dark:text-gray-400">{t("no_treatments")}</p>
             ) : (
               <div className="space-y-3">
                 {treatmentHistory.map((treatment) => (
-                <motion.div
-                  key={treatment.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-white/60 dark:bg-[#1a1a1a] rounded-lg p-4 border border-white/20"
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <div>
-                      <h4 className="font-semibold text-farm-900 dark:text-white">{treatment.pest}</h4>
-                      <p className="text-sm text-farm-600 dark:text-gray-400">{treatment.field}</p>
+                  <motion.div
+                    key={treatment.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-white/60 dark:bg-[#1a1a1a] rounded-lg p-4 border border-white/20"
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <div>
+                        <h4 className="font-semibold text-farm-900 dark:text-white">{treatment.pest}</h4>
+                        <p className="text-sm text-farm-600 dark:text-gray-400">{treatment.field}</p>
+                      </div>
+                      <span className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(treatment.status)}`}>
+                        {treatment.status}
+                      </span>
                     </div>
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(treatment.status)}`}>
-                      {treatment.status}
-                    </span>
-                  </div>
-                  <div className="space-y-1 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-farm-600 dark:text-gray-400">Treatment:</span>
-                      <span className="font-medium text-farm-900 dark:text-white">{treatment.treatment}</span>
+                    <div className="space-y-1 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-farm-600 dark:text-gray-400">{t("treatment")}:</span>
+                        <span className="font-medium text-farm-900 dark:text-white">{treatment.treatment}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-farm-600 dark:text-gray-400">{t("date_time")}:</span>
+                        <span className="font-medium text-farm-900 dark:text-white">{treatment.date}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-farm-600 dark:text-gray-400">{t("effectiveness")}:</span>
+                        <span className="font-medium text-green-600 dark:text-green-400">{treatment.effectiveness}</span>
+                      </div>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-farm-600 dark:text-gray-400">Date:</span>
-                      <span className="font-medium text-farm-900 dark:text-white">{treatment.date}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-farm-600 dark:text-gray-400">Effectiveness:</span>
-                      <span className="font-medium text-green-600 dark:text-green-400">{treatment.effectiveness}</span>
-                    </div>
-                  </div>
-                </motion.div>
+                  </motion.div>
                 ))}
               </div>
             )}
@@ -324,40 +325,39 @@ const PestControlTab = ({ data, loading, error }) => {
           <div className="bg-white/40 backdrop-blur-lg rounded-2xl p-6 border border-white/30 shadow-md dark:bg-[#272727]">
             <h3 className="text-xl font-bold text-farm-900 dark:text-white mb-4 flex items-center gap-2">
               <FaLeaf className="text-green-500" />
-              Prevention Tips
+              {t("prevention_tips")}
             </h3>
             {preventionTips.length === 0 ? (
-              <p className="text-farm-700 dark:text-gray-400">No prevention tips available.</p>
+              <p className="text-farm-700 dark:text-gray-400">{t("no_prevention_tips")}</p>
             ) : (
               <div className="space-y-3">
                 {preventionTips.map((tip) => (
-                <motion.div
-                  key={tip.id}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className="bg-white/60 dark:bg-[#1a1a1a] rounded-lg p-4 border-l-4 border-green-500"
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <h4 className="font-semibold text-farm-900 dark:text-white">{tip.title}</h4>
-                    <span
-                      className={`px-2 py-1 rounded text-xs font-medium ${
-                        tip.priority === "high"
+                  <motion.div
+                    key={tip.id}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="bg-white/60 dark:bg-[#1a1a1a] rounded-lg p-4 border-l-4 border-green-500"
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <h4 className="font-semibold text-farm-900 dark:text-white">{tip.title}</h4>
+                      <span
+                        className={`px-2 py-1 rounded text-xs font-medium ${tip.priority === "high"
                           ? "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
                           : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300"
-                      }`}
-                    >
-                      {tip.priority} priority
-                    </span>
-                  </div>
-                  <p className="text-sm text-farm-700 dark:text-gray-300">{tip.description}</p>
-                </motion.div>
+                          }`}
+                      >
+                        {tip.priority} {t("priority")}
+                      </span>
+                    </div>
+                    <p className="text-sm text-farm-700 dark:text-gray-300">{tip.description}</p>
+                  </motion.div>
                 ))}
               </div>
             )}
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

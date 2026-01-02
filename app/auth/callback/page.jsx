@@ -5,9 +5,11 @@ import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import { Capacitor } from "@capacitor/core";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function AuthCallback() {
   const router = useRouter();
+  const { t } = useLanguage();
   const isNative = Capacitor.isNativePlatform();
 
   useEffect(() => {
@@ -60,24 +62,24 @@ export default function AuthCallback() {
 
           if (setSessionError) {
             console.error("Set session error:", setSessionError);
-            router.replace("/login?error=" + encodeURIComponent(setSessionError.message || "Failed to set session"));
+            router.replace("/login?error=" + encodeURIComponent(setSessionError.message || t("failed_set_session")));
             return;
           }
 
           // Verify session was set successfully
           if (!sessionResult?.session) {
             console.error("Session not created after setSession");
-            router.replace("/login?error=" + encodeURIComponent("Failed to create session"));
+            router.replace("/login?error=" + encodeURIComponent(t("failed_create_session")));
             return;
           }
         } else {
           // If no tokens found, try to get session from hash (fallback)
           // Supabase should auto-parse the hash if it's in window.location.hash
           const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-          
+
           if (sessionError || !session) {
             console.error("Session error:", sessionError);
-            router.replace("/login?error=" + encodeURIComponent(sessionError?.message || "Failed to create session"));
+            router.replace("/login?error=" + encodeURIComponent(sessionError?.message || t("failed_create_session")));
             return;
           }
         }
@@ -87,7 +89,7 @@ export default function AuthCallback() {
 
         if (sessionError || !session) {
           console.error("Session error:", sessionError);
-          router.replace("/login?error=" + encodeURIComponent(sessionError?.message || "Failed to create session"));
+          router.replace("/login?error=" + encodeURIComponent(sessionError?.message || t("failed_create_session")));
           return;
         }
 
@@ -96,7 +98,7 @@ export default function AuthCallback() {
 
         if (userError || !user) {
           console.error("User error:", userError);
-          router.replace("/login?error=" + encodeURIComponent(userError?.message || "Failed to get user"));
+          router.replace("/login?error=" + encodeURIComponent(userError?.message || t("failed_get_user")));
           return;
         }
 
@@ -105,7 +107,7 @@ export default function AuthCallback() {
         router.replace("/home");
       } catch (err) {
         console.error("Auth callback error:", err);
-        router.replace("/login?error=" + encodeURIComponent(err.message || "Authentication failed"));
+        router.replace("/login?error=" + encodeURIComponent(err.message || t("auth_failed")));
       }
     };
 
@@ -116,7 +118,7 @@ export default function AuthCallback() {
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-green-50 via-white to-green-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <div className="text-center">
         <LoadingSpinner />
-        <p className="mt-4 text-gray-600 dark:text-gray-400">Completing sign in...</p>
+        <p className="mt-4 text-gray-600 dark:text-gray-400">{t("completing_sign_in")}</p>
       </div>
     </div>
   );

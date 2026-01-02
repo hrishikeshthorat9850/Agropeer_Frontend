@@ -3,13 +3,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { useEffect } from "react";
 import { ProductCard } from "../ui/market";
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function SavedProducts({ products, user, removeSaved }) {
+  const { t } = useLanguage();
 
   if (!products || products.length === 0) {
     return (
       <div className="flex flex-col justify-center items-center py-20 bg-green-50 text-center rounded-xl shadow-inner dark:bg-[#272727]">
-        <p className="text-green-700 font-medium text-lg">No products saved yet.</p>
+        <p className="text-green-700 font-medium text-lg">{t("no_saved_products")}</p>
       </div>
     );
   }
@@ -36,7 +38,7 @@ export default function SavedProducts({ products, user, removeSaved }) {
               <h3 className="text-xl font-semibold mt-3">{item.name}</h3>
               <p className="text-green-700 font-bold">₹{item.price}</p>
             </div> */}
-            <ProductCard 
+            <ProductCard
               product={item}
               isFavorite
               onFavoriteClick={() => removeSaved(item?.id)}
