@@ -4,7 +4,10 @@ import MilkCompanyCard from "./MilkCompanyCard";
 import MilkRateLoader from "./MilkRateLoader";
 import { FaInbox } from "react-icons/fa";
 
+import { useLanguage } from "@/Context/languagecontext";
+
 export default function MilkRateList({ companies, loading, error }) {
+  const { t } = useLanguage();
   if (loading) {
     return <MilkRateLoader count={6} />;
   }
@@ -18,7 +21,7 @@ export default function MilkRateList({ companies, loading, error }) {
       >
         <div className="text-6xl mb-4">⚠️</div>
         <h3 className="text-xl font-semibold text-farm-700 mb-2">
-          Something went wrong
+          {t("something_wrong")}
         </h3>
         <p className="text-farm-600">{error}</p>
       </motion.div>
@@ -34,10 +37,10 @@ export default function MilkRateList({ companies, loading, error }) {
       >
         <FaInbox className="w-16 h-16 text-farm-300 mx-auto mb-4" />
         <h3 className="text-xl font-semibold text-farm-700 mb-2">
-          No companies found
+          {t("no_companies_found")}
         </h3>
         <p className="text-farm-600">
-          Try adjusting your filters or search terms
+          {t("adjust_filters_msg")}
         </p>
       </motion.div>
     );

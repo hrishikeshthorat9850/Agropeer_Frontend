@@ -6,9 +6,11 @@ import Link from "next/link";
 import { FaEnvelope, FaCheckCircle, FaArrowRight } from "react-icons/fa";
 import useToast from "@/hooks/useToast";
 import { Capacitor } from "@capacitor/core";
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function ForgotPasswordPage() {
   const { showToast } = useToast();
+  const { t } = useLanguage();
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("idle");
   const [message, setMessage] = useState("");
@@ -20,8 +22,8 @@ export default function ForgotPasswordPage() {
 
     if (!email || !/\S+@\S+\.\S+/.test(email)) {
       setStatus("error");
-      setMessage("Please enter a valid email address.");
-      showToast("error", "Please enter a valid email address.");
+      setMessage(t("valid_email_error"));
+      showToast("error", t("valid_email_error"));
       return;
     }
 
@@ -44,12 +46,12 @@ export default function ForgotPasswordPage() {
       if (error) throw error;
 
       setStatus("success");
-      setMessage("Reset link sent! Check your email.");
-      showToast("success", "Reset link sent! Check your email.");
+      setMessage(t("reset_link_sent"));
+      showToast("success", t("reset_link_sent"));
     } catch (err) {
       setStatus("error");
-      setMessage(err.message || "Something went wrong.");
-      showToast("error", err.message || "Something went wrong.");
+      setMessage(err.message || t("something_wrong"));
+      showToast("error", err.message || t("something_wrong"));
     }
   };
 
@@ -66,24 +68,24 @@ export default function ForgotPasswordPage() {
             <FaEnvelope className="text-2xl text-farm-600" />
           </div>
           <h1 className="text-2xl font-bold text-farm-800">
-            Forgot Password
+            {t("forgot_password_title")}
           </h1>
           <p className="text-farm-600 mt-2 text-sm">
-            Enter your registered email to receive a password reset link.
+            {t("forgot_password_desc")}
           </p>
         </div>
 
         <form onSubmit={handleResetPassword} className="space-y-6">
           <div>
             <label className="block text-sm font-semibold text-farm-700 mb-2">
-              Email address
+              {t("email_label")}
             </label>
             <div className="relative">
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+                placeholder={t("email_placeholder")}
                 className="farm-input w-full pl-4 text-farm-600"
                 required
               />
@@ -95,8 +97,8 @@ export default function ForgotPasswordPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               className={`text-center rounded-lg p-3 text-sm flex items-center justify-center gap-2 ${status === "success"
-                  ? "bg-green-50 border border-green-200 text-green-700"
-                  : "bg-red-50 border border-red-200 text-red-600"
+                ? "bg-green-50 border border-green-200 text-green-700"
+                : "bg-red-50 border border-red-200 text-red-600"
                 }`}
             >
               {status === "success" && <FaCheckCircle />}
@@ -110,7 +112,7 @@ export default function ForgotPasswordPage() {
             className={`w-full farm-button py-3 flex items-center justify-center gap-2 ${status === "loading" ? "opacity-70 cursor-wait" : ""
               }`}
           >
-            {status === "loading" ? "Sending..." : "Send Reset Link"}
+            {status === "loading" ? t("sending") : t("send_reset_link")}
             {status !== "loading" && <FaArrowRight />}
           </button>
         </form>
@@ -120,7 +122,7 @@ export default function ForgotPasswordPage() {
             href="/login"
             className="text-sm font-medium text-farm-600 hover:text-farm-700 underline underline-offset-2 hover:decoration-farm-500 transition-all"
           >
-            ← Back to Login
+            {t("back_to_login")}
           </Link>
         </div>
       </motion.div>

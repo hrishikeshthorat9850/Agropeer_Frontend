@@ -16,7 +16,10 @@ const CATEGORIES = [
   "Farming Tips",
 ];
 
+import { useLanguage } from "@/Context/languagecontext";
+
 export default function NewsFilterBar({ onCategoryChange, selectedCategory }) {
+  const { t } = useLanguage();
   const [showFilters, setShowFilters] = useState(false);
 
   // 👉 Close filters on mobile when category selected
@@ -41,7 +44,7 @@ export default function NewsFilterBar({ onCategoryChange, selectedCategory }) {
         >
           <span className="flex items-center gap-2">
             <FaFilter className="w-4 h-4" />
-            Categories
+            {t("show_filters")}
           </span>
 
           <span className="text-sm">
@@ -54,7 +57,7 @@ export default function NewsFilterBar({ onCategoryChange, selectedCategory }) {
       <div className={`${showFilters ? "block" : "hidden"} md:block w-full`}>
         <div className="mb-4">
           <label className="block text-sm font-semibold text-farm-700 mb-3">
-            Filter by Category
+            {t("filter_by_category")}
           </label>
 
           <div className="flex flex-wrap gap-2">
@@ -64,14 +67,13 @@ export default function NewsFilterBar({ onCategoryChange, selectedCategory }) {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => handleCategoryClick(category)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                  selectedCategory === category ||
-                  (category === "All" && !selectedCategory)
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${selectedCategory === category ||
+                    (category === "All" && !selectedCategory)
                     ? "bg-farm-500 text-white shadow-farm"
                     : "bg-farm-100 text-farm-700 hover:bg-farm-200"
-                }`}
+                  }`}
               >
-                {category}
+                {t(`news_cat_${category.replace(/\s+/g, "_")}`)}
               </motion.button>
             ))}
           </div>
@@ -90,7 +92,7 @@ export default function NewsFilterBar({ onCategoryChange, selectedCategory }) {
             }}
             className="flex items-center gap-2 px-4 py-2 text-sm text-farm-600 hover:text-farm-700 font-medium"
           >
-            <FaTimes className="w-4 h-4" /> Clear Filter
+            <FaTimes className="w-4 h-4" /> {t("clear_filter")}
           </motion.button>
         )}
       </div>

@@ -3,7 +3,11 @@ import { useState, useRef } from "react";
 import { FaSearch, FaTimes } from "react-icons/fa";
 import { motion } from "framer-motion";
 
-export default function NewsSearch({ onSearch, placeholder = "Search news articles..." }) {
+import { useLanguage } from "@/Context/languagecontext";
+
+export default function NewsSearch({ onSearch, placeholder }) {
+  const { t } = useLanguage();
+  const displayPlaceholder = placeholder || t("search_news_placeholder");
   const [query, setQuery] = useState("");
   const inputRef = useRef(null);
 
@@ -34,7 +38,7 @@ export default function NewsSearch({ onSearch, placeholder = "Search news articl
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder={placeholder}
+            placeholder={displayPlaceholder}
             className="flex-1 bg-transparent outline-none text-sm 
                       text-gray-700 dark:text-gray-200 
                       placeholder-gray-400 dark:placeholder-gray-500"

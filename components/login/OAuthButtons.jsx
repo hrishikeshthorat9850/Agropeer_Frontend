@@ -6,8 +6,10 @@ import { Capacitor } from "@capacitor/core";
 import { Browser } from "@capacitor/browser";
 import { motion } from "framer-motion";
 import { FaGoogle, FaFacebook } from "react-icons/fa";
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function OAuthButtons() {
+  const { t } = useLanguage();
   const [loading, setLoading] = useState({ google: false, facebook: false });
   const [error, setError] = useState("");
 
@@ -25,17 +27,17 @@ export default function OAuthButtons() {
       if (isNative) {
         // Use production URL for Android to avoid localhost connection issues
         let baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://agrogram-wheat.vercel.app";
-        
+
         // Handle Vercel URL format (might not include protocol)
         if (process.env.NEXT_PUBLIC_VERCEL_URL && !baseUrl.includes("://")) {
           baseUrl = `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`;
         }
-        
+
         // Ensure URL has protocol
         if (!baseUrl.startsWith("http")) {
           baseUrl = `https://${baseUrl}`;
         }
-        
+
         // redirectTo = `${baseUrl}/auth/callback`;
         redirectTo = "agropeer://login-callback";
       } else {
@@ -60,7 +62,7 @@ export default function OAuthButtons() {
 
       if (isNative && data?.url) {
         // Open OAuth URL in in-app browser
-        await Browser.open({ 
+        await Browser.open({
           url: data.url,
           windowName: '_self',
           toolbarColor: '#2E7D32'
@@ -73,7 +75,7 @@ export default function OAuthButtons() {
 
     } catch (err) {
       console.error("OAuth error:", err);
-      setError(err.message || "OAuth failed");
+      setError(err.message || t("oauth_failed"));
       setLoading((p) => ({ ...p, [provider]: false }));
     }
   };
@@ -106,7 +108,7 @@ export default function OAuthButtons() {
             <>
               <FaGoogle className="text-xl text-red-500" />
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300 hidden sm:inline">
-                Google
+                {t("google")}
               </span>
             </>
           )}
@@ -136,7 +138,7 @@ export default function OAuthButtons() {
             <>
               <FaFacebook className="text-xl text-blue-600" />
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300 hidden sm:inline">
-                Facebook
+                {t("facebook")}
               </span>
             </>
           )}
