@@ -1,7 +1,5 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
-import { useEffect } from "react";
 import { ProductCard } from "../ui/market";
 import { useLanguage } from "@/Context/languagecontext";
 

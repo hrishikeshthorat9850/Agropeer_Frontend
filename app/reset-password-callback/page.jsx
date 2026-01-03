@@ -6,8 +6,10 @@ import { Capacitor } from "@capacitor/core";
 import { Browser } from "@capacitor/browser";
 import { supabase } from "@/lib/supabaseClient";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function ResetPasswordCallback() {
+  const { t } = useLanguage();
   const router = useRouter();
   const isNative = Capacitor.isNativePlatform();
 
@@ -45,7 +47,7 @@ export default function ResetPasswordCallback() {
           // This allows the MobileResetPasswordHandler to process it
           const deepLinkUrl = `agropeer://reset-password${queryParams}${hash}`;
           console.log("Redirecting to deep link from app:", deepLinkUrl);
-          
+
           // Try to close browser if open
           try {
             await Browser.close();
@@ -63,14 +65,14 @@ export default function ResetPasswordCallback() {
           // This will open the app if installed
           const deepLinkUrl = `agropeer://reset-password${queryParams}${hash}`;
           console.log("Redirecting to deep link from mobile browser:", deepLinkUrl);
-          
+
           if (isAndroid) {
             // Use Intent URL format for Android browsers (more reliable)
             // This will open the app if installed, or fallback to Play Store
             const intentUrl = `intent://reset-password${queryParams}${hash}#Intent;scheme=agropeer;package=com.hrishikesh.agrogram;end`;
             console.log("Using Android Intent URL:", intentUrl);
             window.location.replace(intentUrl);
-            
+
             // Fallback: try direct deep link after a delay
             setTimeout(() => {
               window.location.replace(deepLinkUrl);
@@ -113,7 +115,7 @@ export default function ResetPasswordCallback() {
       <div className="text-center">
         <LoadingSpinner />
         <p className="mt-4 text-gray-600 dark:text-gray-400">
-          {isNative ? "Opening app..." : "Processing reset link..."}
+          {isNative ? t("opening_app") : t("processing_reset_link")}
         </p>
       </div>
     </div>

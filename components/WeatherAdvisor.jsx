@@ -1,11 +1,11 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Cloud, 
-  Droplets, 
-  Wind, 
-  Sun, 
-  CloudRain, 
+import {
+  Cloud,
+  Droplets,
+  Wind,
+  Sun,
+  CloudRain,
   AlertTriangle,
   Thermometer,
   Gauge,
@@ -14,13 +14,16 @@ import {
   Wheat,
   Sprout
 } from "lucide-react";
+import { useLanguage } from "@/Context/languagecontext";
 
-const WeatherAdvisor = ({ 
-  cropName = "Wheat", 
-  cropStage = "Growth Stage", 
-  weather = null, 
-  suggestions = [] 
+const WeatherAdvisor = ({
+  cropName = "Wheat",
+  cropStage = "Growth Stage",
+  weather = null,
+  suggestions = []
 }) => {
+  const { t } = useLanguage();
+
   // Default weather data for preview
   const defaultWeather = {
     temperature: 24,
@@ -28,18 +31,18 @@ const WeatherAdvisor = ({
     rainChance: 30,
     windSpeed: 12,
     forecast: [
-      { day: "Today", temp: 24, condition: "sunny", icon: Sun, rainChance: 20 },
-      { day: "Tomorrow", temp: 22, condition: "cloudy", icon: Cloud, rainChance: 40 },
+      { day: t("day_today"), temp: 24, condition: "sunny", icon: Sun, rainChance: 20 },
+      { day: t("day_tomorrow"), temp: 22, condition: "cloudy", icon: Cloud, rainChance: 40 },
       { day: "Day 3", temp: 18, condition: "rainy", icon: CloudRain, rainChance: 80 }
     ]
   };
 
   const defaultSuggestions = [
-    { text: "Rain expected — delay irrigation", icon: CloudRain, type: "warning" },
-    { text: "Optimal temperature for growth", icon: Sun, type: "success" },
-    { text: "Consider wind protection for young plants", icon: Wind, type: "info" },
-    { text: "Humidity levels are ideal for your crop", icon: Droplets, type: "success" },
-    { text: "Monitor soil moisture closely", icon: Gauge, type: "info" }
+    { text: t("sample_suggestion_rain"), icon: CloudRain, type: "warning" },
+    { text: t("sample_suggestion_growth"), icon: Sun, type: "success" },
+    { text: t("sample_suggestion_wind"), icon: Wind, type: "info" },
+    { text: t("sample_suggestion_humidity"), icon: Droplets, type: "success" },
+    { text: t("sample_suggestion_moisture"), icon: Gauge, type: "info" }
   ];
 
   const currentWeather = weather || defaultWeather;
@@ -83,7 +86,7 @@ const WeatherAdvisor = ({
       className="w-full max-w-6xl mx-auto mb-8"
     >
       {/* Main Weather Advisor Card */}
-      <div 
+      <div
         className="relative overflow-hidden rounded-2xl shadow-2xl"
         style={{
           background: 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 25%, #86efac 50%, #4ade80 75%, #22c55e 100%)',
@@ -94,38 +97,38 @@ const WeatherAdvisor = ({
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <motion.div
             className="absolute -top-10 -right-10 w-32 h-32 bg-white/20 rounded-full"
-            animate={{ 
+            animate={{
               scale: [1, 1.2, 1],
               opacity: [0.3, 0.6, 0.3]
             }}
-            transition={{ 
-              duration: 4, 
-              repeat: Infinity, 
-              ease: "easeInOut" 
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut"
             }}
           />
           <motion.div
             className="absolute -bottom-5 -left-5 w-24 h-24 bg-white/15 rounded-full"
-            animate={{ 
+            animate={{
               scale: [1.2, 1, 1.2],
               opacity: [0.4, 0.7, 0.4]
             }}
-            transition={{ 
-              duration: 3, 
-              repeat: Infinity, 
+            transition={{
+              duration: 3,
+              repeat: Infinity,
               ease: "easeInOut",
               delay: 1
             }}
           />
           <motion.div
             className="absolute top-1/3 right-1/4 w-16 h-16 bg-white/10 rounded-full"
-            animate={{ 
+            animate={{
               y: [0, -20, 0],
               x: [0, 10, 0]
             }}
-            transition={{ 
-              duration: 5, 
-              repeat: Infinity, 
+            transition={{
+              duration: 5,
+              repeat: Infinity,
               ease: "easeInOut",
               delay: 2
             }}
@@ -146,7 +149,7 @@ const WeatherAdvisor = ({
               </div>
               <div>
                 <h2 className="text-2xl font-bold text-farm-900">
-                  🌾 Crop: {cropName}
+                  🌾 {t("advisor_crop_label")}: {cropName}
                 </h2>
                 <p className="text-farm-700 font-medium">
                   {cropStage}
@@ -164,7 +167,7 @@ const WeatherAdvisor = ({
           >
             <div className="flex items-center gap-3 mb-6">
               <Cloud className="w-6 h-6 text-farm-700" />
-              <h3 className="text-xl font-bold text-farm-900">Weather Overview</h3>
+              <h3 className="text-xl font-bold text-farm-900">{t("advisor_weather_overview")}</h3>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -175,7 +178,7 @@ const WeatherAdvisor = ({
               >
                 <div className="flex items-center gap-3 mb-2">
                   <Thermometer className="w-5 h-5 text-red-500" />
-                  <span className="text-sm font-semibold text-farm-700">Temperature</span>
+                  <span className="text-sm font-semibold text-farm-700">{t("advisor_label_temp")}</span>
                 </div>
                 <div className="text-2xl font-bold text-farm-900">
                   {currentWeather.temperature}°C
@@ -189,7 +192,7 @@ const WeatherAdvisor = ({
               >
                 <div className="flex items-center gap-3 mb-2">
                   <Droplets className="w-5 h-5 text-blue-500" />
-                  <span className="text-sm font-semibold text-farm-700">Humidity</span>
+                  <span className="text-sm font-semibold text-farm-700">{t("advisor_label_humidity")}</span>
                 </div>
                 <div className="text-2xl font-bold text-farm-900">
                   {currentWeather.humidity}%
@@ -203,7 +206,7 @@ const WeatherAdvisor = ({
               >
                 <div className="flex items-center gap-3 mb-2">
                   <CloudRain className="w-5 h-5 text-sky-500" />
-                  <span className="text-sm font-semibold text-farm-700">Rain Chance</span>
+                  <span className="text-sm font-semibold text-farm-700">{t("advisor_label_rain")}</span>
                 </div>
                 <div className="text-2xl font-bold text-farm-900">
                   {currentWeather.rainChance}%
@@ -217,7 +220,7 @@ const WeatherAdvisor = ({
               >
                 <div className="flex items-center gap-3 mb-2">
                   <Wind className="w-5 h-5 text-gray-500" />
-                  <span className="text-sm font-semibold text-farm-700">Wind Speed</span>
+                  <span className="text-sm font-semibold text-farm-700">{t("advisor_label_wind")}</span>
                 </div>
                 <div className="text-2xl font-bold text-farm-900">
                   {currentWeather.windSpeed} km/h
@@ -235,7 +238,7 @@ const WeatherAdvisor = ({
           >
             <div className="flex items-center gap-3 mb-4">
               <Calendar className="w-6 h-6 text-farm-700" />
-              <h3 className="text-xl font-bold text-farm-900">📅 3-Day Forecast</h3>
+              <h3 className="text-xl font-bold text-farm-900">{t("advisor_3_day_forecast")}</h3>
             </div>
 
             <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
@@ -276,7 +279,7 @@ const WeatherAdvisor = ({
           >
             <div className="flex items-center gap-3 mb-6">
               <Lightbulb className="w-6 h-6 text-farm-700" />
-              <h3 className="text-xl font-bold text-farm-900">💡 Smart Farming Suggestions</h3>
+              <h3 className="text-xl font-bold text-farm-900">{t("advisor_smart_suggestions")}</h3>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -288,7 +291,7 @@ const WeatherAdvisor = ({
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 1 + index * 0.1, duration: 0.5 }}
-                    whileHover={{ 
+                    whileHover={{
                       scale: 1.05,
                       y: -5
                     }}
@@ -327,17 +330,17 @@ const WeatherAdvisor = ({
                 <Sprout className="w-8 h-8 text-farm-600" />
               </div>
               <h3 className="text-lg font-bold text-farm-900 mb-2">
-                Welcome to Weather Advisor
+                {t("advisor_welcome_title")}
               </h3>
               <p className="text-farm-700 mb-4">
-                Please enter your crop and location to see personalized weather insights and farming suggestions.
+                {t("advisor_welcome_desc")}
               </p>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="px-6 py-3 bg-gradient-to-r from-farm-500 to-farm-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
               >
-                Get Started
+                {t("advisor_get_started")}
               </motion.button>
             </div>
           </motion.div>

@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/Context/languagecontext";
 import { FaFilter, FaTimes } from "react-icons/fa";
 
 const CATEGORIES = [
@@ -54,6 +55,7 @@ export default function SchemeFilterBar({
   selectedCategory,
   selectedState,
 }) {
+  const { t } = useLanguage();
   const [showFilters, setShowFilters] = useState(false);
 
   return (
@@ -68,7 +70,7 @@ export default function SchemeFilterBar({
         >
           <span className="flex items-center gap-2">
             <FaFilter className="w-4 h-4" />
-            Filters
+            {t("filter_by_title")}
           </span>
           <span className="text-sm">
             {selectedCategory || selectedState ? "•" : ""}
@@ -83,7 +85,7 @@ export default function SchemeFilterBar({
           {/* CATEGORY FILTER */}
           <div className="flex-1">
             <label className="block text-sm font-semibold text-farm-700 mb-2">
-              Category
+              {t("category_label")}
             </label>
             <div className="flex flex-wrap gap-2">
               {CATEGORIES.map((category) => (
@@ -94,14 +96,13 @@ export default function SchemeFilterBar({
                   onClick={() =>
                     onCategoryChange(category === "All" ? null : category)
                   }
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                    selectedCategory === category ||
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${selectedCategory === category ||
                     (category === "All" && !selectedCategory)
-                      ? "bg-farm-500 text-white shadow-farm"
-                      : "bg-farm-100 text-farm-700 hover:bg-farm-200"
-                  }`}
+                    ? "bg-farm-500 text-white shadow-farm"
+                    : "bg-farm-100 text-farm-700 hover:bg-farm-200"
+                    }`}
                 >
-                  {category}
+                  {t(`scheme_cat_${category.replace(/\s+/g, "_")}`)}
                 </motion.button>
               ))}
             </div>
@@ -110,7 +111,7 @@ export default function SchemeFilterBar({
           {/* STATE FILTER */}
           <div className="flex-1">
             <label className="block text-sm font-semibold text-farm-700 mb-2">
-              State
+              {t("state_label")}
             </label>
             <select
               value={selectedState || "All States"}
@@ -123,7 +124,7 @@ export default function SchemeFilterBar({
             >
               {INDIAN_STATES.map((state) => (
                 <option key={state} value={state}>
-                  {state}
+                  {t(`state_${state.replace(/\s+/g, "_")}`)}
                 </option>
               ))}
             </select>
@@ -143,7 +144,7 @@ export default function SchemeFilterBar({
             className="mt-4 flex items-center gap-2 px-4 py-2 text-sm text-farm-600 hover:text-farm-700 font-medium"
           >
             <FaTimes className="w-4 h-4" />
-            Clear Filters
+            {t("clear_filters")}
           </motion.button>
         )}
       </div>

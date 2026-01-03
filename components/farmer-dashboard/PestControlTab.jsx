@@ -4,11 +4,9 @@ import { motion } from "framer-motion";
 import {
   FaBug,
   FaExclamationTriangle,
-  FaCheckCircle,
   FaSprayCan,
   FaLeaf,
   FaClock,
-  FaInfoCircle,
   FaSearch,
   FaTimes,
 } from "react-icons/fa";
