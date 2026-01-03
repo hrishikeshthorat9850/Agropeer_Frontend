@@ -1,30 +1,32 @@
 "use client";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import ChatSidebar from "@/components/chat/ChatSidebar";
-import ChatArea from "@/components/chat/ChatArea";
+// import ChatArea from "@/components/chat/ChatArea";
 import { supabase } from "@/lib/supabaseClient";
 import { useLogin } from "@/Context/logincontext";
 import { useSocket } from "@/Context/SocketContext";
 import { ChatSkeleton } from "@/components/skeletons";
 import { Capacitor } from "@capacitor/core";
-
+import Router from "next/router";
+import { useRouter } from "next/navigation";
 export default function ChatsPage() {
-  const {user : loggedInUser,loading} = useLogin();
+  const { user: loggedInUser, loading } = useLogin();
+  const router = useRouter();
   const { socket, joinConversation, sendMessage: sendSocketMessage, markAsRead } = useSocket();
-  const [conversations,setConversations] = useState([]);
+  const [conversations, setConversations] = useState([]);
   const [contactToConversationMap, setContactToConversationMap] = useState({});
   const [dark, setDark] = useState(false);
-  const [contacts,setContacts] = useState([]);
+  const [contacts, setContacts] = useState([]);
   const [selected, setSelected] = useState(null);
   const [showContacts, setShowContacts] = useState(true);
   const [msg, setMsg] = useState("");
   const [messages, setMessages] = useState([]);
   const endRef = useRef(null);
   const selectedConversationRef = useRef(null);
-  const [unreadMessagesCount,setunreadMessagesCount] = useState(0);  
+  const [unreadMessagesCount, setunreadMessagesCount] = useState(0);
   const conversationsRef = useRef([]);
   const isNative = Capacitor.isNativePlatform();
-  
+
   const fetchMessages = useCallback(async () => {
     if (!loggedInUser?.id) return;
 
@@ -71,13 +73,13 @@ export default function ChatsPage() {
 
           const isUser1 = conv.user1?.id === loggedInUser.id;
           const otherUser = isUser1 ? conv.user2 : conv.user1;
-          
+
           if (!otherUser || !otherUser.id) return null;
 
-          const last_message = (conv.messages && Array.isArray(conv.messages) && conv.messages.length > 0) 
-            ? conv.messages[0].content || "" 
+          const last_message = (conv.messages && Array.isArray(conv.messages) && conv.messages.length > 0)
+            ? conv.messages[0].content || ""
             : "";
-          
+
           let unreadCount = 0;
           try {
             const { count, error: countError } = await supabase
@@ -93,14 +95,14 @@ export default function ChatsPage() {
           } catch (countErr) {
             console.error("❌ Error fetching unread count:", countErr);
           }
-          
+
           const lastMessageTime = (conv.messages && Array.isArray(conv.messages) && conv.messages.length > 0)
             ? conv.messages[0].created_at
             : conv.last_message_at;
 
           return {
             id: otherUser.id,
-            displayName : otherUser?.display_name,
+            displayName: otherUser?.display_name,
             firstName: otherUser.firstName || "",
             lastName: otherUser.lastName || "",
             profile_url: otherUser.profile_url || otherUser?.avatar_url,
@@ -118,23 +120,23 @@ export default function ChatsPage() {
       const contactsByUserId = {};
       validContacts.forEach(contact => {
         if (!contact || !contact.id) return;
-        
+
         if (contactsByUserId[contact.id]) {
           const existing = contactsByUserId[contact.id];
           const existingTime = new Date(existing.last_message_at || 0).getTime();
           const newTime = new Date(contact.last_message_at || 0).getTime();
-          
+
           if (newTime > existingTime) {
             existing.last_message = contact.last_message;
             existing.last_message_at = contact.last_message_at;
             existing.conversation_id = contact.conversation_id;
           }
-          
+
           existing.unread_count = Math.min(
             (existing.unread_count || 0) + (contact.unread_count || 0),
             999
           );
-          
+
           const mergedIds = new Set([
             ...(existing.all_conversation_ids || []),
             ...(contact.all_conversation_ids || [])
@@ -153,7 +155,7 @@ export default function ChatsPage() {
 
         const isUser1 = conv.user1?.id === loggedInUser.id;
         const otherUser = isUser1 ? conv.user2 : conv.user1;
-        
+
         if (otherUser?.id) {
           const contact = contactsByUserId[otherUser.id];
           if (contact && contact.conversation_id === conv.id) {
@@ -198,7 +200,7 @@ export default function ChatsPage() {
 
       // 🧠 Check if this is my message
       const isMyMessage = msgg.sender_id === loggedInUser.id;
-      
+
       // 🧩 Always update sidebar for both users
       setContacts((prevContacts) => {
         if (!Array.isArray(prevContacts)) return prevContacts;
@@ -208,29 +210,29 @@ export default function ChatsPage() {
           if (!contact || !contact.id) return contact;
 
           // Check if this message belongs to any conversation with this user
-          const belongsToThisUser = 
+          const belongsToThisUser =
             (contact.all_conversation_ids && Array.isArray(contact.all_conversation_ids) && contact.all_conversation_ids.includes(msgg.conversation_id)) ||
             contact.conversation_id === msgg.conversation_id;
-          
+
           if (belongsToThisUser) {
             const currentSelected = selectedConversationRef.current;
-            const isCurrentConversation = currentSelected && 
-              (currentSelected.conversation_id === msgg.conversation_id || 
-               currentSelected.id === contact.id);
-            
+            const isCurrentConversation = currentSelected &&
+              (currentSelected.conversation_id === msgg.conversation_id ||
+                currentSelected.id === contact.id);
+
             // Increment unread count if message is from someone else and conversation is not currently selected
             const shouldIncrementUnread = !isMyMessage && !isCurrentConversation;
-            
+
             // Update to most recent conversation if this one is newer
             const currentTime = new Date(contact.last_message_at || 0).getTime();
             const newTime = new Date(msgg.created_at || 0).getTime();
-            
+
             const updatedContact = {
               ...contact,
               last_message: msgg.content || contact.last_message,
               last_message_at: msgg.created_at || contact.last_message_at,
               conversation_id: newTime > currentTime ? msgg.conversation_id : contact.conversation_id,
-              unread_count: shouldIncrementUnread 
+              unread_count: shouldIncrementUnread
                 ? Math.max(0, (contact.unread_count || 0) + 1)
                 : (contact.unread_count || 0),
             };
@@ -249,18 +251,18 @@ export default function ChatsPage() {
           }
           return contact;
         });
-        
+
         // Remove duplicates based on user ID (group by user) - simplified logic
         const contactsByUserId = {};
         updatedContacts.forEach(contact => {
           if (!contact || !contact.id) return;
-          
+
           if (contactsByUserId[contact.id]) {
             // Merge: keep most recent
             const existing = contactsByUserId[contact.id];
             const existingTime = new Date(existing.last_message_at || 0).getTime();
             const newTime = new Date(contact.last_message_at || 0).getTime();
-            
+
             if (newTime > existingTime) {
               existing.last_message = contact.last_message;
               existing.last_message_at = contact.last_message_at;
@@ -281,9 +283,9 @@ export default function ChatsPage() {
             contactsByUserId[contact.id] = { ...contact };
           }
         });
-        
+
         const uniqueContacts = Object.values(contactsByUserId);
-        
+
         // Sort contacts by last_message_at (most recent first) after update
         return uniqueContacts.sort((a, b) => {
           const timeA = new Date(a.last_message_at || 0).getTime();
@@ -304,7 +306,7 @@ export default function ChatsPage() {
             const tempIndex = prev.findIndex(
               (m) => m && m.id && m.id.startsWith("temp-") && m.from === "me" && m.text === msgg.content
             );
-            
+
             if (tempIndex !== -1) {
               // Replace temp message with real one
               const newMessages = [...prev];
@@ -317,7 +319,7 @@ export default function ChatsPage() {
               };
               return newMessages;
             }
-            
+
             // If temp message not found, check if real message already exists
             const exists = prev.some((m) => m && m.id === msgg.id);
             if (exists) return prev;
@@ -348,10 +350,10 @@ export default function ChatsPage() {
       }
     };
     const handleMessagesSeen = ({ conversation_id, reader_id, seen_message_ids, unread_count }) => {
-      if (!conversation_id || !reader_id || !Array.isArray(seen_message_ids)) return;      
+      if (!conversation_id || !reader_id || !Array.isArray(seen_message_ids)) return;
       const currentSelected = selectedConversationRef.current;
       const isCurrentConversation = currentSelected && currentSelected.conversation_id === conversation_id;
-      
+
       // Update unread count if I'm the one who read the messages
       if (reader_id === loggedInUser?.id) {
         setContacts((prevContacts) => {
@@ -361,7 +363,7 @@ export default function ChatsPage() {
             if (!contact) return contact;
 
             // Check if this conversation belongs to this contact
-            const belongsToContact = 
+            const belongsToContact =
               (contact.all_conversation_ids && Array.isArray(contact.all_conversation_ids) && contact.all_conversation_ids.includes(conversation_id)) ||
               contact.conversation_id === conversation_id;
 
@@ -369,8 +371,8 @@ export default function ChatsPage() {
               // Safely subtract unread count
               const currentUnread = contact.unread_count || 0;
               const toSubtract = unread_count || 0;
-              return { 
-                ...contact, 
+              return {
+                ...contact,
                 unread_count: Math.max(0, currentUnread - toSubtract)
               };
             }
@@ -378,7 +380,7 @@ export default function ChatsPage() {
           });
         });
       }
-      
+
       // Update seen status of MY messages when someone else reads them
       // Only update if someone else (not me) read the messages, and they contain message IDs
       // Only update if this is the current conversation (so we're updating the right messages)
@@ -394,7 +396,7 @@ export default function ChatsPage() {
             }
             return msg;
           });
-          
+
           return updated;
         });
       }
@@ -441,7 +443,7 @@ export default function ChatsPage() {
 
     // Find the conversation for this contact (use the most recent one)
     const conversation = contactToConversationMap[contact.id];
-    
+
     if (!conversation) {
       console.error("No conversation found for contact:", contact);
       return;
@@ -473,7 +475,7 @@ export default function ChatsPage() {
       conversation_id: conversationId,
       id: contact.id, // Ensure ID is set for matching
     });
-    
+    router.push(`/selected-chat?conversationId=${contact.conversation_id}`);
     // Optimistically reset unread count when selecting conversation
     setContacts((prevContacts) => {
       if (!Array.isArray(prevContacts)) return prevContacts;
@@ -483,7 +485,7 @@ export default function ChatsPage() {
           : c
       );
     });
-    
+
     // Join conversation and mark as read using socket context
     if (socket) {
       joinConversation(conversationId);
@@ -495,19 +497,12 @@ export default function ChatsPage() {
   }, [contactToConversationMap, loggedInUser?.id, fetchConversationMessages, socket, joinConversation, markAsRead]);
 
   useEffect(() => {
-    if (loading) return; 
-    if (!loggedInUser?.id) return; 
+    if (loading) return;
+    if (!loggedInUser?.id) return;
     fetchMessages();
   }, [loading, loggedInUser?.id, fetchMessages]);
 
-  useEffect(() => {
-    if (!selected && Array.isArray(contacts) && contacts.length > 0 && Object.keys(contactToConversationMap).length > 0) {
-      const firstContact = contacts[0];
-      if (firstContact && firstContact.id) {
-        handleSelectUser(firstContact);
-      }
-    }
-  }, [contacts, contactToConversationMap, selected, handleSelectUser]);
+
 
   const handleFaTimesClick = () => {
     setShowContacts(false);
@@ -524,8 +519,8 @@ export default function ChatsPage() {
         userId: loggedInUser?.id,
         page: "none"
       });
-  };
-}, []);
+    };
+  }, []);
 
   const sendMessage = (msg) => {
     if (!msg || !msg.trim() || !selected?.conversation_id || !loggedInUser?.id || !socket) {
@@ -564,24 +559,24 @@ export default function ChatsPage() {
         if (!contact) return contact;
         return (contact.id === selected?.id || contact.conversation_id === selected?.conversation_id)
           ? {
-              ...contact,
-              last_message: msg.trim(),
-              last_message_at: new Date().toISOString(),
-              conversation_id: selected?.conversation_id || contact.conversation_id,
-            }
+            ...contact,
+            last_message: msg.trim(),
+            last_message_at: new Date().toISOString(),
+            conversation_id: selected?.conversation_id || contact.conversation_id,
+          }
           : contact;
       });
-      
+
       // Remove duplicates based on user ID (group by user) - simplified
       const contactsByUserId = {};
       updated.forEach(contact => {
         if (!contact || !contact.id) return;
-        
+
         if (contactsByUserId[contact.id]) {
           const existing = contactsByUserId[contact.id];
           const existingTime = new Date(existing.last_message_at || 0).getTime();
           const newTime = new Date(contact.last_message_at || 0).getTime();
-          
+
           if (newTime > existingTime) {
             existing.last_message = contact.last_message;
             existing.last_message_at = contact.last_message_at;
@@ -599,9 +594,9 @@ export default function ChatsPage() {
           contactsByUserId[contact.id] = { ...contact };
         }
       });
-      
+
       const uniqueContacts = Object.values(contactsByUserId);
-      
+
       // Sort contacts by last_message_at (most recent first)
       return uniqueContacts.sort((a, b) => {
         const timeA = new Date(a.last_message_at || 0).getTime();
@@ -645,7 +640,7 @@ export default function ChatsPage() {
           }}
         >
           {/* Sidebar */}
-          <ChatSidebar 
+          <ChatSidebar
             showContacts={showContacts}
             handleFaTimesClick={handleFaTimesClick}
             contacts={contacts}
@@ -654,7 +649,7 @@ export default function ChatsPage() {
             selected={selected}
           />
           {/* Chat Area */}
-          <ChatArea selected={selected} messages={messages} sendMessage={sendMessage} endRef={endRef} />
+          {/* <ChatArea selected={selected} messages={messages} sendMessage={sendMessage} endRef={endRef} /> */}
         </div>
       </div>
     </div>

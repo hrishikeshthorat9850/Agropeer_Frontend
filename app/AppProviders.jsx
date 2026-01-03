@@ -2,12 +2,12 @@
 
 import { LoginProvider, useLogin } from "@/Context/logincontext";
 import { ThemeProvider } from "@/Context/themecontext";
-import { AdminProvider } from "@/Context/admincontext";
 import { ViewProvider } from "@/Context/ViewContext";
 import { LanguageProvider } from "@/Context/languagecontext";
 import { SocketProvider } from "@/Context/SocketContext";
 import { WeatherProvider } from "@/Context/WeatherContext";
 import { ToastProvider } from "@/Context/ToastContext";
+import { ChatProvider } from "@/Context/ChatContext";
 
 export default function AppProviders({ children }) {
   return (
@@ -22,19 +22,19 @@ function InnerProviders({ children }) {
 
   return (
     <ThemeProvider>
-      <AdminProvider>
         <ViewProvider>
           <LanguageProvider>
             <ToastProvider>
               <SocketProvider loggedInUser={user}>
-                <WeatherProvider>
-                  {children}
-                </WeatherProvider>
+                <ChatProvider>
+                  <WeatherProvider>
+                    {children}
+                  </WeatherProvider>
+                </ChatProvider>
               </SocketProvider>
             </ToastProvider>
           </LanguageProvider>
         </ViewProvider>
-      </AdminProvider>
     </ThemeProvider>
   );
 }
