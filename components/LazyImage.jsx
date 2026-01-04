@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { useIntersectionObserver } from "@/utils/lazyLoading";
+import { useLanguage } from "@/Context/languagecontext";
 
 /**
  * Lazy-loaded Image component with intersection observer
@@ -20,6 +21,7 @@ export default function LazyImage({
 }) {
   const [elementRef, isVisible] = useIntersectionObserver();
   const [imageError, setImageError] = useState(false);
+  const { t } = useLanguage();
 
   // If priority is true, load immediately
   if (priority) {
@@ -57,7 +59,7 @@ export default function LazyImage({
           style={{ width, height }}
         >
           {imageError && (
-            <span className="text-gray-400 text-sm">Failed to load</span>
+            <span className="text-gray-400 text-sm">{t("image_failed_to_load")}</span>
           )}
         </div>
       )}

@@ -408,10 +408,10 @@ export default function WeatherForecast() {
                           key={i}
                           whileHover={{ scale: 1.05 }}
                           className={`flex flex-col items-center rounded-xl p-4 shadow-lg transition-all border-2 ${parseInt(f.rain) >= 70
-                              ? "bg-blue-100 border-blue-300 dark:bg-[#0a0a0a] dark:border-none"
-                              : parseInt(f.rain) >= 40
-                                ? "bg-gray-100 border-gray-300 dark:bg-[#0a0a0a] dark:border-none"
-                                : "bg-yellow-100 border-yellow-300 dark:bg-[#0a0a0a] dark:border-none"
+                            ? "bg-blue-100 border-blue-300 dark:bg-[#0a0a0a] dark:border-none"
+                            : parseInt(f.rain) >= 40
+                              ? "bg-gray-100 border-gray-300 dark:bg-[#0a0a0a] dark:border-none"
+                              : "bg-yellow-100 border-yellow-300 dark:bg-[#0a0a0a] dark:border-none"
                             }`}
                         >
                           <div className="font-semibold text-farm-700 mb-2 text-sm dark:text-gray-200">
@@ -425,7 +425,7 @@ export default function WeatherForecast() {
                             {f.minTemp}
                           </div>
                           <div className="text-blue-600 text-xs font-medium mb-2">
-                            Rain: {f.rain}
+                            {t('weather_rain')}: {f.rain}
                           </div>
                           <div className="text-xs text-farm-700 text-center leading-tight">
                             {t(f.tipKey)}
@@ -463,13 +463,13 @@ export default function WeatherForecast() {
               {/* Quick Info */}
               <div className="flex flex-wrap gap-6 mt-2 text-green-800 text-base">
                 <div className="flex items-center gap-2 dark:text-gray-200">
-                  <FaTint className="text-blue-400" /> Rain: {weather.rain}
+                  <FaTint className="text-blue-400" /> {t('weather_rain')}: {weather.rain}
                 </div>
                 <div className="flex items-center gap-2 dark:text-gray-200">
-                  <FaWind className="text-blue-600" /> Wind: {weather.wind}
+                  <FaWind className="text-blue-600" /> {t('weather_wind')}: {weather.wind}
                 </div>
                 <div className="flex items-center gap-2 dark:text-gray-200">
-                  <FaRegSun className="text-yellow-500" /> Humidity:{" "}
+                  <FaRegSun className="text-yellow-500" /> {t('weather_humidity')}:{" "}
                   {weather.humidity}
                 </div>
               </div>
@@ -477,11 +477,11 @@ export default function WeatherForecast() {
               {/* Sunrise / Sunset */}
               <div className="flex gap-6 mt-2 text-green-800 text-base">
                 <div className="flex items-center gap-2 dark:text-gray-200">
-                  <FaSun className="text-yellow-400" /> Sunrise:{" "}
+                  <FaSun className="text-yellow-400" /> {t('weather_sunrise')}:{" "}
                   {weather.sunrise}
                 </div>
                 <div className="flex items-center gap-2 dark:text-gray-200">
-                  <FaSun className="text-orange-500" /> Sunset:{" "}
+                  <FaSun className="text-orange-500" /> {t('weather_sunset')}:{" "}
                   {weather.sunset}
                 </div>
               </div>
@@ -489,10 +489,10 @@ export default function WeatherForecast() {
               {/* Tip Box */}
               <div
                 className={`flex items-center gap-2 mt-3 px-3 py-2 rounded font-medium ${weather.tip.type === "warning"
-                    ? "bg-yellow-100 border-l-4 border-yellow-500 text-yellow-900"
-                    : weather.tip.type === "good"
-                      ? "bg-green-100 border-l-4 border-green-500 text-green-900"
-                      : "bg-blue-50 border-l-4 border-blue-400 text-blue-900"
+                  ? "bg-yellow-100 border-l-4 border-yellow-500 text-yellow-900"
+                  : weather.tip.type === "good"
+                    ? "bg-green-100 border-l-4 border-green-500 text-green-900"
+                    : "bg-blue-50 border-l-4 border-blue-400 text-blue-900"
                   }`}
               >
                 <FaLightbulb
@@ -533,10 +533,10 @@ export default function WeatherForecast() {
                           key={`s-top-${i}`}
                           whileHover={{ scale: 1.05 }}
                           className={`flex flex-col items-center rounded-lg p-3 shadow transition-all ${parseInt(f.rain) >= 70
-                              ? "bg-blue-100 border-2 border-blue-300 dark:bg-[#272727] dark:border-none"
-                              : parseInt(f.rain) >= 40
-                                ? "bg-gray-100 border-2 border-gray-300 dark:bg-[#272727] dark:border-none"
-                                : "bg-yellow-100 border-2 border-yellow-300 dark:bg-[#272727] dark:border-none"
+                            ? "bg-blue-100 border-2 border-blue-300 dark:bg-[#272727] dark:border-none"
+                            : parseInt(f.rain) >= 40
+                              ? "bg-gray-100 border-2 border-gray-300 dark:bg-[#272727] dark:border-none"
+                              : "bg-yellow-100 border-2 border-yellow-300 dark:bg-[#272727] dark:border-none"
                             }`}
                         >
                           <div className="font-semibold text-green-700 mb-1 text-sm dark:text-gray-200">
@@ -550,7 +550,7 @@ export default function WeatherForecast() {
                             {f.minTemp}
                           </div>
                           <div className="text-blue-600 text-xs font-medium mt-1">
-                            Rain: {f.rain}
+                            {t('weather_rain')}: {f.rain}
                           </div>
                           <div className="text-xs text-green-700 mt-1 text-center leading-tight">
                             {t(f.tipKey)}
@@ -579,10 +579,10 @@ export default function WeatherForecast() {
                           key={`s-bottom-${i}`}
                           whileHover={{ scale: 1.05 }}
                           className={`flex flex-col items-center rounded-lg p-3 shadow transition-all w-full sm:w-auto ${parseInt(f.rain) >= 70
-                              ? "bg-blue-100 border-2 border-blue-300 dark:bg-[#272727] dark:border-none"
-                              : parseInt(f.rain) >= 40
-                                ? "bg-gray-100 border-2 border-gray-300 dark:bg-[#272727] dark:border-none"
-                                : "bg-yellow-100 border-2 border-yellow-300 dark:bg-[#272727] dark:border-none"
+                            ? "bg-blue-100 border-2 border-blue-300 dark:bg-[#272727] dark:border-none"
+                            : parseInt(f.rain) >= 40
+                              ? "bg-gray-100 border-2 border-gray-300 dark:bg-[#272727] dark:border-none"
+                              : "bg-yellow-100 border-2 border-yellow-300 dark:bg-[#272727] dark:border-none"
                             }`}
                         >
                           <div className="font-semibold text-green-700 mb-1 text-sm dark:text-gray-200">
@@ -596,7 +596,7 @@ export default function WeatherForecast() {
                             {f.minTemp}
                           </div>
                           <div className="text-blue-600 text-xs font-medium mt-1">
-                            Rain: {f.rain}
+                            {t('weather_rain')}: {f.rain}
                           </div>
                           <div className="text-xs text-green-700 mt-1 text-center leading-tight">
                             {t(f.tipKey)}

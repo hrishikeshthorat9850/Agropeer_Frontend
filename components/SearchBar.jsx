@@ -3,22 +3,24 @@ import { useState, useRef, useEffect } from "react";
 import { FaSearch, FaTimes, FaFilter, FaHistory } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function SearchBar({ inline = false }) {
+  const { t } = useLanguage();
   const [q, setQ] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [recentSearches, setRecentSearches] = useState([]);
-  const [searchresults,setSearchResults] = useState([]);
+  const [searchresults, setSearchResults] = useState([]);
   const router = useRouter();
   const inputRef = useRef(null);
   const searchRef = useRef(null);
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   const suggestions = [
-    { type: "trending", text: "Organic farming tips", icon: "🌱" },
-    { type: "trending", text: "Crop prices today", icon: "💰" },
-    { type: "trending", text: "Weather forecast", icon: "☀️" },
+    { type: "trending", text: t("suggest_organic_tips"), icon: "🌱" },
+    { type: "trending", text: t("suggest_crop_prices"), icon: "💰" },
+    { type: "trending", text: t("suggest_weather"), icon: "☀️" },
     { type: "user", text: "John Farmer", icon: "👨‍🌾" },
     { type: "user", text: "Sarah Green", icon: "👩‍🌾" },
     { type: "tag", text: "#harvest2024", icon: "#" },
@@ -49,7 +51,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     try {
       const res = await fetch(`${BASE_URL}/api/search?q=${encodeURIComponent(trimmed)}`);
       const result = await res.json();
-      console.log("Search results are :",result);
+      console.log("Search results are :", result);
       console.log("First result structure:", result.results?.[0]);
       setSearchResults(result.results || []);
       const newRecent = [trimmed, ...recentSearches.filter((s) => s !== trimmed)].slice(0, 5);
@@ -102,28 +104,27 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                 setTimeout(() => setIsFocused(false), 200);
               }}
               type="text"
-              placeholder="Search..."
-              className={`w-full pl-9 pr-8 py-1.5 rounded-full border-0 focus:outline-none text-sm transition-all duration-300 ${
-                isFocused ? 'shadow-lg' : 'shadow-sm'
-              }`}
+              placeholder={t("search_placeholder_inline")}
+              className={`w-full pl-9 pr-8 py-1.5 rounded-full border-0 focus:outline-none text-sm transition-all duration-300 ${isFocused ? 'shadow-lg' : 'shadow-sm'
+                }`}
               style={{
-                background: isFocused 
-                  ? "rgba(255,255,255,0.98)" 
+                background: isFocused
+                  ? "rgba(255,255,255,0.98)"
                   : "rgba(255,255,255,0.95)",
                 backdropFilter: "blur(12px)",
                 boxShadow: isFocused
                   ? "0 4px 12px rgba(0,0,0,0.15), inset 0 1px 2px rgba(255,255,255,0.8)"
                   : "0 2px 6px rgba(0,0,0,0.1), inset 0 1px 2px rgba(255,255,255,0.6)",
-                border: isFocused 
-                  ? "1px solid rgba(72, 236, 80, 0.4)" 
+                border: isFocused
+                  ? "1px solid rgba(72, 236, 80, 0.4)"
                   : "1px solid rgba(255,255,255,0.5)",
                 fontSize: "14px",
                 fontWeight: "500",
                 color: "#1a1a1a",
               }}
             />
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="absolute left-2.5 top-1/2 -translate-y-1/2 text-green-700 opacity-80 active:opacity-100 transition-opacity"
               aria-label="Search"
             >
@@ -160,21 +161,21 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
               {searchresults.length > 0 && q && (
                 <div className="p-4 border-b border-farm-100 dark:border-neutral-700">
                   <h3 className="text-sm font-semibold text-farm-700 dark:text-farm-300 mb-3">
-                    Search Results ({searchresults.length})
+                    {t("search_results_header")} ({searchresults.length})
                   </h3>
                   <div className="space-y-1">
                     {searchresults.map((result, index) => {
                       // Determine result type - handle all possible field names
                       const resultType = result.type || result.table_name || result.table || result.entity_type || 'unknown';
-                      
+
                       // Determine result ID - handle all possible field names
                       const resultId = result.id || result.record_id || result.post_id || result.user_id || result.product_id || result.agri_product_id;
-                      
+
                       // Get display title - handle all possible field names for different entity types
                       const getDisplayTitle = () => {
                         // For posts: caption, title, body, content
                         if (resultType === 'post' || resultType === 'posts') {
-                          return result.caption || result.title || result.body || result.content || 'Untitled Post';
+                          return result.caption || result.title || result.body || result.content || t("search_untitled_post");
                         }
                         // For users: display_name, firstName+lastName, name, email
                         if (resultType === 'user' || resultType === 'userinfo' || resultType === 'users') {
@@ -183,14 +184,14 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                           if (result.firstName) return result.firstName;
                           if (result.name) return result.name;
                           if (result.email) return result.email;
-                          return 'Unknown User';
+                          return t("search_unknown_user");
                         }
                         // For products: title, name
                         if (resultType === 'product' || resultType === 'products' || resultType === 'agri_products' || resultType === 'agri_product') {
-                          return result.title || result.name || 'Untitled Product';
+                          return result.title || result.name || t("search_untitled_product");
                         }
                         // Fallback for other types
-                        return result.title || result.name || result.firstName || result.display_name || result.caption || 'Untitled';
+                        return result.title || result.name || result.firstName || result.display_name || result.caption || t("search_untitled");
                       };
 
                       // Get display description - handle all possible field names
@@ -209,15 +210,15 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                         // Posts
                         if (resultType === 'post' || resultType === 'posts') {
                           path = `/posts?id=${resultId}`;
-                        } 
+                        }
                         // Users - navigate to visitor profile page
                         else if (resultType === 'user' || resultType === 'userinfo' || resultType === 'users') {
                           path = `/profile?id=${resultId}`;
-                        } 
+                        }
                         // Products
                         else if (resultType === 'product' || resultType === 'products' || resultType === 'agri_products' || resultType === 'agri_product') {
                           path = `/market?id=${resultId}`;
-                        } 
+                        }
                         // News (if exists)
                         else if (resultType === 'news' || resultType === 'news_article') {
                           path = `/news?id=${resultId}`;
@@ -253,12 +254,12 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                           className="w-full text-left p-2.5 rounded-lg active:bg-green-50 dark:active:bg-neutral-700 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors flex items-center gap-2.5 cursor-pointer touch-manipulation"
                         >
                           <span className="text-lg flex-shrink-0">
-                            {resultType === 'post' || resultType === 'posts' ? '📝' : 
-                             resultType === 'user' || resultType === 'userinfo' || resultType === 'users' ? '👤' : 
-                             resultType === 'product' || resultType === 'products' || resultType === 'agri_products' || resultType === 'agri_product' ? '🛒' : 
-                             resultType === 'news' || resultType === 'news_article' ? '📰' :
-                             resultType === 'scheme' || resultType === 'government_scheme' ? '🏛️' :
-                             resultType === 'milk_company' || resultType === 'milk_company_rate' ? '🥛' : '🔍'}
+                            {resultType === 'post' || resultType === 'posts' ? '📝' :
+                              resultType === 'user' || resultType === 'userinfo' || resultType === 'users' ? '👤' :
+                                resultType === 'product' || resultType === 'products' || resultType === 'agri_products' || resultType === 'agri_product' ? '🛒' :
+                                  resultType === 'news' || resultType === 'news_article' ? '📰' :
+                                    resultType === 'scheme' || resultType === 'government_scheme' ? '🏛️' :
+                                      resultType === 'milk_company' || resultType === 'milk_company_rate' ? '🥛' : '🔍'}
                           </span>
                           <div className="flex-1 min-w-0">
                             <div className="text-sm font-medium text-farm-800 dark:text-farm-200 truncate">
@@ -272,13 +273,13 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                             {/* Show image count for products */}
                             {result.extra && Array.isArray(result.extra) && result.extra.length > 0 && (
                               <div className="text-xs text-farm-400 dark:text-farm-500 mt-1">
-                                📷 {result.extra.length} photo{result.extra.length > 1 ? 's' : ''}
+                                📷 {result.extra.length} {result.extra.length > 1 ? t("search_photos_count") : t("search_photo_count")}
                               </div>
                             )}
                             {/* Show image count for posts */}
                             {result.images && Array.isArray(result.images) && result.images.length > 0 && (
                               <div className="text-xs text-farm-400 dark:text-farm-500 mt-1">
-                                📷 {result.images.length} image{result.images.length > 1 ? 's' : ''}
+                                📷 {result.images.length} {result.images.length > 1 ? t("search_images_count") : t("search_image_count")}
                               </div>
                             )}
                             <div className="text-xs text-farm-400 dark:text-farm-500 capitalize mt-1">{resultType.replace(/_/g, ' ')}</div>
@@ -296,14 +297,14 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="text-sm font-semibold text-farm-700 dark:text-farm-300 flex items-center gap-2">
                       <FaHistory className="w-4 h-4" />
-                      Recent Searches
+                      {t("search_recent_header")}
                     </h3>
                     <button
                       type="button"
                       onClick={clearRecentSearches}
                       className="text-xs text-farm-500 dark:text-farm-400 hover:text-farm-700 dark:hover:text-farm-300 transition-colors"
                     >
-                      Clear
+                      {t("search_clear")}
                     </button>
                   </div>
                   <div className="space-y-1">
@@ -325,7 +326,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
               {searchresults.length === 0 && (
                 <div className="p-4">
                   <h3 className="text-sm font-semibold text-farm-700 dark:text-farm-300 mb-3">
-                    {q ? "Suggestions" : "Popular Searches"}
+                    {q ? t("search_suggestions_header") : t("search_popular_header")}
                   </h3>
                   <div className="space-y-1">
                     {suggestions
@@ -374,10 +375,9 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
             setShowSuggestions(true);
           }}
           type="text"
-          placeholder="Search posts, farmers, or tags..."
-          className={`w-full pl-14 pr-14 py-4 rounded-2xl border-0 focus:outline-none text-farm-800 placeholder-farm-500 transition-all duration-300 ${
-            isFocused ? "shadow-2xl scale-105" : "shadow-lg"
-          }`}
+          placeholder={t("search_placeholder_expanded")}
+          className={`w-full pl-14 pr-14 py-4 rounded-2xl border-0 focus:outline-none text-farm-800 placeholder-farm-500 transition-all duration-300 ${isFocused ? "shadow-2xl scale-105" : "shadow-lg"
+            }`}
           style={{
             background: isFocused
               ? "linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.9) 100%)"
@@ -429,14 +429,14 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
               {searchresults.length > 0 && q && (
                 <div className="p-4 border-b border-farm-100">
                   <h3 className="text-sm font-semibold text-farm-700 mb-3">
-                    Search Results ({searchresults.length})
+                    {t("search_results_header")} ({searchresults.length})
                   </h3>
                   <div className="space-y-1 max-h-96 overflow-y-auto">
                     {searchresults.map((result, index) => {
                       // Determine result type and ID - handle different possible field names
                       const resultType = result.type || result.table_name || result.table || 'unknown';
                       const resultId = result.id || result.record_id || result.post_id || result.user_id || result.product_id;
-                      
+
                       // Handle navigation based on result type
                       const handleResultClick = () => {
                         if (!resultId) {
@@ -472,13 +472,13 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                           className="w-full text-left p-3 rounded-lg hover:bg-farm-50 transition-colors flex items-center gap-3 cursor-pointer"
                         >
                           <span className="text-lg">
-                            {resultType === 'post' || resultType === 'posts' ? '📝' : 
-                             resultType === 'user' || resultType === 'userinfo' || resultType === 'users' ? '👤' : 
-                             resultType === 'product' || resultType === 'products' || resultType === 'agri_products' || resultType === 'agri_product' ? '🛒' : '🔍'}
+                            {resultType === 'post' || resultType === 'posts' ? '📝' :
+                              resultType === 'user' || resultType === 'userinfo' || resultType === 'users' ? '👤' :
+                                resultType === 'product' || resultType === 'products' || resultType === 'agri_products' || resultType === 'agri_product' ? '🛒' : '🔍'}
                           </span>
                           <div className="flex-1 min-w-0">
                             <div className="text-sm font-medium text-farm-800 truncate">
-                              {result.title || result.name || result.firstName || result.display_name || 'Untitled'}
+                              {result.title || result.name || result.firstName || result.display_name || t("search_untitled")}
                             </div>
                             {(result.body || result.description || result.summary) && (
                               <div className="text-xs text-farm-500 truncate mt-1">
@@ -499,14 +499,14 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="text-sm font-semibold text-farm-700 flex items-center gap-2">
                       <FaHistory className="w-4 h-4" />
-                      Recent Searches
+                      {t("search_recent_header")}
                     </h3>
                     <button
                       type="button"
                       onClick={clearRecentSearches}
                       className="text-xs text-farm-500 hover:text-farm-700 transition-colors"
                     >
-                      Clear
+                      {t("search_clear")}
                     </button>
                   </div>
                   <div className="space-y-1">
@@ -528,7 +528,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
               {searchresults.length === 0 && (
                 <div className="p-4">
                   <h3 className="text-sm font-semibold text-farm-700 mb-3">
-                    {q ? "Suggestions" : "Popular Searches"}
+                    {q ? t("search_suggestions_header") : t("search_popular_header")}
                   </h3>
                   <div className="space-y-1">
                     {suggestions
@@ -554,7 +554,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
             </motion.div>
           )}
         </AnimatePresence>
-        
+
       </motion.form>
     </div>
   );

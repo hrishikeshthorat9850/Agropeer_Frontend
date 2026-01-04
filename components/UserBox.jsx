@@ -2,8 +2,10 @@
 
 import Image from "next/image";
 // import { LogOut } from "lucide-react"; // Optional, replace with icon you use
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function UserBox({ user, onLogout }) {
+  const { t } = useLanguage();
   return (
     <div className="absolute top-4 right-4 flex items-center bg-white shadow-md border border-green-200 rounded-xl px-4 py-2 gap-3">
       {/* Profile Image */}
@@ -25,9 +27,9 @@ export default function UserBox({ user, onLogout }) {
       <button
         onClick={onLogout}
         className="ml-auto hover:bg-green-100 p-2 rounded-full transition"
-        title="Logout"
+        title={t("user_logout")}
       >
-        Logout
+        {t("user_logout")}
       </button>
     </div>
   );

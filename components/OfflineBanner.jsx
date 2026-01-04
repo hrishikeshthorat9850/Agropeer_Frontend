@@ -1,9 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function OfflineBanner() {
   const [offline, setOffline] = useState(false);
   const [justBack, setJustBack] = useState(false);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const goOffline = () => {
@@ -31,7 +33,7 @@ export default function OfflineBanner() {
   if (offline) {
     return (
       <div className="fixed top-0 left-0 right-0 z-[9999] bg-red-600 text-white text-center py-2 text-sm">
-        🔌 You are offline — reconnecting…
+        {t("banner_offline")}
       </div>
     );
   }
@@ -39,7 +41,7 @@ export default function OfflineBanner() {
   if (justBack) {
     return (
       <div className="fixed top-0 left-0 right-0 z-[9999] bg-emerald-600 text-white text-center py-2 text-sm">
-        ✅ Back online
+        {t("banner_online")}
       </div>
     );
   }
