@@ -5,42 +5,12 @@ import { useRouter } from "next/navigation";
 import { Capacitor } from "@capacitor/core";
 import { Browser } from "@capacitor/browser";
 import { supabase } from "@/lib/supabaseClient";
-import { resolveBackAction } from "@/utils/AndroidUtils/backNavigator";
 
 export default function DeepLinkManager({navState}) {
   const router = useRouter();
 
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
-/* ─────────────────────────────
-       🔙 ANDROID BACK BUTTON
-    ───────────────────────────── */
-    const backListener = App.addListener("backButton", () => {
-      const pathname = window.location.pathname;
-
-      const result = resolveBackAction({
-        pathname,
-        state: navState,
-      });
-
-      switch (result.action) {
-        case "exit":
-          App.exitApp();
-          break;
-
-        case "openChatSidebar":
-          navState.setChatSidebarOpen(true);
-          break;
-
-        case "goHome":
-          router.replace("/home");
-          break;
-
-        default:
-          router.back();
-      }
-    });
-    
     const listener = App.addListener("appUrlOpen", async ({ url }) => {
       if (!url) return;
       console.log("📩 Deep link:", url);

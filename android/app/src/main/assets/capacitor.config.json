@@ -3,6 +3,7 @@
 	"appName": "AgroGram",
 	"webDir": "out",
 	"server": {
+		"hostname": "localhost",
 		"androidScheme": "https"
 	},
 	"plugins": {

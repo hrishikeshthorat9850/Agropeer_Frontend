@@ -9,7 +9,8 @@ import PostBackground from "./post/PostBackground";
 import CommentInput from "./post/CommentInput";
 import CommentsSection from "./post/CommentsSection";
 import TextClamp from "./Text/TextClamp";
-
+import { Capacitor } from "@capacitor/core";
+import { shareContent } from "@/utils/shareHandler";
 export default function RecentPost({
   post,               
   user,                
@@ -234,17 +235,30 @@ export default function RecentPost({
   };
 
   const handleShareClick = () => {
-    if (navigator.share) {
-      navigator.share({
+    if (Capacitor.isNativePlatform()) {
+      shareContent({
         title: 'Farm Post',
-        text: post.caption || post.content || "",
-        url: window.location.href
+        text: post?.caption || post?.content || "",
+        id : post?.id,
+        route : "posts"
       });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      alert("🔗 Post link copied!");
+            if (result.platform === "native") {
+        console.log("✔ Shared via native bottom sheet");
+      }
+
+      if (result.platform === "web") {
+        console.log("🌍 Shared via browser share dialog");
+      }
+
+      if (result.platform === "copy") {
+        showToast("info", "📋 Link copied to clipboard!");
+      }
+
+      if (!result.success) {
+        return;
+      }
     }
-  };
+  }
 
   // Reply handlers
   const handleSendReply = async () => {

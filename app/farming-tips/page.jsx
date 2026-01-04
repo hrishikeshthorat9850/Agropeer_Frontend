@@ -19,6 +19,8 @@ import {
   FaFlask,
   FaRecycle,
 } from "react-icons/fa";
+import { Capacitor } from "@capacitor/core";
+import { shareContent } from "@/utils/shareHandler";
 
 export default function FarmingTips() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -674,12 +676,29 @@ export default function FarmingTips() {
   };
 
   const handleShare = (tip) => {
-    if (navigator.share) {
-      navigator.share({
+    if (Capacitor.isNativePlatform()) {
+      const result = shareContent({
         title: tip.title,
         text: tip.description,
-        url: window.location.href,
+        id : tip?.id,
+        route : "farmin-tips"
       });
+      
+    if (result.platform === "native") {
+      console.log("✔ Shared via native bottom sheet");
+    }
+
+    if (result.platform === "web") {
+      console.log("🌍 Shared via browser share dialog");
+    }
+
+    if (result.platform === "copy") {
+      showToast("info", "📋 Link copied to clipboard!");
+    }
+
+    if (!result.success) {
+      return;
+    }
     } else {
       // Fallback: copy to clipboard
       navigator.clipboard.writeText(`${tip.title}\n\n${tip.description}\n\n${window.location.href}`);

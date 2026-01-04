@@ -13,6 +13,8 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import Pagination from "@/components/ui/Pagination";
 import { usePagination } from "@/hooks/usePagination";
 import { apiRequest } from "@/utils/apiHelpers";
+import { Capacitor } from "@capacitor/core";
+import { shareContent } from "@/utils/shareHandler";
 
 export default function GovernmentSchemesPage() {
   const router = useRouter();
@@ -122,16 +124,29 @@ export default function GovernmentSchemesPage() {
     fetchSchemeDetails();
   }, [selectedSchemeId]);
 
-  const handleShare = (platform) => {
-    const url = window.location.href;
-    const text = detailScheme?.title || "Check out this government scheme";
+  const handleShare = (scheme) => {
+    if(Capacitor.isNativePlatform()){
+      const result = shareContent({
+        title : scheme?.title,
+        text : scheme?.tagline,
+        id : scheme?.id,
+        route : "government-schemes"
+      });
+      if (result.platform === "native") {
+        console.log("✔ Shared via native bottom sheet");
+      }
 
-    if (platform === "whatsapp") {
-      window.open(`https://wa.me/?text=${encodeURIComponent(`${text} - ${url}`)}`, "_blank");
-    } else if (platform === "copy") {
-      navigator.clipboard.writeText(url);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      if (result.platform === "web") {
+        console.log("🌍 Shared via browser share dialog");
+      }
+
+      if (result.platform === "copy") {
+        showToast("info", "📋 Link copied to clipboard!");
+      }
+
+      if (!result.success) {
+        return;
+      }
     }
   };
 
@@ -261,18 +276,11 @@ export default function GovernmentSchemesPage() {
               <div className="flex items-center gap-3 pt-4 border-t border-farm-200">
                 <span className="text-sm text-farm-600 font-medium">Share:</span>
                 <button
-                  onClick={() => handleShare("whatsapp")}
+                  onClick={() => handleShare(detailScheme)}
                   className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
                   title="Share on WhatsApp"
                 >
                   <FaWhatsapp className="w-5 h-5" />
-                </button>
-                <button
-                  onClick={() => handleShare("copy")}
-                  className="p-2 text-farm-600 hover:bg-farm-50 rounded-lg transition-colors"
-                  title="Copy link"
-                >
-                  {copied ? <FaCheck className="w-5 h-5 text-green-600" /> : <FaCopy className="w-5 h-5" />}
                 </button>
               </div>
             </motion.div>

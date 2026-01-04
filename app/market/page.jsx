@@ -17,7 +17,8 @@ import { ProductSkeleton } from "@/components/skeletons";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import PlantLoader from "@/components/PlantLoader";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
-
+import { Capacitor } from "@capacitor/core";
+import { shareContent } from "@/utils/shareHandler";
 // Lazy load heavy components that are only shown on user interaction or below the fold
 const SellForm = dynamic(() => import("@/components/SellForm"), {
   loading: () => <LoadingSpinner />,
@@ -386,19 +387,30 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   };
 
   const handleProductDetailShare = async () => {
-    const shareData = {
-      title: selectedProduct?.title || "Agri Product",
-      text: `Check out this product: ${selectedProduct?.title} for ₹${selectedProduct?.price}`,
-      url: window.location.href,
-    };
-    try {
-      if (navigator.share) await navigator.share(shareData);
-      else {
-        navigator.clipboard.writeText(window.location.href);
-        showToast("success", "Link copied to clipboard!");
+    if(Capacitor.isNativePlatform()){
+      const result = shareContent({
+        title : selectedProduct?.title || "Agri Product",
+        text : `Check out this product: ${selectedProduct?.title} for ₹${selectedProduct?.price}`,
+        id : selectedProduct?.id,
+        route : "market"
+      });
+
+      // 📌 Utility returned results - you just respond:
+      if (result.platform === "native") {
+        console.log("✔ Shared via native bottom sheet");
       }
-    } catch (err) {
-      console.error(err);
+
+      if (result.platform === "web") {
+        console.log("🌍 Shared via browser share dialog");
+      }
+
+      if (result.platform === "copy") {
+        showToast("info", "📋 Link copied to clipboard!");
+      }
+
+      if (!result.success) {
+        return;
+      }
     }
   };
 

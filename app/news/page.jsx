@@ -16,7 +16,8 @@ import { usePagination } from "@/hooks/usePagination";
 import { apiRequest } from "@/utils/apiHelpers";
 import { formatDistanceToNow } from "date-fns";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
-
+import { Capacitor } from "@capacitor/core";
+import { shareContent } from "@/utils/shareHandler";
 export default function NewsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -126,16 +127,29 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     fetchArticleDetail();
   }, [articleId]);
 
-  const handleShare = (platform) => {
-    const url = window.location.href;
-    const text = selectedArticle?.title || "Check out this news article";
+  const handleShare = (article) => {
+    if(Capacitor.isNativePlatform()){
+      const result = shareContent({
+        title : selectedArticle?.title,
+        text : selectedArticle?.summary,
+        id : selectedArticle?.id,
+        route : "news"
+      });
+      if (result.platform === "native") {
+        console.log("✔ Shared via native bottom sheet");
+      }
 
-    if (platform === "whatsapp") {
-      window.open(`https://wa.me/?text=${encodeURIComponent(`${text} - ${url}`)}`, "_blank");
-    } else if (platform === "copy") {
-      navigator.clipboard.writeText(url);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      if (result.platform === "web") {
+        console.log("🌍 Shared via browser share dialog");
+      }
+
+      if (result.platform === "copy") {
+        showToast("info", "📋 Link copied to clipboard!");
+      }
+
+      if (!result.success) {
+        return;
+      }
     }
   };
 
@@ -340,16 +354,10 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
             >
               <h3 className="text-lg font-bold text-farm-900 mb-4">Share this article</h3>
               <button
-                onClick={() => handleShare("whatsapp")}
+                onClick={() => handleShare(selectedArticle)}
                 className="px-4 py-2 bg-green-500 text-white rounded-xl mr-3"
               >
                 WhatsApp
-              </button>
-              <button
-                onClick={() => handleShare("copy")}
-                className="px-4 py-2 bg-farm-500 text-white rounded-xl"
-              >
-                {copied ? "Copied!" : "Copy Link"}
               </button>
             </motion.div>
 
@@ -386,16 +394,10 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                 className="absolute bottom-16 right-0 flex flex-col gap-3"
               >
                 <button
-                  onClick={() => handleShare("whatsapp")}
+                  onClick={() => handleShare(selectedArticle)}
                   className="w-12 h-12 rounded-full shadow-md bg-green-500 text-white flex items-center justify-center"
                 >
                   <FaWhatsapp />
-                </button>
-                <button
-                  onClick={() => handleShare("copy")}
-                  className="w-12 h-12 rounded-full shadow-md bg-farm-600 text-white flex items-center justify-center"
-                >
-                  {copied ? <FaCheck /> : <FaCopy />}
                 </button>
               </motion.div>
             )}

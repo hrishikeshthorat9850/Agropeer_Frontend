@@ -30,6 +30,7 @@ export default function PostsPage() {
 
   // Detail view state
   const postId = searchParams.get("id");
+  console.log("Post Id is :",postId);
   const [selectedPost, setSelectedPost] = useState(null);
   const [postLoading, setPostLoading] = useState(false);
   const [postError, setPostError] = useState(null);
@@ -39,63 +40,77 @@ export default function PostsPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const fetchPostById = async (postId) => {
+    const { data, error } = await supabase
+      .from("posts")
+      .select(`
+        id,
+        user_id,
+        caption,
+        images,
+        created_at,
+        updated_at,
+        userinfo(id, firstName, lastName, profile_url, avatar_url, display_name),
+        post_comments(
+          id,
+          comment,
+          created_at,
+          user_id,
+          userinfo(id, display_name, avatar_url),
+          comment_likes(id, user_id)
+        ),
+        post_likes(id, user_id)
+      `)
+      .eq("id", postId.trim())
+      .limit(1);
+
+    if (error) throw error;
+    return data?.[0] || null;
+  };
+
   // Fetch post detail when id query param is present
   useEffect(() => {
-    const fetchPostDetail = async () => {
-      if (!postId) {
-        setSelectedPost(null);
-        return;
-      }
+    if (!postId) return;
 
+    let isMounted = true;
+
+    const loadPost = async () => {
       setPostLoading(true);
       setPostError(null);
-      try {
-        const { data, error: fetchError } = await supabase
-          .from("posts")
-          .select(`
-            id,
-            user_id,
-            caption,
-            images,
-            created_at,
-            updated_at,
-            userinfo(id, firstName, lastName, profile_url, avatar_url, display_name, email),
-            post_comments(
-              id,
-              comment,
-              created_at,
-              user_id,
-              post_id,
-              userinfo(id, firstName, lastName, display_name, profile_url, avatar_url),
-              comment_likes(id, user_id, comment_id)
-            ),
-            post_likes(id, user_id, post_id, created_at)
-          `)
-          .eq("id", postId)
-          .single();
 
-        if (fetchError) {
-          console.error("Error fetching post:", fetchError);
-          setPostError("Failed to load post");
-          return;
+      try {
+        // 1️⃣ Try cache first (from feed)
+        const cached = posts?.find(p => p.id === postId);
+        if (cached && isMounted) {
+          setSelectedPost(cached);
         }
 
-        if (!data) {
+        // 2️⃣ Fetch fresh data
+        const freshPost = await fetchPostById(postId);
+
+        if (!freshPost && isMounted) {
           setPostError("Post not found");
           return;
         }
 
-        setSelectedPost(data);
+        if (isMounted) {
+          setSelectedPost(freshPost);
+        }
       } catch (err) {
-        console.error("Error fetching post:", err);
-        setPostError("An error occurred while loading the post");
+        console.error("Post fetch failed:", err);
+        if (isMounted) setPostError("Failed to load post");
       } finally {
-        setPostLoading(false);
+        if (isMounted) setPostLoading(false);
       }
     };
 
-    fetchPostDetail();
-  }, [postId]);
+    loadPost();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [postId, posts]);
+
 
   const handlePostUpdated = (updatedData) => {
     if (selectedPost) {

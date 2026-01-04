@@ -12,9 +12,7 @@ import useToast from "@/hooks/useToast";
 import { supabase } from "@/lib/supabaseClient";
 import { apiRequest, validateComment, sanitizeComment } from "@/utils/apiHelpers";
 import { Capacitor } from "@capacitor/core";
-
-
-
+import { shareContent } from "@/utils/shareHandler";
 export default function PostCard({ post, comment, idx , refreshPosts }) {
   const { user,accessToken} = useLogin();
   const { showToast } = useToast();
@@ -383,44 +381,32 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
   }, [user?.id, isBookmarked, post?.id, loadingBookmark]);
 
   const handleShareClick = useCallback(async () => {
-    const postId = post?.id;
-    const appLink = `agropeer://post/${postId}`;
-    const webLink = `https://agrogram-wheat.vercel.app/post/${postId}`;
-    const shareUrl = `${appLink}\n\nIf app doesn't open, try:\n${webLink}`;
+      const postId = post?.id;
 
-    // 1️⃣ Native Share (Capacitor App)
-    try {
-      const { Share } = await import("@capacitor/share");
-      await Share.share({
+      const result = await shareContent({
         title: "Farm Post",
         text: postCaption || post?.text,
-        url: shareUrl
+        id : postId,
+        route : "posts", // <--- this decides links like /post/ or /market/
       });
-      return; // STOP HERE if successful
-    } catch (err) {
-      console.log("Capacitor Share not available", err);
-    }
 
-    // 2️⃣ Web Share API (Chrome mobile / browsers that support it)
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: "Farm Post",
-          text: postCaption || post?.text,
-          url: webLink
-        });
-        return;
-      } catch (err) {
-        console.log("Web share cancelled", err);
+      // 📌 Utility returned results - you just respond:
+      if (result.platform === "native") {
+        console.log("✔ Shared via native bottom sheet");
       }
-    }
 
-    // 3️⃣ LAST RESORT → copy link
-    await copyToClipboard(webLink);
-    showToast("info", "Link copied to clipboard");
+      if (result.platform === "web") {
+        console.log("🌍 Shared via browser share dialog");
+      }
+
+      if (result.platform === "copy") {
+        showToast("info", "📋 Link copied to clipboard!");
+      }
+
+      if (!result.success) {
+        return;
+      }
   }, [postCaption, post?.text, post?.id]);
-
-
 
   // Reply handlers
   const handleSendReply = useCallback(async () => {
