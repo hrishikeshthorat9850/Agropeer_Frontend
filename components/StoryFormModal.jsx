@@ -112,8 +112,8 @@ export default function StoryFormModal({ open, onClose, story }) {
         <motion.div
           className="fixed inset-0 z-50 top-0 flex justify-center py-1 px-2 overflow-y-auto"
           style={{
-            top: typeof window !== "undefined" && window.innerWidth < 768 ? "60px" : undefined,
-            bottom: typeof window !== "undefined" && window.innerWidth < 768 ? "85px" : undefined,
+            top: "60px",
+            bottom: "85px",
           }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

@@ -11,8 +11,7 @@ export default function ChatSidebar({
   contacts,
   onSelectUser,
   selected,
-}) 
-{
+}) {
 
   // useEffect(() => {
   //     if (showContacts) {
@@ -27,7 +26,7 @@ export default function ChatSidebar({
   //       document.body.style.position = "static";
   //       document.body.style.touchAction = "auto";
   //     }
-  
+
   //     return () => {
   //       document.documentElement.style.overflow = "auto";
   //       document.body.style.overflow = "auto";
@@ -35,27 +34,27 @@ export default function ChatSidebar({
   //       document.body.style.touchAction = "auto";
   //     };
   //   }, [showContacts]);
-  const isNative = typeof window !== "undefined" 
-  ? window.Capacitor?.isNativePlatform?.() 
-  : false;
-  
+  const isNative = typeof window !== "undefined"
+    ? window.Capacitor?.isNativePlatform?.()
+    : false;
+
   return (
     <AnimatePresence>
       {showContacts && (
-      <motion.aside
-        initial={{ x: "-100%" }}
-        animate={{ x: 0 }}
-        exit={{ x: "-100%" }}
-        transition={{ type: "spring", stiffness: 80, damping: 15 }}
-        className="fixed md:static inset-0 md:inset-auto bg-white dark:bg-neutral-900 border 
+        <motion.aside
+          initial={{ x: "-100%" }}
+          animate={{ x: 0 }}
+          exit={{ x: "-100%" }}
+          transition={{ type: "spring", stiffness: 80, damping: 15 }}
+          className="fixed md:static inset-0 md:inset-auto bg-white dark:bg-neutral-900 border 
         dark:border-neutral-800 md:rounded-2xl p-4 z-10 w-full md:w-[340px] flex flex-col 
         shadow-lg md:h-full overflow-hidden"
-        style={{
-          top: isNative
-            ? "calc(56px + env(safe-area-inset-top))"
-            : "56px",
-        }}
-      >
+          style={{
+            top: isNative
+              ? "calc(56px + env(safe-area-inset-top))"
+              : "56px",
+          }}
+        >
           {/* Header */}
           <div className="flex justify-between items-center mb-4 flex-shrink-0">
             <div>
@@ -87,14 +86,14 @@ export default function ChatSidebar({
           </div>
 
           {/* Contact List */}
-<div
-  className="mt-4 flex-1 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-neutral-700"
-  style={{
-    paddingBottom: isNative
-      ? "calc(100px + env(safe-area-inset-bottom, 0px))"
-      : "0px",
-  }}
->
+          <div
+            className="mt-4 flex-1 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-neutral-700"
+            style={{
+              paddingBottom: isNative
+                ? "calc(100px + env(safe-area-inset-bottom, 0px))"
+                : "0px",
+            }}
+          >
             {contacts.map((c) => (
               <div key={c?.conversation_id || c?.id} className="relative">
                 <ContactRow
@@ -102,7 +101,7 @@ export default function ChatSidebar({
                   active={selected?.id === c?.id || selected?.conversation_id === c?.conversation_id}
                   onClick={(contact) => {
                     if (onSelectUser) onSelectUser(contact);
-                    if (window.innerWidth < 768) handleFaTimesClick();
+                    handleFaTimesClick();
                   }}
                 />
 

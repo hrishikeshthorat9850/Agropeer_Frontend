@@ -3,7 +3,8 @@ import { motion } from "framer-motion";
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
-import { FaUsers, FaPlus } from "react-icons/fa";
+import { FaUsers, FaPlus, FaArrowLeft } from "react-icons/fa";
+import { useLogin } from "@/Context/logincontext";
 import { usePostsPaginated } from "@/hooks/usePostsPaginated";
 import Posts from "@/components/Posts";
 import ErrorBoundary from "@/components/ErrorBoundary";
@@ -30,7 +31,7 @@ export default function PostsPage() {
 
   // Detail view state
   const postId = searchParams.get("id");
-  console.log("Post Id is :",postId);
+
   const [selectedPost, setSelectedPost] = useState(null);
   const [postLoading, setPostLoading] = useState(false);
   const [postError, setPostError] = useState(null);
@@ -69,6 +70,8 @@ export default function PostsPage() {
   };
 
   // Fetch post detail when id query param is present
+  const { user, loading: authLoading } = useLogin();
+
   useEffect(() => {
     if (!postId) return;
 
@@ -85,16 +88,21 @@ export default function PostsPage() {
           setSelectedPost(cached);
         }
 
-        // 2️⃣ Fetch fresh data
-        const freshPost = await fetchPostById(postId);
+        // 2️⃣ Fetch via Secure RPC (Database Function)
+        // This runs the complex join safely on the DB side with SECURITY DEFINER
+        const { data: rpcData, error: rpcError } = await supabase
+          .rpc('get_post_details_safe', { p_id: postId });
 
-        if (!freshPost && isMounted) {
+        if (rpcError) throw rpcError;
+
+        if (!rpcData && !cached && isMounted) {
           setPostError("Post not found");
           return;
         }
 
-        if (isMounted) {
-          setSelectedPost(freshPost);
+        if (isMounted && rpcData) {
+          // RPC returns JSON, compatible with our local state
+          setSelectedPost(rpcData);
         }
       } catch (err) {
         console.error("Post fetch failed:", err);
@@ -157,7 +165,14 @@ export default function PostsPage() {
       <MobilePageContainer>
         <div className="py-4">
           <div className="w-full max-w-2xl mx-auto">
-            <Posts post={selectedPost} idx={0} refreshPosts={refreshPosts}/>
+            <button
+              onClick={() => router.push("/posts")}
+              className="mb-6 flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full shadow-sm text-farm-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all font-medium"
+            >
+              <FaArrowLeft className="w-4 h-4" />
+              View All Posts
+            </button>
+            <Posts post={selectedPost} idx={0} refreshPosts={refreshPosts} />
             <Suspense fallback={null}>
               <ClientModalWrapper post={selectedPost} onUpdated={handlePostUpdated} />
             </Suspense>
@@ -250,8 +265,8 @@ export default function PostsPage() {
                 Something went wrong
               </h3>
               <p className="text-farm-600 dark:text-gray-300 mb-4">{error}</p>
-              <button 
-                onClick={refreshPosts} 
+              <button
+                onClick={refreshPosts}
                 className="px-6 py-3 bg-farm-500 text-white rounded-lg hover:bg-farm-600 transition-colors font-semibold active:scale-95"
               >
                 Try Again

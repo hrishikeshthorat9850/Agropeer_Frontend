@@ -1,11 +1,9 @@
 "use client";
 import { usePathname } from "next/navigation";
 import AppProviders from "./AppProviders";
-import Navbar from "../components/Navbar";
 import TopLoader from "../components/TopLoader";
 import OfflineBanner from "../components/OfflineBanner";
 import PageTransition from "../components/PageTransition";
-import Footer from "../components/home/Footer";
 import AIChatbotButton from "@/components/chatbot/AIChatbotButton";
 import AIChatWindow from "@/components/chatbot/AIChatWindow";
 import AndroidNotificationHandler from "@/components/AndroidNotificationHandler";
@@ -26,7 +24,6 @@ export default function ClientLayout({ children }) {
   const pathname = usePathname();
   const keyboardOpen = useKeyboardOpen();
 
-  const [isMobile, setIsMobile] = useState(false);
   const [aiOpen, setAiOpen] = useState(false);
   const [isChatSidebarOpen, setChatSidebarOpen] = useState(false);
   // 🔥 Popup State → Always show on fresh load
@@ -34,19 +31,11 @@ export default function ClientLayout({ children }) {
 
   const noUIRoutes = ["/login", "/signup", "/register", "/admin/login", "/forgot-password"];
   const showNavbar = !noUIRoutes.includes(pathname);
-  const isChatsPage = pathname.startsWith("/chats");
+
   useEffect(() => {
-    if(Capacitor.isNativePlatform()){
+    if (Capacitor.isNativePlatform()) {
       setupAndroidNotificationChannel();  // 📢 Create channel when app loads
     }
-  }, []);
-
-  // Detect mobile screen
-  useEffect(() => {
-    const update = () => setIsMobile(window.innerWidth < 768);
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
   }, []);
 
   // Add Capacitor platform class for Android scrollbar hiding
@@ -83,20 +72,6 @@ export default function ClientLayout({ children }) {
 
     applyStatusBar();
   }, []);
-  // 🔥 Mobile redirect from /home
-  useEffect(() => {
-    if (isMobile && pathname.startsWith("/home")) {
-      window.location.replace("/");
-    }
-  }, [isMobile, pathname]);
-
-  const shouldBlockHome = isMobile && pathname.startsWith("/home");
-
-  const computedPadding = noUIRoutes.includes(pathname)
-    ? ""
-    : isMobile
-      ? ""
-      : "pt-[120px]";
 
   // Body padding adjustments for mobile no-padding routes
   useEffect(() => {
@@ -139,52 +114,40 @@ export default function ClientLayout({ children }) {
         <TopLoader />
         <OfflineBanner />
 
-      {/* 🔥 Popup Only on First Layout Mount */}
-      {showPopup && !noUIRoutes.includes(pathname) && (
-        <PopupModal onClose={() => setShowPopup(false)} />
-      )}
+        {/* 🔥 Popup Only on First Layout Mount */}
+        {showPopup && !noUIRoutes.includes(pathname) && (
+          <PopupModal onClose={() => setShowPopup(false)} />
+        )}
 
-      {shouldBlockHome ? (
-        <main className="w-full min-h-screen bg-white"></main>
-      ) : (
+        {/* Main Layout Structure (Mobile Only) */}
+
         <>
-          {/* Desktop Navbar */}
-          {!isMobile && showNavbar && <Navbar />}
-
           {/* Mobile Navbar */}
-          {isMobile && showNavbar && (
+          {showNavbar && (
             <MobileNavbar onOpenAI={() => setAiOpen(true)} />
           )}
 
           {/* Main Content Area */}
           <main
-            className={`
-              w-full min-h-screen mt-[-33px]
-              ${isMobile ? "" : computedPadding}
-            `}
+            className={`w-full min-h-screen ${showNavbar ? "" : ""}`}
           >
             <div className="flex flex-col w-full">
               <PageTransition>
-                {isMobile && Capacitor.isNativePlatform() ? (
-                  <MobilePageLayout>
-                    {children}
-                  </MobilePageLayout>
-                ) : (
-                  children
-                )}
+                {/* Always use MobilePageLayout if not explicitly native-only, but here we assume mobile behaviour */}
+                <MobilePageLayout>
+                  {children}
+                </MobilePageLayout>
               </PageTransition>
-
-              {!isMobile && showNavbar && !isChatsPage && <Footer />}
             </div>
           </main>
 
           {/* Mobile Bottom Nav */}
-          {isMobile && showNavbar && !keyboardOpen ?
+          {showNavbar && !keyboardOpen ?
             (
               <MobileBottomNav onAI={() => setAiOpen(true)} />
             ) : null}
 
-          {isMobile && <MobileSidebar />}
+          <MobileSidebar />
 
           {/* Chatbot */}
           {!noUIRoutes.includes(pathname) && (
@@ -196,10 +159,10 @@ export default function ClientLayout({ children }) {
             </>
           )}
         </>
-      )}
-      <AndroidNotificationHandler />
-      <ToastContainer position="top-right mt-10" maxToasts={5} />
-    </AppProviders>
+
+        <AndroidNotificationHandler />
+        <ToastContainer position="top-right mt-10" maxToasts={5} />
+      </AppProviders>
     </>
   );
 }

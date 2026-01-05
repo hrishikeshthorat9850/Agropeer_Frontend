@@ -146,7 +146,7 @@ export function MobileOAuthHandler() {
 
           // Success - redirect to home
           console.log("✅ OAuth login successful, redirecting to home");
-          router.push("/home");
+          router.push("/");
         } catch (err) {
           console.error("OAuth handler error:", err);
           router.push("/login?error=" + encodeURIComponent(err.message || "Authentication failed"));

@@ -24,16 +24,7 @@ import HomeBanner from "./HomeBanner";
 export default function MobileHome() {
   const { weather, loading: weatherLoading, getWeather, error: weatherError } = useWeather();
   const { position } = useGeolocation();
-  const [scrollY, setScrollY] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  /* Scroll logic removed for performance */
   // ✅ Refactored to use global weather context directly (like MobileHome)
   useEffect(() => {
     if (!position?.latitude || !position?.longitude) return;
@@ -70,54 +61,13 @@ export default function MobileHome() {
       {/* ================================================================= */}
 
       {/* ================= TOP HEADER + FLOATING CARD ================= */}
-      <div
-        className="relative w-full transition-all duration-500 ease-out overflow-visible z-10"
-        style={{
-          transform: `translateY(${Math.min(scrollY * 0.5, 300)}px) scale(${Math.max(
-            0.95,
-            1 - scrollY / 800
-          )})`,
-          opacity: Math.max(1 - scrollY / 400, 0),
-          filter: `blur(${Math.min(scrollY / 100, 2)}px)`,
-        }}
-      >
-        {/* BACKGROUND IMAGE */}
-        <div className="relative w-full h-[240px]">
-          <Image
-            src="/banners/FarmOld.jpg"
-            alt="Farm Landscape"
-            fill
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-br from-green-900/40 via-transparent to-blue-900/30" />
-        </div>
-
-        {/* FLOATING CARD */}
-        <div className="absolute w-[92%] left-1/2 -translate-x-1/2 -bottom-44 z-30">
-          <div className="bg-white dark:bg-sky-950 rounded-3xl p-6 shadow-xl">
-            <h2 className="text-[22px] font-bold bg-gradient-to-r from-green-600 via-green-500 to-blue-600 bg-clip-text text-transparent dark:from-green-400 dark:via-green-300 dark:to-blue-400">
-              🚀 Smart Farm Tools & Calculators
-            </h2>
-            <p className="text-sm text-gray-600 dark:text-gray-300 mt-3">
-              Plan smarter using seed, fertilizer, water & yield calculators.
-            </p>
-            <Link
-              href="/explore"
-              className="inline-flex items-center justify-center gap-2 mt-5 bg-green-600 text-white px-6 py-3 rounded-full mx-auto"
-            >
-              Use Tools ⚡
-            </Link>
-          </div>
-        </div>
+      {/* ================= TOP HEADER ================= */}
+      <div className="relative w-full z-10 pt-4 px-4 pb-2">
+        <HomeBanner />
       </div>
 
       {/* 🔑 SPACER — REQUIRED */}
-      <div className="h-56" />
-
-      {/* ================= HOME BANNER (FULLY OPAQUE) ================= */}
-      <div className="relative w-full overflow-hidden z-20 opacity-100">
-        <HomeBanner />
-      </div>
+      {/* Spacer and HomeBanner removed (integrated above) */}
 
       {/* =============================================================== */}
       {/*                        PREMIUM WEATHER CARD                     */}
@@ -126,36 +76,35 @@ export default function MobileHome() {
       <div className="mt-6 px-4">
         <div className="
           relative overflow-hidden 
-          rounded-3xl 
-          p-5 
-          bg-gradient-to-br 
-          from-[#72c6ef] via-[#77ddf7] to-[#ffffff]
-          dark:from-[#0f252d] dark:via-[#12343e] dark:to-[#0a1c22]
-          shadow-[0_8px_25px_-5px_rgba(0,0,0,0.25)]
+          rounded-[32px]
+          p-5
+          bg-mesh-sky dark:bg-sky-900
+          border border-sky-200 dark:border-sky-800
+          shadow-elevation-1
         ">
 
-          <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-white/30 blur-2xl dark:bg-white/10" />
+          {/* Blur circle removed */}
 
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold text-slate-800 dark:text-white">
               Today’s Weather
             </h2>
-              {status === LOCATION.LOADING && <p>Detecting location…</p>}
+            {status === LOCATION.LOADING && <p>Detecting location…</p>}
 
-              {status === LOCATION.DENIED && (
-                <button onClick={retry} className="px-4 py-2 bg-red-600 text-white rounded-full">
-                  Allow Location
-                </button>
-              )}
+            {status === LOCATION.DENIED && (
+              <button onClick={retry} className="px-4 py-2 bg-red-600 text-white rounded-full">
+                Allow Location
+              </button>
+            )}
 
-              {status === LOCATION.GPS_OFF && (
-                <button
-                  onClick={openAppSettings}
-                  className="px-4 py-2 bg-orange-600 text-white rounded-full"
-                >
-                  Turn on Location
-                </button>
-              )}
+            {status === LOCATION.GPS_OFF && (
+              <button
+                onClick={openAppSettings}
+                className="px-4 py-2 bg-orange-600 text-white rounded-full"
+              >
+                Turn on Location
+              </button>
+            )}
             <div className="relative w-12 h-12">
               <div className="absolute inset-0 animate-pulse">
                 <svg viewBox="0 0 24 24" fill="none" stroke="orange" strokeWidth="1.4">
@@ -179,7 +128,7 @@ export default function MobileHome() {
                 Humidity: {humidity}%
               </p>
               <p className="text-[13px] text-slate-600 dark:text-slate-300">
-                Rain Chance: 
+                Rain Chance:
                 {rainChance}
               </p>
               <p className="text-[13px] text-slate-600 dark:text-slate-300">
@@ -211,11 +160,8 @@ export default function MobileHome() {
 
       <div className="relative mt-8 px-4 sm:px-6 lg:px-8">
         {/* BACKGROUND DECORATIVE ELEMENTS */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-10 -left-10 w-20 h-20 bg-gradient-to-br from-green-400/20 to-blue-500/20 rounded-full blur-xl animate-pulse" />
-          <div className="absolute -bottom-10 -right-10 w-16 h-16 bg-gradient-to-br from-yellow-400/20 to-orange-500/20 rounded-full blur-lg animate-bounce" />
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-gradient-to-br from-purple-400/10 to-pink-500/10 rounded-full blur-2xl animate-ping" />
-        </div>
+        {/* BACKGROUND DECORATIVE ELEMENTS */}
+        <div className="absolute inset-0 overflow-hidden rounded-[32px] bg-mesh-farm dark:bg-none opacity-60" />
 
         {/* MAIN WELCOME CONTENT */}
         <div className="relative z-10 text-center py-8 sm:py-12 lg:py-16">
@@ -233,7 +179,7 @@ export default function MobileHome() {
           {/* GRADIENT TITLE */}
           <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold mb-4 sm:mb-6 lg:mb-8 animate-fadeInUp">
             <span className="text-3xl bg-gradient-to-r from-green-600 via-green-500 to-blue-600 bg-clip-text text-transparent dark:from-green-400 dark:via-green-300 dark:to-blue-400">
-              Welcome to 
+              Welcome to
             </span>&nbsp;
             <span className="text-3xl bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent dark:from-blue-400 dark:via-purple-400 dark:to-green-400 animate-pulse">
               AgroPeer
@@ -273,41 +219,38 @@ export default function MobileHome() {
       {/*                        RECENT POSTS (PREMIUM)                    */}
       {/* ================================================================= */}
 
-      <div className="mt-14 px-4">
+      <div className="mt-6 px-4">
         <div className="
-          bg-gradient-to-br from-white to-[#f9fafb] 
-          dark:from-[#1a1a1a] dark:to-[#111]
-          rounded-3xl p-5 
-          shadow-[0_10px_30px_-10px_rgba(0,0,0,0.15)]
-          dark:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.6)]
-          border border-[#f0f0f0] dark:border-[#333]
+          bg-surface-50 dark:bg-surface-900
+          rounded-[24px] p-5
+          border border-surface-200 dark:border-surface-800
+          shadow-elevation-1
         ">
           <div className="flex items-center gap-3 mb-3">
             <div
-              className="w-12 h-12 rounded-2xl 
-                bg-green-100 dark:bg-green-900/30 
-                flex items-center justify-center shadow-inner">
-              <FaUserClock size={24} className="text-green-700 dark:text-green-400" />
+              className="w-10 h-10 rounded-xl 
+                bg-farm-100 dark:bg-farm-900
+                flex items-center justify-center">
+              <FaUserClock size={20} className="text-farm-700 dark:text-farm-400" />
             </div>
-            <h2 className="text-xl font-bold text-green-800 dark:text-green-400">
+            <h2 className="text-lg font-bold text-surface-900 dark:text-white">
               Recent Posts
             </h2>
           </div>
 
-          <p className="text-[14px] text-gray-600 dark:text-gray-300 leading-relaxed">
-            See what farmers around you are posting right now — latest updates, photos & field progress.
+          <p className="text-sm text-surface-600 dark:text-surface-400 leading-relaxed mb-4">
+            See what farmers around you are posting right now.
           </p>
 
           <Link
             href="/recents"
             className="
-              inline-block mt-4 mx-auto
-              bg-gradient-to-r from-green-600 to-green-500 
-              text-white px-5 py-2 rounded-full shadow-lg 
-              active:scale-95 font-semibold
+              flex items-center justify-center w-full
+              bg-farm-600 text-white px-5 py-3 rounded-xl shadow-elevation-1 
+              active:scale-95 font-semibold text-sm
             "
           >
-            View Latest Posts →
+            View Latest Posts
           </Link>
         </div>
       </div>
@@ -316,23 +259,21 @@ export default function MobileHome() {
       {/*                        MOST LIKED (PREMIUM)                      */}
       {/* ================================================================= */}
 
-      <div className="mt-10 px-4 pb-10">
+      <div className="mt-4 px-4 pb-24">
         <div className="
-          bg-gradient-to-br from-white to-[#fff7f3]
-          dark:from-[#1a1a1a] dark:to-[#190f0a]
-          rounded-3xl p-5 
-          shadow-[0_10px_30px_-10px_rgba(0,0,0,0.15)]
-          dark:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.6)]
-          border border-[#ffeede] dark:border-[#333]
+          bg-surface-50 dark:bg-surface-900
+          rounded-[24px] p-5
+          border border-surface-200 dark:border-surface-800
+          shadow-elevation-1
         ">
 
           <div className="flex items-center gap-3 mb-3">
             <div className="
-              w-12 h-12 rounded-2xl 
-              bg-orange-100 dark:bg-orange-900/30 
-              flex items-center justify-center shadow-inner
+              w-10 h-10 rounded-xl 
+              bg-earth-100 dark:bg-earth-900 
+              flex items-center justify-center
             ">
-              <svg width="24" height="24" fill="orange" viewBox="0 0 24 24">
+              <svg width="20" height="20" fill="#e65100" viewBox="0 0 24 24">
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 
                         2 6 4 4 6.5 4c1.74 0 3.41 1 4.13 2.44h.74C13.09 
                         5 14.76 4 16.5 4 19 4 21 6 21 8.5c0 
@@ -340,25 +281,24 @@ export default function MobileHome() {
               </svg>
             </div>
 
-            <h2 className="text-xl font-bold text-orange-600 dark:text-orange-400">
-              Most Liked Posts
+            <h2 className="text-lg font-bold text-surface-900 dark:text-white">
+              Most Liked
             </h2>
           </div>
 
-          <p className="text-[14px] text-gray-600 dark:text-gray-300 leading-relaxed">
-            These posts are trending among farmers — most liked, shared and appreciated by the community.
+          <p className="text-sm text-surface-600 dark:text-surface-400 leading-relaxed mb-4">
+            Trending among farmers — most liked and shared.
           </p>
 
           <Link
             href="/trending"
             className="
-              inline-block mt-4 mx-auto
-              bg-gradient-to-r from-orange-500 to-orange-400 
-              text-white px-5 py-2 rounded-full shadow-lg 
-              active:scale-95 font-semibold
+              flex items-center justify-center w-full
+              bg-earth-500 text-white px-5 py-3 rounded-xl shadow-elevation-1 
+              active:scale-95 font-semibold text-sm
             "
           >
-            View Trending Posts →
+            View Trending
           </Link>
         </div>
       </div>
@@ -402,35 +342,26 @@ function FeatureCard({ href, icon, bg, label }) {
     <Link
       href={href}
       className="
-        p-4 rounded-2xl
+        p-4 rounded-3xl
         relative overflow-hidden
-        bg-gradient-to-br from-white/90 via-white/95 to-white/80
-        dark:from-[#1c1c1c] dark:via-[#0a0a0a] dark:to-[#272727]
-        backdrop-blur-sm
-        shadow-lg dark:shadow-[0_6px_20px_rgba(0,0,0,0.4)]
-        border border-white/50 dark:border-gray-700/50
-        flex flex-col items-center justify-center gap-2
+        bg-surface-50 dark:bg-surface-800
+        border border-surface-200 dark:border-surface-700
+        shadow-elevation-1
+        flex flex-col items-center justify-center gap-3
         active:scale-95 transition-all duration-200
-        hover:shadow-xl hover:scale-105
+        hover:shadow-elevation-2 hover:bg-surface-100 dark:hover:bg-surface-700
         group
+        h-32
       "
     >
-      {/* ANIMATED BACKGROUND GRADIENT */}
-      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-transparent dark:via-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-      {/* SUBTLE PATTERN OVERLAY */}
-      <div className="absolute inset-0 opacity-5 dark:opacity-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(0,0,0,0.15)_1px,transparent_0)] bg-[length:20px_20px]" />
-      </div>
-
-      {/* GLOWING BORDER EFFECT */}
-      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500/20 via-purple-500/10 to-green-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm" />
-
-      <div className={`relative z-10 w-10 h-10 rounded-xl flex items-center justify-center ${bg} shadow-inner group-hover:scale-110 transition-transform duration-200`}>
+      <div className={`
+        relative z-10 w-12 h-12 rounded-2xl flex items-center justify-center 
+        ${bg} shadow-sm group-hover:scale-110 transition-transform duration-200
+      `}>
         {icon}
       </div>
 
-      <span className="relative z-10 font-semibold text-gray-800 dark:text-gray-200 text-[15px] group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-200 text-center">
+      <span className="relative z-10 font-semibold text-surface-800 dark:text-surface-100 text-[13px] text-center leading-tight">
         {label}
       </span>
     </Link>

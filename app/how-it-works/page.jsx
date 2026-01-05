@@ -127,7 +127,7 @@ export default function HowItWorks() {
       color: "from-farm-400 to-farm-600",
       bgColor: "bg-farm-100",
       iconColor: "text-farm-600",
-      link: "/home",
+      link: "/",
     },
     {
       title: t("mf5_title"),

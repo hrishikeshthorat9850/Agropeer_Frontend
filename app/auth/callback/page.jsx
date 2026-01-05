@@ -74,7 +74,7 @@ export default function AuthCallback() {
           // If no tokens found, try to get session from hash (fallback)
           // Supabase should auto-parse the hash if it's in window.location.hash
           const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-          
+
           if (sessionError || !session) {
             console.error("Session error:", sessionError);
             router.replace("/login?error=" + encodeURIComponent(sessionError?.message || "Failed to create session"));
@@ -102,7 +102,7 @@ export default function AuthCallback() {
 
         // Success - redirect to home
         console.log("✅ OAuth callback successful");
-        router.replace("/home");
+        router.replace("/");
       } catch (err) {
         console.error("Auth callback error:", err);
         router.replace("/login?error=" + encodeURIComponent(err.message || "Authentication failed"));

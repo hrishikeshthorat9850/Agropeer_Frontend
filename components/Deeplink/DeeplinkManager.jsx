@@ -6,7 +6,7 @@ import { Capacitor } from "@capacitor/core";
 import { Browser } from "@capacitor/browser";
 import { supabase } from "@/lib/supabaseClient";
 
-export default function DeepLinkManager({navState}) {
+export default function DeepLinkManager({ navState }) {
   const router = useRouter();
 
   useEffect(() => {
@@ -29,7 +29,7 @@ export default function DeepLinkManager({navState}) {
       ─────────────────────────────────────────── */
       if (url.includes("login-callback") && url.includes("#access_token")) {
         console.log("🔑 OAuth hash callback detected");
-        try { await Browser.close(); } catch {}
+        try { await Browser.close(); } catch { }
 
         const oauthUrl = new URL(url.replace("agropeer://", "https://callback/"));
         const hashParams = new URLSearchParams(oauthUrl.hash.substring(1));
@@ -44,7 +44,7 @@ export default function DeepLinkManager({navState}) {
 
           if (!error) {
             console.log("✅ OAuth session set");
-            router.replace("/home");
+            router.replace("/");
             return; // ❗ STOP EXECUTION HERE
           }
 
@@ -62,7 +62,7 @@ export default function DeepLinkManager({navState}) {
         console.log("🔁 OAuth PKCE code detected");
         try {
           await supabase.auth.exchangeCodeForSession(code);
-          router.replace("/home");
+          router.replace("/");
           return; // ❗ STOP HERE
         } catch {
           router.replace("/login?error=oauth_exchange_failed");
@@ -76,7 +76,7 @@ export default function DeepLinkManager({navState}) {
       if (pathname.includes("reset-password")) {
         console.log("🛠 Reset password deep link");
 
-        try { await Browser.close(); } catch {}
+        try { await Browser.close(); } catch { }
         const hash = parsed.hash?.substring(1) || "";
         const code = parsed.searchParams.get("code");
 
@@ -118,7 +118,7 @@ export default function DeepLinkManager({navState}) {
     });
 
     return () => listener.then(l => l.remove());
-  }, [router,navState]);
+  }, [router, navState]);
 
   return null;
 }

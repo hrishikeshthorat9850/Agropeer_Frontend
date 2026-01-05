@@ -7,12 +7,13 @@ import {
   FaTractor,
   FaImages,
 } from "react-icons/fa";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles } from "lucide-react";
 
 export default function MobileBottomNav({ onAI }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
   const safeBottom = "env(safe-area-inset-bottom)";
@@ -26,120 +27,155 @@ export default function MobileBottomNav({ onAI }) {
     if (!open) return;
 
     const closePopButtons = (e) => {
-      // If click is outside the big plus button → close
       if (!e.target.closest(".big-plus-btn")) {
         setOpen(false);
       }
     };
 
     document.addEventListener("click", closePopButtons);
-
     return () => document.removeEventListener("click", closePopButtons);
   }, [open]);
 
+  const navItems = [
+    { label: "Home", icon: FaHome, route: "/" },
+    { label: "AI", icon: Sparkles, action: openAI, isActive: false }, // Action item
+  ];
+
   return (
     <>
-      {/* LEFT POP BUTTON */}
+      {/* LEFT POP BUTTON (Sell) */}
       <AnimatePresence>
         {open && (
           <motion.button
-            initial={{ opacity: 0, scale: 0, x: 60 }}
-            animate={{ opacity: 1, scale: 1, x: 0 }}
-            exit={{ opacity: 0, scale: 0, x: 60 }}
-            transition={{ type: "spring", stiffness: 280, damping: 22 }}
+            initial={{ opacity: 0, scale: 0, x: 60, y: 20 }}
+            animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
+            exit={{ opacity: 0, scale: 0, x: 60, y: 20 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
             onClick={() => {
               setOpen(false);
               router.push("/sell/choose");
             }}
             className="
-              fixed left-24 z-[998]
-              w-12 h-12 rounded-2xl 
-              bg-gradient-to-br from-orange-500 to-orange-400 
-              text-white shadow-xl flex items-center justify-center
+              fixed left-[calc(50%-80px)] z-[998]
+              flex flex-col items-center gap-2
               active:scale-95
             "
-            style={{ bottom: `calc(${safeBottom} + 100px)` }}
+            style={{ bottom: `calc(${safeBottom} + 90px)` }}
           >
-            <FaTractor size={18} />
+            <div className="w-14 h-14 rounded-full bg-earth-500 text-white shadow-elevation-3 flex items-center justify-center">
+              <FaTractor size={20} />
+            </div>
+            <span className="text-xs font-semibold text-white bg-black/50 px-2 py-1 rounded-md backdrop-blur-md">Sell</span>
           </motion.button>
         )}
       </AnimatePresence>
 
-      {/* RIGHT POP BUTTON */}
+      {/* RIGHT POP BUTTON (Post) */}
       <AnimatePresence>
         {open && (
           <motion.button
-            initial={{ opacity: 0, scale: 0, x: -60 }}
-            animate={{ opacity: 1, scale: 1, x: 0 }}
-            exit={{ opacity: 0, scale: 0, x: -60 }}
-            transition={{ type: "spring", stiffness: 280, damping: 22 }}
+            initial={{ opacity: 0, scale: 0, x: -60, y: 20 }}
+            animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
+            exit={{ opacity: 0, scale: 0, x: -60, y: 20 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
             onClick={() => {
               setOpen(false);
               router.push("/posts");
             }}
             className="
-              fixed right-24 z-[998]
-              w-12 h-12 rounded-2xl 
-              bg-gradient-to-br from-blue-600 to-blue-500 
-              text-white shadow-xl flex items-center justify-center
+              fixed right-[calc(50%-80px)] z-[998]
+              flex flex-col items-center gap-2
               active:scale-95
             "
-            style={{ bottom: `calc(${safeBottom} + 100px)` }}
+            style={{ bottom: `calc(${safeBottom} + 90px)` }}
           >
-            <FaImages size={18} />
+            <div className="w-14 h-14 rounded-full bg-farm-500 text-white shadow-elevation-3 flex items-center justify-center">
+              <FaImages size={20} />
+            </div>
+            <span className="text-xs font-semibold text-white bg-black/50 px-2 py-1 rounded-md backdrop-blur-md">Post</span>
           </motion.button>
         )}
       </AnimatePresence>
 
-      {/* ⭐ FULL-WIDTH NAV — ZERO GAP, GUARANTEED */}
+      {/* OVERLAY for FAB */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[997] bg-black/20 backdrop-blur-[2px]"
+            onClick={() => setOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* ⭐ MATERIAL 3 BOTTOM NAVIGATION */}
       <div
-        className="fixed bottom-0 left-0 right-0 md:hidden z-[999] bg-gradient-to-r from-[#2E7D32] to-[#1B5E20]
-          shadow-[0_-2px_20px_rgba(0,0,0,0.3)] rounded-tr-xl rounded-tl-xl"
+        className="fixed bottom-0 left-0 right-0 md:hidden z-[999] bg-surface-50 dark:bg-surface-900 border-t border-surface-200 dark:border-surface-800"
         style={{
-          paddingBottom: "calc(env(safe-area-inset-bottom) + 6px)",
+          paddingBottom: "env(safe-area-inset-bottom)",
+          height: "calc(80px + env(safe-area-inset-bottom))",
         }}
       >
-        <div className="flex items-center justify-around py-2 px-6">
+        <div className="flex items-center justify-between px-4 h-[80px]">
 
           {/* HOME */}
           <button
             onClick={() => router.push("/")}
-            className="
-              flex flex-col items-center gap-1 text-white active:scale-90 transition
-            "
+            className="flex-1 flex flex-col items-center gap-1 group"
           >
-            <FaHome className="text-orange-100" size={28} />
-            <span className="text-[11px]">Home</span>
+            <div className={`
+              px-5 py-1.5 rounded-full transition-all duration-300
+              ${pathname === "/"
+                ? "bg-farm-200 dark:bg-farm-800 text-farm-900 dark:text-farm-100"
+                : "text-surface-600 dark:text-surface-400 group-hover:bg-surface-100 dark:group-hover:bg-surface-800"}
+            `}>
+              <FaHome size={24} className={pathname === "/" ? "" : "opacity-70"} />
+            </div>
+            <span className={`text-xs font-medium ${pathname === "/" ? "text-farm-900 dark:text-farm-100" : "text-surface-600 dark:text-surface-400"}`}>
+              Home
+            </span>
           </button>
 
-          {/* BIG PLUS BUTTON */}
-          <motion.button
-            onClick={(e) => {
-              e.stopPropagation();
-              setOpen((p) => !p);
-            }}
-            whileTap={{ scale: 0.9 }}
-            className="big-plus-btn relative w-16 h-16 -mt-10
-              bg-gradient-to-br from-orange-500 to-orange-400
-              rounded-full text-white
-              shadow-[0_12px_30px_rgba(0,0,0,0.35)]
-              border border-white/20
-              flex items-center justify-center
-            "
-          >
-            <FaPlusCircle size={50} />
-          </motion.button>
+          {/* FAB (Create) */}
+          <div className="flex-1 flex justify-center -mt-8">
+            <motion.button
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpen((p) => !p);
+              }}
+              whileTap={{ scale: 0.95 }}
+              animate={{ rotate: open ? 45 : 0 }}
+              className="
+                w-16 h-16 rounded-2xl
+                bg-farm-500 text-white
+                shadow-elevation-3
+                flex items-center justify-center
+                transform transition-all duration-300
+                hover:shadow-glow-farm hover:scale-105 active:scale-95
+              "
+            >
+              <FaPlusCircle size={32} />
+            </motion.button>
+          </div>
 
           {/* AI */}
           <button
             onClick={openAI}
-            className="
-              flex flex-col items-center gap-1 text-white active:scale-90 transition
-            "
+            className="flex-1 flex flex-col items-center gap-1 group"
           >
-            <Sparkles className="text-orange-100" size={28} />
-            <span className="text-[11px]">AI</span>
+            <div className={`
+              px-5 py-1.5 rounded-full transition-all duration-300
+              text-surface-600 dark:text-surface-400 group-hover:bg-surface-100 dark:group-hover:bg-surface-800
+            `}>
+              <Sparkles size={24} className="opacity-70 text-earth-500" />
+            </div>
+            <span className="text-xs font-medium text-surface-600 dark:text-surface-400">
+              Ask AI
+            </span>
           </button>
+
         </div>
       </div>
     </>

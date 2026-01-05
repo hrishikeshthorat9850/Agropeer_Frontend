@@ -22,14 +22,14 @@ export default function MobileNavbar() {
   const [notificationsUnreadCount, setNotificationsUnreadCount] = useState(0);
   const { locale, setLocale, LOCALE_NAMES, SUPPORTED_LOCALES } = useLanguage();
   const [langOpen, setLangOpen] = useState(false);
-  
+
   const langRef = useRef(null);
 
   // Fetch total unread notifications count from database (not limited)
   useEffect(() => {
     // Reset count immediately when user changes or when no user
     setNotificationsUnreadCount(0);
-    
+
     if (!user?.id) {
       return;
     }
@@ -194,27 +194,27 @@ export default function MobileNavbar() {
 
   return (
     <div
-      className="pt-safe-top md:hidden fixed top-0 left-0 right-0 z-[100] bg-gradient-to-r from-[#48ec50] to-[#77c37c] dark:bg-white/10 backdrop-blur-2xl rounded-bl-xl rounded-br-xl">
+      className="pt-safe-top md:hidden fixed top-0 left-0 right-0 z-[100] bg-surface-50 dark:bg-surface-900 border-b border-surface-200 dark:border-surface-800 shadow-elevation-1">
       <div
         className="
           flex items-center justify-between 
-          py-1.5 px-2
-          h-[56px]
+          py-1.5 px-3
+          h-[64px]
           flex-shrink-0
-          gap-2
+          gap-3
         "
       >
         {/* MENU / SIDEBAR BUTTON */}
         <button
           onClick={openSidebar}
-          className="p-2 active:scale-95 transition flex-shrink-0"
+          className="p-2 active:scale-95 transition flex-shrink-0 rounded-full hover:bg-surface-200 dark:hover:bg-surface-800"
           aria-label="Open menu"
         >
-          <FaBars className="text-[22px] text-white" />
+          <FaBars className="text-[22px] text-surface-700 dark:text-surface-200" />
         </button>
 
         {/* SEARCH BAR - Takes available space */}
-        <div className="flex-1 min-w-0 max-w-[calc(100%-180px)]">
+        <div className="flex-1 min-w-0">
           <SearchBar inline={true} />
         </div>
 
@@ -223,10 +223,10 @@ export default function MobileNavbar() {
 
           {/* Notifications */}
           {user && (
-            <Link href="/notifications" className="relative p-2 active:scale-95">
-              <FaBell className="text-[20px]" />
+            <Link href="/notifications" className="relative p-2 active:scale-95 rounded-full hover:bg-surface-200 dark:hover:bg-surface-800 transition-colors">
+              <FaBell className="text-[20px] text-surface-700 dark:text-surface-200" />
               {notificationsUnreadCount > 0 && (
-                <div className="absolute -top-2 -right-1">
+                <div className="absolute top-1 right-1">
                   <NotificationBadge unreadCount={notificationsUnreadCount} />
                 </div>
               )}
@@ -235,10 +235,10 @@ export default function MobileNavbar() {
 
           {/* Chats */}
           {user &&
-            <Link href="/chats" className="relative p-2 active:scale-95">
-              <FaComments className="text-[20px]" />
+            <Link href="/chats" className="relative p-2 active:scale-95 rounded-full hover:bg-surface-200 dark:hover:bg-surface-800 transition-colors">
+              <FaComments className="text-[20px] text-surface-700 dark:text-surface-200" />
               {unreadChats > 0 && (
-                <div className="absolute -top-2 -right-1">
+                <div className="absolute top-1 right-1">
                   <NotificationBadge unreadCount={unreadChats} />
                 </div>
               )}
@@ -249,9 +249,9 @@ export default function MobileNavbar() {
           <div ref={langRef} className="relative">
             <button
               onClick={() => setLangOpen(!langOpen)}
-              className="p-2 active:scale-95"
+              className="p-2 active:scale-95 rounded-full hover:bg-surface-200 dark:hover:bg-surface-800 transition-colors"
             >
-              <FaLanguage className="text-[27px]" />
+              <FaLanguage className="text-[27px] text-surface-700 dark:text-surface-200" />
             </button>
 
             <AnimatePresence>

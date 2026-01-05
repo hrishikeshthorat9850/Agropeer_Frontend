@@ -20,7 +20,7 @@ export default function OtpVerifyCard({
   const inputRefs = useRef([]);
   const router = useRouter();
   const { showToast, ToastComponent } = useToast();
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   const handleChange = (value, index) => {
     if (!/^[0-9]*$/.test(value)) return;
@@ -67,7 +67,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
       }
 
       showToast("success", "Logged in successfully!");
-      router.push("/home");
+      router.push("/");
     } catch (err) {
       console.error("OTP verification failed:", err);
       setError(err?.message || "Invalid OTP. Please try again.");
@@ -169,11 +169,10 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
           whileTap={{ scale: verifying ? 1 : 0.97 }}
           disabled={verifying}
           onClick={handleVerify}
-          className={`w-full py-3 rounded-full font-semibold text-white text-[15px] sm:text-[16px] transition-all ${
-            verifying
+          className={`w-full py-3 rounded-full font-semibold text-white text-[15px] sm:text-[16px] transition-all ${verifying
               ? "bg-green-300 cursor-not-allowed"
               : "bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 shadow-lg hover:shadow-green-500/30"
-          }`}
+            }`}
         >
           {verifying ? "Verifying..." : "Verify Code"}
         </motion.button>
@@ -183,9 +182,8 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
           whileTap={{ scale: resending ? 1 : 0.97 }}
           disabled={resending}
           onClick={handleResend}
-          className={`w-full py-3 rounded-full font-semibold text-green-700 text-[15px] sm:text-[16px] border border-green-300 transition-all ${
-            resending ? "bg-green-100 cursor-not-allowed" : "bg-green-50 hover:bg-green-100"
-          }`}
+          className={`w-full py-3 rounded-full font-semibold text-green-700 text-[15px] sm:text-[16px] border border-green-300 transition-all ${resending ? "bg-green-100 cursor-not-allowed" : "bg-green-50 hover:bg-green-100"
+            }`}
         >
           {resending ? "Resending..." : "Resend Code"}
         </motion.button>
