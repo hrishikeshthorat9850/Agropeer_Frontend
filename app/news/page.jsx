@@ -16,9 +16,15 @@ import { usePagination } from "@/hooks/usePagination";
 import { apiRequest } from "@/utils/apiHelpers";
 import { formatDistanceToNow } from "date-fns";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
+<<<<<<< HEAD
 
 import { useLanguage } from "@/Context/languagecontext";
 
+=======
+import { Capacitor } from "@capacitor/core";
+import { shareContent } from "@/utils/shareHandler";
+import { useLanguage } from "@/Context/languagecontext";
+>>>>>>> 402a6b3d8f3bec8dd5877ab6f16fa812fa25dc18
 export default function NewsPage() {
   const { t } = useLanguage();
   const router = useRouter();
@@ -130,28 +136,28 @@ export default function NewsPage() {
   }, [articleId]);
 
   const handleShare = (article) => {
-    if(Capacitor.isNativePlatform()){
-      const result = shareContent({
-        title : selectedArticle?.title,
-        text : selectedArticle?.summary,
-        id : selectedArticle?.id,
-        route : "news"
+    const targetArticle = article || selectedArticle;
+    if (!targetArticle) return;
+
+    if (Capacitor.isNativePlatform()) {
+      shareContent({
+        title: targetArticle.title,
+        text: targetArticle.summary,
+        id: targetArticle.id,
+        route: "news"
+      }).then((result) => {
+        if (result.platform === "copy") {
+          showToast("info", "📋 Link copied to clipboard!");
+        }
       });
-      if (result.platform === "native") {
-        console.log("✔ Shared via native bottom sheet");
-      }
-
-      if (result.platform === "web") {
-        console.log("🌍 Shared via browser share dialog");
-      }
-
-      if (result.platform === "copy") {
+    } else {
+      // Web Fallback
+      const url = `${window.location.origin}/news?id=${targetArticle.id}`;
+      navigator.clipboard.writeText(url).then(() => {
         showToast("info", "📋 Link copied to clipboard!");
-      }
-
-      if (!result.success) {
-        return;
-      }
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      });
     }
   };
 
@@ -354,19 +360,27 @@ export default function NewsPage() {
                 transition={{ delay: 0.25 }}
                 className="farm-card p-6 mb-8 md:block hidden"
               >
-                <h3 className="text-lg font-bold text-farm-900 mb-4">{t("share_article")}</h3>
+                <h3 className="text-lg font-bold text-farm-900 mb-4">Share this article</h3>
                 <button
+<<<<<<< HEAD
                   onClick={() => handleShare("whatsapp")}
                   className="px-4 py-2 bg-green-500 text-white rounded-xl mr-3"
+=======
+                  onClick={() => handleShare(selectedArticle)}
+                  className="px-4 py-2 bg-green-500 text-white rounded-xl mr-3 font-semibold shadow-sm hover:shadow-md transition-shadow"
+>>>>>>> 402a6b3d8f3bec8dd5877ab6f16fa812fa25dc18
                 >
-                  WhatsApp
+                  Share Article
                 </button>
+<<<<<<< HEAD
                 <button
                   onClick={() => handleShare("copy")}
                   className="px-4 py-2 bg-farm-500 text-white rounded-xl"
                 >
                   {copied ? t("copied") : t("copy_link")}
                 </button>
+=======
+>>>>>>> 402a6b3d8f3bec8dd5877ab6f16fa812fa25dc18
               </motion.div>
 
               {selectedArticle.relatedNews && selectedArticle.relatedNews.length > 0 && (
@@ -376,7 +390,7 @@ export default function NewsPage() {
                   transition={{ delay: 0.3 }}
                   className="mb-8"
                 >
-                  <h2 className="text-2xl font-display font-bold text-farm-900 mb-6">{t("related_articles")}</h2>
+                  <h2 className="text-2xl font-display font-bold text-farm-900 mb-6">Related Articles</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {selectedArticle.relatedNews.map((item) => (
                       <NewsCard key={item.id} article={item} />
@@ -401,18 +415,26 @@ export default function NewsPage() {
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   className="absolute bottom-16 right-0 flex flex-col gap-3"
                 >
-                  <button
-                    onClick={() => handleShare("whatsapp")}
-                    className="w-12 h-12 rounded-full shadow-md bg-green-500 text-white flex items-center justify-center"
-                  >
-                    <FaWhatsapp />
-                  </button>
-                  <button
-                    onClick={() => handleShare("copy")}
-                    className="w-12 h-12 rounded-full shadow-md bg-farm-600 text-white flex items-center justify-center"
-                  >
-                    {copied ? <FaCheck /> : <FaCopy />}
-                  </button>
+                  <div className="bg-white dark:bg-gray-800 p-2 rounded-xl shadow-xl">
+                    <button
+                      onClick={() => handleShare(selectedArticle)}
+                      className="w-12 h-12 rounded-full shadow-md bg-green-500 text-white flex items-center justify-center mb-2"
+                    >
+                      <FaWhatsapp />
+                    </button>
+                    <button
+                      onClick={() => {
+                        const url = `${window.location.origin}/news?id=${selectedArticle?.id}`;
+                        navigator.clipboard.writeText(url).then(() => {
+                          showToast("success", "Link Copied!");
+                          setFabOpen(false);
+                        });
+                      }}
+                      className="w-12 h-12 rounded-full shadow-md bg-gray-600 text-white flex items-center justify-center"
+                    >
+                      <FaCopy />
+                    </button>
+                  </div>
                 </motion.div>
               )}
             </div>
@@ -421,7 +443,6 @@ export default function NewsPage() {
       </ErrorBoundary>
     );
   }
-
   // List view
   return (
     <ErrorBoundary>
