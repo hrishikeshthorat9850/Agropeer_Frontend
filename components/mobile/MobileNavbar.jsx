@@ -194,7 +194,7 @@ export default function MobileNavbar() {
 
   return (
     <div
-      className="pt-safe-top md:hidden fixed top-0 left-0 right-0 z-[100] bg-surface-50 dark:bg-surface-900 border-b border-surface-200 dark:border-surface-800 shadow-elevation-1">
+      className="pt-safe-top md:hidden fixed top-0 left-0 right-0 z-[100] bg-farm-400 dark:bg-surface-900 border-b border-surface-200 dark:border-surface-800 shadow-elevation-1">
       <div
         className="
           flex items-center justify-between 

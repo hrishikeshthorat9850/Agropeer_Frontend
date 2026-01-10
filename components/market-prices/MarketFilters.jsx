@@ -11,7 +11,7 @@ export default function MarketFilters({ data, onFilterChange, allStates = [], on
   const [selectedDistrict, setSelectedDistrict] = useState(filters.district || "");
   const [selectedMarket, setSelectedMarket] = useState(filters.market || "");
   const [searchQuery, setSearchQuery] = useState(filters.search || "");
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   // Use allStates if provided, otherwise extract from current data
   const states = allStates.length > 0 

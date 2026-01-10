@@ -1,80 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="AndroidLayouts">
-    <shared>
-      <config />
-    </shared>
-  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d2182f33-f1f9-45be-993c-add9d8d08897" name="Changes" comment="">
-<<<<<<< HEAD
-      <change beforePath="$PROJECT_DIR$/../Admin/AdminDashboard.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Admin/AdminLogin.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Context/admincontext.jsx" beforeDir="false" />
+    <list default="true" id="78fa12f4-e18b-425b-a023-2a4d04bc0116" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/capacitor.build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/capacitor.build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/capacitor.config.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/assets/capacitor.config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/capacitor.plugins.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/assets/capacitor.plugins.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/public/AllStates/AllState/ANDAMAN_and_NICOBAR_ISLANDS_extracted.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/public/AllStates/AllState/ANDHRA_PRADESH_extracted.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/public/AllStates/AllState/ARUNACHAL_PRADESH_extracted.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/public/AllStates/AllState/ASSAM_extracted.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/public/AllStates/AllState/BIHAR_extracted.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/public/AllStates/AllState/CHANDIGARH_extracted.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/public/AllStates/AllState/CHHATTISGARH_extracted.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/public/AllStates/AllState/DADRA_and_NAGAR_HAVELI_extracted.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/public/AllStates/AllState/DAMAN_and_DIU_extracted.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/public/AllStates/AllState/GOA_extracted.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/public/AllStates/AllState/GUJARAT_extracted.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/public/AllStates/AllState/HARYANA_extracted.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/public/AllStates/AllState/HIMACHAL_PRADESH_extracted.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/public/AllStates/AllState/JAMMU_and_KASHMIR_extracted.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/public/AllStates/AllState/JHARKHAND_extracted.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/public/AllStates/AllState/KARNATAKA_extracted.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/public/AllStates/AllState/KERALA_extracted.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/public/AllStates/AllState/LAKSHADWEEP_extracted.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/public/AllStates/AllState/MADHYA_PRADESH_extracted.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/public/AllStates/AllState/MAHARASHTRA_extracted.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/public/AllStates/AllState/MANIPUR_extracted.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/assets/public/AllStates/AllState/MANIPUR_extracted.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/public/cordova.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/public/cordova_plugins.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/xml/config.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/xml/config.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/capacitor-cordova-android-plugins/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/capacitor-cordova-android-plugins/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/capacitor-cordova-android-plugins/cordova.variables.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/capacitor-cordova-android-plugins/cordova.variables.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/capacitor-cordova-android-plugins/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/capacitor-cordova-android-plugins/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/capacitor-cordova-android-plugins/src/main/res/.gitkeep" beforeDir="false" afterPath="$PROJECT_DIR$/capacitor-cordova-android-plugins/src/main/res/.gitkeep" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/capacitor.settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/capacitor.settings.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/AppProviders.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../app/AppProviders.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/admin/comments/page.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/admin/favorites/page.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/admin/government-schemes/page.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/admin/login/page.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/admin/market-prices/page.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/admin/milk-companies/page.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/admin/news/page.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/admin/notifications/page.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/admin/page.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/admin/posts/page.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/admin/products/page.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/admin/reviews/page.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/admin/send-notification/page.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/admin/users/page.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/ads-admin/page.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/chats/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../app/chats/page.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../components/admin/AdminDataTable.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../components/admin/AdminFormModal.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../components/admin/AdminLayout.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../components/admin/AdminStatsCard.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../components/chat/ChatArea.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/chat/ChatArea.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../components/ui/market/RelatedProducts.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/ui/market/RelatedProducts.jsx" afterDir="false" />
-=======
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
->>>>>>> f2a75b4 (Deep link Working for all routes , oAuth and reset password page)
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,51 +19,35 @@
     <option name="formatViaClangd" value="false" />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=PhysicalDevice, isTemplate=false, identifier=serial=W8ORGUZ5QKTOHYU8)]" />
-  <component name="ExternalProjectsData">
-    <projectState path="$PROJECT_DIR$">
-      <ProjectState />
-    </projectState>
-  </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Class" />
-      </list>
-    </option>
-  </component>
-  <component name="GenerateSignedApkSettings">
-    <option name="BUILD_TARGET_KEY" value="apk" />
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
-  &quot;associatedIndex&quot;: 3
+  &quot;associatedIndex&quot;: 4
 }</component>
-  <component name="ProjectId" id="36vG22kBdaBbKPRnle6cd6FgOOC" />
+  <component name="ProjectId" id="37qdLuCBlk8V7dFycJbDu8eWKAK" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Android App.app.executor": "Debug",
-    "ApkExportedModule": "android.app",
-    "BundleExportedModule": "android.app",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Android App.Agropeer.executor": "Debug",
+    "Gradle.Tests in 'android.app'.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "deep-link-dev",
-    "kotlin-language-version-configured": "true"
+    "git-widget-placeholder": "new-chat-cleanup",
+    "kotlin-language-version-configured": "true",
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle"
   }
 }]]></component>
-  <component name="RunManager">
-    <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
+  <component name="RunManager" selected="Android App.Agropeer">
+    <configuration name="Agropeer" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
       <module name="android.app" />
       <option name="ANDROID_RUN_CONFIGURATION_SCHEMA_VERSION" value="1" />
       <option name="DEPLOY" value="true" />
@@ -201,31 +119,46 @@
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Tests in 'android.app'" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":app:testDebugUnitTest" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Android App.Agropeer" />
+      <item itemvalue="Gradle.Tests in 'android.app'" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.Tests in 'android.app'" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="d2182f33-f1f9-45be-993c-add9d8d08897" name="Changes" comment="" />
-      <created>1765879435341</created>
+      <changelist id="78fa12f4-e18b-425b-a023-2a4d04bc0116" name="Changes" comment="" />
+      <created>1767634491491</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1765879435341</updated>
+      <updated>1767634491491</updated>
     </task>
     <servers />
-  </component>
-  <component name="play_dynamic_filters_status">
-    <option name="appIdToCheckInfo">
-      <map>
-        <entry key="com.hrishikesh.agrogram">
-          <value>
-            <CheckInfo lastCheckTimestamp="1765955511138" />
-          </value>
-        </entry>
-        <entry key="com.hrishikesh.agrogram.test">
-          <value>
-            <CheckInfo lastCheckTimestamp="1765955511009" />
-          </value>
-        </entry>
-      </map>
-    </option>
   </component>
 </project>

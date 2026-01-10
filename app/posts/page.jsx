@@ -14,6 +14,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { PostSkeleton } from "@/components/skeletons";
 import { supabase } from "@/lib/supabaseClient";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
+import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 
 const ClientModalWrapper = dynamic(() => import("@/components/ui/post/ClientModalWrapper"), {
   loading: () => null,
@@ -22,10 +23,18 @@ const ClientModalWrapper = dynamic(() => import("@/components/ui/post/ClientModa
 export default function PostsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { posts, loading, error, pagination, refreshPosts } = usePostsPaginated({
+  const { posts, loading, error, pagination, refreshPosts, hasMore, loadMore } = usePostsPaginated({
     initialPage: 1,
     limit: 10,
   });
+
+  const loadMoreRef = useIntersectionObserver({
+    onIntersect: loadMore,
+    enabled: !!hasMore,
+  });
+
+  // Track if we are fetching subsequent pages
+  const isFetchingMore = loading && posts.length > 0;
 
   const [isCreating, setIsCreating] = useState(false);
 
@@ -246,8 +255,8 @@ export default function PostsPage() {
             )}
           </motion.div>
 
-          {/* Loading State */}
-          {loading && (
+          {/* Loading State - Initial Load Only */}
+          {loading && posts.length === 0 && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-6">
               <PostSkeleton count={5} />
             </motion.div>
@@ -307,25 +316,20 @@ export default function PostsPage() {
                       />
                     </motion.div>
                   ))}
-                </div>
-              )}
 
-              {/* Pagination */}
-              {pagination.totalPages > 1 && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.3 }}
-                  className="mt-8 mb-4"
-                >
-                  <Pagination
-                    currentPage={pagination.page}
-                    totalPages={pagination.totalPages}
-                    hasNextPage={pagination.hasNextPage}
-                    hasPreviousPage={pagination.hasPreviousPage}
-                    onPageChange={handlePageChange}
-                  />
-                </motion.div>
+                  {/* Infinite Scroll Sentinel */}
+                  <div ref={loadMoreRef} className="h-20 flex justify-center items-center">
+                    {isFetchingMore && hasMore && (
+                      <div className="flex flex-col items-center gap-2">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-farm-600"></div>
+                        <span className="text-sm text-gray-500">Loading more...</span>
+                      </div>
+                    )}
+                    {!hasMore && posts.length > 0 && (
+                      <p className="text-gray-500 text-sm">You've reached the end!</p>
+                    )}
+                  </div>
+                </div>
               )}
             </>
           )}

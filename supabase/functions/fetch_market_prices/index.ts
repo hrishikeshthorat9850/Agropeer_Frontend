@@ -71,9 +71,8 @@ Deno.serve(async (req) => {
         { status: 404 }
       );
     }
-
+    
     console.log(`🧾 Total combined records: ${allFetchedData.length}`);
-
     // 🧠 Deduplicate
     const uniqueMap = new Map<string, any>();
     for (const record of allFetchedData) {
