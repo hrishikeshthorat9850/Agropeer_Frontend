@@ -161,14 +161,6 @@ export default function PostsPage() {
     // If post is NOT in list, selectedPost will be rendered above (handled in render)
   }, [postId, posts]);
 
-<<<<<<< HEAD
-  // 🟢 Deep link fix: Pre-compute if post exists in current page (fixes Android WebView syntax error)
-  const postExistsInCurrentPage = postId && posts.length > 0 
-    ? posts.some((post) => post.id === postId) 
-    : false;
-  const shouldShowSelectedPostAbove = selectedPost && posts.length > 0 && !postExistsInCurrentPage;
-  const shouldShowSelectedPostWhenEmpty = selectedPost && posts.length === 0;
-=======
     return (
       <MobilePageContainer>
         <div className="py-4">
@@ -189,7 +181,6 @@ export default function PostsPage() {
       </MobilePageContainer>
     );
   }
->>>>>>> 402a6b3d8f3bec8dd5877ab6f16fa812fa25dc18
 
   // List view
   return (

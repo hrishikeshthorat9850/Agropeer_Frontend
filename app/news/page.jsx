@@ -16,15 +16,9 @@ import { usePagination } from "@/hooks/usePagination";
 import { apiRequest } from "@/utils/apiHelpers";
 import { formatDistanceToNow } from "date-fns";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
-<<<<<<< HEAD
-
-import { useLanguage } from "@/Context/languagecontext";
-
-=======
 import { Capacitor } from "@capacitor/core";
 import { shareContent } from "@/utils/shareHandler";
 import { useLanguage } from "@/Context/languagecontext";
->>>>>>> 402a6b3d8f3bec8dd5877ab6f16fa812fa25dc18
 export default function NewsPage() {
   const { t } = useLanguage();
   const router = useRouter();
@@ -362,25 +356,11 @@ export default function NewsPage() {
               >
                 <h3 className="text-lg font-bold text-farm-900 mb-4">Share this article</h3>
                 <button
-<<<<<<< HEAD
-                  onClick={() => handleShare("whatsapp")}
-                  className="px-4 py-2 bg-green-500 text-white rounded-xl mr-3"
-=======
                   onClick={() => handleShare(selectedArticle)}
                   className="px-4 py-2 bg-green-500 text-white rounded-xl mr-3 font-semibold shadow-sm hover:shadow-md transition-shadow"
->>>>>>> 402a6b3d8f3bec8dd5877ab6f16fa812fa25dc18
                 >
                   Share Article
                 </button>
-<<<<<<< HEAD
-                <button
-                  onClick={() => handleShare("copy")}
-                  className="px-4 py-2 bg-farm-500 text-white rounded-xl"
-                >
-                  {copied ? t("copied") : t("copy_link")}
-                </button>
-=======
->>>>>>> 402a6b3d8f3bec8dd5877ab6f16fa812fa25dc18
               </motion.div>
 
               {selectedArticle.relatedNews && selectedArticle.relatedNews.length > 0 && (
