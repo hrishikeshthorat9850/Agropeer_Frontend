@@ -13,12 +13,8 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import Pagination from "@/components/ui/Pagination";
 import { usePagination } from "@/hooks/usePagination";
 import { apiRequest } from "@/utils/apiHelpers";
-<<<<<<< HEAD
 import { Capacitor } from "@capacitor/core";
 import { shareContent } from "@/utils/shareHandler";
-=======
-import { useLanguage } from "@/Context/languagecontext";
->>>>>>> origin/translation
 
 export default function GovernmentSchemesPage() {
   const { t } = useLanguage();
@@ -129,7 +125,6 @@ export default function GovernmentSchemesPage() {
     fetchSchemeDetails();
   }, [selectedSchemeId]);
 
-<<<<<<< HEAD
   const handleShare = (scheme) => {
     if(Capacitor.isNativePlatform()){
       const result = shareContent({
@@ -141,11 +136,6 @@ export default function GovernmentSchemesPage() {
       if (result.platform === "native") {
         console.log("✔ Shared via native bottom sheet");
       }
-=======
-  const handleShare = (platform) => {
-    const url = window.location.href;
-    const text = detailScheme?.title || t("check_govt_scheme");
->>>>>>> origin/translation
 
       if (result.platform === "web") {
         console.log("🌍 Shared via browser share dialog");
@@ -293,16 +283,6 @@ export default function GovernmentSchemesPage() {
                 >
                   <FaWhatsapp className="w-5 h-5" />
                 </button>
-<<<<<<< HEAD
-=======
-                <button
-                  onClick={() => handleShare("copy")}
-                  className="p-2 text-farm-600 hover:bg-farm-50 rounded-lg transition-colors"
-                  title={t("copy_link")}
-                >
-                  {copied ? <FaCheck className="w-5 h-5 text-green-600" /> : <FaCopy className="w-5 h-5" />}
-                </button>
->>>>>>> origin/translation
               </div>
             </motion.div>
 

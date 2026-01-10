@@ -104,11 +104,7 @@ export default function LoginForm() {
               htmlFor="email"
               className="block text-sm font-medium text-gray-700 dark:text-gray-300"
             >
-<<<<<<< HEAD
-              Email
-=======
               {t("email_label")}
->>>>>>> origin/translation
             </label>
             <div className="relative">
               <input
@@ -118,15 +114,6 @@ export default function LoginForm() {
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-<<<<<<< HEAD
-                className={`w-full px-4 py-3.5 rounded-xl border-2 transition-all duration-200 text-surface-900 dark:text-white bg-surface-50 dark:bg-surface-800/50 placeholder-surface-400 dark:placeholder-surface-500 focus:outline-none focus:ring-0 ${isEmailValid && email.length > 0
-                  ? "border-farm-500 dark:border-farm-400 bg-white dark:bg-surface-800"
-                  : emailError && email.length > 0
-                    ? "border-red-500 dark:border-red-400"
-                    : "border-surface-200 dark:border-surface-700 focus:border-farm-500 dark:focus:border-farm-400"
-                  }`}
-                placeholder="your.email@example.com"
-=======
                 className={`w-full px-4 py-3.5 rounded-xl border-2 transition-all duration-200 text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700/50 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-0 ${isEmailValid && email.length > 0
                   ? "border-green-500 dark:border-green-400 bg-white dark:bg-gray-700"
                   : emailError && email.length > 0
@@ -134,7 +121,6 @@ export default function LoginForm() {
                     : "border-gray-300 dark:border-gray-600 focus:border-green-500 dark:focus:border-green-400"
                   }`}
                 placeholder={t("enter_email_placeholder")}
->>>>>>> origin/translation
                 required
                 style={{
                   fontSize: "16px", // Prevents zoom on iOS
@@ -166,11 +152,7 @@ export default function LoginForm() {
               htmlFor="password"
               className="block text-sm font-medium text-gray-700 dark:text-gray-300"
             >
-<<<<<<< HEAD
-              Password
-=======
               {t("password_label")}
->>>>>>> origin/translation
             </label>
             <div className="relative">
               <input
@@ -179,15 +161,6 @@ export default function LoginForm() {
                 type={showPass ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-<<<<<<< HEAD
-                className={`w-full px-4 py-3.5 rounded-xl border-2 transition-all duration-200 text-surface-900 dark:text-white bg-surface-50 dark:bg-surface-800/50 placeholder-surface-400 dark:placeholder-surface-500 focus:outline-none focus:ring-0 pr-12 ${isPasswordValid && password.length > 0
-                  ? "border-farm-500 dark:border-farm-400 bg-white dark:bg-surface-800"
-                  : passwordError && password.length > 0
-                    ? "border-red-500 dark:border-red-400"
-                    : "border-surface-200 dark:border-surface-700 focus:border-farm-500 dark:focus:border-farm-400"
-                  }`}
-                placeholder="Enter your password"
-=======
                 className={`w-full px-4 py-3.5 rounded-xl border-2 transition-all duration-200 text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700/50 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-0 pr-12 ${isPasswordValid && password.length > 0
                   ? "border-green-500 dark:border-green-400 bg-white dark:bg-gray-700"
                   : passwordError && password.length > 0
@@ -195,7 +168,6 @@ export default function LoginForm() {
                     : "border-gray-300 dark:border-gray-600 focus:border-green-500 dark:focus:border-green-400"
                   }`}
                 placeholder={t("enter_password_placeholder")}
->>>>>>> origin/translation
                 required
                 style={{
                   fontSize: "16px", // Prevents zoom on iOS
@@ -229,11 +201,7 @@ export default function LoginForm() {
             href="/forgot-password"
             className="text-sm font-medium text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors active:opacity-70"
           >
-<<<<<<< HEAD
-            Forgot password?
-=======
             {t("forgot_password_q")}
->>>>>>> origin/translation
           </Link>
         </div>
 
@@ -264,17 +232,10 @@ export default function LoginForm() {
             {loading ? (
               <>
                 <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-<<<<<<< HEAD
-                <span>Signing in...</span>
-              </>
-            ) : (
-              <span>Sign in</span>
-=======
                 <span>{t("signing_in")}</span>
               </>
             ) : (
               <span>{t("sign_in")}</span>
->>>>>>> origin/translation
             )}
           </span>
         </motion.button>
@@ -286,11 +247,7 @@ export default function LoginForm() {
           </div>
           <div className="relative flex justify-center text-sm">
             <span className="px-4 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
-<<<<<<< HEAD
-              Or continue with
-=======
               {t("or_continue_with")}
->>>>>>> origin/translation
             </span>
           </div>
         </div>
@@ -303,20 +260,12 @@ export default function LoginForm() {
         {/* Sign Up Link */}
         <div className="text-center pt-2">
           <p className="text-sm text-gray-600 dark:text-gray-400">
-<<<<<<< HEAD
-            Don&apos;t have an account?{" "}
-=======
             {t("dont_have_account")}{" "}
->>>>>>> origin/translation
             <Link
               href="/signup"
               className="font-semibold text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors"
             >
-<<<<<<< HEAD
-              Sign up
-=======
               {t("sign_up_link")}
->>>>>>> origin/translation
             </Link>
           </p>
         </div>

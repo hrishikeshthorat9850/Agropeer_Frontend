@@ -68,13 +68,8 @@ export default function OtpVerifyCard({
         throw new Error(payload?.error || t("failed_verify_otp"));
       }
 
-<<<<<<< HEAD
-      showToast("success", "Logged in successfully!");
-      router.push("/");
-=======
       showToast("success", t("logged_in_success"));
       router.push("/home");
->>>>>>> origin/translation
     } catch (err) {
       console.error("OTP verification failed:", err);
       setError(err?.message || t("invalid_otp"));

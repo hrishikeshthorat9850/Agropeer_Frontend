@@ -16,14 +16,9 @@ import { usePagination } from "@/hooks/usePagination";
 import { apiRequest } from "@/utils/apiHelpers";
 import { formatDistanceToNow } from "date-fns";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
-<<<<<<< HEAD
 import { Capacitor } from "@capacitor/core";
 import { shareContent } from "@/utils/shareHandler";
-=======
-
 import { useLanguage } from "@/Context/languagecontext";
-
->>>>>>> origin/translation
 export default function NewsPage() {
   const { t } = useLanguage();
   const router = useRouter();
@@ -135,28 +130,28 @@ export default function NewsPage() {
   }, [articleId]);
 
   const handleShare = (article) => {
-    if(Capacitor.isNativePlatform()){
-      const result = shareContent({
-        title : selectedArticle?.title,
-        text : selectedArticle?.summary,
-        id : selectedArticle?.id,
-        route : "news"
+    const targetArticle = article || selectedArticle;
+    if (!targetArticle) return;
+
+    if (Capacitor.isNativePlatform()) {
+      shareContent({
+        title: targetArticle.title,
+        text: targetArticle.summary,
+        id: targetArticle.id,
+        route: "news"
+      }).then((result) => {
+        if (result.platform === "copy") {
+          showToast("info", "📋 Link copied to clipboard!");
+        }
       });
-      if (result.platform === "native") {
-        console.log("✔ Shared via native bottom sheet");
-      }
-
-      if (result.platform === "web") {
-        console.log("🌍 Shared via browser share dialog");
-      }
-
-      if (result.platform === "copy") {
+    } else {
+      // Web Fallback
+      const url = `${window.location.origin}/news?id=${targetArticle.id}`;
+      navigator.clipboard.writeText(url).then(() => {
         showToast("info", "📋 Link copied to clipboard!");
-      }
-
-      if (!result.success) {
-        return;
-      }
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      });
     }
   };
 
@@ -356,107 +351,16 @@ export default function NewsPage() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-<<<<<<< HEAD
-                className="farm-card p-6 mb-8"
-              >
-                <p className="text-lg font-medium text-farm-900 dark:text-white leading-relaxed">
-                  {selectedArticle.summary}
-                </p>
-              </motion.div>
-            )}
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="farm-card p-8 md:p-12 mb-8"
-            >
-              {selectedArticle.content ? (
-                <div
-                  className="text-farm-700 dark:text-gray-300 leading-relaxed whitespace-pre-line"
-                  dangerouslySetInnerHTML={{
-                    __html: selectedArticle.content.replace(/\n/g, "<br />"),
-                  }}
-                />
-              ) : (
-                <p className="text-farm-700 dark:text-gray-300 leading-relaxed">
-                  {selectedArticle.summary}
-                </p>
-              )}
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.25 }}
-              className="farm-card p-6 mb-8 md:block hidden"
-            >
-              <h3 className="text-lg font-bold text-farm-900 mb-4">Share this article</h3>
-              <button
-                onClick={() => handleShare(selectedArticle)}
-                className="px-4 py-2 bg-green-500 text-white rounded-xl mr-3"
-              >
-                WhatsApp
-              </button>
-            </motion.div>
-
-            {selectedArticle.relatedNews && selectedArticle.relatedNews.length > 0 && (
-              <motion.section
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="mb-8"
-              >
-                <h2 className="text-2xl font-display font-bold text-farm-900 mb-6">Related Articles</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {selectedArticle.relatedNews.map((item) => (
-                    <NewsCard key={item.id} article={item} />
-                  ))}
-                </div>
-              </motion.section>
-            )}
-          </div>
-
-          <div className="md:hidden fixed bottom-24 right-6 z-[999]">
-            <motion.button
-              onClick={() => setFabOpen((prev) => !prev)}
-              whileTap={{ scale: 0.9 }}
-              className="w-14 h-14 rounded-full shadow-xl bg-green-600 text-white flex items-center justify-center text-xl"
-            >
-              <FaShareAlt />
-            </motion.button>
-
-            {fabOpen && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                className="absolute bottom-16 right-0 flex flex-col gap-3"
-=======
                 transition={{ delay: 0.25 }}
                 className="farm-card p-6 mb-8 md:block hidden"
->>>>>>> origin/translation
               >
-                <h3 className="text-lg font-bold text-farm-900 mb-4">{t("share_article")}</h3>
+                <h3 className="text-lg font-bold text-farm-900 mb-4">Share this article</h3>
                 <button
-<<<<<<< HEAD
                   onClick={() => handleShare(selectedArticle)}
-                  className="w-12 h-12 rounded-full shadow-md bg-green-500 text-white flex items-center justify-center"
-=======
-                  onClick={() => handleShare("whatsapp")}
-                  className="px-4 py-2 bg-green-500 text-white rounded-xl mr-3"
->>>>>>> origin/translation
+                  className="px-4 py-2 bg-green-500 text-white rounded-xl mr-3 font-semibold shadow-sm hover:shadow-md transition-shadow"
                 >
-                  WhatsApp
+                  Share Article
                 </button>
-<<<<<<< HEAD
-=======
-                <button
-                  onClick={() => handleShare("copy")}
-                  className="px-4 py-2 bg-farm-500 text-white rounded-xl"
-                >
-                  {copied ? t("copied") : t("copy_link")}
-                </button>
->>>>>>> origin/translation
               </motion.div>
 
               {selectedArticle.relatedNews && selectedArticle.relatedNews.length > 0 && (
@@ -466,7 +370,7 @@ export default function NewsPage() {
                   transition={{ delay: 0.3 }}
                   className="mb-8"
                 >
-                  <h2 className="text-2xl font-display font-bold text-farm-900 mb-6">{t("related_articles")}</h2>
+                  <h2 className="text-2xl font-display font-bold text-farm-900 mb-6">Related Articles</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {selectedArticle.relatedNews.map((item) => (
                       <NewsCard key={item.id} article={item} />
@@ -491,18 +395,26 @@ export default function NewsPage() {
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   className="absolute bottom-16 right-0 flex flex-col gap-3"
                 >
-                  <button
-                    onClick={() => handleShare("whatsapp")}
-                    className="w-12 h-12 rounded-full shadow-md bg-green-500 text-white flex items-center justify-center"
-                  >
-                    <FaWhatsapp />
-                  </button>
-                  <button
-                    onClick={() => handleShare("copy")}
-                    className="w-12 h-12 rounded-full shadow-md bg-farm-600 text-white flex items-center justify-center"
-                  >
-                    {copied ? <FaCheck /> : <FaCopy />}
-                  </button>
+                  <div className="bg-white dark:bg-gray-800 p-2 rounded-xl shadow-xl">
+                    <button
+                      onClick={() => handleShare(selectedArticle)}
+                      className="w-12 h-12 rounded-full shadow-md bg-green-500 text-white flex items-center justify-center mb-2"
+                    >
+                      <FaWhatsapp />
+                    </button>
+                    <button
+                      onClick={() => {
+                        const url = `${window.location.origin}/news?id=${selectedArticle?.id}`;
+                        navigator.clipboard.writeText(url).then(() => {
+                          showToast("success", "Link Copied!");
+                          setFabOpen(false);
+                        });
+                      }}
+                      className="w-12 h-12 rounded-full shadow-md bg-gray-600 text-white flex items-center justify-center"
+                    >
+                      <FaCopy />
+                    </button>
+                  </div>
                 </motion.div>
               )}
             </div>
@@ -511,7 +423,6 @@ export default function NewsPage() {
       </ErrorBoundary>
     );
   }
-
   // List view
   return (
     <ErrorBoundary>
