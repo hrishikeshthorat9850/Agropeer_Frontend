@@ -1,7 +1,10 @@
 "use client";
 import WeatherAdvisor from "./WeatherAdvisor";
+import { useLanguage } from "@/Context/languagecontext";
 
 const WeatherAdvisorDemo = () => {
+  const { t } = useLanguage();
+
   // Sample data for demonstration
   const sampleWeather = {
     temperature: 24,
@@ -9,19 +12,19 @@ const WeatherAdvisorDemo = () => {
     rainChance: 30,
     windSpeed: 12,
     forecast: [
-      { day: "Today", temp: 24, condition: "sunny", icon: "Sun", rainChance: 20 },
-      { day: "Tomorrow", temp: 22, condition: "cloudy", icon: "Cloud", rainChance: 40 },
+      { day: t("day_today"), temp: 24, condition: "sunny", icon: "Sun", rainChance: 20 },
+      { day: t("day_tomorrow"), temp: 22, condition: "cloudy", icon: "Cloud", rainChance: 40 },
       { day: "Day 3", temp: 18, condition: "rainy", icon: "CloudRain", rainChance: 80 }
     ]
   };
 
   const sampleSuggestions = [
-    { text: "Rain expected tomorrow — delay irrigation", icon: "CloudRain", type: "warning" },
-    { text: "Optimal temperature for wheat growth", icon: "Sun", type: "success" },
-    { text: "Consider wind protection for young plants", icon: "Wind", type: "info" },
-    { text: "Humidity levels are ideal for your crop", icon: "Droplets", type: "success" },
-    { text: "Monitor soil moisture closely", icon: "Gauge", type: "info" },
-    { text: "Perfect conditions for fertilizer application", icon: "Sprout", type: "success" }
+    { text: t("sample_suggestion_rain"), icon: "CloudRain", type: "warning" },
+    { text: t("sample_suggestion_growth"), icon: "Sun", type: "success" },
+    { text: t("sample_suggestion_wind"), icon: "Wind", type: "info" },
+    { text: t("sample_suggestion_humidity"), icon: "Droplets", type: "success" },
+    { text: t("sample_suggestion_moisture"), icon: "Gauge", type: "info" },
+    { text: t("sample_suggestion_fertilizer"), icon: "Sprout", type: "success" }
   ];
 
   return (
@@ -29,10 +32,10 @@ const WeatherAdvisorDemo = () => {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-farm-900 mb-4">
-            Weather Advisor Demo
+            {t("demo_title")}
           </h1>
           <p className="text-lg text-farm-700">
-            Modern weather advisory component for farming applications
+            {t("demo_subtitle")}
           </p>
         </div>
 
@@ -47,7 +50,7 @@ const WeatherAdvisorDemo = () => {
         {/* Demo with No Data (Fallback) */}
         <div className="mt-12">
           <h2 className="text-2xl font-bold text-farm-900 mb-6 text-center">
-            Fallback State (No Data)
+            {t("demo_fallback_title")}
           </h2>
           <WeatherAdvisor />
         </div>

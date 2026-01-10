@@ -5,9 +5,12 @@ import Image from "next/image";
 import { FaArrowRight, FaTag, FaCalendar } from "react-icons/fa";
 import { formatDistanceToNow } from "date-fns";
 
+import { useLanguage } from "@/Context/languagecontext";
+
 export default function NewsCard({ article, index = 0 }) {
+  const { t } = useLanguage();
   const formatDate = (dateString) => {
-    if (!dateString) return "Recently";
+    if (!dateString) return t("recently");
     try {
       const date = new Date(dateString);
       if (isNaN(date.getTime())) return "Recently";
@@ -16,7 +19,7 @@ export default function NewsCard({ article, index = 0 }) {
       try {
         return new Date(dateString).toLocaleDateString();
       } catch {
-        return "Recently";
+        return t("recently");
       }
     }
   };
@@ -49,7 +52,7 @@ export default function NewsCard({ article, index = 0 }) {
           {article.category && (
             <div className="inline-flex items-center gap-1 px-3 py-1 bg-farm-100 text-farm-700 rounded-full text-xs font-semibold mb-3">
               <FaTag className="w-3 h-3" />
-              {article.category}
+              {t(`news_cat_${article.category.replace(/\s+/g, "_")}`) || article.category}
             </div>
           )}
 
@@ -72,7 +75,7 @@ export default function NewsCard({ article, index = 0 }) {
               <span>{formatDate(article.date)}</span>
             </div>
             <div className="flex items-center gap-2 text-farm-600 group-hover:text-farm-700 transition-colors">
-              <span className="text-sm font-semibold">Read More</span>
+              <span className="text-sm font-semibold">{t("read_more")}</span>
               <FaArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             </div>
           </div>

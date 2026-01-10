@@ -3,9 +3,12 @@ import { useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { motion } from "framer-motion";
 import Link from "next/link";
+
 import useToast from "@/hooks/useToast";
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function ResetPasswordPage() {
+  const { t } = useLanguage();
   const { showToast } = useToast();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -19,15 +22,15 @@ export default function ResetPasswordPage() {
 
     if (password.length < 6) {
       setStatus("error");
-      setMessage("Password must be at least 6 characters.");
-      showToast("error", "Password must be at least 6 characters.");
+      setMessage(t("password_length_error"));
+      showToast("error", t("password_length_error"));
       return;
     }
 
     if (password !== confirmPassword) {
       setStatus("error");
-      setMessage("Passwords do not match.");
-      showToast("error", "Passwords do not match.");
+      setMessage(t("password_mismatch_error"));
+      showToast("error", t("password_mismatch_error"));
       return;
     }
 
@@ -36,13 +39,13 @@ export default function ResetPasswordPage() {
       if (error) throw error;
 
       setStatus("success");
-      setMessage("Password updated successfully! Redirecting...");
-      showToast("success", "Password updated successfully! 🔒");
+      setMessage(t("password_update_success"));
+      showToast("success", t("password_update_toast"));
       setTimeout(() => (window.location.href = "/login"), 2500);
     } catch (err) {
       setStatus("error");
-      setMessage(err.message || "Failed to reset password.");
-      showToast("error", err.message || "Failed to reset password.");
+      setMessage(err.message || t("password_reset_failed"));
+      showToast("error", err.message || t("password_reset_failed"));
     }
   };
 
@@ -55,34 +58,34 @@ export default function ResetPasswordPage() {
         className="w-full max-w-md farm-card p-8 mx-4 shadow-xl border-farm-500"
       >
         <h1 className="text-2xl font-bold text-farm-800 text-center mb-4">
-          Reset Password
+          {t("reset_password_title")}
         </h1>
 
         <form onSubmit={handleUpdatePassword} className="space-y-6">
           <div>
             <label className="block text-sm font-semibold text-farm-700 mb-2">
-              New Password
+              {t("new_password_label")}
             </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="farm-input w-full text-farm-600"
-              placeholder="Enter new password"
+              placeholder={t("new_password_placeholder")}
               required
             />
           </div>
 
           <div>
             <label className="block text-sm font-semibold text-farm-700 mb-2">
-              Confirm Password
+              {t("confirm_password_label")}
             </label>
             <input
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="farm-input w-full text-farm-600"
-              placeholder="Confirm new password"
+              placeholder={t("confirm_password_placeholder")}
               required
             />
           </div>
@@ -90,8 +93,8 @@ export default function ResetPasswordPage() {
           {message && (
             <div
               className={`rounded-lg p-3 text-center text-sm ${status === "success"
-                  ? "bg-green-50 border border-green-200 text-green-700"
-                  : "bg-red-50 border border-red-200 text-red-600"
+                ? "bg-green-50 border border-green-200 text-green-700"
+                : "bg-red-50 border border-red-200 text-red-600"
                 }`}
             >
               {message}
@@ -104,7 +107,7 @@ export default function ResetPasswordPage() {
             className={`w-full farm-button ${status === "loading" ? "opacity-50 cursor-not-allowed" : ""
               }`}
           >
-            {status === "loading" ? "Updating..." : "Update Password"}
+            {status === "loading" ? t("updating_btn") : t("update_password_btn")}
           </button>
         </form>
 
@@ -113,7 +116,7 @@ export default function ResetPasswordPage() {
             href="/login"
             className="text-sm font-medium text-farm-600 hover:text-farm-700 underline underline-offset-2 hover:decoration-farm-500 transition-all"
           >
-            ← Back to Login
+            {t("back_to_login")}
           </Link>
         </div>
       </motion.div>

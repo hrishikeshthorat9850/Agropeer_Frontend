@@ -16,19 +16,19 @@ import {
   FaLeaf,
   FaSeedling,
 } from "react-icons/fa";
+import { useLanguage } from "@/Context/languagecontext";
 
 const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
+  const { t, currentLanguage } = useLanguage();
   const [guidance, setGuidance] = useState([]);
   const [alerts, setAlerts] = useState([]);
   const [irrigationAdvice, setIrrigationAdvice] = useState(null);
-
-
 
   useEffect(() => {
     if (selectedCrop && weatherData) {
       generateGuidance();
     }
-  }, [selectedCrop, weatherData]);
+  }, [selectedCrop, weatherData, currentLanguage]);
 
   const generateGuidance = () => {
     if (!selectedCrop || !weatherData) return;
@@ -38,6 +38,7 @@ const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
     const newGuidance = [];
     const newAlerts = [];
     let irrigation = null;
+    const cropName = cropInfo.name || "Crop";
 
     // ✅ Safe defaults for missing data
     const tempRange = cropInfo.temperatureRange || { min: 15, max: 35 };
@@ -52,25 +53,25 @@ const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
       newAlerts.push({
         type: "warning",
         icon: FaThermometer,
-        title: "Low Temperature Alert",
-        message: `${cropInfo.name || "Crop"} is sensitive to cold. Consider covering crops or delaying planting.`,
-        action: "Protect crops from frost damage",
+        title: t('alert_low_temp_title'),
+        message: t('alert_low_temp_msg').replace('{crop}', cropName),
+        action: t('action_protect_frost'),
       });
     } else if (weather.temperature > tempRange.max) {
       newAlerts.push({
         type: "warning",
         icon: FaSun,
-        title: "High Temperature Alert",
-        message: `Temperatures are above optimal range for ${cropInfo.name || "this crop"}. Monitor for heat stress.`,
-        action: "Increase irrigation frequency",
+        title: t('alert_high_temp_title'),
+        message: t('alert_high_temp_msg').replace('{crop}', cropName),
+        action: t('action_increase_irrigation'),
       });
     } else {
       newGuidance.push({
         type: "success",
         icon: FaCheckCircle,
-        title: "Optimal Temperature",
-        message: `Temperature is perfect for ${cropInfo.name || "crop"} growth.`,
-        action: "Continue normal care",
+        title: t('guidance_optimal_temp_title'),
+        message: t('guidance_optimal_temp_msg').replace('{crop}', cropName),
+        action: t('action_continue_care'),
       });
     }
 
@@ -79,17 +80,17 @@ const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
       newAlerts.push({
         type: "info",
         icon: FaWater,
-        title: "Low Humidity",
-        message: `Humidity is below optimal for ${cropInfo.name || "crop"}. Consider misting or irrigation.`,
-        action: "Increase humidity around crops",
+        title: t('alert_low_humidity_title'),
+        message: t('alert_low_humidity_msg').replace('{crop}', cropName),
+        action: t('action_increase_humidity'),
       });
     } else if (weather.humidity > humidityRange.max) {
       newAlerts.push({
         type: "warning",
         icon: FaBug,
-        title: "High Humidity Alert",
-        message: `High humidity increases disease risk for ${cropInfo.name || "crop"}. Monitor for fungal diseases.`,
-        action: "Apply preventive fungicide",
+        title: t('alert_high_humidity_title'),
+        message: t('alert_high_humidity_msg').replace('{crop}', cropName),
+        action: t('action_preventive_fungicide'),
       });
     }
 
@@ -98,17 +99,17 @@ const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
       newAlerts.push({
         type: "warning",
         icon: FaCloudRain,
-        title: "Heavy Rain Expected",
-        message: `High chance of rain. Avoid pesticide application and check drainage.`,
-        action: "Delay pesticide spraying",
+        title: t('alert_heavy_rain_title'),
+        message: t('alert_heavy_rain_msg'),
+        action: t('action_delay_pesticide'),
       });
     } else if (weather.rainChance < 20) {
       newGuidance.push({
         type: "info",
         icon: FaSun,
-        title: "Dry Weather",
-        message: `Low chance of rain. Good time for field work and pesticide application.`,
-        action: "Ideal for spraying and field operations",
+        title: t('guidance_dry_weather_title'),
+        message: t('guidance_dry_weather_msg'),
+        action: t('action_ideal_spraying'),
       });
     }
 
@@ -117,21 +118,21 @@ const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
       newAlerts.push({
         type: "warning",
         icon: FaWind,
-        title: "High Wind Alert",
-        message: `Strong winds may damage ${cropInfo.name || "crop"}. Avoid pesticide application.`,
-        action: "Postpone spraying and field work",
+        title: t('alert_high_wind_title'),
+        message: t('alert_high_wind_msg').replace('{crop}', cropName),
+        action: t('action_postpone_fieldwork'),
       });
     }
 
     // 🌱 Growth stage specific
     const growthStage = selectedCrop.growthStage;
-    if (growthStage === "Flowering" || growthStage === "Fruit Setting") {
+    if (growthStage) {
       newGuidance.push({
         type: "info",
         icon: FaLeaf,
-        title: "Critical Growth Stage",
-        message: `${cropInfo.name || "crop"} is in ${growthStage} stage. Avoid stress during this period.`,
-        action: "Maintain optimal conditions",
+        title: t('guidance_critical_stage_title'),
+        message: t('guidance_critical_stage_msg').replace('{crop}', cropName).replace('{stage}', growthStage),
+        action: t('action_maintain_optimal'),
       });
     }
 
@@ -143,33 +144,33 @@ const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
       irrigation = {
         type: "urgent",
         icon: FaTint,
-        title: "Irrigation Needed",
-        message: `Soil moisture is low. ${cropInfo.name || "crop"} needs immediate watering.`,
-        action: "Water immediately",
+        title: t('irrigation_needed_title'),
+        message: t('irrigation_needed_msg').replace('{crop}', cropName),
+        action: t('action_water_immediately'),
         amount: calculateWaterAmount(waterRange, weather),
       };
     } else if (soilMoisture < 50) {
       irrigation = {
         type: "warning",
         icon: FaWater,
-        title: "Irrigation Recommended",
-        message: `Soil moisture is getting low. Consider watering soon.`,
-        action: "Plan irrigation within 2 days",
+        title: t('irrigation_recommended_title'),
+        message: t('irrigation_recommended_msg'),
+        action: t('action_plan_irrigation'),
         amount: calculateWaterAmount(waterRange, weather),
       };
     } else {
       irrigation = {
         type: "success",
         icon: FaCheckCircle,
-        title: "Adequate Moisture",
-        message: `Soil moisture is good for ${cropInfo.name || "crop"}.`,
-        action: "Continue monitoring",
-        amount: "No additional water needed",
+        title: t('irrigation_adequate_title'),
+        message: t('irrigation_adequate_msg').replace('{crop}', cropName),
+        action: t('action_continue_monitoring'),
+        amount: t('amount_no_water'),
       };
     }
 
     // 🐛 Pest and disease alerts
-    generatePestAlerts(cropInfo, weather, newAlerts, pests);
+    generatePestAlerts(cropInfo, weather, newAlerts, pests, cropName);
 
     setGuidance(newGuidance);
     setAlerts(newAlerts);
@@ -193,14 +194,14 @@ const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
     return `${Math.round(baseAmount * adjustment)}mm per day`;
   };
 
-  const generatePestAlerts = (cropInfo, weather, alerts, pests) => {
+  const generatePestAlerts = (cropInfo, weather, alerts, pests, cropName) => {
     if (weather.humidity > 80 && weather.temperature > 25) {
       alerts.push({
         type: "warning",
         icon: FaBug,
-        title: "Disease Risk High",
-        message: `Conditions favor fungal diseases in ${cropInfo.name || "crop"}. Apply preventive treatment.`,
-        action: "Apply fungicide preventively",
+        title: t('alert_disease_risk_title'),
+        message: t('alert_disease_risk_msg').replace('{crop}', cropName),
+        action: t('action_preventive_fungicide'),
       });
     }
 
@@ -208,9 +209,9 @@ const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
       alerts.push({
         type: "info",
         icon: FaSprayCan,
-        title: "Pest Activity Expected",
-        message: `Dry conditions may increase pest activity. Monitor for ${pests.join(", ")}.`,
-        action: "Check for pest damage",
+        title: t('alert_pest_activity_title'),
+        message: t('alert_pest_activity_msg').replace('{pests}', pests.join(", ")),
+        action: t('action_check_pest'),
       });
     }
   };
@@ -245,9 +246,9 @@ const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
         <div className="w-24 h-24 bg-farm-100 rounded-full flex items-center justify-center mx-auto mb-4">
           <FaSeedling className="w-12 h-12 text-farm-600" />
         </div>
-        <h3 className="text-xl font-bold text-farm-900 mb-2">Select a Crop</h3>
+        <h3 className="text-xl font-bold text-farm-900 mb-2">{t('select_crop_title')}</h3>
         <p className="text-farm-700">
-          Choose a crop from your profile to get personalized weather guidance.
+          {t('select_crop_desc')}
         </p>
       </motion.div>
     );
@@ -273,7 +274,7 @@ const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
           <div className="text-4xl">{selectedCrop?.crop_info?.icon}</div>
           <div>
             <h2 className="text-2xl font-bold text-farm-900">
-              {selectedCrop?.crop_info?.name} Weather Guidance
+              {selectedCrop?.crop_info?.name} {t('weather_guidance_title')}
             </h2>
             <p className="text-farm-700">
               {selectedCrop.variety} • {selectedCrop.growthStage} • {selectedCrop.location}
@@ -304,10 +305,10 @@ const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
               <p className="text-farm-800 mb-3">{irrigationAdvice.message}</p>
               <div className="flex items-center gap-4">
                 <span className="text-sm font-semibold text-farm-700">
-                  Action: {irrigationAdvice.action}
+                  {t('action_label')}: {irrigationAdvice.action}
                 </span>
                 <span className="text-sm font-semibold text-farm-600">
-                  Amount: {irrigationAdvice.amount}
+                  {t('amount_label')}: {irrigationAdvice.amount}
                 </span>
               </div>
             </div>
@@ -324,7 +325,7 @@ const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
         >
           <h3 className="text-xl font-bold text-farm-900 flex items-center gap-2">
             <FaExclamationTriangle className="w-6 h-6 text-orange-500" />
-            Weather Alerts
+            {t('weather_alerts_title')}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {alerts.map((alert, index) => (
@@ -364,7 +365,7 @@ const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
         >
           <h3 className="text-xl font-bold text-farm-900 flex items-center gap-2">
             <FaInfoCircle className="w-6 h-6 text-blue-500" />
-            General Guidance
+            {t('general_guidance_title')}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {guidance.map((item, index) => (
@@ -403,19 +404,19 @@ const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
       >
         <h3 className="text-xl font-bold text-farm-900 mb-4 flex items-center gap-2">
           <FaLeaf className="w-6 h-6 text-green-500" />
-          {cropInfo.name} Care Tips
+          {cropInfo.name} {t('care_tips_title')}
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <h4 className="font-semibold text-farm-800 mb-2">Optimal Conditions</h4>
+            <h4 className="font-semibold text-farm-800 mb-2">{t('optimal_conditions')}</h4>
             <ul className="text-sm text-farm-700 space-y-1">
-              <li>• Temperature: {tempRange.min}°C - {tempRange.max}°C</li>
-              <li>• Humidity: {humidityRange.min}% - {humidityRange.max}%</li>
-              <li>• Water: {waterRange.min}mm - {waterRange.max}mm per season</li>
+              <li>• {t('temp_label')}: {tempRange.min}°C - {tempRange.max}°C</li>
+              <li>• {t('humidity_label')}: {humidityRange.min}% - {humidityRange.max}%</li>
+              <li>• {t('water_label')}: {waterRange.min}mm - {waterRange.max}mm per season</li>
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold text-farm-800 mb-2">Common Pests & Diseases</h4>
+            <h4 className="font-semibold text-farm-800 mb-2">{t('common_pests')}</h4>
             <ul className="text-sm text-farm-700 space-y-1">
               {pests.slice(0, 3).map((pest, index) => (
                 <li key={index}>• {pest}</li>

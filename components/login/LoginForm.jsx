@@ -7,8 +7,10 @@ import { useRouter } from "next/navigation";
 import { validateEmail, validatePassword, sanitizeInput } from "@/utils/validation";
 import { motion } from "framer-motion";
 import OAuthButtons from "./OAuthButtons";
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function LoginForm() {
+  const { t } = useLanguage();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -39,7 +41,7 @@ export default function LoginForm() {
 
     try {
       if (!supabase?.auth?.signInWithPassword) {
-        throw new Error("Authentication service unavailable. Please try again later.");
+        throw new Error(t("auth_service_unavailable"));
       }
 
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -50,13 +52,13 @@ export default function LoginForm() {
       if (error) {
         // Handle specific error types
         if (error.message.includes('Invalid login credentials')) {
-          setErrorMsg("Invalid email or password. Please check your credentials and try again.");
+          setErrorMsg(t("invalid_credentials"));
         } else if (error.message.includes('Email not confirmed')) {
-          setErrorMsg("Please check your email and click the confirmation link before signing in.");
+          setErrorMsg(t("email_not_confirmed"));
         } else if (error.message.includes('Too many requests')) {
-          setErrorMsg("Too many login attempts. Please wait a few minutes before trying again.");
+          setErrorMsg(t("too_many_attempts"));
         } else {
-          setErrorMsg(error.message || "Login failed. Please try again.");
+          setErrorMsg(error.message || t("login_failed"));
         }
         return;
       }
@@ -64,7 +66,7 @@ export default function LoginForm() {
       if (data?.user) router.push("/");
     } catch (err) {
       console.error("Login error:", err);
-      setErrorMsg(err.message || "An unexpected error occurred. Please try again.");
+      setErrorMsg(err.message || t("something_wrong"));
     } finally {
       setLoading(false);
     }
@@ -80,10 +82,10 @@ export default function LoginForm() {
         className="mb-8 text-center"
       >
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          Welcome Back
+          {t("welcome_back")}
         </h1>
         <p className="text-gray-600 dark:text-gray-400 text-sm">
-          Sign in to continue to AgroPeer
+          {t("signin_to_continue")}
         </p>
       </motion.div>
 
@@ -102,7 +104,11 @@ export default function LoginForm() {
               htmlFor="email"
               className="block text-sm font-medium text-gray-700 dark:text-gray-300"
             >
+<<<<<<< HEAD
               Email
+=======
+              {t("email_label")}
+>>>>>>> origin/translation
             </label>
             <div className="relative">
               <input
@@ -112,6 +118,7 @@ export default function LoginForm() {
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+<<<<<<< HEAD
                 className={`w-full px-4 py-3.5 rounded-xl border-2 transition-all duration-200 text-surface-900 dark:text-white bg-surface-50 dark:bg-surface-800/50 placeholder-surface-400 dark:placeholder-surface-500 focus:outline-none focus:ring-0 ${isEmailValid && email.length > 0
                   ? "border-farm-500 dark:border-farm-400 bg-white dark:bg-surface-800"
                   : emailError && email.length > 0
@@ -119,6 +126,15 @@ export default function LoginForm() {
                     : "border-surface-200 dark:border-surface-700 focus:border-farm-500 dark:focus:border-farm-400"
                   }`}
                 placeholder="your.email@example.com"
+=======
+                className={`w-full px-4 py-3.5 rounded-xl border-2 transition-all duration-200 text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700/50 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-0 ${isEmailValid && email.length > 0
+                  ? "border-green-500 dark:border-green-400 bg-white dark:bg-gray-700"
+                  : emailError && email.length > 0
+                    ? "border-red-500 dark:border-red-400"
+                    : "border-gray-300 dark:border-gray-600 focus:border-green-500 dark:focus:border-green-400"
+                  }`}
+                placeholder={t("enter_email_placeholder")}
+>>>>>>> origin/translation
                 required
                 style={{
                   fontSize: "16px", // Prevents zoom on iOS
@@ -150,7 +166,11 @@ export default function LoginForm() {
               htmlFor="password"
               className="block text-sm font-medium text-gray-700 dark:text-gray-300"
             >
+<<<<<<< HEAD
               Password
+=======
+              {t("password_label")}
+>>>>>>> origin/translation
             </label>
             <div className="relative">
               <input
@@ -159,6 +179,7 @@ export default function LoginForm() {
                 type={showPass ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+<<<<<<< HEAD
                 className={`w-full px-4 py-3.5 rounded-xl border-2 transition-all duration-200 text-surface-900 dark:text-white bg-surface-50 dark:bg-surface-800/50 placeholder-surface-400 dark:placeholder-surface-500 focus:outline-none focus:ring-0 pr-12 ${isPasswordValid && password.length > 0
                   ? "border-farm-500 dark:border-farm-400 bg-white dark:bg-surface-800"
                   : passwordError && password.length > 0
@@ -166,6 +187,15 @@ export default function LoginForm() {
                     : "border-surface-200 dark:border-surface-700 focus:border-farm-500 dark:focus:border-farm-400"
                   }`}
                 placeholder="Enter your password"
+=======
+                className={`w-full px-4 py-3.5 rounded-xl border-2 transition-all duration-200 text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700/50 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-0 pr-12 ${isPasswordValid && password.length > 0
+                  ? "border-green-500 dark:border-green-400 bg-white dark:bg-gray-700"
+                  : passwordError && password.length > 0
+                    ? "border-red-500 dark:border-red-400"
+                    : "border-gray-300 dark:border-gray-600 focus:border-green-500 dark:focus:border-green-400"
+                  }`}
+                placeholder={t("enter_password_placeholder")}
+>>>>>>> origin/translation
                 required
                 style={{
                   fontSize: "16px", // Prevents zoom on iOS
@@ -199,7 +229,11 @@ export default function LoginForm() {
             href="/forgot-password"
             className="text-sm font-medium text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors active:opacity-70"
           >
+<<<<<<< HEAD
             Forgot password?
+=======
+            {t("forgot_password_q")}
+>>>>>>> origin/translation
           </Link>
         </div>
 
@@ -230,10 +264,17 @@ export default function LoginForm() {
             {loading ? (
               <>
                 <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+<<<<<<< HEAD
                 <span>Signing in...</span>
               </>
             ) : (
               <span>Sign in</span>
+=======
+                <span>{t("signing_in")}</span>
+              </>
+            ) : (
+              <span>{t("sign_in")}</span>
+>>>>>>> origin/translation
             )}
           </span>
         </motion.button>
@@ -245,7 +286,11 @@ export default function LoginForm() {
           </div>
           <div className="relative flex justify-center text-sm">
             <span className="px-4 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+<<<<<<< HEAD
               Or continue with
+=======
+              {t("or_continue_with")}
+>>>>>>> origin/translation
             </span>
           </div>
         </div>
@@ -258,12 +303,20 @@ export default function LoginForm() {
         {/* Sign Up Link */}
         <div className="text-center pt-2">
           <p className="text-sm text-gray-600 dark:text-gray-400">
+<<<<<<< HEAD
             Don&apos;t have an account?{" "}
+=======
+            {t("dont_have_account")}{" "}
+>>>>>>> origin/translation
             <Link
               href="/signup"
               className="font-semibold text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors"
             >
+<<<<<<< HEAD
               Sign up
+=======
+              {t("sign_up_link")}
+>>>>>>> origin/translation
             </Link>
           </p>
         </div>

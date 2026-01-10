@@ -12,8 +12,10 @@ import {
   FaCalendarAlt,
   FaLeaf,
 } from "react-icons/fa";
+import { useLanguage } from "@/Context/languagecontext";
 
 const IrrigationTab = ({ selectedCrop, data, loading, error }) => {
+  const { t } = useLanguage();
   const [selectedField, setSelectedField] = useState(null);
   const fields = data?.fields || [];
   const irrigationSchedule = data?.schedule || [];
@@ -58,7 +60,7 @@ const IrrigationTab = ({ selectedCrop, data, loading, error }) => {
   if (loading) {
     return (
       <div className="bg-white/40 backdrop-blur-lg rounded-2xl p-6 border border-white/30 shadow-md dark:bg-[#272727]">
-        <p className="text-farm-700 dark:text-gray-200">Loading irrigation data...</p>
+        <p className="text-farm-700 dark:text-gray-200">{t("loading_irrigation")}</p>
       </div>
     );
   }
@@ -75,7 +77,7 @@ const IrrigationTab = ({ selectedCrop, data, loading, error }) => {
     return (
       <div className="bg-white/40 backdrop-blur-lg rounded-2xl p-6 border border-white/30 shadow-md dark:bg-[#272727]">
         <p className="text-farm-700 dark:text-gray-200">
-          Add a crop to see irrigation insights.
+          {t("add_crop_irrigation")}
         </p>
       </div>
     );
@@ -89,10 +91,10 @@ const IrrigationTab = ({ selectedCrop, data, loading, error }) => {
           <div>
             <h2 className="text-2xl font-bold text-farm-900 dark:text-white flex items-center gap-2">
               <FaTint className="text-cyan-500" />
-              Irrigation Management
+              {t("irrigation_management")}
             </h2>
             <p className="text-farm-700 dark:text-gray-300 mt-1">
-              Monitor and manage your irrigation systems
+              {t("irrigation_desc")}
             </p>
           </div>
         </div>
@@ -105,11 +107,10 @@ const IrrigationTab = ({ selectedCrop, data, loading, error }) => {
             key={field.id}
             whileHover={{ scale: 1.02 }}
             onClick={() => setSelectedField(field.id)}
-            className={`bg-white/40 backdrop-blur-lg rounded-xl p-5 border-2 cursor-pointer transition-all ${
-              selectedField === field.id
-                ? "border-cyan-500 shadow-lg"
-                : "border-white/30 hover:border-cyan-300"
-            } shadow-md dark:bg-[#272727]`}
+            className={`bg-white/40 backdrop-blur-lg rounded-xl p-5 border-2 cursor-pointer transition-all ${selectedField === field.id
+              ? "border-cyan-500 shadow-lg"
+              : "border-white/30 hover:border-cyan-300"
+              } shadow-md dark:bg-[#272727]`}
           >
             <div className="flex items-start justify-between mb-3">
               <div>
@@ -120,20 +121,21 @@ const IrrigationTab = ({ selectedCrop, data, loading, error }) => {
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-farm-700 dark:text-gray-300">Moisture Level</span>
-                <span className="font-semibold text-farm-900 dark:text-white">{field.moistureLevel}%</span>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-farm-700 dark:text-gray-300">{t("moisture_level")}</span>
+                  <span className="font-semibold text-farm-900 dark:text-white">{field.moistureLevel}%</span>
+                </div>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
                 <div
-                  className={`h-2 rounded-full ${
-                    field.moistureLevel > 60 ? "bg-green-500" : field.moistureLevel > 40 ? "bg-yellow-500" : "bg-orange-500"
-                  }`}
+                  className={`h-2 rounded-full ${field.moistureLevel > 60 ? "bg-green-500" : field.moistureLevel > 40 ? "bg-yellow-500" : "bg-orange-500"
+                    }`}
                   style={{ width: `${field.moistureLevel}%` }}
                 ></div>
               </div>
               <div className="text-xs text-farm-600 dark:text-gray-400 mt-2">
-                <div>Last: {field.lastIrrigated}</div>
-                <div>Next: {field.nextIrrigation}</div>
+                <div>{t("last_irrigated")}: {field.lastIrrigated}</div>
+                <div>{t("next_irrigation")}: {field.nextIrrigation}</div>
               </div>
             </div>
           </motion.div>
@@ -149,7 +151,7 @@ const IrrigationTab = ({ selectedCrop, data, loading, error }) => {
         >
           <div className="flex items-center gap-2 mb-2">
             <FaWater className="text-cyan-500" />
-            <span className="text-sm text-farm-700 dark:text-gray-300">Today</span>
+            <span className="text-sm text-farm-700 dark:text-gray-300">{t("today")}</span>
           </div>
           <div className="text-2xl font-bold text-farm-900 dark:text-white">
             {waterUsageStats.today.toLocaleString()}L
@@ -163,7 +165,7 @@ const IrrigationTab = ({ selectedCrop, data, loading, error }) => {
         >
           <div className="flex items-center gap-2 mb-2">
             <FaChartLine className="text-blue-500" />
-            <span className="text-sm text-farm-700 dark:text-gray-300">This Week</span>
+            <span className="text-sm text-farm-700 dark:text-gray-300">{t("this_week")}</span>
           </div>
           <div className="text-2xl font-bold text-farm-900 dark:text-white">
             {waterUsageStats.thisWeek.toLocaleString()}L
@@ -177,7 +179,7 @@ const IrrigationTab = ({ selectedCrop, data, loading, error }) => {
         >
           <div className="flex items-center gap-2 mb-2">
             <FaCalendarAlt className="text-purple-500" />
-            <span className="text-sm text-farm-700 dark:text-gray-300">This Month</span>
+            <span className="text-sm text-farm-700 dark:text-gray-300">{t("this_month")}</span>
           </div>
           <div className="text-2xl font-bold text-farm-900 dark:text-white">
             {waterUsageStats.thisMonth.toLocaleString()}L
@@ -191,7 +193,7 @@ const IrrigationTab = ({ selectedCrop, data, loading, error }) => {
         >
           <div className="flex items-center gap-2 mb-2">
             <FaWater className="text-green-500" />
-            <span className="text-sm text-farm-700 dark:text-gray-300">Daily Avg</span>
+            <span className="text-sm text-farm-700 dark:text-gray-300">{t("daily_avg")}</span>
           </div>
           <div className="text-2xl font-bold text-farm-900 dark:text-white">
             {waterUsageStats.average.toLocaleString()}L
@@ -205,7 +207,7 @@ const IrrigationTab = ({ selectedCrop, data, loading, error }) => {
         >
           <div className="flex items-center gap-2 mb-2">
             <FaLeaf className="text-emerald-500" />
-            <span className="text-sm text-farm-700 dark:text-gray-300">Efficiency</span>
+            <span className="text-sm text-farm-700 dark:text-gray-300">{t("efficiency")}</span>
           </div>
           <div className="text-2xl font-bold text-farm-900 dark:text-white">
             {waterUsageStats.efficiency}%
@@ -218,7 +220,7 @@ const IrrigationTab = ({ selectedCrop, data, loading, error }) => {
         <div className="bg-white/40 backdrop-blur-lg rounded-2xl p-6 border border-white/30 shadow-md dark:bg-[#272727]">
           <h3 className="text-xl font-bold text-farm-900 dark:text-white mb-4 flex items-center gap-2">
             <FaCalendarAlt className="text-purple-500" />
-            Upcoming Schedule
+            {t("upcoming_schedule")}
           </h3>
           <div className="space-y-3">
             {irrigationSchedule.map((schedule) => (
@@ -234,28 +236,27 @@ const IrrigationTab = ({ selectedCrop, data, loading, error }) => {
                     <p className="text-sm text-farm-600 dark:text-gray-400">{schedule.type}</p>
                   </div>
                   <span
-                    className={`px-2 py-1 rounded text-xs font-medium ${
-                      schedule.status === "scheduled"
-                        ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
-                        : "bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300"
-                    }`}
+                    className={`px-2 py-1 rounded text-xs font-medium ${schedule.status === "scheduled"
+                      ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
+                      : "bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300"
+                      }`}
                   >
                     {schedule.status}
                   </span>
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-sm mt-3">
                   <div>
-                    <span className="text-farm-600 dark:text-gray-400">Date & Time:</span>
+                    <span className="text-farm-600 dark:text-gray-400">{t("date_time")}:</span>
                     <div className="font-medium text-farm-900 dark:text-white">
                       {schedule.date} at {schedule.time}
                     </div>
                   </div>
                   <div>
-                    <span className="text-farm-600 dark:text-gray-400">Duration:</span>
+                    <span className="text-farm-600 dark:text-gray-400">{t("duration")}:</span>
                     <div className="font-medium text-farm-900 dark:text-white">{schedule.duration}</div>
                   </div>
                   <div className="col-span-2">
-                    <span className="text-farm-600 dark:text-gray-400">Water Amount:</span>
+                    <span className="text-farm-600 dark:text-gray-400">{t("water_amount")}:</span>
                     <div className="font-medium text-farm-900 dark:text-white">{schedule.waterAmount}</div>
                   </div>
                 </div>
@@ -268,7 +269,7 @@ const IrrigationTab = ({ selectedCrop, data, loading, error }) => {
         <div className="bg-white/40 backdrop-blur-lg rounded-2xl p-6 border border-white/30 shadow-md dark:bg-[#272727]">
           <h3 className="text-xl font-bold text-farm-900 dark:text-white mb-4 flex items-center gap-2">
             <FaExclamationTriangle className="text-yellow-500" />
-            Recommendations
+            {t("recommendations")}
           </h3>
           <div className="space-y-3">
             {recommendations.map((rec) => (
@@ -276,13 +277,12 @@ const IrrigationTab = ({ selectedCrop, data, loading, error }) => {
                 key={rec.id}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className={`rounded-lg p-4 border-l-4 ${
-                  rec.type === "warning"
-                    ? "bg-orange-50 border-orange-500 dark:bg-orange-900/20 dark:border-orange-400"
-                    : rec.type === "info"
+                className={`rounded-lg p-4 border-l-4 ${rec.type === "warning"
+                  ? "bg-orange-50 border-orange-500 dark:bg-orange-900/20 dark:border-orange-400"
+                  : rec.type === "info"
                     ? "bg-blue-50 border-blue-500 dark:bg-blue-900/20 dark:border-blue-400"
                     : "bg-green-50 border-green-500 dark:bg-green-900/20 dark:border-green-400"
-                }`}
+                  }`}
               >
                 <div className="flex items-start gap-3">
                   {rec.type === "warning" && (
@@ -296,15 +296,14 @@ const IrrigationTab = ({ selectedCrop, data, loading, error }) => {
                     <h4 className="font-semibold text-farm-900 dark:text-white mb-1">{rec.title}</h4>
                     <p className="text-sm text-farm-700 dark:text-gray-300">{rec.message}</p>
                     <span
-                      className={`inline-block mt-2 px-2 py-1 rounded text-xs ${
-                        rec.priority === "high"
-                          ? "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
-                          : rec.priority === "medium"
+                      className={`inline-block mt-2 px-2 py-1 rounded text-xs ${rec.priority === "high"
+                        ? "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
+                        : rec.priority === "medium"
                           ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300"
                           : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
-                      }`}
+                        }`}
                     >
-                      {rec.priority} priority
+                      {rec.priority} {t("priority")}
                     </span>
                   </div>
                 </div>

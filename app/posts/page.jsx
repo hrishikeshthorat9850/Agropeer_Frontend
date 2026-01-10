@@ -139,37 +139,29 @@ export default function PostsPage() {
     }
   };
 
-  // Detail view
-  if (postId) {
-    if (postLoading) {
-      return (
-        <MobilePageContainer>
-          <div className="min-h-screen flex items-center justify-center py-20">
-            <LoadingSpinner />
-          </div>
-        </MobilePageContainer>
-      );
-    }
+  // 🟢 Deep link fix: Check if post exists in current page, scroll if found
+  useEffect(() => {
+    if (!postId || posts.length === 0) return;
 
-    if (postError || !selectedPost) {
-      return (
-        <MobilePageContainer>
-          <div className="min-h-screen flex items-center justify-center py-20">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold text-farm-800 dark:text-white mb-2">Post Not Found</h2>
-              <p className="text-farm-600 dark:text-gray-300 mb-4">{postError || "The post you're looking for doesn't exist."}</p>
-              <button
-                onClick={() => router.push("/posts")}
-                className="px-6 py-3 bg-farm-500 text-white rounded-lg hover:bg-farm-600 transition-colors font-semibold"
-              >
-                Back to Posts
-              </button>
-            </div>
-          </div>
-        </MobilePageContainer>
-      );
+    // Check if postId exists in current posts array
+    const postExistsInList = posts.some((post) => post.id === postId);
+    
+    if (postExistsInList) {
+      // Post is in current page, scroll to it
+      const target = document.getElementById(`post-${postId}`);
+      if (target) {
+        // Small delay to ensure DOM is ready
+        setTimeout(() => {
+          target.scrollIntoView({ behavior: "smooth", block: "center" });
+          target.style.outline = "3px solid #4ade80"; // highlight
+          setTimeout(() => (target.style.outline = "none"), 2000);
+        }, 100);
+      }
     }
+    // If post is NOT in list, selectedPost will be rendered above (handled in render)
+  }, [postId, posts]);
 
+<<<<<<< HEAD
     return (
       <MobilePageContainer>
         <div className="py-4">
@@ -190,6 +182,14 @@ export default function PostsPage() {
       </MobilePageContainer>
     );
   }
+=======
+  // 🟢 Deep link fix: Pre-compute if post exists in current page (fixes Android WebView syntax error)
+  const postExistsInCurrentPage = postId && posts.length > 0 
+    ? posts.some((post) => post.id === postId) 
+    : false;
+  const shouldShowSelectedPostAbove = selectedPost && posts.length > 0 && !postExistsInCurrentPage;
+  const shouldShowSelectedPostWhenEmpty = selectedPost && posts.length === 0;
+>>>>>>> origin/translation
 
   // List view
   return (
@@ -283,6 +283,81 @@ export default function PostsPage() {
             </motion.div>
           )}
 
+          {/* 🟢 Deep link fix: Show selectedPost detail if not in current page */}
+          {postId && !loading && !error && (
+            <>
+              {postLoading ? (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="mb-6"
+                >
+                  <PostSkeleton count={1} />
+                </motion.div>
+              ) : postError ? (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-white dark:bg-gray-800 rounded-2xl p-8 text-center mb-6 shadow-lg"
+                >
+                  <div className="text-6xl mb-4">🔍</div>
+                  <h3 className="text-xl font-semibold text-farm-700 dark:text-white mb-2">
+                    Post not found
+                  </h3>
+                  <p className="text-farm-600 dark:text-gray-300 mb-4">{postError}</p>
+                  <button
+                    onClick={() => router.push("/posts")}
+                    className="px-6 py-3 bg-farm-500 text-white rounded-lg hover:bg-farm-600 transition-colors font-semibold active:scale-95"
+                  >
+                    View All Posts
+                  </button>
+                </motion.div>
+              ) : shouldShowSelectedPostAbove ? (
+                // Render selectedPost above list if it's not in current page (only if posts are loaded)
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mb-6"
+                >
+                  <motion.div
+                    id={`post-${selectedPost.id}`}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="border-2 border-farm-500 rounded-2xl p-2"
+                  >
+                    <Posts
+                      post={selectedPost}
+                      comment={selectedPost.post_comments || []}
+                      idx={0}
+                      refreshPosts={refreshPosts}
+                    />
+                  </motion.div>
+                </motion.div>
+              ) : shouldShowSelectedPostWhenEmpty ? (
+                // If no posts in list but selectedPost exists, show it
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mb-6"
+                >
+                  <motion.div
+                    id={`post-${selectedPost.id}`}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="border-2 border-farm-500 rounded-2xl p-2"
+                  >
+                    <Posts
+                      post={selectedPost}
+                      comment={selectedPost.post_comments || []}
+                      idx={0}
+                      refreshPosts={refreshPosts}
+                    />
+                  </motion.div>
+                </motion.div>
+              ) : null}
+            </>
+          )}
+
           {/* Posts List */}
           {!loading && !error && (
             <>
@@ -305,6 +380,7 @@ export default function PostsPage() {
                   {posts.map((post, idx) => (
                     <motion.div
                       key={post.id}
+                      id={`post-${post.id}`}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: idx * 0.05, duration: 0.4 }}

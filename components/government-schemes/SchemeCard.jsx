@@ -3,7 +3,10 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { FaArrowRight, FaMapMarkerAlt, FaTag } from "react-icons/fa";
 
+import { useLanguage } from "@/Context/languagecontext";
+
 export default function SchemeCard({ scheme, index = 0 }) {
+  const { t } = useLanguage();
   const benefits = scheme.benefits ? (Array.isArray(scheme.benefits) ? scheme.benefits : JSON.parse(scheme.benefits || "[]")) : [];
 
   return (
@@ -25,12 +28,12 @@ export default function SchemeCard({ scheme, index = 0 }) {
               {scheme.title}
             </h3>
           </div>
-          
+
           {/* Category Badge */}
           {scheme.category && (
             <div className="inline-flex items-center gap-1 px-3 py-1 bg-farm-100 text-farm-700 rounded-full text-xs font-semibold mb-3">
               <FaTag className="w-3 h-3" />
-              {scheme.category}
+              {t(`scheme_cat_${scheme.category.replace(/\s+/g, "_")}`) || scheme.category}
             </div>
           )}
         </div>
@@ -64,7 +67,7 @@ export default function SchemeCard({ scheme, index = 0 }) {
       {scheme.state && (
         <div className="flex items-center gap-1 text-xs text-farm-600 mb-4">
           <FaMapMarkerAlt className="w-3 h-3" />
-          <span>{scheme.state}</span>
+          <span>{t(`state_${scheme.state.replace(/\s+/g, "_")}`) || scheme.state}</span>
         </div>
       )}
 
@@ -74,7 +77,8 @@ export default function SchemeCard({ scheme, index = 0 }) {
         className="inline-flex items-center gap-2 px-4 py-2 bg-farm-500 text-white rounded-xl hover:bg-farm-600 transition-all duration-300 font-semibold text-sm group-hover:gap-3"
       >
 
-        <span>View Details</span>
+
+        <span>{t("view_details")}</span>
         <FaArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
       </Link>
     </motion.div>

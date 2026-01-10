@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { useLanguage } from "@/Context/languagecontext";
 
 /**
  * Pagination Component
@@ -20,13 +21,14 @@ export default function Pagination({
   onPageChange,
   className = "",
 }) {
+  const { t } = useLanguage();
   if (totalPages <= 1) return null;
 
   // Generate page numbers to show
   const getPageNumbers = () => {
     const pages = [];
     const maxVisible = 5;
-    
+
     if (totalPages <= maxVisible) {
       // Show all pages if total is less than max visible
       for (let i = 1; i <= totalPages; i++) {
@@ -35,27 +37,27 @@ export default function Pagination({
     } else {
       // Show first page
       pages.push(1);
-      
+
       if (currentPage > 3) {
         pages.push("...");
       }
-      
+
       // Show pages around current page
       const start = Math.max(2, currentPage - 1);
       const end = Math.min(totalPages - 1, currentPage + 1);
-      
+
       for (let i = start; i <= end; i++) {
         pages.push(i);
       }
-      
+
       if (currentPage < totalPages - 2) {
         pages.push("...");
       }
-      
+
       // Show last page
       pages.push(totalPages);
     }
-    
+
     return pages;
   };
 
@@ -69,14 +71,13 @@ export default function Pagination({
         whileTap={{ scale: 0.95 }}
         onClick={() => onPageChange(currentPage - 1)}
         disabled={!hasPreviousPage}
-        className={`flex items-center gap-1 px-4 py-2 rounded-lg font-medium transition-all ${
-          hasPreviousPage
-            ? "bg-farm-500 text-white hover:bg-farm-600"
-            : "bg-gray-200 text-gray-400 cursor-not-allowed"
-        }`}
+        className={`flex items-center gap-1 px-4 py-2 rounded-lg font-medium transition-all ${hasPreviousPage
+          ? "bg-farm-500 text-white hover:bg-farm-600"
+          : "bg-gray-200 text-gray-400 cursor-not-allowed"
+          }`}
       >
         <FaChevronLeft className="w-4 h-4" />
-        Previous
+        {t("ui_pagination_prev")}
       </motion.button>
 
       {/* Page Numbers */}
@@ -98,11 +99,10 @@ export default function Pagination({
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => onPageChange(pageNum)}
-              className={`w-10 h-10 rounded-lg font-medium transition-all ${
-                isActive
-                  ? "bg-farm-600 text-white shadow-lg"
-                  : "bg-white text-farm-700 hover:bg-farm-50 border border-farm-200"
-              }`}
+              className={`w-10 h-10 rounded-lg font-medium transition-all ${isActive
+                ? "bg-farm-600 text-white shadow-lg"
+                : "bg-white text-farm-700 hover:bg-farm-50 border border-farm-200"
+                }`}
             >
               {pageNum}
             </motion.button>
@@ -116,13 +116,12 @@ export default function Pagination({
         whileTap={{ scale: 0.95 }}
         onClick={() => onPageChange(currentPage + 1)}
         disabled={!hasNextPage}
-        className={`flex items-center gap-1 px-4 py-2 rounded-lg font-medium transition-all ${
-          hasNextPage
-            ? "bg-farm-500 text-white hover:bg-farm-600"
-            : "bg-gray-200 text-gray-400 cursor-not-allowed"
-        }`}
+        className={`flex items-center gap-1 px-4 py-2 rounded-lg font-medium transition-all ${hasNextPage
+          ? "bg-farm-500 text-white hover:bg-farm-600"
+          : "bg-gray-200 text-gray-400 cursor-not-allowed"
+          }`}
       >
-        Next
+        {t("ui_pagination_next")}
         <FaChevronRight className="w-4 h-4" />
       </motion.button>
     </div>

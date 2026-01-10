@@ -13,28 +13,33 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import Pagination from "@/components/ui/Pagination";
 import { usePagination } from "@/hooks/usePagination";
 import { apiRequest } from "@/utils/apiHelpers";
+<<<<<<< HEAD
 import { Capacitor } from "@capacitor/core";
 import { shareContent } from "@/utils/shareHandler";
+=======
+import { useLanguage } from "@/Context/languagecontext";
+>>>>>>> origin/translation
 
 export default function GovernmentSchemesPage() {
+  const { t } = useLanguage();
   const router = useRouter();
   const searchParams = useSearchParams();
   const selectedSchemeId = searchParams.get("id");
-  
+
   const [schemes, setSchemes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedState, setSelectedState] = useState(null);
-  
+
   // Detail view state
   const [detailScheme, setDetailScheme] = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailError, setDetailError] = useState(null);
   const [relatedSchemes, setRelatedSchemes] = useState([]);
   const [copied, setCopied] = useState(false);
-  
+
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   const pagination = usePagination(1, 12);
@@ -104,7 +109,7 @@ export default function GovernmentSchemesPage() {
           return;
         }
         setDetailScheme(data?.data);
-        
+
         // Fetch related schemes from same category
         if (data?.data?.category) {
           const { data: relatedData } = await apiRequest(
@@ -124,6 +129,7 @@ export default function GovernmentSchemesPage() {
     fetchSchemeDetails();
   }, [selectedSchemeId]);
 
+<<<<<<< HEAD
   const handleShare = (scheme) => {
     if(Capacitor.isNativePlatform()){
       const result = shareContent({
@@ -135,6 +141,11 @@ export default function GovernmentSchemesPage() {
       if (result.platform === "native") {
         console.log("✔ Shared via native bottom sheet");
       }
+=======
+  const handleShare = (platform) => {
+    const url = window.location.href;
+    const text = detailScheme?.title || t("check_govt_scheme");
+>>>>>>> origin/translation
 
       if (result.platform === "web") {
         console.log("🌍 Shared via browser share dialog");
@@ -187,7 +198,7 @@ export default function GovernmentSchemesPage() {
       return (
         <ErrorBoundary>
           <div className="min-h-[calc(100vh-122px)] flex items-center justify-center">
-            <LoadingSpinner text="Loading scheme details..." />
+            <LoadingSpinner text={t("loading_scheme_details")} />
           </div>
         </ErrorBoundary>
       );
@@ -204,13 +215,13 @@ export default function GovernmentSchemesPage() {
             >
               <div className="text-6xl mb-4">⚠️</div>
               <h3 className="text-xl font-semibold text-farm-700 mb-2">
-                {detailError || "Scheme not found"}
+                {detailError || t("scheme_not_found")}
               </h3>
               <p className="text-farm-600 mb-4">
-                The scheme you're looking for doesn't exist or has been removed.
+                {t("scheme_not_found_desc")}
               </p>
               <button onClick={() => router.push("/government-schemes")} className="farm-button">
-                Back to Schemes
+                {t("back_to_schemes")}
               </button>
             </motion.div>
           </div>
@@ -235,7 +246,7 @@ export default function GovernmentSchemesPage() {
               className="flex items-center gap-2 text-farm-700 hover:text-farm-800 mb-6 transition-colors"
             >
               <FaArrowLeft className="w-4 h-4" />
-              <span className="font-medium">Back to Schemes</span>
+              <span className="font-medium">{t("back_to_schemes")}</span>
             </button>
 
             {/* Hero Section */}
@@ -274,14 +285,24 @@ export default function GovernmentSchemesPage() {
 
               {/* Share Buttons */}
               <div className="flex items-center gap-3 pt-4 border-t border-farm-200">
-                <span className="text-sm text-farm-600 font-medium">Share:</span>
+                <span className="text-sm text-farm-600 font-medium">{t("share_label")}</span>
                 <button
                   onClick={() => handleShare(detailScheme)}
                   className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                  title="Share on WhatsApp"
+                  title={t("share_whatsapp")}
                 >
                   <FaWhatsapp className="w-5 h-5" />
                 </button>
+<<<<<<< HEAD
+=======
+                <button
+                  onClick={() => handleShare("copy")}
+                  className="p-2 text-farm-600 hover:bg-farm-50 rounded-lg transition-colors"
+                  title={t("copy_link")}
+                >
+                  {copied ? <FaCheck className="w-5 h-5 text-green-600" /> : <FaCopy className="w-5 h-5" />}
+                </button>
+>>>>>>> origin/translation
               </div>
             </motion.div>
 
@@ -293,7 +314,7 @@ export default function GovernmentSchemesPage() {
                 transition={{ delay: 0.1 }}
                 className="farm-card p-8 mb-8"
               >
-                <h2 className="text-2xl font-display font-bold text-farm-900 mb-4">Overview</h2>
+                <h2 className="text-2xl font-display font-bold text-farm-900 mb-4">{t("overview_title")}</h2>
                 <p className="text-farm-700 leading-relaxed whitespace-pre-line">
                   {detailScheme.description}
                 </p>
@@ -310,7 +331,7 @@ export default function GovernmentSchemesPage() {
               >
                 <h2 className="text-2xl font-display font-bold text-farm-900 mb-4 flex items-center gap-2">
                   <FaCheckCircle className="text-farm-500" />
-                  Key Benefits
+                  {t("key_benefits")}
                 </h2>
                 <ul className="space-y-3">
                   {benefits.map((benefit, idx) => (
@@ -333,7 +354,7 @@ export default function GovernmentSchemesPage() {
                 transition={{ delay: 0.3 }}
                 className="farm-card p-8 mb-8"
               >
-                <h2 className="text-2xl font-display font-bold text-farm-900 mb-4">Eligibility Criteria</h2>
+                <h2 className="text-2xl font-display font-bold text-farm-900 mb-4">{t("eligibility_criteria")}</h2>
                 <ul className="space-y-3">
                   {eligibility.map((item, idx) => (
                     <li key={idx} className="flex items-start gap-3">
@@ -357,7 +378,7 @@ export default function GovernmentSchemesPage() {
               >
                 <h2 className="text-2xl font-display font-bold text-farm-900 mb-4 flex items-center gap-2">
                   <FaFileAlt className="text-farm-500" />
-                  Required Documents
+                  {t("required_documents")}
                 </h2>
                 <ul className="space-y-3">
                   {documents.map((doc, idx) => (
@@ -382,7 +403,7 @@ export default function GovernmentSchemesPage() {
               >
                 <h2 className="text-2xl font-display font-bold text-farm-900 mb-4 flex items-center gap-2">
                   <FaClipboardList className="text-farm-500" />
-                  How to Apply
+                  {t("how_to_apply")}
                 </h2>
                 <ol className="space-y-3 list-decimal list-inside">
                   {applicationSteps.map((step, idx) => (
@@ -402,7 +423,7 @@ export default function GovernmentSchemesPage() {
                 transition={{ delay: 0.6 }}
                 className="farm-card p-8 mb-8"
               >
-                <h2 className="text-2xl font-display font-bold text-farm-900 mb-4">Official Links</h2>
+                <h2 className="text-2xl font-display font-bold text-farm-900 mb-4">{t("official_links")}</h2>
                 <div className="space-y-3">
                   {officialLinks.map((link, idx) => {
                     const linkObj = typeof link === 'string' ? { url: link, text: link } : link;
@@ -431,11 +452,11 @@ export default function GovernmentSchemesPage() {
                 transition={{ delay: 0.7 }}
                 className="farm-card p-8 mb-8"
               >
-                <h2 className="text-2xl font-display font-bold text-farm-900 mb-4">Frequently Asked Questions</h2>
+                <h2 className="text-2xl font-display font-bold text-farm-900 mb-4">{t("faq_title")}</h2>
                 <div className="space-y-4">
                   {faqs.map((faq, idx) => {
-                    const faqObj = typeof faq === 'string' 
-                      ? { question: faq, answer: '' } 
+                    const faqObj = typeof faq === 'string'
+                      ? { question: faq, answer: '' }
                       : { question: faq.question || faq.q || '', answer: faq.answer || faq.a || '' };
                     return (
                       <div key={idx} className="border-b border-farm-200 pb-4 last:border-0">
@@ -458,7 +479,7 @@ export default function GovernmentSchemesPage() {
                 transition={{ delay: 0.8 }}
                 className="mb-8"
               >
-                <h2 className="text-2xl font-display font-bold text-farm-900 mb-6">Related Schemes</h2>
+                <h2 className="text-2xl font-display font-bold text-farm-900 mb-6">{t("related_schemes")}</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {relatedSchemes.map((scheme, index) => (
                     <SchemeCard key={scheme.id} scheme={scheme} index={index} />
@@ -470,7 +491,7 @@ export default function GovernmentSchemesPage() {
             {/* Back Button */}
             <div className="text-center">
               <button onClick={() => router.push("/government-schemes")} className="farm-button">
-                Back to All Schemes
+                {t("back_to_all_schemes")}
               </button>
             </div>
           </div>
@@ -511,10 +532,10 @@ export default function GovernmentSchemesPage() {
 
               <div>
                 <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-                  Government Schemes
+                  {t("govt_schemes_title")}
                 </h1>
                 <p className="text-[13px] mt-1 text-gray-600 dark:text-gray-300 leading-snug">
-                  Discover benefits & support available for farmers.
+                  {t("mobile_header_subtitle")}
                 </p>
               </div>
             </div>
@@ -529,11 +550,11 @@ export default function GovernmentSchemesPage() {
             <div className="flex items-center justify-center gap-3 mb-4">
               <FaBullhorn className="text-4xl text-farm-600" />
               <h1 className="text-3xl md:text-5xl font-display font-bold text-farm-900">
-                Government Schemes
+                {t("govt_schemes_title")}
               </h1>
             </div>
             <p className="text-lg text-farm-600 max-w-2xl mx-auto">
-              Discover government schemes and benefits available for farmers and agricultural communities
+              {t("govt_schemes_subtitle")}
             </p>
           </motion.div>
 
@@ -550,7 +571,7 @@ export default function GovernmentSchemesPage() {
           </div>
 
           {/* DESKTOP SEARCH (Untouched) */}
-          <motion.div 
+          <motion.div
             className="hidden md:block mb-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -591,7 +612,7 @@ export default function GovernmentSchemesPage() {
           {/* MOBILE RESULTS COUNT */}
           {!loading && !error && (
             <div className="text-sm text-gray-600 dark:text-gray-300 md:hidden mb-4 px-1">
-              Showing {schemes.length} of {pagination.total} schemes
+              {t("showing_schemes_prefix")} {schemes.length} {t("of_text")} {pagination.total} {t("showing_schemes_suffix")}
             </div>
           )}
 

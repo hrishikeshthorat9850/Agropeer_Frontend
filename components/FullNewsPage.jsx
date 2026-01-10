@@ -6,18 +6,21 @@ import { useView } from '@/Context/ViewContext';
 import { supabase } from '@/lib/supabaseClient';
 import LoadingSpinner from './LoadingSpinner';
 import Image from 'next/image';
+import { useLanguage } from '@/Context/languagecontext';
+
 export default function FullNewsPage() {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const [article, setArticle] = useState({});
-  const {view,setView} = useView();
-  const [loading,setLoading]=useState(false);
+  const { view, setView } = useView();
+  const [loading, setLoading] = useState(false);
+  const { t } = useLanguage();
 
-  useEffect(()=>{
-    const fetchFullNews = async()=>{
+  useEffect(() => {
+    const fetchFullNews = async () => {
       if (!id) return;
       setLoading(true);
-      try{
+      try {
         const { data, error } = await supabase
           .from("news")
           .select("*")
@@ -26,18 +29,18 @@ export default function FullNewsPage() {
 
         if (error) throw error;
         setArticle(data);
-      }catch(e){
+      } catch (e) {
         console.error("Error fetching article:", e);
-      }finally{
+      } finally {
         setLoading(false);
       }
     }
     fetchFullNews();
-  },[id]);
+  }, [id]);
 
-  useEffect(()=>{
-    console.log("Full Single News is :",article);
-  },[]);
+  useEffect(() => {
+    console.log("Full Single News is :", article);
+  }, []);
   return (
     <div className="min-h-[calc(100vh-122px)] py-6 px-2 flex justify-center">
       {loading ? (
@@ -64,12 +67,12 @@ export default function FullNewsPage() {
 
           {/* Published Date */}
           <p className="text-xs sm:text-sm text-gray-500">
-            Published on: {article.date ? new Date(article.date).toLocaleDateString() : "N/A"}
+            {t("news_published_on")} {article.date ? new Date(article.date).toLocaleDateString() : "N/A"}
           </p>
 
           {/* Content */}
           <p className="text-gray-800 text-sm sm:text-base leading-relaxed">
-            {article.content || "No content available."}
+            {article.content || t("news_no_content")}
           </p>
         </div>
       )}

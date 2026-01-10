@@ -26,20 +26,22 @@ import {
   Lightbulb,
   Wheat,
 } from "lucide-react";
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function WeatherForecast() {
+  const { t, currentLanguage } = useLanguage();
   const { position, error, loading } = useGeolocation();
   const [showAdvanced, setShowAdvanced] = useState(false);
-  const [cropName] = useState("Wheat");
+  const [cropName] = useState("Wheat"); // This could be dynamic later
   const [cropStage] = useState("Growth Stage");
   const [weather, setWeatherData] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
   const fetchedRef = useRef(false);
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   // Cache key based on location
   const getCacheKey = (lat, lng) => `weather_${lat.toFixed(2)}_${lng.toFixed(2)}`;
-  
+
   // Check if cached data is still valid (15 minutes)
   const isCacheValid = (cachedData) => {
     if (!cachedData || !cachedData.timestamp) return false;
@@ -50,9 +52,9 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   const fetchWeatherApi = async (latitude, longitude) => {
     // Prevent multiple simultaneous calls
     if (isFetching) return;
-    
+
     const cacheKey = getCacheKey(latitude, longitude);
-    
+
     // Check cache first
     try {
       const cached = localStorage.getItem(cacheKey);
@@ -82,15 +84,15 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
       const weatherdata = {
         temp: data.temperature ? `${data.temperature.toFixed(1)}°C` : "N/A",
-        condition:
+        conditionKey:
           data.forecast?.[0]?.rainChance > 60
-            ? "Rainy"
+            ? "condition_rainy"
             : data.forecast?.[0]?.rainChance > 30
-            ? "Partly Cloudy"
-            : "Clear Sky",
+              ? "condition_partly_cloudy"
+              : "condition_clear_sky",
         rain: data.forecast?.[0]?.rainChance
-          ? `${data.forecast[0].rainChance}% chance`
-          : "0% chance",
+          ? `${data.forecast[0].rainChance}%` // Removed "chance" text, handle in UI or just % is fine
+          : "0%",
         wind: data.windspeed ? `${data.windspeed.toFixed(1)} km/h` : "N/A",
         humidity: data.humidity ? `${data.humidity}%` : "N/A",
         sunrise: (() => {
@@ -143,48 +145,49 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
             (forecastDateUTC - todayUTC) / (1000 * 60 * 60 * 24)
           );
 
-          let label;
-          if (diff === 0) label = "Today";
-          else if (diff === 1) label = "Tomorrow";
+          let labelKey = null;
+          let dateString = null;
+
+          if (diff === 0) labelKey = "day_today";
+          else if (diff === 1) labelKey = "day_tomorrow";
           else {
-            label = dateObj.toLocaleDateString("en-US", {
-              weekday: "short",
-              month: "short",
-              day: "numeric",
-            });
+            // We'll format this in render based on currentLanguage
+            dateString = dateObj.toISOString();
           }
 
           // Store icon type instead of React element for serialization
           const iconType = day.rainChance > 60 ? "rain" : day.rainChance > 30 ? "cloud" : "sun";
 
+          const tipKey = day.rainChance > 60
+            ? "tip_heavy_rain"
+            : day.rainChance > 30
+              ? "tip_mild_rain"
+              : "tip_field_work";
+
           return {
-            day: label,
+            labelKey,
+            dateString,
             iconType, // Store type instead of React element
             temp: `${Math.round(day.maxTemp)}°C`,
             minTemp: `${Math.round(day.minTemp)}°C`,
             rain: `${day.rainChance}%`,
-            tip:
-              day.rainChance > 60
-                ? "Heavy rain expected. Cover stored grains."
-                : day.rainChance > 30
-                ? "Mild rain possible. Monitor soil moisture."
-                : "Good day for field work.",
+            tipKey,
           };
         }),
 
         tip: {
-          text:
+          textKey:
             data.forecast?.[0]?.rainChance > 60
-              ? "Chance of rain today. Avoid pesticide spray."
+              ? "tip_chance_rain"
               : data.temperature > 35
-              ? "High temperature! Ensure crops are well irrigated."
-              : "Weather looks favorable for field work.",
+                ? "tip_high_temp"
+                : "tip_favorable",
           type: data.forecast?.[0]?.rainChance > 60 ? "warning" : "good",
         },
       };
 
       setWeatherData(weatherdata);
-      
+
       // Cache the weather data
       const cacheKey = getCacheKey(latitude, longitude);
       try {
@@ -214,7 +217,19 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     fetchWeatherApi(position.latitude, position.longitude);
   }, [position?.latitude, position?.longitude, loading, error]);
 
-  if (loading) return <p className="text-center mt-10">📍 Getting location...</p>;
+  // Helper to format date based on language
+  const formatDate = (isoString) => {
+    if (!isoString) return "";
+    const date = new Date(isoString);
+    const locale = currentLanguage === 'hi' ? 'hi-IN' : currentLanguage === 'mr' ? 'mr-IN' : 'en-US';
+    return date.toLocaleDateString(locale, {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
+  if (loading) return <p className="text-center mt-10">{t('loading_location')}</p>;
   if (error)
     return (
       <p className="text-center text-red-600 mt-10">
@@ -223,15 +238,15 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     );
   if (!weather)
     return (
-      <p className="text-center text-green-500 mt-10">🌤️ Loading live weather data...</p>
+      <p className="text-center text-green-500 mt-10">{t('loading_weather')}</p>
     );
 
   const suggestions = [
-    { text: weather.tip.text, icon: AlertTriangle, type: weather.tip.type },
-    { text: "Optimal temperature for crop growth", icon: Sun, type: "success" },
-    { text: "Monitor soil moisture levels", icon: Droplets, type: "info" },
-    { text: "Wind conditions are favorable", icon: Wind, type: "success" },
-    { text: "Consider irrigation timing", icon: Gauge, type: "info" },
+    { text: t(weather.tip.textKey), icon: AlertTriangle, type: weather.tip.type },
+    { text: t('suggestion_optimal_temp'), icon: Sun, type: "success" },
+    { text: t('suggestion_monitor_moisture'), icon: Droplets, type: "info" },
+    { text: t('suggestion_wind_favorable'), icon: Wind, type: "success" },
+    { text: t('suggestion_irrigation_timing'), icon: Gauge, type: "info" },
   ];
 
   const getSuggestionColor = (type) => {
@@ -269,7 +284,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
           ) : (
             <FaEye className="w-5 h-5" />
           )}
-          {showAdvanced ? "Show Simple View" : "Show Advanced Weather Advisor"}
+          {showAdvanced ? t('show_simple') : t('show_advanced')}
         </motion.button>
       </div>
 
@@ -287,10 +302,6 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
               className="relative overflow-hidden rounded-2xl shadow-2xl 
                 bg-[linear-gradient(135deg,#dcfce7_0%,#bbf7d0_25%,#86efac_50%,#4ade80_75%,#22c55e_100%)]
                 dark:bg-none dark:bg-[#272727]"
-              // style={{
-              //   background:
-              //     "linear-gradient(135deg, #dcfce7 0%, #bbf7d0 25%, #86efac 50%, #4ade80 75%, #22c55e 100%)",
-              // }}
             >
               <div className="relative z-10 p-6">
                 {/* Crop Info */}
@@ -300,7 +311,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold text-farm-900">
-                      Crop: {cropName}
+                      {t('crop_label')}: {cropName}
                     </h2>
                     <p className="text-farm-700 font-medium">{cropStage}</p>
                   </div>
@@ -309,24 +320,24 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                 {/* ------------------ WEATHER OVERVIEW ------------------ */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <WeatherCard
-                    label="Temperature"
+                    label={t('label_temperature')}
                     value={weather.temp}
                     icon={
                       <Thermometer className="w-6 h-6 text-red-500" />
                     }
                   />
                   <WeatherCard
-                    label="Humidity"
+                    label={t('label_humidity')}
                     value={weather.humidity}
                     icon={<Droplets className="w-6 h-6 text-blue-500" />}
                   />
                   <WeatherCard
-                    label="Rain Chance"
+                    label={t('label_rain_chance')}
                     value={weather.rain}
                     icon={<CloudRain className="w-6 h-6 text-sky-500" />}
                   />
                   <WeatherCard
-                    label="Wind Speed"
+                    label={t('label_wind_speed')}
                     value={weather.wind}
                     icon={<Wind className="w-6 h-6 text-gray-500" />}
                   />
@@ -337,7 +348,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                   <div className="flex items-center gap-3 mb-6">
                     <Lightbulb className="w-6 h-6 text-farm-700" />
                     <h3 className="text-xl font-bold text-farm-900">
-                      💡 Smart Farming Suggestions
+                      {t('smart_suggestions')}
                     </h3>
                   </div>
 
@@ -375,7 +386,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                   <div className="flex items-center gap-3 mb-6">
                     <Calendar className="w-6 h-6 text-farm-700" />
                     <h3 className="text-xl font-bold text-farm-900">
-                      📅 7-Day Forecast
+                      {t('seven_day_forecast')}
                     </h3>
                   </div>
 
@@ -389,36 +400,37 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                       ) : (
                         <FaSun className="text-yellow-400 text-2xl" />
                       );
-                      
+
+                      const dayLabel = f.labelKey ? t(f.labelKey) : formatDate(f.dateString);
+
                       return (
-                      <motion.div
-                        key={i}
-                        whileHover={{ scale: 1.05 }}
-                        className={`flex flex-col items-center rounded-xl p-4 shadow-lg transition-all border-2 ${
-                          parseInt(f.rain) >= 70
+                        <motion.div
+                          key={i}
+                          whileHover={{ scale: 1.05 }}
+                          className={`flex flex-col items-center rounded-xl p-4 shadow-lg transition-all border-2 ${parseInt(f.rain) >= 70
                             ? "bg-blue-100 border-blue-300 dark:bg-[#0a0a0a] dark:border-none"
                             : parseInt(f.rain) >= 40
-                            ? "bg-gray-100 border-gray-300 dark:bg-[#0a0a0a] dark:border-none"
-                            : "bg-yellow-100 border-yellow-300 dark:bg-[#0a0a0a] dark:border-none"
-                        }`}
-                      >
-                        <div className="font-semibold text-farm-700 mb-2 text-sm dark:text-gray-200">
-                          {f.day}
-                        </div>
-                        <div className="mb-2">{icon}</div>
-                        <div className="text-farm-900 font-bold text-lg dark:text-gray-200">
-                          {f.temp}
-                        </div>
-                        <div className="text-gray-600 text-xs mb-1">
-                          {f.minTemp}
-                        </div>
-                        <div className="text-blue-600 text-xs font-medium mb-2">
-                          Rain: {f.rain}
-                        </div>
-                        <div className="text-xs text-farm-700 text-center leading-tight">
-                          {f.tip}
-                        </div>
-                      </motion.div>
+                              ? "bg-gray-100 border-gray-300 dark:bg-[#0a0a0a] dark:border-none"
+                              : "bg-yellow-100 border-yellow-300 dark:bg-[#0a0a0a] dark:border-none"
+                            }`}
+                        >
+                          <div className="font-semibold text-farm-700 mb-2 text-sm dark:text-gray-200">
+                            {dayLabel}
+                          </div>
+                          <div className="mb-2">{icon}</div>
+                          <div className="text-farm-900 font-bold text-lg dark:text-gray-200">
+                            {f.temp}
+                          </div>
+                          <div className="text-gray-600 text-xs mb-1">
+                            {f.minTemp}
+                          </div>
+                          <div className="text-blue-600 text-xs font-medium mb-2">
+                            {t('weather_rain')}: {f.rain}
+                          </div>
+                          <div className="text-xs text-farm-700 text-center leading-tight">
+                            {t(f.tipKey)}
+                          </div>
+                        </motion.div>
                       );
                     })}
                   </div>
@@ -443,7 +455,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                     {weather.temp}
                   </div>
                   <div className="text-green-700 text-lg font-semibold dark:text-gray-200">
-                    {weather.condition}
+                    {t(weather.conditionKey)}
                   </div>
                 </div>
               </div>
@@ -451,13 +463,13 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
               {/* Quick Info */}
               <div className="flex flex-wrap gap-6 mt-2 text-green-800 text-base">
                 <div className="flex items-center gap-2 dark:text-gray-200">
-                  <FaTint className="text-blue-400" /> Rain: {weather.rain}
+                  <FaTint className="text-blue-400" /> {t('weather_rain')}: {weather.rain}
                 </div>
                 <div className="flex items-center gap-2 dark:text-gray-200">
-                  <FaWind className="text-blue-600" /> Wind: {weather.wind}
+                  <FaWind className="text-blue-600" /> {t('weather_wind')}: {weather.wind}
                 </div>
                 <div className="flex items-center gap-2 dark:text-gray-200">
-                  <FaRegSun className="text-yellow-500" /> Humidity:{" "}
+                  <FaRegSun className="text-yellow-500" /> {t('weather_humidity')}:{" "}
                   {weather.humidity}
                 </div>
               </div>
@@ -465,41 +477,40 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
               {/* Sunrise / Sunset */}
               <div className="flex gap-6 mt-2 text-green-800 text-base">
                 <div className="flex items-center gap-2 dark:text-gray-200">
-                  <FaSun className="text-yellow-400" /> Sunrise:{" "}
+                  <FaSun className="text-yellow-400" /> {t('weather_sunrise')}:{" "}
                   {weather.sunrise}
                 </div>
                 <div className="flex items-center gap-2 dark:text-gray-200">
-                  <FaSun className="text-orange-500" /> Sunset:{" "}
+                  <FaSun className="text-orange-500" /> {t('weather_sunset')}:{" "}
                   {weather.sunset}
                 </div>
               </div>
 
               {/* Tip Box */}
               <div
-                className={`flex items-center gap-2 mt-3 px-3 py-2 rounded font-medium ${
-                  weather.tip.type === "warning"
-                    ? "bg-yellow-100 border-l-4 border-yellow-500 text-yellow-900"
-                    : weather.tip.type === "good"
+                className={`flex items-center gap-2 mt-3 px-3 py-2 rounded font-medium ${weather.tip.type === "warning"
+                  ? "bg-yellow-100 border-l-4 border-yellow-500 text-yellow-900"
+                  : weather.tip.type === "good"
                     ? "bg-green-100 border-l-4 border-green-500 text-green-900"
                     : "bg-blue-50 border-l-4 border-blue-400 text-blue-900"
-                }`}
+                  }`}
               >
                 <FaLightbulb
                   className={
                     weather.tip.type === "warning"
                       ? "text-yellow-400"
                       : weather.tip.type === "good"
-                      ? "text-green-500"
-                      : "text-blue-400"
+                        ? "text-green-500"
+                        : "text-blue-400"
                   }
                 />
-                <span>{weather.tip.text}</span>
+                <span>{t(weather.tip.textKey)}</span>
               </div>
 
               {/* ============ FORECAST (SIMPLE VIEW) ============ */}
               <div className="bg-white rounded-xl shadow border border-green-100 p-4 flex flex-col gap-2 mt-4 dark:bg-[#0a0a0a] dark:border-none">
                 <div className="text-green-800 font-semibold mb-3 text-lg">
-                  7-Day Forecast
+                  {t('seven_day_forecast')}
                 </div>
 
                 {/* TOP 4 */}
@@ -514,21 +525,22 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                       ) : (
                         <FaSun className="text-yellow-400 text-2xl" />
                       );
-                      
+
+                      const dayLabel = f.labelKey ? t(f.labelKey) : formatDate(f.dateString);
+
                       return (
                         <motion.div
                           key={`s-top-${i}`}
                           whileHover={{ scale: 1.05 }}
-                          className={`flex flex-col items-center rounded-lg p-3 shadow transition-all ${
-                            parseInt(f.rain) >= 70
-                              ? "bg-blue-100 border-2 border-blue-300 dark:bg-[#272727] dark:border-none"
-                              : parseInt(f.rain) >= 40
+                          className={`flex flex-col items-center rounded-lg p-3 shadow transition-all ${parseInt(f.rain) >= 70
+                            ? "bg-blue-100 border-2 border-blue-300 dark:bg-[#272727] dark:border-none"
+                            : parseInt(f.rain) >= 40
                               ? "bg-gray-100 border-2 border-gray-300 dark:bg-[#272727] dark:border-none"
                               : "bg-yellow-100 border-2 border-yellow-300 dark:bg-[#272727] dark:border-none"
-                          }`}
+                            }`}
                         >
                           <div className="font-semibold text-green-700 mb-1 text-sm dark:text-gray-200">
-                            {f.day}
+                            {dayLabel}
                           </div>
                           <div className="text-3xl mb-1">{icon}</div>
                           <div className="text-green-900 font-bold mt-1 text-base dark:text-gray-200">
@@ -538,10 +550,10 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                             {f.minTemp}
                           </div>
                           <div className="text-blue-600 text-xs font-medium mt-1">
-                            Rain: {f.rain}
+                            {t('weather_rain')}: {f.rain}
                           </div>
                           <div className="text-xs text-green-700 mt-1 text-center leading-tight">
-                            {f.tip}
+                            {t(f.tipKey)}
                           </div>
                         </motion.div>
                       );
@@ -559,21 +571,22 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                       ) : (
                         <FaSun className="text-yellow-400 text-2xl" />
                       );
-                      
+
+                      const dayLabel = f.labelKey ? t(f.labelKey) : formatDate(f.dateString);
+
                       return (
                         <motion.div
                           key={`s-bottom-${i}`}
                           whileHover={{ scale: 1.05 }}
-                          className={`flex flex-col items-center rounded-lg p-3 shadow transition-all w-full sm:w-auto ${
-                            parseInt(f.rain) >= 70
-                              ? "bg-blue-100 border-2 border-blue-300 dark:bg-[#272727] dark:border-none"
-                              : parseInt(f.rain) >= 40
+                          className={`flex flex-col items-center rounded-lg p-3 shadow transition-all w-full sm:w-auto ${parseInt(f.rain) >= 70
+                            ? "bg-blue-100 border-2 border-blue-300 dark:bg-[#272727] dark:border-none"
+                            : parseInt(f.rain) >= 40
                               ? "bg-gray-100 border-2 border-gray-300 dark:bg-[#272727] dark:border-none"
                               : "bg-yellow-100 border-2 border-yellow-300 dark:bg-[#272727] dark:border-none"
-                          }`}
+                            }`}
                         >
                           <div className="font-semibold text-green-700 mb-1 text-sm dark:text-gray-200">
-                            {f.day}
+                            {dayLabel}
                           </div>
                           <div className="text-3xl mb-1">{icon}</div>
                           <div className="text-green-900 font-bold mt-1 text-base dark:text-gray-200">
@@ -583,10 +596,10 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                             {f.minTemp}
                           </div>
                           <div className="text-blue-600 text-xs font-medium mt-1">
-                            Rain: {f.rain}
+                            {t('weather_rain')}: {f.rain}
                           </div>
                           <div className="text-xs text-green-700 mt-1 text-center leading-tight">
-                            {f.tip}
+                            {t(f.tipKey)}
                           </div>
                         </motion.div>
                       );

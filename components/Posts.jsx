@@ -46,6 +46,16 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
   const [loadingBookmark, setLoadingBookmark] = useState(false);
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
+  function sanitizeCaption(str) {
+    if (!str) return "";
+    return str
+      .replace(/[`]/g, "'")       // escape backticks
+      .replace(/["]/g, "'")       // escape quotes
+      .replace(/\(/g, "&#40;")    // escape (
+      .replace(/\)/g, "&#41;")    // escape )
+      .replace(/→/g, "\u2192")    // safe arrow
+      .replace(/\n/g, "<br/>");   // safe line breaks
+  }
 
   const copyToClipboard = useCallback(async (text) => {
     try {
@@ -66,9 +76,7 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
       showToast("error", "Clipboard blocked. Try again.");
     }
   }, [showToast]);
-
-
-
+  
   // Initialize post data - use stable references
   useEffect(() => {
     if (!user || !post) return;
@@ -588,6 +596,7 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
 
   return (
     <motion.article
+      id={`post-${post?.id}`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: idx * 0.1 }}
@@ -616,9 +625,10 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
 
       {/* Post Content */}
       <div className="px-4 pb-3 dark:bg-[#272727]">
-        <p className="text-farm-700 text-base leading-relaxed font-sans">
-          {postCaption}
-        </p>
+        <p
+          className="text-farm-700 text-base leading-relaxed font-sans"
+          dangerouslySetInnerHTML={{ __html: sanitizeCaption(postCaption) }}
+        />
       </div>
 
       {/* Post Media */}

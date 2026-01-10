@@ -8,16 +8,18 @@ import {
 } from "react-icons/fa";
 import AILanguageSelector from "./AILanguageSelector";
 import { FaBrain, FaCloud, FaChartLine } from "react-icons/fa";
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function AIChatWindow({ open, setOpen }) {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [currentLanguage,setCurrentLanguage] = useState();
+  const [currentLanguage, setCurrentLanguage] = useState();
   const messagesEndRef = useRef(null);
   const scrollContainerRef = useRef(null);
   const [languageModalOpen, setlanguageModalOpen] = useState(false);
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+  const { t } = useLanguage();
 
   const languages = [
     { code: "en", label: "English" },
@@ -25,7 +27,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     { code: "mr", label: "Marathi" },
   ];
 
-  const handleLanguageChange = (l)=>{
+  const handleLanguageChange = (l) => {
     setCurrentLanguage(l);
     setlanguageModalOpen(false);
   }
@@ -78,7 +80,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
       const response = await fetch(`${BASE_URL}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: userMessage, history,currentLanguage })
+        body: JSON.stringify({ message: userMessage, history, currentLanguage })
       });
 
       const data = await response.json();
@@ -96,7 +98,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
       const errorMessage = {
         id: Date.now() + 1,
         role: "assistant",
-        content: "Sorry, I encountered an error. Please try again.",
+        content: t("chat_error_message"),
         timestamp: new Date().toISOString(),
         error: true
       };
@@ -145,27 +147,27 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
           ...(typeof window !== "undefined" && window.innerWidth < 768
             ? {
-                left: "0",
-                right: "0",
-                top: "auto",
-                bottom: "calc(env(safe-area-inset-bottom) + 70px)",
-                height:
-                  "calc(100vh - (env(safe-area-inset-top) + 56px) - (env(safe-area-inset-bottom) + 70px))",
-                borderTopLeftRadius: "20px",
-                borderTopRightRadius: "20px",
-              }
+              left: "0",
+              right: "0",
+              top: "auto",
+              bottom: "calc(env(safe-area-inset-bottom) + 70px)",
+              height:
+                "calc(100vh - (env(safe-area-inset-top) + 56px) - (env(safe-area-inset-bottom) + 70px))",
+              borderTopLeftRadius: "20px",
+              borderTopRightRadius: "20px",
+            }
             : {}),
 
           ...(typeof window !== "undefined" && window.innerWidth >= 768
             ? {
-                top: "122px",
-                right: "1rem",
-                bottom: "1rem",
-                width: "440px",
-                left: "auto",
-                borderRadius: "20px",
-                transform: open ? "translateY(0)" : "translateY(120%)"
-              }
+              top: "122px",
+              right: "1rem",
+              bottom: "1rem",
+              width: "440px",
+              left: "auto",
+              borderRadius: "20px",
+              transform: open ? "translateY(0)" : "translateY(120%)"
+            }
             : {})
         }}
       >
@@ -193,7 +195,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
           {/* RIGHT — LANGUAGE + CLOSE */}
           <div className="flex items-center gap-3">
-            <AILanguageSelector languages={languages} handleLanguageChange={handleLanguageChange} languageModalOpen={languageModalOpen}/>
+            <AILanguageSelector languages={languages} handleLanguageChange={handleLanguageChange} languageModalOpen={languageModalOpen} />
 
             <button
               onClick={() => setOpen(false)}
@@ -225,18 +227,18 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                 flex flex-col items-center text-center mb-5
               ">
                 <FaBrain size={36} className="text-white" />
-                <h2 className="text-xl font-semibold mt-2 text-white">Ask AI</h2>
+                <h2 className="text-xl font-semibold mt-2 text-white">{t("chat_ask_ai")}</h2>
                 <p className="text-sm opacity-80 mt-1 text-white/80">
-                  How can I assist you today?
+                  {t("chat_greeting")}
                 </p>
               </div>
 
               <div className="w-full mb-5 bg-white/5 border border-white/10 rounded-xl px-4 py-3">
                 <p className="text-[11px] text-center font-semibold uppercase tracking-wide text-emerald-200">
-                  Farming Assistance
+                  {t("chat_farming_assistance")}
                 </p>
                 <p className="text-sm text-center mt-1 text-white/75">
-                  Ask agriculture-related questions for quick, reliable, and expert guidance.
+                  {t("chat_assistance_desc")}
                 </p>
               </div>
 
@@ -268,18 +270,16 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
               {messages.map((message) => (
                 <div
                   key={message.id}
-                  className={`flex ${
-                    message.role === "user" ? "justify-end" : "justify-start"
-                  }`}
+                  className={`flex ${message.role === "user" ? "justify-end" : "justify-start"
+                    }`}
                 >
                   <div
-                    className={`max-w-[80%] rounded-2xl px-4 py-2 ${
-                      message.role === "user"
+                    className={`max-w-[80%] rounded-2xl px-4 py-2 ${message.role === "user"
                         ? "bg-gradient-to-br from-emerald-600 to-emerald-500 text-white shadow-lg"
                         : message.error
-                        ? "bg-red-500/20 border border-red-400/30 text-red-200 backdrop-blur-md"
-                        : "bg-white/10 border border-white/10 backdrop-blur-md text-white"
-                    }`}
+                          ? "bg-red-500/20 border border-red-400/30 text-red-200 backdrop-blur-md"
+                          : "bg-white/10 border border-white/10 backdrop-blur-md text-white"
+                      }`}
                   >
                     <p className="text-sm whitespace-pre-wrap break-words">
                       {message.content}
@@ -335,7 +335,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
               text-white placeholder-white/50
               shadow-inner outline-none
             "
-            placeholder="Message…"
+            placeholder={t("chat_placeholder")}
           />
 
           <button

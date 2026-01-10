@@ -1,9 +1,12 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+import { useLanguage } from "@/Context/languagecontext";
 import { FaSearch, FaTimes } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function SchemeSearch({ onSearch, placeholder = "Search schemes..." }) {
+export default function SchemeSearch({ onSearch, placeholder }) {
+  const { t } = useLanguage();
+  const searchPlaceholder = placeholder || t("search_schemes_placeholder");
   const [query, setQuery] = useState("");
   const inputRef = useRef(null);
 
@@ -32,7 +35,8 @@ export default function SchemeSearch({ onSearch, placeholder = "Search schemes..
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder={placeholder}
+
+            placeholder={searchPlaceholder}
             className="bg-transparent outline-none flex-1 text-sm text-gray-700 dark:text-gray-200"
           />
 

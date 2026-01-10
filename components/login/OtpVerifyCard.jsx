@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { FaLock } from "react-icons/fa";
 import { auth, RecaptchaVerifier, signInWithPhoneNumber } from "@/lib/firebaseClient";
 import useToast from "@/hooks/useToast";
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function OtpVerifyCard({
   phone,
@@ -13,6 +14,7 @@ export default function OtpVerifyCard({
   onCodeResent,
   onEditNumber,
 }) {
+  const { t } = useLanguage();
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [verifying, setVerifying] = useState(false);
   const [resending, setResending] = useState(false);
@@ -42,11 +44,11 @@ export default function OtpVerifyCard({
     setError("");
     const code = otp.join("");
     if (code.length !== 6) {
-      setError("Please enter the 6-digit OTP.");
+      setError(t("enter_6_digit_otp"));
       return;
     }
     if (!confirmationResult) {
-      setError("OTP expired. Please resend the code.");
+      setError(t("otp_expired"));
       return;
     }
     try {
@@ -63,14 +65,19 @@ export default function OtpVerifyCard({
 
       const payload = await res.json();
       if (!res.ok || !payload.success) {
-        throw new Error(payload?.error || "Failed to verify OTP");
+        throw new Error(payload?.error || t("failed_verify_otp"));
       }
 
+<<<<<<< HEAD
       showToast("success", "Logged in successfully!");
       router.push("/");
+=======
+      showToast("success", t("logged_in_success"));
+      router.push("/home");
+>>>>>>> origin/translation
     } catch (err) {
       console.error("OTP verification failed:", err);
-      setError(err?.message || "Invalid OTP. Please try again.");
+      setError(err?.message || t("invalid_otp"));
     } finally {
       setVerifying(false);
     }
@@ -88,7 +95,7 @@ export default function OtpVerifyCard({
 
   const handleResend = async () => {
     if (!phone) {
-      setError("Phone number missing. Please go back and enter it again.");
+      setError(t("phone_missing"));
       onEditNumber?.();
       return;
     }
@@ -98,16 +105,16 @@ export default function OtpVerifyCard({
 
       const appVerifier = getRecaptchaVerifier();
       if (!appVerifier) {
-        throw new Error("Unable to initialize reCAPTCHA. Please reload the page.");
+        throw new Error(t("recaptcha_error"));
       }
 
       const confirmation = await signInWithPhoneNumber(auth, phone, appVerifier);
       onCodeResent?.(confirmation);
       setOtp(["", "", "", "", "", ""]);
-      showToast("success", "OTP resent successfully.");
+      showToast("success", t("otp_resent_success"));
     } catch (err) {
       console.error("Failed to resend OTP:", err);
-      setError(err?.message || "Failed to resend OTP. Please try again.");
+      setError(err?.message || t("failed_resend_otp"));
     } finally {
       setResending(false);
     }
@@ -125,16 +132,16 @@ export default function OtpVerifyCard({
       </div>
 
       <div className="text-center mb-5 sm:mb-6">
-        <h2 className="text-lg sm:text-xl font-bold text-gray-800">Enter OTP Code</h2>
+        <h2 className="text-lg sm:text-xl font-bold text-gray-800">{t("enter_otp_code")}</h2>
         <p className="text-gray-500 text-sm mt-1 leading-snug">
-          We’ve sent a 6-digit code to <span className="font-semibold">{phone}</span>
+          {t("sent_6_digit_code")} <span className="font-semibold">{phone}</span>
         </p>
         <button
           type="button"
           onClick={onEditNumber}
           className="text-xs text-green-600 underline mt-2"
         >
-          Edit phone number
+          {t("edit_phone_number")}
         </button>
       </div>
 
@@ -174,7 +181,7 @@ export default function OtpVerifyCard({
               : "bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 shadow-lg hover:shadow-green-500/30"
             }`}
         >
-          {verifying ? "Verifying..." : "Verify Code"}
+          {verifying ? t("verifying") : t("verify_code")}
         </motion.button>
 
         <motion.button
@@ -185,12 +192,12 @@ export default function OtpVerifyCard({
           className={`w-full py-3 rounded-full font-semibold text-green-700 text-[15px] sm:text-[16px] border border-green-300 transition-all ${resending ? "bg-green-100 cursor-not-allowed" : "bg-green-50 hover:bg-green-100"
             }`}
         >
-          {resending ? "Resending..." : "Resend Code"}
+          {resending ? t("resending") : t("resend_code")}
         </motion.button>
       </div>
 
       <div className="text-center text-xs sm:text-[13px] text-gray-500 mt-6 leading-tight">
-        🔒 Secure verification • AgroPeer OTP System
+        {t("secure_verification")}
       </div>
 
       {ToastComponent}

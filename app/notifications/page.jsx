@@ -9,7 +9,10 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import useToast from "@/hooks/useToast";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
+import { useLanguage } from "@/Context/languagecontext";
+
 export default function NotificationsPage() {
+  const { t } = useLanguage();
   const router = useRouter();
   const { user, loading: authLoading, accessToken } = useLogin();
   const { notifications, unreadCount, loading: notificationsLoading } = useNotifications(
@@ -118,11 +121,10 @@ export default function NotificationsPage() {
     setMarkingAsRead(true);
     try {
       await markNotificationsAsRead(user?.id);
-      showToast("success", "All notifications marked as read! ✅");
-      setMarkingAsRead(true);
+      showToast("success", t("all_read_success"));
     } catch (error) {
       console.error("Error marking notifications as read:", error);
-      showToast("error", "Failed to mark notifications as read");
+      showToast("error", t("all_read_error"));
     } finally {
       setMarkingAsRead(false);
     }
@@ -143,7 +145,7 @@ export default function NotificationsPage() {
         <div className="min-h-screen flex items-center justify-center py-20">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-farm-600 dark:border-farm-500 mx-auto"></div>
-            <p className="mt-4 text-farm-600 dark:text-farm-400">Loading...</p>
+            <p className="mt-4 text-farm-600 dark:text-farm-400">{t("loading")}</p>
           </div>
         </div>
       </MobilePageContainer>
@@ -159,13 +161,13 @@ export default function NotificationsPage() {
         <div className="min-h-screen flex items-center justify-center py-20">
           <div className="text-center max-w-md">
             <FaBell className="text-6xl text-farm-400 dark:text-farm-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-farm-800 dark:text-farm-200 mb-2">Please Login</h2>
-            <p className="text-farm-600 dark:text-farm-400 mb-6">You need to be logged in to view notifications.</p>
+            <h2 className="text-2xl font-bold text-farm-800 dark:text-farm-200 mb-2">{t("login_title")}</h2>
+            <p className="text-farm-600 dark:text-farm-400 mb-6">{t("login_desc")}</p>
             <Link
               href="/login"
               className="inline-block px-6 py-3 bg-farm-600 dark:bg-farm-500 text-white rounded-xl hover:bg-farm-700 dark:hover:bg-farm-600 transition-colors font-semibold active:scale-95"
             >
-              Go to Login
+              {t("go_to_login")}
             </Link>
           </div>
         </div>
@@ -203,7 +205,7 @@ export default function NotificationsPage() {
 
                   <div>
                     <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-farm-800 to-farm-600 dark:from-farm-300 dark:to-farm-400 bg-clip-text text-transparent">
-                      Notifications
+                      {t("notifications_title")}
                     </h1>
                     {/* <p className="text-sm text-farm-600 dark:text-farm-400 mt-1">
                     {notifications.length} {notifications.length === 1 ? 'notification' : 'notifications'}
@@ -218,7 +220,7 @@ export default function NotificationsPage() {
                       className="bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 text-white text-xs font-bold rounded-full px-3 py-1.5 shadow-lg flex items-center gap-1.5"
                     >
                       <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
-                      {localNotifications.length} new
+                      {t("new_notifications_count").replace("{count}", localNotifications.length)}
                     </motion.span>
                   )}
                 </div>
@@ -233,7 +235,7 @@ export default function NotificationsPage() {
                       className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-farm-600 to-farm-700 dark:from-farm-500 dark:to-farm-600 text-white rounded-xl hover:from-farm-700 hover:to-farm-800 transition-all text-sm font-semibold shadow-md"
                     >
                       <FaCheckDouble className="text-sm" />
-                      {markingAsRead ? "Marking..." : "Mark all as read"}
+                      {markingAsRead ? t("marking") : t("mark_all_read")}
                     </motion.button>
                   )}
 
@@ -242,7 +244,7 @@ export default function NotificationsPage() {
                     onClick={() => setShowBulkConfirm(true)}
                     className="px-4 py-2 rounded-xl bg-red-600 text-white shadow-md hover:bg-red-700 transition"
                   >
-                    Delete All
+                    {t("delete_all")}
                   </button>
                 </div>
               </div>
@@ -264,7 +266,7 @@ export default function NotificationsPage() {
               <div className="absolute inset-0 border-4 border-farm-200 dark:border-neutral-700 rounded-full"></div>
               <div className="absolute inset-0 border-4 border-farm-600 dark:border-farm-500 border-t-transparent rounded-full animate-spin"></div>
             </div>
-            <p className="text-farm-600 dark:text-farm-400 font-medium">Loading notifications...</p>
+            <p className="text-farm-600 dark:text-farm-400 font-medium">{t("loading_notifications")}</p>
           </motion.div>
         ) : localNotifications.length === 0 ? (
           <motion.div
@@ -277,9 +279,9 @@ export default function NotificationsPage() {
               <div className="absolute inset-0 bg-farm-200/50 dark:bg-farm-500/20 rounded-full blur-2xl"></div>
               <FaBell className="relative text-7xl text-farm-300 dark:text-farm-600" />
             </div>
-            <h3 className="text-2xl font-bold text-farm-800 dark:text-farm-200 mb-2">No notifications yet</h3>
+            <h3 className="text-2xl font-bold text-farm-800 dark:text-farm-200 mb-2">{t("no_notifications")}</h3>
             <p className="text-farm-600 dark:text-farm-400 max-w-md mx-auto">
-              You'll see notifications here when you receive them. Stay tuned for updates!
+              {t("no_notifications_desc")}
             </p>
           </motion.div>
         ) : (
@@ -327,8 +329,8 @@ export default function NotificationsPage() {
                     <div className="flex items-start justify-between gap-3 mb-2">
                       <h3
                         className={`font-bold text-base sm:text-lg leading-tight ${!notification.seen
-                            ? "text-farm-900 dark:text-farm-100"
-                            : "text-farm-700 dark:text-farm-300 group-hover:text-farm-900 dark:group-hover:text-farm-100"
+                          ? "text-farm-900 dark:text-farm-100"
+                          : "text-farm-700 dark:text-farm-300 group-hover:text-farm-900 dark:group-hover:text-farm-100"
                           }`}
                       >
                         {notification.title}
@@ -353,7 +355,7 @@ export default function NotificationsPage() {
 
                       {!notification.seen && (
                         <span className="px-2 py-0.5 bg-farm-100 dark:bg-farm-500/20 text-farm-700 dark:text-farm-300 rounded-full text-xs font-medium">
-                          New
+                          {t("new_badge")}
                         </span>
                       )}
                     </div>
@@ -388,10 +390,10 @@ export default function NotificationsPage() {
           <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[9999]">
             <div className="bg-white dark:bg-neutral-800 p-6 rounded-2xl shadow-xl w-[90%] max-w-sm">
               <h2 className="text-lg font-bold text-neutral-900 dark:text-neutral-100 mb-3">
-                Delete Notification?
+                {t("delete_confirmation_title")}
               </h2>
               <p className="text-neutral-600 dark:text-neutral-300 mb-6">
-                This action cannot be undone.
+                {t("delete_confirmation_desc")}
               </p>
 
               <div className="flex justify-end gap-3">
@@ -399,7 +401,7 @@ export default function NotificationsPage() {
                   onClick={() => setShowConfirm(false)}
                   className="px-4 py-2 rounded-lg text-black dark:text-white bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600"
                 >
-                  Cancel
+                  {t("cancel")}
                 </button>
 
                 <button
@@ -409,7 +411,7 @@ export default function NotificationsPage() {
                   }}
                   className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700"
                 >
-                  Delete
+                  {t("delete")}
                 </button>
               </div>
             </div>
@@ -422,10 +424,10 @@ export default function NotificationsPage() {
         {showBulkConfirm && (
           <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[9999]">
             <div className="bg-white dark:bg-neutral-800 p-6 rounded-2xl shadow-xl w-[90%] max-w-sm">
-              <h2 className="text-lg font-bold mb-3 text-black">Delete All Notifications?</h2>
+              <h2 className="text-lg font-bold mb-3 text-black">{t("delete_all_confirmation_title")}</h2>
 
               <p className="text-neutral-600 dark:text-neutral-300 mb-6">
-                This will remove all notifications permanently.
+                {t("delete_all_confirmation_desc")}
               </p>
 
               <div className="flex justify-end gap-3">
@@ -433,7 +435,7 @@ export default function NotificationsPage() {
                   onClick={() => setShowBulkConfirm(false)}
                   className="px-4 py-2 rounded-lg text-black dark:text-white bg-neutral-200 dark:bg-neutral-700"
                 >
-                  Cancel
+                  {t("cancel")}
                 </button>
 
                 <button
@@ -443,7 +445,7 @@ export default function NotificationsPage() {
                   }}
                   className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700"
                 >
-                  Delete All
+                  {t("delete_all")}
                 </button>
               </div>
             </div>
@@ -456,12 +458,12 @@ export default function NotificationsPage() {
         {showUndo && (
           <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-[9999]">
             <div className="bg-neutral-900 text-white px-5 py-3 rounded-full shadow-2xl flex items-center gap-4">
-              <span>Notification deleted</span>
+              <span>{t("notification_deleted")}</span>
               <button
                 onClick={undoDeleteUI}
                 className="text-yellow-300 font-semibold hover:text-yellow-400"
               >
-                Undo
+                {t("undo")}
               </button>
             </div>
           </div>

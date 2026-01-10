@@ -16,7 +16,10 @@ import { usePagination } from "@/hooks/usePagination";
 import { apiRequest } from "@/utils/apiHelpers";
 import { formatDistanceToNow } from "date-fns";
 
+import { useLanguage } from "@/Context/languagecontext";
+
 export default function MilkRateDashboardPage() {
+  const { t } = useLanguage();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [companies, setCompanies] = useState([]);
@@ -26,7 +29,7 @@ export default function MilkRateDashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedMilkType, setSelectedMilkType] = useState(null);
   const [selectedRegion, setSelectedRegion] = useState(null);
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   const pagination = usePagination(1, 12);
 
   // Detail view state
@@ -149,19 +152,26 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   const calculateRate = (fat, snf) => {
     if (!selectedCompany) return 0;
-    if (selectedCompany.base_rate !== null && selectedCompany.base_rate !== undefined && 
-        selectedCompany.fat_multiplier !== null && selectedCompany.fat_multiplier !== undefined && 
-        selectedCompany.snf_multiplier !== null && selectedCompany.snf_multiplier !== undefined) {
+    if (selectedCompany.base_rate !== null && selectedCompany.base_rate !== undefined &&
+      selectedCompany.fat_multiplier !== null && selectedCompany.fat_multiplier !== undefined &&
+      selectedCompany.snf_multiplier !== null && selectedCompany.snf_multiplier !== undefined) {
       return Number((selectedCompany.base_rate + fat * selectedCompany.fat_multiplier + snf * selectedCompany.snf_multiplier).toFixed(2));
     }
     return selectedCompany.per_liter_rate || 0;
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return "Recently";
+    const fallback = {
+      relative: t("recent"),
+      full: t("recent")
+    };
+
+    if (!dateString) return fallback;
+
     try {
       const date = new Date(dateString);
-      if (isNaN(date.getTime())) return "Recently";
+      if (isNaN(date.getTime())) return fallback;
+
       return {
         relative: formatDistanceToNow(date, { addSuffix: true }),
         full: date.toLocaleDateString("en-US", {
@@ -173,10 +183,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
         }),
       };
     } catch {
-      return {
-        relative: "Recently",
-        full: dateString,
-      };
+      return fallback;
     }
   };
 
@@ -195,7 +202,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
       return (
         <ErrorBoundary>
           <div className="min-h-[calc(100vh-122px)] flex items-center justify-center">
-            <LoadingSpinner text="Loading company details..." />
+            <LoadingSpinner text={t("loading_company_details")} />
           </div>
         </ErrorBoundary>
       );
@@ -212,13 +219,13 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
             >
               <div className="text-6xl mb-4">⚠️</div>
               <h3 className="text-xl font-semibold text-farm-700 mb-2">
-                {companyError || "Company not found"}
+                {companyError || t("company_not_found")}
               </h3>
               <p className="text-farm-600 mb-4">
-                {companyError || "The company you're looking for doesn't exist or has been removed."}
+                {companyError || t("company_not_found_desc")}
               </p>
               <Link href="/milk-rate-calculator" className="farm-button inline-block">
-                Back to Dashboard
+                {t("back_to_dashboard")}
               </Link>
             </motion.div>
           </div>
@@ -244,7 +251,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                 className="flex items-center gap-2 text-white/90 hover:text-white mb-6 transition-colors"
               >
                 <FaArrowLeft className="w-4 h-4" />
-                <span>Back</span>
+                <span>{t("back")}</span>
               </button>
 
               <div className="flex items-start gap-4">
@@ -273,7 +280,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
                   <div className="flex items-center gap-2 text-white/90 text-sm">
                     <FaCalendar className="w-4 h-4" />
-                    <span>Updated {dateInfo.full}</span>
+                    <span>{t("updated")} {dateInfo.full}</span>
                   </div>
                 </div>
               </div>
@@ -288,7 +295,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                 transition={{ delay: 0.1 }}
                 className="farm-card p-8 mb-8"
               >
-                <h2 className="text-2xl font-display font-bold text-farm-900 mb-4">About</h2>
+                <h2 className="text-2xl font-display font-bold text-farm-900 mb-4">{t("about")}</h2>
                 <p className="text-farm-700 leading-relaxed whitespace-pre-line">
                   {selectedCompany.description}
                 </p>
@@ -301,34 +308,34 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
               transition={{ delay: 0.2 }}
               className="farm-card p-8 mb-8"
             >
-              <h2 className="text-2xl font-display font-bold text-farm-900 mb-6">Rate Breakdown</h2>
+              <h2 className="text-2xl font-display font-bold text-farm-900 mb-6">{t("rate_breakdown")}</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="p-6 bg-farm-50 rounded-xl text-center dark:bg-[#0a0a0a]">
-                  <div className="text-sm text-farm-600 mb-2">Fat Rate</div>
+                  <div className="text-sm text-farm-600 mb-2">{t("fat_rate")}</div>
                   <div className="text-3xl font-bold text-farm-900">
                     ₹{selectedCompany.fat_rate?.toFixed(2) || "N/A"}
                   </div>
-                  <div className="text-xs text-farm-600 mt-1">per unit</div>
+                  <div className="text-xs text-farm-600 mt-1">{t("per_unit")}</div>
                 </div>
                 <div className="p-6 bg-farm-50 rounded-xl text-center dark:bg-[#0a0a0a]">
-                  <div className="text-sm text-farm-600 mb-2">SNF Rate</div>
+                  <div className="text-sm text-farm-600 mb-2">{t("snf_rate")}</div>
                   <div className="text-3xl font-bold text-farm-900">
                     ₹{selectedCompany.snf_rate?.toFixed(2) || "N/A"}
                   </div>
-                  <div className="text-xs text-farm-600 mt-1">per unit</div>
+                  <div className="text-xs text-farm-600 mt-1">{t("per_unit")}</div>
                 </div>
                 <div className="p-6 bg-farm-50 rounded-xl text-center dark:bg-[#0a0a0a]">
-                  <div className="text-sm text-farm-600 mb-2">Base Rate</div>
+                  <div className="text-sm text-farm-600 mb-2">{t("base_rate")}</div>
                   <div className="text-3xl font-bold text-farm-900">
                     ₹{selectedCompany.base_rate?.toFixed(2) || selectedCompany.per_liter_rate?.toFixed(2) || "N/A"}
                   </div>
-                  <div className="text-xs text-farm-600 mt-1">per liter</div>
+                  <div className="text-xs text-farm-600 mt-1">{t("per_liter")}</div>
                 </div>
               </div>
 
               {(selectedCompany.base_rate && selectedCompany.fat_multiplier && selectedCompany.snf_multiplier) && (
                 <div className="mt-6 p-4 bg-farm-100 rounded-xl dark:bg-gray-950">
-                  <div className="text-sm text-farm-700 font-medium mb-2">Rate Formula:</div>
+                  <div className="text-sm text-farm-700 font-medium mb-2">{t("rate_formula")}</div>
                   <div className="text-farm-800 font-mono text-sm">
                     Rate = Base ({selectedCompany.base_rate}) + Fat × {selectedCompany.fat_multiplier} + SNF × {selectedCompany.snf_multiplier}
                   </div>
@@ -344,12 +351,12 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
             >
               <div className="flex items-center gap-3 mb-6">
                 <FaCalculator className="text-2xl text-farm-600" />
-                <h2 className="text-2xl font-display font-bold text-farm-900">Calculate Your Rate</h2>
+                <h2 className="text-2xl font-display font-bold text-farm-900">{t("calculate_your_rate")}</h2>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div>
-                  <label className="block text-sm font-semibold text-farm-700 mb-2">Fat (%)</label>
+                  <label className="block text-sm font-semibold text-farm-700 mb-2">{t("fat_percentage")}</label>
                   <input
                     type="number"
                     step={0.1}
@@ -361,7 +368,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-farm-700 mb-2">SNF (%)</label>
+                  <label className="block text-sm font-semibold text-farm-700 mb-2">{t("snf_percentage")}</label>
                   <input
                     type="number"
                     step={0.1}
@@ -373,7 +380,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-farm-700 mb-2">Quantity (Liters)</label>
+                  <label className="block text-sm font-semibold text-farm-700 mb-2">{t("quantity_liters")}</label>
                   <input
                     type="number"
                     min={1}
@@ -387,11 +394,11 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
               <div className="p-6 bg-gradient-to-r from-farm-500 to-farm-600 rounded-xl text-white">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <div className="text-sm opacity-90 mb-1">Rate per Liter</div>
+                    <div className="text-sm opacity-90 mb-1">{t("rate_per_liter")}</div>
                     <div className="text-3xl font-bold">₹{calculatedRate}</div>
                   </div>
                   <div>
-                    <div className="text-sm opacity-90 mb-1">Total Amount</div>
+                    <div className="text-sm opacity-90 mb-1">{t("total_amount")}</div>
                     <div className="text-3xl font-bold">₹{total}</div>
                   </div>
                 </div>
@@ -407,7 +414,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
               >
                 <div className="flex items-center gap-3 mb-6">
                   <FaChartLine className="text-2xl text-farm-600" />
-                  <h2 className="text-2xl font-display font-bold text-farm-900">Rate Trends (Last 30 Days)</h2>
+                  <h2 className="text-2xl font-display font-bold text-farm-900">{t("rate_trends")}</h2>
                 </div>
                 <div className="space-y-3">
                   {selectedCompany.historicalRates.slice(0, 10).map((rate, idx) => (
@@ -435,8 +442,8 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                 className="farm-card p-8 mb-8 text-center"
               >
                 <FaChartLine className="w-12 h-12 text-farm-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-farm-700 mb-2">No Historical Data Available</h3>
-                <p className="text-farm-600">Historical rate trends will appear here once data is available.</p>
+                <h3 className="text-lg font-semibold text-farm-700 mb-2">{t("no_historical_data")}</h3>
+                <p className="text-farm-600">{t("historical_data_desc")}</p>
               </motion.section>
             )}
 
@@ -447,7 +454,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
                 transition={{ delay: 0.5 }}
                 className="mb-8"
               >
-                <h2 className="text-2xl font-display font-bold text-farm-900 mb-6">Related Companies</h2>
+                <h2 className="text-2xl font-display font-bold text-farm-900 mb-6">{t("related_companies")}</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {selectedCompany.relatedCompanies.map((relatedCompany) => (
                     <MilkCompanyCard key={relatedCompany.id} company={relatedCompany} />
@@ -488,10 +495,10 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
               <div>
                 <h1 className="text-2xl font-bold text-green-800 dark:text-white">
-                  Milk Rate Dashboard
+                  {t("milk_rate_dashboard")}
                 </h1>
                 <p className="text-sm text-green-700/80 dark:text-green-200/80 mt-1">
-                  Compare milk rates from different dairy companies and find the best rates for your milk
+                  {t("compare_rates_desc")}
                 </p>
               </div>
             </div>
@@ -506,11 +513,11 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
             <div className="flex items-center justify-center gap-3 mb-4">
               <FaCalculator className="text-4xl text-farm-600" />
               <h1 className="text-5xl font-display font-bold text-farm-900">
-                Milk Rate Dashboard
+                {t("milk_rate_dashboard")}
               </h1>
             </div>
             <p className="text-lg text-farm-600 max-w-2xl mx-auto">
-              Compare milk rates from different dairy companies and find the best rates for your milk
+              {t("compare_rates_desc")}
             </p>
           </motion.div>
 
@@ -558,7 +565,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
               animate={{ opacity: 1 }}
               className="mb-6 text-sm text-farm-600"
             >
-              Showing {companies.length} of {pagination.total} companies
+              {t("showing_companies").replace("{current}", companies.length).replace("{total}", pagination.total)}
             </motion.div>
           )}
 

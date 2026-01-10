@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState, Suspense } from "react";
+import { useLanguage } from "@/Context/languagecontext";
 import { FaEye, FaEdit, FaTrash, FaPlus, FaBookReader } from "react-icons/fa";
 import dynamic from "next/dynamic";
 import LoadingSpinner from "@/components/LoadingSpinner";
@@ -11,16 +12,17 @@ const StoryFormModal = dynamic(() => import("@/components/StoryFormModal"), {
 
 function formatDateTime(ts) {
   const d = new Date(ts);
-  const dd = String(d.getDate()).padStart(2,"0");
-  const mm = String(d.getMonth()+1).padStart(2,"0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
   const yy = String(d.getFullYear()).slice(-2);
-  const hh = String(d.getHours()).padStart(2,"0");
-  const mi = String(d.getMinutes()).padStart(2,"0");
-  const ss = String(d.getSeconds()).padStart(2,"0");
+  const hh = String(d.getHours()).padStart(2, "0");
+  const mi = String(d.getMinutes()).padStart(2, "0");
+  const ss = String(d.getSeconds()).padStart(2, "0");
   return { date: `${dd}/${mm}/${yy}`, time: `${hh}:${mi}:${ss}` };
 }
 
 export default function FarmerStoryPage() {
+  const { t } = useLanguage();
   const [stories, setStories] = useState([]);
   const [view, setView] = useState(null);
   const [showForm, setShowForm] = useState(false);
@@ -35,7 +37,7 @@ export default function FarmerStoryPage() {
   const openStory = (s) => setView(s);
   const closeView = () => setView(null);
 
-  const openForm = (s=null) => {
+  const openForm = (s = null) => {
     setEditStory(s);
     setShowForm(true);
   };
@@ -47,13 +49,13 @@ export default function FarmerStoryPage() {
   };
 
   const handleDelete = (id) => {
-    if(!confirm("Are you sure you want to delete this story?")) return;
+    if (!confirm(t("delete_story_confirm"))) return;
     const updated = stories.filter(s => s.id !== id);
     localStorage.setItem("farmer_stories", JSON.stringify(updated));
     setStories(updated);
   };
 
-  const truncate = (html, len=120) => {
+  const truncate = (html, len = 120) => {
     const tmp = document.createElement("div");
     tmp.innerHTML = html;
     const text = tmp.textContent || tmp.innerText || "";
@@ -67,13 +69,13 @@ export default function FarmerStoryPage() {
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-3">
         <div className="flex items-center gap-2">
           <FaBookReader className="text-green-600 text-xl sm:text-2xl" />
-          <h1 className="text-2xl sm:text-3xl font-bold text-green-800">Farmer Success Stories</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-green-800">{t("farmer_stories_title")}</h1>
         </div>
         <button
           onClick={() => openForm()}
           className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-green-700 text-white px-4 sm:px-5 py-2 rounded-xl shadow-lg transform transition-transform hover:scale-105 w-full sm:w-auto justify-center"
         >
-          <FaPlus className="text-sm sm:text-base" /> Add Story
+          <FaPlus className="text-sm sm:text-base" /> {t("add_story")}
         </button>
       </div>
 
@@ -82,17 +84,17 @@ export default function FarmerStoryPage() {
         <table className="w-full table-auto border-collapse border border-gray-200 rounded-xl">
           <thead className="bg-green-50 rounded-t-xl">
             <tr className="text-left text-sm text-gray-600 border-b border-gray-200 dark:bg-[#0a0a0a]">
-              <th className="py-3 px-2 w-12">#</th>
-              <th className="py-3 px-2">Story Title</th>
-              <th className="py-3 px-2">Description</th>
-              <th className="py-3 px-2">Author</th>
-              <th className="py-3 px-2 w-36">Action</th>
+              <th className="py-3 px-2 w-12">{t("table_hash")}</th>
+              <th className="py-3 px-2">{t("table_story_title")}</th>
+              <th className="py-3 px-2">{t("table_description")}</th>
+              <th className="py-3 px-2">{t("table_author")}</th>
+              <th className="py-3 px-2 w-36">{t("table_action")}</th>
             </tr>
           </thead>
           <tbody>
             {stories.length === 0 && (
               <tr>
-                <td colSpan={5} className="py-6 text-center text-gray-500">No stories yet — add from Explore page.</td>
+                <td colSpan={5} className="py-6 text-center text-gray-500">{t("no_stories_msg")}</td>
               </tr>
             )}
             {stories.map((s, idx) => (
@@ -100,14 +102,14 @@ export default function FarmerStoryPage() {
                 key={s.id}
                 className="border-b border border-gray-200 hover:bg-gray-50 text-gray-700 transition-colors dark:hover:bg-[#1E1E1E]"
               >
-                <td className="py-3 px-2 align-middle">{idx+1}</td>
+                <td className="py-3 px-2 align-middle">{idx + 1}</td>
                 <td className="py-3 px-2 font-medium">{s.title}</td>
                 <td className="py-3 px-2 text-sm text-gray-700">{truncate(s.contentHTML, 120)}</td>
                 <td className="py-3 px-2 text-sm text-gray-700">{s.author}</td>
                 <td className="py-3 px-2 flex gap-2">
                   <button className="p-2 rounded-md hover:bg-green-100 transition transform hover:scale-110" onClick={() => openStory(s)}><FaEye className="text-yellow-700" /></button>
                   <button className="p-2 rounded-md hover:bg-yellow-100 transition transform hover:scale-110" onClick={() => openForm(s)}><FaEdit className="text-green-700" /></button>
-                  <button className="p-2 rounded-md hover:bg-red-100 transition transform hover:scale-110" onClick={() => handleDelete(s.id)}><FaTrash className="text-red-700"/></button>
+                  <button className="p-2 rounded-md hover:bg-red-100 transition transform hover:scale-110" onClick={() => handleDelete(s.id)}><FaTrash className="text-red-700" /></button>
                 </td>
               </tr>
             ))}
@@ -151,13 +153,13 @@ export default function FarmerStoryPage() {
             {/* Footer */}
             <div className="flex justify-between items-center px-5 py-4 border-t bg-gray-50 rounded-b-2xl dark:bg-[#272727] dark:border-gray-700">
               <div className="text-sm font-medium text-gray-700">
-                <span className="text-green-700 font-semibold">Author: </span>{view.author}
+                <span className="text-green-700 font-semibold">{t("author_label")} </span>{view.author}
               </div>
               <button
                 onClick={closeView}
                 className="px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition transform hover:scale-105"
               >
-                Close
+                {t("close_btn")}
               </button>
             </div>
           </div>

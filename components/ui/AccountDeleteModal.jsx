@@ -67,7 +67,7 @@ export default function AccountDeleteModal({ isOpen, onClose }) {
     }
 
     if (!isConfirmed) {
-      showToast("error", `Please type "${requiredText}" to confirm`);
+      showToast("error", t("delete_mismatch_error"));
       return;
     }
 
@@ -75,15 +75,15 @@ export default function AccountDeleteModal({ isOpen, onClose }) {
     try {
       // Get session and access token for authentication
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      
+
       if (sessionError || !session) {
-        throw new Error("No active session. Please log in again.");
+        throw new Error(t("session_expired"));
       }
 
       // Get access token from session
       const accessToken = session.access_token;
       if (!accessToken) {
-        throw new Error("Unable to get authentication token. Please log in again.");
+        throw new Error(t("token_error"));
       }
 
       // Send request with Authorization header (Production standard)
@@ -99,7 +99,7 @@ export default function AccountDeleteModal({ isOpen, onClose }) {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to delete account");
+        throw new Error(data.error || t("delete_failed"));
       }
 
       // Sign out and clear data
@@ -108,13 +108,13 @@ export default function AccountDeleteModal({ isOpen, onClose }) {
         localStorage.clear();
       }
 
-      showToast("success", t("account_deleted") || "Your account has been deleted successfully!");
+      showToast("success", t("account_deleted"));
       setTimeout(() => {
         router.push("/login");
       }, 1500);
     } catch (error) {
       console.error("Error deleting account:", error);
-      showToast("error", error.message || "Failed to delete account. Please try again.");
+      showToast("error", error.message || t("delete_failed"));
       setLoading(false);
     }
   };
@@ -164,19 +164,19 @@ export default function AccountDeleteModal({ isOpen, onClose }) {
 
                 {/* Title */}
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
-                  {t("delete_account") || "Delete Account"}
+                  {t("delete_account")}
                 </h2>
 
                 {/* Warning Message */}
                 <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6 text-left">
                   <p className="text-sm text-red-800 dark:text-red-300 mb-3 font-semibold">
-                    ⚠️ {t("confirm_delete") || "Are you sure you want to delete your account? This action cannot be undone."}
+                    ⚠️ {t("confirm_delete")}
                   </p>
                   <ul className="text-xs text-red-700 dark:text-red-400 space-y-2 list-disc list-inside">
-                    <li>All your posts, comments, and data will be permanently deleted</li>
-                    <li>Your profile and account information will be removed</li>
-                    <li>This action cannot be undone</li>
-                    <li>You will be logged out immediately</li>
+                    <li>{t("delete_warning_1")}</li>
+                    <li>{t("delete_warning_2")}</li>
+                    <li>{t("delete_warning_3")}</li>
+                    <li>{t("delete_warning_4")}</li>
                   </ul>
                 </div>
 
@@ -187,7 +187,7 @@ export default function AccountDeleteModal({ isOpen, onClose }) {
                     disabled={loading}
                     className="flex-1 px-4 py-2.5 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-50"
                   >
-                    {t("btn_cancel") || "Cancel"}
+                    {t("form_cancel")}
                   </button>
                   <button
                     onClick={handleDelete}
@@ -195,7 +195,7 @@ export default function AccountDeleteModal({ isOpen, onClose }) {
                     className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     <FaTrashAlt />
-                    {t("continue") || "Continue"}
+                    {t("continue")}
                   </button>
                 </div>
               </motion.div>
@@ -216,12 +216,12 @@ export default function AccountDeleteModal({ isOpen, onClose }) {
 
                 {/* Title */}
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                  Final Confirmation
+                  {t("final_confirmation")}
                 </h2>
 
                 {/* Warning */}
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
-                  This is your last chance to cancel. Type <span className="font-bold text-red-600 dark:text-red-400">DELETE</span> to confirm account deletion.
+                  {t("delete_instruction_prefix")} <span className="font-bold text-red-600 dark:text-red-400">DELETE</span> {t("delete_instruction_suffix")}
                 </p>
 
                 {/* Confirmation Input */}
@@ -230,14 +230,14 @@ export default function AccountDeleteModal({ isOpen, onClose }) {
                     type="text"
                     value={confirmText}
                     onChange={(e) => setConfirmText(e.target.value)}
-                    placeholder="Type DELETE to confirm"
+                    placeholder={t("type_delete_placeholder")}
                     disabled={loading}
                     className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg text-center font-mono text-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 dark:bg-[#363636] dark:text-white disabled:opacity-50"
                     autoFocus
                   />
                   {confirmText && !isConfirmed && (
                     <p className="text-xs text-red-600 dark:text-red-400 mt-2">
-                      Text does not match. Please type "DELETE" exactly.
+                      {t("delete_mismatch_error")}
                     </p>
                   )}
                 </div>
@@ -252,7 +252,7 @@ export default function AccountDeleteModal({ isOpen, onClose }) {
                     disabled={loading}
                     className="flex-1 px-4 py-2.5 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-50"
                   >
-                    {t("go_back") || "Go Back"}
+                    {t("go_back")}
                   </button>
                   <button
                     onClick={handleDelete}
@@ -262,12 +262,12 @@ export default function AccountDeleteModal({ isOpen, onClose }) {
                     {loading ? (
                       <>
                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        {t("deleting") || "Deleting..."}
+                        {t("deleting")}
                       </>
                     ) : (
                       <>
                         <FaTrashAlt />
-                        {t("delete_account") || "Delete Account"}
+                        {t("delete_account")}
                       </>
                     )}
                   </button>

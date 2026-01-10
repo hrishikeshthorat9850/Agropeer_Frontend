@@ -7,9 +7,12 @@ import { FaSeedling, FaToggleOn, FaToggleOff } from "react-icons/fa";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
 import { useWeather } from "@/Context/WeatherContext";
 import useGeolocation from "@/hooks/useGeolocation";
+import { useLanguage } from "@/Context/languagecontext";
+
 export default function WeatherPage() {
   const { weather, loading: weatherLoading, getWeather, error: weatherError } = useWeather();
   const { position } = useGeolocation();
+  const { t } = useLanguage();
   const [showPersonalized, setShowPersonalized] = useState(false);
   const [selectedCrop, setSelectedCrop] = useState(null);
 
@@ -35,12 +38,12 @@ export default function WeatherPage() {
         {/* Header */}
         <div className="text-center mb-6">
           <h1 className="text-2xl md:text-3xl font-bold text-farm-900 dark:text-white mb-3">
-            Weather & Crop Guidance
+            {t('weather_page_title')}
           </h1>
           <p className="text-base md:text-lg text-farm-700 dark:text-gray-300 mb-6">
-            Get personalized weather insights and farming recommendations
+            {t('weather_page_subtitle')}
           </p>
-          
+
           {/* Toggle Button */}
           <motion.button
             whileHover={{ scale: 1.05 }}
@@ -50,7 +53,7 @@ export default function WeatherPage() {
           >
             {showPersonalized ? <FaToggleOn className="w-5 h-5" /> : <FaToggleOff className="w-5 h-5" />}
             <span className="text-sm md:text-base">
-              {showPersonalized ? "Hide Personalized Guide" : "Show Personalized Guide"}
+              {showPersonalized ? t('hide_personalized_guide') : t('show_personalized_guide')}
             </span>
           </motion.button>
         </div>
@@ -64,7 +67,7 @@ export default function WeatherPage() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.5 }}
             >
-              <PersonalizedWeatherGuide 
+              <PersonalizedWeatherGuide
                 selectedCrop={selectedCrop}
                 weatherData={weather}
               />
@@ -94,10 +97,10 @@ export default function WeatherPage() {
               <FaSeedling className="w-7 h-7 md:w-8 md:h-8 text-white" />
             </div>
             <h3 className="text-xl md:text-2xl font-bold text-farm-900 dark:text-white mb-2">
-              Complete Farm Management
+              {t('complete_farm_management')}
             </h3>
             <p className="text-sm md:text-base text-farm-700 dark:text-gray-300 mb-6">
-              Access the full farmer dashboard to manage crops, get personalized guidance, and track your farm's progress.
+              {t('farm_management_desc')}
             </p>
             <motion.a
               href="/farmer-dashboard"
@@ -106,7 +109,7 @@ export default function WeatherPage() {
               className="inline-flex items-center gap-2 px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-farm-500 to-farm-600 text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95"
             >
               <FaSeedling className="w-4 h-4 md:w-5 md:h-5" />
-              <span className="text-sm md:text-base">Open Farmer Dashboard</span>
+              <span className="text-sm md:text-base">{t('open_farmer_dashboard')}</span>
             </motion.a>
           </div>
         </motion.div>

@@ -1,40 +1,44 @@
+"use client";
 import React from "react";
 import { FaStar } from "react-icons/fa";
-
-const schemes = [
-  {
-    title: "PM-Kisan Samman Nidhi",
-    description: "Direct income support of Rs. 6,000 per year to small and marginal farmers, paid in three installments.",
-    link: "https://pmkisan.gov.in/"
-  },
-  {
-    title: "Pradhan Mantri Fasal Bima Yojana",
-    description: "Crop insurance scheme to protect farmers against crop loss due to natural calamities, pests, and diseases.",
-    link: "https://pmfby.gov.in/"
-  },
-  {
-    title: "Soil Health Card Scheme",
-    description: "Provides soil health cards to farmers with crop-wise recommendations for nutrients and fertilizers.",
-    link: "https://soilhealth.dac.gov.in/"
-  },
-  {
-    title: "Kisan Credit Card (KCC)",
-    description: "Provides timely access to credit for farmers to meet their agricultural needs.",
-    link: "https://www.pmkisan.gov.in/Documents/KCC.pdf"
-  },
-  {
-    title: "National Agriculture Market (eNAM)",
-    description: "Online trading platform for agricultural commodities to help farmers get better prices.",
-    link: "https://enam.gov.in/"
-  }
-];
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function GovernmentSchemes() {
+  const { t } = useLanguage();
+
+  const schemes = [
+    {
+      title: t("scheme_pm_kisan_title"),
+      description: t("scheme_pm_kisan_desc"),
+      link: "https://pmkisan.gov.in/"
+    },
+    {
+      title: t("scheme_fasal_bima_title"),
+      description: t("scheme_fasal_bima_desc"),
+      link: "https://pmfby.gov.in/"
+    },
+    {
+      title: t("scheme_soil_health_title"),
+      description: t("scheme_soil_health_desc"),
+      link: "https://soilhealth.dac.gov.in/"
+    },
+    {
+      title: t("scheme_kcc_title"),
+      description: t("scheme_kcc_desc"),
+      link: "https://www.pmkisan.gov.in/Documents/KCC.pdf"
+    },
+    {
+      title: t("scheme_enam_title"),
+      description: t("scheme_enam_desc"),
+      link: "https://enam.gov.in/"
+    }
+  ];
+
   return (
     <section className="w-full max-w-2xl mx-auto mt-8 px-4">
       <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-green-800">
         <FaStar className="text-yellow-500" />
-        Government Schemes for Farmers
+        {t("gov_schemes_title")}
       </h2>
       <div className="grid gap-6">
         {schemes.map((scheme, idx) => (
@@ -49,7 +53,7 @@ export default function GovernmentSchemes() {
               rel="noopener noreferrer"
               className="inline-block px-4 py-2 bg-green-700 text-white rounded-lg font-medium hover:bg-green-800 transition"
             >
-              Learn More
+              {t("gov_schemes_learn_more")}
             </a>
           </div>
         ))}

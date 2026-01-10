@@ -6,8 +6,10 @@ import { FaPhoneAlt, FaEnvelope, FaUserTie } from "react-icons/fa";
 import Link from "next/link";
 import { auth, RecaptchaVerifier, signInWithPhoneNumber } from "@/lib/firebaseClient";
 import useToast from "@/hooks/useToast";
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function PhoneLogin({ onSwitchToEmail, onSendSuccess }) {
+  const { t } = useLanguage();
   const [countryCode, setCountryCode] = useState("+91");
   const [phone, setPhone] = useState("");
   const [sending, setSending] = useState(false);
@@ -30,7 +32,7 @@ export default function PhoneLogin({ onSwitchToEmail, onSendSuccess }) {
     setError("");
 
     if (!phone || phone.length !== 10) {
-      setError("Please enter a valid 10-digit mobile number.");
+      setError(t("valid_mobile_error"));
       return;
     }
     try {
@@ -38,20 +40,20 @@ export default function PhoneLogin({ onSwitchToEmail, onSendSuccess }) {
 
       const appVerifier = getRecaptchaVerifier();
       if (!appVerifier) {
-        throw new Error("Unable to initialize reCAPTCHA. Please reload the page.");
+        throw new Error(t("recaptcha_error"));
       }
 
       const confirmation = await signInWithPhoneNumber(auth, fullPhone, appVerifier);
       onSendSuccess?.(fullPhone, confirmation);
-      showToast("success", "OTP sent successfully");
+      showToast("success", t("otp_sent_success"));
     } catch (err) {
       console.error(err);
       const message =
         err?.message?.includes("too-many-requests")
-          ? "Too many requests. Please wait a moment before trying again."
+          ? t("too_many_requests")
           : err?.message?.includes("invalid-phone-number")
-          ? "Invalid phone number. Please check the digits entered."
-          : "Failed to send OTP. Please try again.";
+            ? t("invalid_phone_number")
+            : t("failed_send_otp");
       setError(message);
     } finally {
       setSending(false);
@@ -76,21 +78,21 @@ export default function PhoneLogin({ onSwitchToEmail, onSendSuccess }) {
 
       <div className="flex justify-center gap-3 mb-6">
         <button className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold bg-gradient-to-r from-green-100 to-green-50 text-green-700 border border-green-200">
-          <FaPhoneAlt /> Phone
+          <FaPhoneAlt /> {t("phone_btn")}
         </button>
 
         <button
           onClick={onSwitchToEmail}
           className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold bg-gray-100 text-gray-500 hover:bg-gray-200"
         >
-          <FaEnvelope /> Email
+          <FaEnvelope /> {t("email_label")}
         </button>
       </div>
 
       <form onSubmit={handleSend} className="space-y-5">
         <div>
           <label className="text-[15px] font-semibold text-gray-800 mb-2 block dark:text-white">
-            Enter Phone Number
+            {t("enter_phone_number")}
           </label>
 
           {/* ⭐ ONLY FIXES ADDED: overflow-hidden + min-w-0 */}
@@ -137,13 +139,12 @@ export default function PhoneLogin({ onSwitchToEmail, onSendSuccess }) {
           whileTap={{ scale: sending ? 1 : 0.97 }}
           type="submit"
           disabled={sending}
-          className={`w-full py-3.5 rounded-full font-semibold text-white text-[16px] transition-all ${
-            sending
+          className={`w-full py-3.5 rounded-full font-semibold text-white text-[16px] transition-all ${sending
               ? "bg-green-300 cursor-not-allowed"
               : "bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 shadow-lg"
-          }`}
+            }`}
         >
-          {sending ? "Sending..." : "Send Code"}
+          {sending ? t("sending") : t("send_code")}
         </motion.button>
 
         {/* Firebase reCAPTCHA container (required) */}
@@ -157,12 +158,12 @@ export default function PhoneLogin({ onSwitchToEmail, onSendSuccess }) {
         className="text-center mt-6"
       >
         <p className="text-gray-600">
-          Don’t have an account?{" "}
+          {t("dont_have_account")}{" "}
           <Link
             href="/signup"
             className="font-semibold text-green-600 hover:text-green-700 underline decoration-2 underline-offset-2"
           >
-            Sign up here
+            {t("sign_up_here")}
           </Link>
         </p>
       </motion.div>
