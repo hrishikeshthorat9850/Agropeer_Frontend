@@ -4,10 +4,19 @@ import { useLogin } from "@/Context/logincontext";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
-import { FaSeedling, FaHeart, FaUserCircle, FaUserCog, FaQuestionCircle } from "react-icons/fa";
+import {
+  User,
+  Settings,
+  HelpCircle,
+  LogOut,
+  Heart,
+  Sprout,
+  ChevronRight,
+  X,
+  UserCircle,
+} from "lucide-react";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import LogoutButton from "./ui/LogoutButton";
+import { motion, AnimatePresence } from "framer-motion";
 import { formatName } from "@/utils/formatName";
 import { useLanguage } from "@/Context/languagecontext";
 
@@ -34,113 +43,183 @@ export default function UserSidebar({ onClose } = {}) {
     }
   };
 
-  const displayName = user?.user_metadata?.full_name || formatName(userinfo) || userinfo?.display_name;
-
+  const displayName =
+    user?.user_metadata?.full_name ||
+    formatName(userinfo) ||
+    userinfo?.display_name;
 
   const avatarUrl =
-    user?.user_metadata?.avatar_url ||
-    user?.user_metadata?.avatar ||
-    null;
+    user?.user_metadata?.avatar_url || user?.user_metadata?.avatar || null;
 
   return (
-    <motion.aside
-      initial={{ x: 100, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      exit={{ x: 100, opacity: 0 }}
-      transition={{ type: "spring", stiffness: 80 }}
-      className="w-80 bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100 flex flex-col z-[9999]"
-    >
-      {/* Header */}
-      {user?.id ? (
-        <div className="bg-gradient-to-r from-green-700 to-green-500 text-white px-6 py-5 flex items-center gap-4">
-          <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-white bg-green-100">
-            {avatarUrl ? (
-              <Image
-                src={avatarUrl}
-                alt="avatar"
-                fill
-                className="object-cover rounded-full inset-0 mx-auto !my-auto"
-                onError={(e) => { e.currentTarget.style.display = "none"; }}
-              />
+    <AnimatePresence>
+      <div className="fixed inset-0 z-[9999] overflow-hidden">
+        {/* Backdrop (Blur) */}
+        <motion.div
+          className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+        />
+
+        {/* Sidebar Container */}
+        <motion.aside
+          initial={{ x: "100%" }}
+          animate={{ x: 0 }}
+          exit={{ x: "100%" }}
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          className="absolute top-0 right-0 h-full w-[280px] sm:w-[320px] bg-white dark:bg-[#1C1C1E] shadow-2xl flex flex-col pointer-events-auto"
+        >
+          {/* Header Section */}
+          <div className="relative h-[180px] bg-gradient-to-br from-green-600 to-emerald-800 p-6 flex flex-col justify-end text-white">
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 p-2 text-white/80 hover:text-white transition-colors"
+            >
+              <X size={24} />
+            </button>
+
+            {user?.id ? (
+              <div className="flex items-center gap-4">
+                <div className="relative w-16 h-16 rounded-full border-4 border-white/20 shadow-lg overflow-hidden bg-white/10 shrink-0">
+                  {avatarUrl ? (
+                    <Image
+                      src={avatarUrl}
+                      alt="avatar"
+                      fill
+                      className="object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-white/10">
+                      <User size={32} className="text-white" />
+                    </div>
+                  )}
+                </div>
+                <div className="min-w-0">
+                  <h3 className="font-bold text-lg leading-tight truncate">
+                    {displayName || "User"}
+                  </h3>
+                  <p className="text-sm text-green-100 truncate opacity-90">
+                    {user?.email || t("no_email")}
+                  </p>
+                </div>
+              </div>
             ) : (
-              <FaUserCircle className="text-4xl text-green-700 mx-auto my-auto" />
+              <div className="flex flex-col gap-1">
+                <h3 className="font-bold text-2xl">AgroPeer</h3>
+                <p className="text-sm text-green-100 opacity-90">
+                  {t("welcome_guest") || "Welcome, Guest!"}
+                </p>
+              </div>
             )}
           </div>
 
-          <div>
-            <div className="font-semibold text-md">{displayName}</div>
-            <div className="text-sm opacity-80">{user?.email || t("no_email")}</div>
+          {/* Content Area */}
+          <div className="flex-1 overflow-y-auto py-4 px-2 space-y-1">
+            {user?.id ? (
+              <>
+                <SidebarItem
+                  icon={User}
+                  label={t("my_profile")}
+                  onClick={() => {
+                    router.push("/profile");
+                    if (typeof onClose === "function") onClose();
+                  }}
+                />
+                <SidebarItem
+                  icon={Settings}
+                  label={t("settings")}
+                  onClick={() => {
+                    router.push("/settings");
+                    if (typeof onClose === "function") onClose();
+                  }}
+                />
+              </>
+            ) : null}
+
+            <SidebarItem
+              icon={HelpCircle}
+              label={t("help_support")}
+              onClick={() => {
+                router.push("/help");
+                if (typeof onClose === "function") onClose();
+              }}
+            />
+
+            {!user?.id && (
+              <div className="mt-8 px-4 space-y-3">
+                <div className="p-4 bg-green-50 dark:bg-green-900/10 rounded-xl border border-green-100 dark:border-green-900/20 text-center mb-6">
+                  <p className="text-sm text-green-800 dark:text-green-400 mb-3 font-medium">
+                    Join our community of farmers today!
+                  </p>
+                </div>
+                <Link
+                  href="/login"
+                  onClick={() => typeof onClose === "function" && onClose()}
+                  className="w-full flex items-center justify-center gap-2 h-12 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl shadow-lg shadow-green-600/20 transition-all active:scale-[0.98]"
+                >
+                  <Heart size={18} fill="currentColor" />
+                  {t("login")}
+                </Link>
+                <Link
+                  href="/signup"
+                  onClick={() => typeof onClose === "function" && onClose()}
+                  className="w-full flex items-center justify-center gap-2 h-12 bg-white dark:bg-[#2C2C2E] border-2 border-green-100 dark:border-[#3A3A3C] text-green-700 dark:text-green-400 font-semibold rounded-xl transition-all active:scale-[0.98]"
+                >
+                  <Sprout size={18} />
+                  {t("signup")}
+                </Link>
+              </div>
+            )}
           </div>
-        </div>
 
-      ) : (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.6 }}
-          className="flex flex-col md:flex-row justify-center items-center gap-4 mb-8 mt-4 p-0"
-        >
-          <Link href="/login" className="farm-button group">
-            <span className="flex items-center gap-2">
-              <FaHeart className="group-hover:animate-pulse" />
-              {t("login")}
-            </span>
-          </Link>
-          <Link href="/signup" className="sunset-gradient bg-red-500 text-white font-semibold px-8 py-3 rounded-xl shadow-sunset hover:shadow-glow-sunset transition-all duration-300 transform hover:scale-105 group">
-            <span className="flex items-center gap-2">
-              <FaSeedling className="group-hover:animate-bounce" />
-              {t("signup")}
-            </span>
-          </Link>
-        </motion.div>
-      )}
-
-      {/* Sidebar actions */}
-      <div className="flex-1 p-4 space-y-2 dark:bg-[#272727]">
-        {user && (
-          <button
-            onClick={() => {
-              router.push("/profile");
-              if (typeof onClose === "function") onClose();
-            }}
-            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-700 hover:bg-green-50 hover:text-green-700 transition dark:hover:bg-[#0a0a0a]"
-          >
-            <FaUserCog className="text-lg" />
-            <span>{t("my_profile")}</span>
-          </button>
-        )}
-
-        <button
-          onClick={() => {
-            router.push("/settings");
-            if (typeof onClose === "function") onClose();
-          }}
-          className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-700 hover:bg-green-50 hover:text-green-700 transition dark:hover:bg-[#0a0a0a]"
-        >
-          <FaUserCog className="text-lg" />
-          <span>{t("settings")}</span>
-        </button>
-
-        <button
-          onClick={() => {
-            router.push("/help");
-            if (typeof onClose === "function") onClose();
-          }}
-          className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-700 hover:bg-green-50 hover:text-green-700 transition dark:hover:bg-[#0a0a0a]"
-        >
-          <FaQuestionCircle className="text-lg" />
-          <span>{t("help_support")}</span>
-        </button>
-
-        {user ? <LogoutButton onClick={() => handleLogout()} /> : null}
+          {/* Footer / Logout */}
+          {user?.id && (
+            <div className="p-4 border-t border-gray-100 dark:border-[#2C2C2E] bg-gray-50/50 dark:bg-black/20">
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 dark:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors group"
+              >
+                <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg group-hover:bg-red-200 dark:group-hover:bg-red-900/50 transition-colors">
+                  <LogOut size={20} />
+                </div>
+                <span className="font-semibold">
+                  {t("logout_button") || "Sign Out"}
+                </span>
+              </button>
+              {/* <div className="text-center mt-4">
+                        <p className="text-[10px] text-gray-400 dark:text-gray-600 uppercase tracking-widest font-semibold">
+                            AgroPeer v1.0
+                        </p>
+                    </div> */}
+            </div>
+          )}
+        </motion.aside>
       </div>
+    </AnimatePresence>
+  );
+}
 
-      {/* Footer */}
-      {/* <div className="text-center text-xs text-gray-400 pb-3 border-t pt-2">
-        <p>© {new Date().getFullYear()} <span className="font-semibold text-green-700">AgroInsta</span></p>
-        <p className="italic">Empowering Farmers 🌾</p>
-      </div> */}
-      
-    </motion.aside>
+function SidebarItem({ icon: Icon, label, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className="w-full flex items-center justify-between px-4 py-3.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#2C2C2E] transition-all group"
+    >
+      <div className="flex items-center gap-4">
+        <div className="p-2 bg-gray-100 dark:bg-[#2C2C2E] rounded-lg group-hover:bg-white dark:group-hover:bg-[#3A3A3C] shadow-sm transition-colors text-gray-500 dark:text-gray-400 group-hover:text-green-600 dark:group-hover:text-green-500">
+          <Icon size={20} strokeWidth={2} />
+        </div>
+        <span className="font-medium text-[15px]">{label}</span>
+      </div>
+      <ChevronRight
+        size={16}
+        className="text-gray-300 dark:text-gray-600 group-hover:text-gray-500 dark:group-hover:text-gray-400"
+      />
+    </button>
   );
 }

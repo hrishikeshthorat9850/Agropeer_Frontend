@@ -3,7 +3,18 @@ import { useLogin } from "@/Context/logincontext";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { FaUserCircle, FaEnvelope, FaPhone, FaCalendarAlt, FaMapMarkerAlt, FaEdit, FaArrowLeft } from "react-icons/fa";
+import {
+  User,
+  Mail,
+  Phone,
+  Calendar,
+  MapPin,
+  Edit3,
+  ArrowLeft,
+  Share2,
+  MoreVertical,
+  BadgeCheck,
+} from "lucide-react";
 import { formatName } from "@/utils/formatName";
 import { useLanguage } from "@/Context/languagecontext";
 import { ProfileSkeleton } from "@/components/skeletons";
@@ -22,19 +33,19 @@ function formatBio(text) {
   formatted = formatted.replace(
     urlRegex,
     (url) =>
-      `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-300 underline">${url}</a>`
+      `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-500 dark:text-blue-400 font-medium hover:underline">${url}</a>`
   );
 
   // mentions
   formatted = formatted.replace(
     /@([a-zA-Z0-9_]+)/g,
-    `<span class="text-blue-200">@$1</span>`
+    `<span class="text-green-600 dark:text-green-400 font-medium">@$1</span>`
   );
 
   // hashtags
   formatted = formatted.replace(
     /#([a-zA-Z0-9_]+)/g,
-    `<span class="text-green-200">#$1</span>`
+    `<span class="text-blue-600 dark:text-blue-400 font-medium">#$1</span>`
   );
 
   return formatted;
@@ -77,7 +88,7 @@ export default function ProfilePage() {
           .single();
 
         if (userinfoError) {
-          if (userinfoError.code === 'PGRST116') {
+          if (userinfoError.code === "PGRST116") {
             setVisitorError("User not found");
           } else {
             throw userinfoError;
@@ -101,33 +112,37 @@ export default function ProfilePage() {
   // Visitor profile view
   if (visitorId) {
     if (visitorLoading) {
+      // Skeleton adjusted for mobile layout if needed, but keeping original skeleton component call
       return <ProfileSkeleton />;
     }
 
     if (visitorError || !visitorInfo) {
       return (
-        <div className="min-h-[calc(100vh-122px)] py-4 px-2 flex items-center justify-center">
-          <div className="text-center">
-            <FaUserCircle className="text-6xl text-gray-400 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
-              {visitorError || t("user_not_found")}
-            </h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
-              {t("profile_not_found")}
-            </p>
-            <button
-              onClick={() => router.back()}
-              className="flex items-center gap-2 mx-auto px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition"
-            >
-              <FaArrowLeft /> {t("go_back")}
-            </button>
+        <div className="min-h-screen bg-[#F2F2F7] dark:bg-black flex flex-col items-center justify-center p-6 text-center">
+          <div className="w-20 h-20 bg-gray-100 dark:bg-[#1C1C1E] rounded-full flex items-center justify-center mb-6">
+            <User size={40} className="text-gray-400" />
           </div>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+            {visitorError || t("user_not_found")}
+          </h2>
+          <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-xs mx-auto">
+            {t("profile_not_found") ||
+              "The user you are looking for might have removed their profile."}
+          </p>
+          <button
+            onClick={() => router.back()}
+            className="px-6 py-3 bg-white dark:bg-[#1C1C1E] text-gray-900 dark:text-white font-medium rounded-xl shadow-sm border border-gray-200 dark:border-[#2C2C2E]"
+          >
+            {t("go_back")}
+          </button>
         </div>
       );
     }
 
-    const displayName = formatName(visitorInfo) || visitorInfo?.display_name || "User";
-    const avatarUrl = visitorInfo?.profile_url || visitorInfo?.avatar_url || null;
+    const displayName =
+      formatName(visitorInfo) || visitorInfo?.display_name || "User";
+    const avatarUrl =
+      visitorInfo?.profile_url || visitorInfo?.avatar_url || null;
     const bioRaw = visitorInfo?.bio || "";
     const bioFormatted = formatBio(bioRaw);
     const bioTextOnly = bioRaw.replace(/(<([^>]+)>)/gi, "");
@@ -138,127 +153,175 @@ export default function ProfilePage() {
     const isOwnProfile = user?.id === visitorId;
 
     return (
-      <MobilePageContainer>
-        <div className="py-4">
-          <div className="max-w-4xl mx-auto bg-green-50 shadow-lg rounded-2xl overflow-hidden border border-gray-100 dark:bg-[#272727] dark:border-gray-600">
-            <div className="px-4 md:px-6 pt-4">
-              <button
-                onClick={() => router.back()}
-                className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition"
-              >
-                <FaArrowLeft /> {t("go_back")}
-              </button>
-            </div>
+      <MobilePageContainer noPadding>
+        <div className="min-h-screen bg-white dark:bg-black pb-20">
+          {/* Header */}
+          <div className="sticky top-0 z-40 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-100 dark:border-[#2C2C2E] px-4 h-14 flex items-center justify-between">
+            <button
+              onClick={() => router.back()}
+              className="p-2 -ml-2 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-neutral-800 rounded-full transition-colors"
+            >
+              <ArrowLeft size={24} />
+            </button>
+            <span className="font-bold text-lg text-gray-900 dark:text-white truncate max-w-[200px]">
+              {visitorInfo?.username || displayName}
+            </span>
+            <button className="p-2 -mr-2 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-neutral-800 rounded-full transition-colors">
+              <MoreVertical size={24} />
+            </button>
+          </div>
 
-            <div className="bg-gradient-to-r from-green-700 to-green-500 relative px-6 pb-16 pt-4 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 sm:pb-4">
-              <div className="absolute left-8 -bottom-14">
-                <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-white bg-green-100 flex items-center justify-center shadow-md">
+          {/* Profile Header Info */}
+          <div className="px-4 py-6">
+            <div className="flex flex-col items-center text-center">
+              <div className="relative w-24 h-24 rounded-full border-2 border-gray-200 dark:border-[#2C2C2E] p-1 mb-4">
+                <div className="w-full h-full rounded-full overflow-hidden bg-gray-100 dark:bg-[#1C1C1E] relative">
                   {avatarUrl ? (
                     <Image
                       src={avatarUrl}
                       alt={displayName}
-                      width={112}
-                      height={112}
-                      className="w-full h-full object-cover"
+                      fill
+                      className="object-cover"
                     />
                   ) : (
-                    <FaUserCircle className="text-7xl text-green-700" />
-                  )}
-                </div>
-              </div>
-
-              <div className="text-white text-sm sm:w-1/2 ml-auto mt-4 sm:mt-0 leading-relaxed select-text">
-                <div className="flex items-center justify-between">
-                  <h2 className="font-semibold text-white/90">{t("bio_section")}</h2>
-                </div>
-                <div className="mt-1">
-                  {bioRaw ? (
-                    <>
-                      <div
-                        className="whitespace-pre-wrap"
-                        dangerouslySetInnerHTML={{
-                          __html:
-                            showMore || !shouldShowToggle
-                              ? bioFormatted
-                              : shortFormatted + (bioTextOnly.length > shortLimit ? "..." : "")
-                        }}
+                    <div className="w-full h-full flex items-center justify-center">
+                      <User
+                        size={40}
+                        className="text-gray-300 dark:text-gray-600"
                       />
-                      {shouldShowToggle && (
-                        <button
-                          onClick={() => setShowMore(!showMore)}
-                          className="mt-1 mb-[10px] text-xs underline text-gray-200"
-                        >
-                          {showMore ? t("show_less") : t("show_more")}
-                        </button>
-                      )}
-                    </>
-                  ) : (
-                    <p className="text-white/80 italic">{t ? t("not_added") : "Not added"}</p>
+                    </div>
                   )}
                 </div>
               </div>
-            </div>
 
-            <div className="pt-20 pb-10 px-8">
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
-                <div className="text-center sm:text-left">
-                  <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">{displayName}</h1>
-                  <p className="text-gray-500 dark:text-gray-400 break-all">
-                    {visitorInfo?.email || t("no_email")}
+              <h1 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-1">
+                {displayName}
+                {/* Example Verification Badge if needed later */}
+                {/* <CheckBadge size={16} className="text-blue-500 fill-blue-500 text-white" /> */}
+              </h1>
+
+              <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
+                {visitorInfo?.title || "Farming Enthusiast"}
+              </p>
+
+              {/* Bio Section */}
+              <div className="mt-4 text-sm text-gray-700 dark:text-gray-300 max-w-md w-full text-left px-2">
+                {bioRaw ? (
+                  <>
+                    <div
+                      className="whitespace-pre-wrap leading-relaxed"
+                      dangerouslySetInnerHTML={{
+                        __html:
+                          showMore || !shouldShowToggle
+                            ? bioFormatted
+                            : shortFormatted +
+                              (bioTextOnly.length > shortLimit ? "..." : ""),
+                      }}
+                    />
+                    {shouldShowToggle && (
+                      <button
+                        onClick={() => setShowMore(!showMore)}
+                        className="mt-1 text-gray-500 dark:text-gray-400 font-medium"
+                      >
+                        {showMore ? t("show_less") : t("show_more")}
+                      </button>
+                    )}
+                  </>
+                ) : (
+                  <p className="text-gray-400 italic text-center">
+                    {t("not_added") || "No bio yet."}
                   </p>
-                </div>
-
-                {isOwnProfile && (
-                  <button
-                    onClick={() => router.push("/profile/edit")}
-                    className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition w-full sm:w-auto"
-                  >
-                    {t("edit_profile")}
-                  </button>
                 )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div className="bg-gray-50 rounded-xl border border-gray-200 p-4 flex items-center gap-3 dark:bg-[#1E1E1E] dark:border-none">
-                  <FaEnvelope className="text-green-600 text-xl" />
-                  <div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{t("email")}</p>
-                    <p className="font-medium text-gray-800 dark:text-gray-200">
-                      {visitorInfo?.email || t("not_added")}
-                    </p>
-                  </div>
-                </div>
+              {/* Action Buttons */}
+              <div className="flex items-center gap-3 w-full mt-6 px-2">
+                {isOwnProfile ? (
+                  <button
+                    onClick={() => router.push("/profile/edit")}
+                    className="flex-1 h-10 bg-gray-100 dark:bg-[#1C1C1E] rounded-lg font-semibold text-sm text-gray-900 dark:text-white active:scale-[0.98] transition-transform"
+                  >
+                    {t("edit_profile")}
+                  </button>
+                ) : (
+                  <>
+                    <button className="flex-1 h-10 bg-green-600 rounded-lg font-semibold text-sm text-white active:scale-[0.98] transition-transform shadow-lg shadow-green-600/20">
+                      Follow
+                    </button>
+                    <button className="flex-1 h-10 bg-gray-100 dark:bg-[#1C1C1E] rounded-lg font-semibold text-sm text-gray-900 dark:text-white active:scale-[0.98] transition-transform">
+                      Message
+                    </button>
+                  </>
+                )}
+                <button className="h-10 w-10 bg-gray-100 dark:bg-[#1C1C1E] rounded-lg flex items-center justify-center text-gray-900 dark:text-white active:scale-[0.98] transition-transform">
+                  <Share2 size={20} />
+                </button>
+              </div>
+            </div>
+          </div>
 
-                <div className="bg-gray-50 rounded-xl border border-gray-200 p-4 flex items-center gap-3 dark:bg-[#1E1E1E] dark:border-none">
-                  <FaPhone className="text-green-600 text-xl" />
-                  <div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{t("phone")}</p>
-                    <p className="font-medium text-gray-800 dark:text-gray-200">
-                      {visitorInfo?.mobile || t("not_added")}
-                    </p>
-                  </div>
-                </div>
+          {/* Details Grid */}
+          <div className="px-4 mt-2 grid grid-cols-1 gap-4">
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider ml-1 mt-4 mb-2">
+              {t("about") || "About"}
+            </h3>
 
-                <div className="bg-gray-50 rounded-xl border border-gray-200 p-4 flex items-center gap-3 dark:bg-[#1E1E1E] dark:border-none">
-                  <FaCalendarAlt className="text-green-600 text-xl" />
-                  <div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{t("member_since")}</p>
-                    <p className="font-medium text-gray-800 dark:text-gray-200">
-                      {visitorInfo?.created_at
-                        ? new Date(visitorInfo.created_at).toLocaleDateString()
-                        : t("not_added")}
-                    </p>
-                  </div>
+            <div className="bg-gray-50 dark:bg-[#1C1C1E] rounded-2xl overflow-hidden divide-y divide-gray-100 dark:divide-[#2C2C2E]">
+              <div className="flex items-center gap-4 p-4">
+                <div className="w-10 h-10 rounded-full bg-white dark:bg-[#2C2C2E] flex items-center justify-center text-gray-500 dark:text-gray-400">
+                  <Mail size={20} />
                 </div>
+                <div>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wide">
+                    {t("email")}
+                  </p>
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">
+                    {visitorInfo?.email || t("not_added")}
+                  </p>
+                </div>
+              </div>
 
-                <div className="bg-gray-50 rounded-xl border border-gray-200 p-4 flex items-center gap-3 dark:bg-[#1E1E1E] dark:border-none">
-                  <FaMapMarkerAlt className="text-green-600 text-xl" />
-                  <div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{t("location")}</p>
-                    <p className="font-medium text-gray-800 dark:text-gray-200">
-                      {visitorInfo?.country || t("not_specified")}
-                    </p>
-                  </div>
+              <div className="flex items-center gap-4 p-4">
+                <div className="w-10 h-10 rounded-full bg-white dark:bg-[#2C2C2E] flex items-center justify-center text-gray-500 dark:text-gray-400">
+                  <Phone size={20} />
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wide">
+                    {t("phone")}
+                  </p>
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">
+                    {visitorInfo?.mobile || t("not_added")}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 p-4">
+                <div className="w-10 h-10 rounded-full bg-white dark:bg-[#2C2C2E] flex items-center justify-center text-gray-500 dark:text-gray-400">
+                  <MapPin size={20} />
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wide">
+                    {t("location")}
+                  </p>
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">
+                    {visitorInfo?.country || t("not_specified")}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 p-4">
+                <div className="w-10 h-10 rounded-full bg-white dark:bg-[#2C2C2E] flex items-center justify-center text-gray-500 dark:text-gray-400">
+                  <Calendar size={20} />
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wide">
+                    {t("member_since")}
+                  </p>
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">
+                    {visitorInfo?.created_at
+                      ? new Date(visitorInfo.created_at).toLocaleDateString()
+                      : t("not_added")}
+                  </p>
                 </div>
               </div>
             </div>
@@ -277,12 +340,11 @@ export default function ProfilePage() {
     );
 
   const displayName = formatName(userinfo) || userinfo?.display_name;
-
   const avatarUrl =
     user?.user_metadata?.avatar_url ||
     user?.user_metadata?.avatar ||
-    userinfo?.avatar_url
-  null;
+    userinfo?.avatar_url ||
+    null;
 
   const bioRaw = user?.user_metadata?.bio || "";
   const bioFormatted = formatBio(bioRaw);
@@ -295,118 +357,188 @@ export default function ProfilePage() {
   const shortFormatted = formatBio(shortRaw);
 
   return (
-    <MobilePageContainer>
-      <div className="py-4">
-        <div className="max-w-4xl mx-auto bg-green-50 shadow-lg rounded-2xl overflow-hidden border border-gray-100 dark:bg-[#272727] dark:border-gray-600">
+    <MobilePageContainer noPadding>
+      <div className="min-h-screen bg-white dark:bg-black pb-20">
+        {/* Sticky Header */}
+        <div className="sticky top-0 z-40 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-100 dark:border-[#2C2C2E] px-4 h-14 flex items-center justify-between">
+          <span className="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
+            {user?.email ? user.email.split("@")[0] : "Profile"}
+            <BadgeCheck
+              size={16}
+              className="text-green-500 fill-green-500 text-white"
+            />
+          </span>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => router.push("/profile/edit")}
+              className="p-2 -mr-2 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-neutral-800 rounded-full transition-colors"
+            >
+              <Edit3 size={24} />
+            </button>
+            <button className="p-2 -mr-2 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-neutral-800 rounded-full transition-colors">
+              <MoreVertical size={24} />
+            </button>
+          </div>
+        </div>
 
-          {/* HEADER WITH BIO LABEL */}
-          <div className="bg-gradient-to-r from-green-700 to-green-500 relative px-6 pb-16 pt-4 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 sm:pb-4">
-
-            {/* Avatar */}
-            <div className="absolute left-8 -bottom-14">
-              <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-white bg-green-100 flex items-center justify-center shadow-md">
+        {/* Profile Info */}
+        <div className="px-4 py-6">
+          <div className="flex flex-col items-center text-center">
+            <div className="relative w-24 h-24 rounded-full border-2 border-gray-200 dark:border-[#2C2C2E] p-1 mb-4">
+              <div className="w-full h-full rounded-full overflow-hidden bg-gray-100 dark:bg-[#1C1C1E] relative">
                 {avatarUrl ? (
                   <Image
                     src={avatarUrl}
                     alt="avatar"
-                    width={112}
-                    height={112}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
                   />
                 ) : (
-                  <FaUserCircle className="text-7xl text-green-700" />
-                )}
-              </div>
-            </div>
-
-            {/* BIO PANEL */}
-            <div className="text-white text-sm sm:w-1/2 ml-auto mt-4 sm:mt-0 leading-relaxed select-text">
-
-              <div className="flex items-center justify-between">
-                <h2 className="font-semibold text-white/90 cursor-pointer"
-                  onClick={() => router.push("/profile/edit")}
-                >{t("bio_section")}</h2>
-              </div>
-
-              <div className="mt-1">
-                {bioRaw ? (
-                  <>
-                    <div
-                      className="whitespace-pre-wrap"
-                      dangerouslySetInnerHTML={{
-                        __html:
-                          showMore || !shouldShowToggle
-                            ? bioFormatted
-                            : shortFormatted + (bioTextOnly.length > shortLimit ? "..." : "")
-                      }}
+                  <div className="w-full h-full flex items-center justify-center">
+                    <User
+                      size={40}
+                      className="text-gray-300 dark:text-gray-600"
                     />
-                    {shouldShowToggle && (
-                      <button
-                        onClick={() => setShowMore(!showMore)}
-                        className="mt-1 mb-[10px] text-xs underline text-gray-200"
-                      >
-                        {showMore ? t("show_less") : t("show_more")}
-                      </button>
-                    )}
-                  </>
-                ) : (
-                  <p className="text-white/80 italic">{t ? t("not_added") : "Not added"}</p>
+                  </div>
                 )}
               </div>
             </div>
-          </div>
 
-          {/* Body Section */}
-          <div className="pt-20 pb-10 px-8">
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
-              <div className="text-center sm:text-left">
-                <h1 className="text-2xl font-bold text-gray-800">{displayName}</h1>
-                <p className="text-gray-500 break-all">{user?.email || t("no_email")}</p>
-              </div>
+            <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+              {displayName}
+            </h1>
 
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
+              {/* Placeholder for role/title if available later */}
+              Community Member
+            </p>
+
+            {/* Stats Row (Optional Instagram style feel) */}
+            {/* <div className="flex items-center gap-8 mt-4 mb-2">
+                     <div className="text-center">
+                        <span className="block font-bold text-gray-900 dark:text-white">0</span>
+                        <span className="text-xs text-gray-500">Posts</span>
+                     </div>
+                     <div className="text-center">
+                        <span className="block font-bold text-gray-900 dark:text-white">0</span>
+                        <span className="text-xs text-gray-500">Followers</span>
+                     </div>
+                     <div className="text-center">
+                        <span className="block font-bold text-gray-900 dark:text-white">0</span>
+                        <span className="text-xs text-gray-500">Following</span>
+                     </div>
+                 </div> */}
+
+            {/* Bio Section */}
+            <div className="mt-4 text-sm text-gray-700 dark:text-gray-300 max-w-md w-full text-left px-2">
+              {bioRaw ? (
+                <>
+                  <div
+                    className="whitespace-pre-wrap leading-relaxed"
+                    dangerouslySetInnerHTML={{
+                      __html:
+                        showMore || !shouldShowToggle
+                          ? bioFormatted
+                          : shortFormatted +
+                            (bioTextOnly.length > shortLimit ? "..." : ""),
+                    }}
+                  />
+                  {shouldShowToggle && (
+                    <button
+                      onClick={() => setShowMore(!showMore)}
+                      className="mt-1 text-gray-500 dark:text-gray-400 font-medium"
+                    >
+                      {showMore ? t("show_less") : t("show_more")}
+                    </button>
+                  )}
+                </>
+              ) : (
+                <button
+                  onClick={() => router.push("/profile/edit")}
+                  className="text-gray-400 italic hover:text-green-600 w-full text-center"
+                >
+                  {t("not_added") || "Add a bio to your profile"}
+                </button>
+              )}
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center gap-3 w-full mt-6 px-2">
               <button
                 onClick={() => router.push("/profile/edit")}
-                className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition w-full sm:w-auto"
+                className="flex-1 h-10 bg-gray-100 dark:bg-[#1C1C1E] rounded-lg font-semibold text-sm text-gray-900 dark:text-white active:scale-[0.98] transition-transform"
               >
-                <FaEdit /> {t("edit_profile")}
+                {t("edit_profile")}
+              </button>
+              <button className="flex-1 h-10 bg-gray-100 dark:bg-[#1C1C1E] rounded-lg font-semibold text-sm text-gray-900 dark:text-white active:scale-[0.98] transition-transform">
+                Share Profile
               </button>
             </div>
+          </div>
+        </div>
 
-            {/* Info Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-              <div className="bg-gray-50 rounded-xl border border-gray-200 p-4 flex items-center gap-3 dark:bg-[#1E1E1E] dark:border-none">
-                <FaEnvelope className="text-green-600 text-xl" />
-                <div>
-                  <p className="text-sm text-gray-500">{t("email")}</p>
-                  <p className="font-medium text-gray-800">{user?.email}</p>
-                </div>
+        {/* Details Section */}
+        <div className="px-4 mt-2">
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider ml-1 mt-4 mb-2">
+            {t("details") || "Details"}
+          </h3>
+          <div className="bg-gray-50 dark:bg-[#1C1C1E] rounded-2xl overflow-hidden divide-y divide-gray-100 dark:divide-[#2C2C2E]">
+            <div className="flex items-center gap-4 p-4">
+              <div className="w-10 h-10 rounded-full bg-white dark:bg-[#2C2C2E] flex items-center justify-center text-gray-500 dark:text-gray-400">
+                <Mail size={20} />
               </div>
-
-              <div className="bg-gray-50 rounded-xl border border-gray-200 p-4 flex items-center gap-3 dark:bg-[#1E1E1E] dark:border-none">
-                <FaPhone className="text-green-600 text-xl" />
-                <div>
-                  <p className="text-sm text-gray-500">{t("phone")}</p>
-                  <p className="font-medium text-gray-800">{user?.user_metadata?.phone || t("not_added")}</p>
-                </div>
+              <div>
+                <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wide">
+                  {t("email")}
+                </p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  {user?.email}
+                </p>
               </div>
+            </div>
 
-              <div className="bg-gray-50 rounded-xl border border-gray-200 p-4 flex items-center gap-3 dark:bg-[#1E1E1E] dark:border-none">
-                <FaCalendarAlt className="text-green-600 text-xl" />
-                <div>
-                  <p className="text-sm text-gray-500">{t("member_since")}</p>
-                  <p className="font-medium text-gray-800">{new Date(user?.created_at).toLocaleDateString()}</p>
-                </div>
+            <div className="flex items-center gap-4 p-4">
+              <div className="w-10 h-10 rounded-full bg-white dark:bg-[#2C2C2E] flex items-center justify-center text-gray-500 dark:text-gray-400">
+                <Phone size={20} />
               </div>
-
-              <div className="bg-gray-50 rounded-xl border border-gray-200 p-4 flex items-center gap-3 dark:bg-[#1E1E1E] dark:border-none">
-                <FaMapMarkerAlt className="text-green-600 text-xl" />
-                <div>
-                  <p className="text-sm text-gray-500">{t("location")}</p>
-                  <p className="font-medium text-gray-800">{user?.user_metadata?.location || t("not_specified")}</p>
-                </div>
+              <div>
+                <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wide">
+                  {t("phone")}
+                </p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  {user?.user_metadata?.phone || t("not_added")}
+                </p>
               </div>
+            </div>
 
+            <div className="flex items-center gap-4 p-4">
+              <div className="w-10 h-10 rounded-full bg-white dark:bg-[#2C2C2E] flex items-center justify-center text-gray-500 dark:text-gray-400">
+                <MapPin size={20} />
+              </div>
+              <div>
+                <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wide">
+                  {t("location")}
+                </p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  {user?.user_metadata?.location || t("not_specified")}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4 p-4">
+              <div className="w-10 h-10 rounded-full bg-white dark:bg-[#2C2C2E] flex items-center justify-center text-gray-500 dark:text-gray-400">
+                <Calendar size={20} />
+              </div>
+              <div>
+                <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wide">
+                  {t("member_since")}
+                </p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  {user?.created_at
+                    ? new Date(user.created_at).toLocaleDateString()
+                    : "-"}
+                </p>
+              </div>
             </div>
           </div>
         </div>

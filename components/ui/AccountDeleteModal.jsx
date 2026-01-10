@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaTimes, FaExclamationTriangle, FaTrashAlt } from "react-icons/fa";
+import { X, TriangleAlert, Trash2, ChevronLeft } from "lucide-react";
 import { useLanguage } from "@/Context/languagecontext";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
@@ -74,7 +74,10 @@ export default function AccountDeleteModal({ isOpen, onClose }) {
     setLoading(true);
     try {
       // Get session and access token for authentication
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
 
       if (sessionError || !session) {
         throw new Error(t("session_expired"));
@@ -91,7 +94,7 @@ export default function AccountDeleteModal({ isOpen, onClose }) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${accessToken}`, // Production standard: Bearer token in header
+          Authorization: `Bearer ${accessToken}`, // Production standard: Bearer token in header
         },
         credentials: "include", // Include cookies as backup
       });
@@ -123,161 +126,177 @@ export default function AccountDeleteModal({ isOpen, onClose }) {
 
   return (
     <AnimatePresence>
-      <motion.div
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[9999] p-4"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        onClick={onClose}
-      >
+      <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center pointer-events-none">
+        {/* Backdrop */}
         <motion.div
-          className="bg-white dark:bg-[#272727] rounded-2xl shadow-2xl border-2 border-red-200 dark:border-red-800 max-w-md w-full relative overflow-hidden"
-          initial={{ scale: 0.9, opacity: 0, y: 20 }}
-          animate={{ scale: 1, opacity: 1, y: 0 }}
-          exit={{ scale: 0.9, opacity: 0, y: 20 }}
-          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm pointer-events-auto"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+        />
+
+        {/* Modal Card / Bottom Sheet */}
+        <motion.div
+          className="w-full max-w-md bg-white dark:bg-[#1C1C1E] rounded-t-[20px] sm:rounded-2xl shadow-2xl overflow-hidden pointer-events-auto relative max-h-[90vh] flex flex-col"
+          initial={{ y: "100%" }}
+          animate={{ y: 0 }}
+          exit={{ y: "100%" }}
+          transition={{ type: "spring", damping: 25, stiffness: 300 }}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Close Button */}
-          <button
-            onClick={onClose}
-            disabled={loading}
-            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors disabled:opacity-50"
-            aria-label="Close"
-          >
-            <FaTimes className="text-xl" />
-          </button>
-
-          <div className="p-6">
-            {/* Step 1: Warning */}
-            {step === 1 && (
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                className="text-center"
+          {/* Header */}
+          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-[#2C2C2E]">
+            {step === 2 ? (
+              <button
+                onClick={() => setStep(1)}
+                className="p-2 -ml-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
               >
-                {/* Icon */}
-                <div className="mx-auto w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mb-4">
-                  <FaExclamationTriangle className="text-3xl text-red-600 dark:text-red-400" />
-                </div>
-
-                {/* Title */}
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
-                  {t("delete_account")}
-                </h2>
-
-                {/* Warning Message */}
-                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6 text-left">
-                  <p className="text-sm text-red-800 dark:text-red-300 mb-3 font-semibold">
-                    ⚠️ {t("confirm_delete")}
-                  </p>
-                  <ul className="text-xs text-red-700 dark:text-red-400 space-y-2 list-disc list-inside">
-                    <li>{t("delete_warning_1")}</li>
-                    <li>{t("delete_warning_2")}</li>
-                    <li>{t("delete_warning_3")}</li>
-                    <li>{t("delete_warning_4")}</li>
-                  </ul>
-                </div>
-
-                {/* Buttons */}
-                <div className="flex gap-3">
-                  <button
-                    onClick={onClose}
-                    disabled={loading}
-                    className="flex-1 px-4 py-2.5 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-50"
-                  >
-                    {t("form_cancel")}
-                  </button>
-                  <button
-                    onClick={handleDelete}
-                    disabled={loading}
-                    className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                  >
-                    <FaTrashAlt />
-                    {t("continue")}
-                  </button>
-                </div>
-              </motion.div>
+                <ChevronLeft size={24} />
+              </button>
+            ) : (
+              <div className="w-10"></div>
             )}
 
-            {/* Step 2: Final Confirmation */}
-            {step === 2 && (
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="text-center"
-              >
-                {/* Icon */}
-                <div className="mx-auto w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mb-4">
-                  <FaTrashAlt className="text-3xl text-red-600 dark:text-red-400" />
-                </div>
+            {/* Drag Handle for mobile vibe (visual only) */}
+            <div className="w-8 h-1 bg-gray-300 dark:bg-gray-600 rounded-full sm:hidden absolute top-2 left-1/2 -translate-x-1/2" />
 
-                {/* Title */}
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                  {t("final_confirmation")}
-                </h2>
+            <button
+              onClick={onClose}
+              className="p-2 -mr-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+            >
+              <X size={24} />
+            </button>
+          </div>
 
-                {/* Warning */}
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
-                  {t("delete_instruction_prefix")} <span className="font-bold text-red-600 dark:text-red-400">DELETE</span> {t("delete_instruction_suffix")}
-                </p>
+          <div className="p-6 overflow-y-auto">
+            <AnimatePresence mode="wait">
+              {/* Step 1: Warning */}
+              {step === 1 && (
+                <motion.div
+                  key="step1"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="flex flex-col items-center text-center"
+                >
+                  <div className="w-20 h-20 bg-red-100 dark:bg-red-500/10 rounded-full flex items-center justify-center mb-6">
+                    <TriangleAlert
+                      size={40}
+                      className="text-red-600 dark:text-red-500"
+                      strokeWidth={1.5}
+                    />
+                  </div>
 
-                {/* Confirmation Input */}
-                <div className="mb-6">
-                  <input
-                    type="text"
-                    value={confirmText}
-                    onChange={(e) => setConfirmText(e.target.value)}
-                    placeholder={t("type_delete_placeholder")}
-                    disabled={loading}
-                    className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg text-center font-mono text-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 dark:bg-[#363636] dark:text-white disabled:opacity-50"
-                    autoFocus
-                  />
-                  {confirmText && !isConfirmed && (
-                    <p className="text-xs text-red-600 dark:text-red-400 mt-2">
-                      {t("delete_mismatch_error")}
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+                    {t("delete_account")}
+                  </h2>
+
+                  <div className="w-full bg-red-50 dark:bg-red-500/5 rounded-2xl p-5 mb-8 border border-red-100 dark:border-red-500/10">
+                    <p className="text-sm font-semibold text-red-700 dark:text-red-400 mb-3 text-left w-full">
+                      {t("confirm_delete") || "This action cannot be undone."}
                     </p>
-                  )}
-                </div>
+                    <ul className="text-left space-y-3">
+                      {[
+                        t("delete_warning_1"),
+                        t("delete_warning_2"),
+                        t("delete_warning_3"),
+                        t("delete_warning_4"),
+                      ].map((warning, i) => (
+                        <li
+                          key={i}
+                          className="flex items-start gap-2 text-xs text-red-600/80 dark:text-red-400/80"
+                        >
+                          <div className="w-1 h-1 rounded-full bg-red-500 mt-1.5 flex-shrink-0" />
+                          <span>{warning}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
 
-                {/* Buttons */}
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => {
-                      setStep(1);
-                      setConfirmText("");
-                    }}
-                    disabled={loading}
-                    className="flex-1 px-4 py-2.5 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-50"
-                  >
-                    {t("go_back")}
-                  </button>
+                  <div className="w-full space-y-3">
+                    <button
+                      onClick={handleDelete}
+                      className="w-full h-14 bg-red-600 hover:bg-red-700 active:scale-[0.98] transition-all text-white font-semibold rounded-xl text-lg shadow-lg shadow-red-600/20 flex items-center justify-center gap-2"
+                    >
+                      {t("continue")}
+                    </button>
+                    <button
+                      onClick={onClose}
+                      className="w-full h-14 bg-gray-100 dark:bg-[#2C2C2E] hover:bg-gray-200 dark:hover:bg-[#3A3A3C] active:scale-[0.98] transition-all text-gray-900 dark:text-white font-semibold rounded-xl"
+                    >
+                      {t("form_cancel")}
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Step 2: Final Confirmation */}
+              {step === 2 && (
+                <motion.div
+                  key="step2"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  className="flex flex-col items-center text-center"
+                >
+                  <div className="w-20 h-20 bg-red-100 dark:bg-red-500/10 rounded-full flex items-center justify-center mb-6">
+                    <Trash2
+                      size={40}
+                      className="text-red-600 dark:text-red-500"
+                      strokeWidth={1.5}
+                    />
+                  </div>
+
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                    {t("final_confirmation")}
+                  </h2>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-8 max-w-[80%]">
+                    {t("delete_instruction_prefix")}{" "}
+                    <span className="font-bold text-red-600 dark:text-red-500 select-all">
+                      DELETE
+                    </span>{" "}
+                    {t("delete_instruction_suffix")}
+                  </p>
+
+                  <div className="w-full mb-8 relative">
+                    <input
+                      type="text"
+                      value={confirmText}
+                      onChange={(e) => setConfirmText(e.target.value)}
+                      placeholder={t("type_delete_placeholder")}
+                      className="w-full h-14 px-4 bg-gray-50 dark:bg-black border-2 border-gray-200 dark:border-[#2C2C2E] rounded-xl text-center text-lg font-bold tracking-widest text-gray-900 dark:text-white focus:outline-none focus:border-red-500 dark:focus:border-red-500 transition-colors uppercase placeholder:font-normal placeholder:tracking-normal placeholder:text-gray-400"
+                      autoFocus
+                    />
+                    {confirmText && !isConfirmed && (
+                      <div className="absolute -bottom-6 left-0 right-0 text-center">
+                        <span className="text-[10px] uppercase tracking-wider font-bold text-red-500">
+                          {t("delete_mismatch_error")}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
                   <button
                     onClick={handleDelete}
                     disabled={loading || !isConfirmed}
-                    className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="w-full h-14 bg-red-600 hover:bg-red-700 active:scale-[0.98] transition-all text-white font-semibold rounded-xl text-lg shadow-lg shadow-red-600/20 disabled:opacity-50 disabled:active:scale-100 flex items-center justify-center gap-2"
                   >
                     {loading ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        {t("deleting")}
-                      </>
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     ) : (
                       <>
-                        <FaTrashAlt />
+                        <Trash2 size={20} />
                         {t("delete_account")}
                       </>
                     )}
                   </button>
-                </div>
-              </motion.div>
-            )}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </motion.div>
-      </motion.div>
+      </div>
     </AnimatePresence>
   );
 }
-

@@ -1,10 +1,22 @@
 "use client";
 import { useState } from "react";
-import { FaPlus, FaMinus, FaHeadset, FaEnvelope, FaPhone } from "react-icons/fa";
+import {
+  ChevronDown,
+  ChevronRight,
+  Headphones,
+  Mail,
+  Phone,
+  MessageCircle,
+  Send,
+  ArrowLeft,
+} from "lucide-react";
 import { useLanguage } from "@/Context/languagecontext";
+import { useRouter } from "next/navigation";
+import MobilePageContainer from "@/components/mobile/MobilePageContainer";
 
 export default function HelpSupport() {
   const { t } = useLanguage();
+  const router = useRouter();
 
   const faqs = [
     {
@@ -22,7 +34,11 @@ export default function HelpSupport() {
   ];
 
   const [openIndex, setOpenIndex] = useState(null);
-  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e) => {
@@ -34,104 +50,187 @@ export default function HelpSupport() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-122px)] py-10 px-2">
-
-      {/* Header */}
-      <div className="text-center max-w-2xl mx-auto mb-10">
-        <FaHeadset className="text-green-600 text-4xl mx-auto mb-4" />
-        <h1 className="text-3xl font-bold text-farm-900">{t("help_title")}</h1>
-        <p className="text-farm-700 mt-2">{t("help_subtitle")}</p>
-      </div>
-
-      {/* FAQs */}
-      <div className="max-w-3xl mx-auto bg-white p-6 rounded-2xl shadow-sm border border-gray-200 dark:bg-[#272727] dark:border-white/20">
-        <h2 className="text-xl font-bold text-farm-900 mb-4">{t("faq_title")}</h2>
-
-        <div className="space-y-3">
-          {faqs.map((f, i) => (
-            <div
-              key={i}
-              className="border rounded-lg p-4 bg-gray-50 cursor-pointer dark:bg-[#1E1E1E] dark:border-none"
-              onClick={() => setOpenIndex(openIndex === i ? null : i)}
+    <MobilePageContainer noPadding>
+      <div className="min-h-screen bg-white dark:bg-black font-sans pb-10">
+        {/* Sticky Header */}
+        <div className="sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-100 dark:border-[#2C2C2E]">
+          <div className="flex items-center gap-3 px-4 h-14">
+            <button
+              onClick={() => router.back()}
+              className="p-2 -ml-2 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-neutral-800 rounded-full transition-colors"
             >
-              <div className="flex justify-between items-center">
-                <span className="font-semibold text-farm-900 dark:text-gray-200">{f.q}</span>
-                {openIndex === i ? (
-                  <FaMinus className="text-green-600" />
-                ) : (
-                  <FaPlus className="text-green-600" />
-                )}
-              </div>
+              <ArrowLeft size={24} />
+            </button>
+            <h1 className="text-lg font-bold text-gray-900 dark:text-white">
+              {t("help_title")}
+            </h1>
+          </div>
+        </div>
 
-              {openIndex === i && (
-                <p className="mt-2 text-sm text-farm-700">{f.a}</p>
+        <div className="p-4 sm:p-6 max-w-2xl mx-auto">
+          {/* Hero / Intro */}
+          <div className="text-center mb-8 mt-2">
+            <div className="w-16 h-16 bg-green-50 dark:bg-green-900/20 rounded-2xl flex items-center justify-center mx-auto mb-4 text-green-600 dark:text-green-500">
+              <Headphones size={32} />
+            </div>
+            {/* <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+              {t("how_can_we_help") || "How can we help you?"}
+            </h2> */}
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              {t("help_subtitle")}
+            </p>
+          </div>
+
+          {/* FAQs Section */}
+          <div className="mb-8">
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-200 uppercase tracking-wider mb-4 ml-1">
+              {t("faq_title")}
+            </h3>
+            <div className="space-y-3">
+              {faqs.map((f, i) => (
+                <div
+                  key={i}
+                  onClick={() => setOpenIndex(openIndex === i ? null : i)}
+                  className={`
+                          group border-2 border-transparent bg-gray-50 dark:bg-[#1C1C1E] rounded-2xl overflow-hidden transition-all duration-300
+                          ${
+                            openIndex === i
+                              ? "border-green-100 dark:border-green-900/30 bg-green-50/30 dark:bg-green-900/10"
+                              : ""
+                          }
+                       `}
+                >
+                  <button className="w-full flex items-center justify-between p-4 text-left">
+                    <span
+                      className={`font-semibold text-sm sm:text-base ${
+                        openIndex === i
+                          ? "text-green-700 dark:text-green-400"
+                          : "text-gray-900 dark:text-gray-200"
+                      }`}
+                    >
+                      {f.q}
+                    </span>
+                    <div
+                      className={`
+                            transition-transform duration-300
+                            ${
+                              openIndex === i
+                                ? "rotate-180 text-green-600"
+                                : "text-gray-400"
+                            }
+                         `}
+                    >
+                      <ChevronDown size={20} />
+                    </div>
+                  </button>
+
+                  <div
+                    className={`
+                          grid transition-[grid-template-rows] duration-300 ease-out
+                          ${
+                            openIndex === i
+                              ? "grid-rows-[1fr] opacity-100"
+                              : "grid-rows-[0fr] opacity-0"
+                          }
+                       `}
+                  >
+                    <div className="overflow-hidden">
+                      <div className="p-4 pt-0 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                        {f.a}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Contact Form */}
+          <div className="mb-10">
+            <div className="flex items-center gap-2 mb-4 ml-1">
+              <MessageCircle size={18} className="text-green-600" />
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-200 uppercase tracking-wider">
+                {t("support_title")}
+              </h3>
+            </div>
+
+            <div className="bg-white dark:bg-[#1C1C1E] rounded-2xl border border-gray-100 dark:border-[#2C2C2E] shadow-xl shadow-gray-100/50 dark:shadow-none p-5 sm:p-6">
+              {submitted ? (
+                <div className="bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 p-4 rounded-xl text-center font-medium animate-in fade-in zoom-in duration-300">
+                  ✅ {t("support_success")}
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="space-y-4">
+                    <input
+                      type="text"
+                      placeholder={t("input_name")}
+                      value={formData.name}
+                      onChange={(e) =>
+                        setFormData({ ...formData, name: e.target.value })
+                      }
+                      className="w-full bg-gray-50 dark:bg-[#2C2C2E] border-none rounded-xl px-4 py-3.5 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 outline-none transition-all font-medium"
+                      required
+                    />
+                    <input
+                      type="email"
+                      placeholder={t("input_email")}
+                      value={formData.email}
+                      onChange={(e) =>
+                        setFormData({ ...formData, email: e.target.value })
+                      }
+                      className="w-full bg-gray-50 dark:bg-[#2C2C2E] border-none rounded-xl px-4 py-3.5 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 outline-none transition-all font-medium"
+                      required
+                    />
+                    <textarea
+                      rows="4"
+                      placeholder={t("input_message")}
+                      value={formData.message}
+                      onChange={(e) =>
+                        setFormData({ ...formData, message: e.target.value })
+                      }
+                      className="w-full bg-gray-50 dark:bg-[#2C2C2E] border-none rounded-xl px-4 py-3.5 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 outline-none transition-all resize-none font-medium"
+                      required
+                    ></textarea>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full bg-green-600 hover:bg-green-700 active:scale-[0.98] text-white py-3.5 rounded-xl font-bold text-[15px] shadow-lg shadow-green-600/20 transition-all flex items-center justify-center gap-2"
+                  >
+                    <Send size={18} />
+                    {t("btn_send")}
+                  </button>
+                </form>
               )}
             </div>
-          ))}
+          </div>
+
+          {/* Footer Contact Info */}
+          <div className="bg-gray-50 dark:bg-[#1C1C1E] rounded-2xl p-5 border border-dashed border-gray-200 dark:border-[#2C2C2E] text-center">
+            <h4 className="text-gray-900 dark:text-white font-semibold mb-3 flex items-center justify-center gap-2">
+              <Headphones size={18} className="text-gray-400" />
+              {t("other_support_title")}
+            </h4>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-sm">
+              <a
+                href="tel:+919876543210"
+                className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-500 transition-colors bg-white dark:bg-[#2C2C2E] px-4 py-2 rounded-lg shadow-sm w-full sm:w-auto justify-center"
+              >
+                <Phone size={16} />
+                +91 98765 43210
+              </a>
+              <a
+                href="mailto:support@agroinsta.com"
+                className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-500 transition-colors bg-white dark:bg-[#2C2C2E] px-4 py-2 rounded-lg shadow-sm w-full sm:w-auto justify-center"
+              >
+                <Mail size={16} />
+                support@agroinsta.com
+              </a>
+            </div>
+          </div>
         </div>
       </div>
-
-      {/* Support Form */}
-      <div className="max-w-3xl mx-auto mt-10 bg-white p-6 rounded-2xl shadow-sm border border-gray-200 dark:bg-[#272727] dark:border-white/20">
-        <h2 className="text-xl font-bold text-farm-900 mb-4 flex items-center gap-2">
-          <FaEnvelope className="text-green-600" /> {t("support_title")}
-        </h2>
-
-        {submitted && (
-          <div className="mb-3 px-4 py-2 bg-green-600 text-white rounded-lg text-sm">
-            ✅ {t("support_success")}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            placeholder={t("input_name")}
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="w-full border-2 border-green-300 rounded-lg px-3 py-2 text-black focus:ring-2 focus:ring-green-500"
-            required
-          />
-          <input
-            type="email"
-            placeholder={t("input_email")}
-            value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            className="w-full border-2 border-green-300 rounded-lg px-3 py-2 text-black focus:ring-2 focus:ring-green-500"
-            required
-          />
-          <textarea
-            rows="4"
-            placeholder={t("input_message")}
-            value={formData.message}
-            onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-            className="w-full border-2 border-green-300 rounded-lg px-3 py-2 text-black focus:ring-2 focus:ring-green-500"
-            required
-          ></textarea>
-
-          <button
-            type="submit"
-            className="w-full bg-green-600 hover:bg-green-700 text-white py-2.5 rounded-lg font-medium transition"
-          >
-            {t("btn_send")}
-          </button>
-        </form>
-      </div>
-
-      {/* Other Support */}
-      <div className="max-w-3xl mx-auto mt-10 p-6 rounded-2xl text-center bg-gradient-to-r from-green-50 to-green-100 border border-green-300 shadow-sm dark:bg-none dark:bg-[#272727] dark:border-white/20">
-        <h2 className="text-lg font-semibold text-farm-900 flex items-center justify-center gap-2 mb-2">
-          <FaPhone className="text-green-600" /> {t("other_support_title")}
-        </h2>
-
-        <p className="text-farm-700 text-sm">
-          📞 {t("call_us")}: +91 98765 43210
-        </p>
-
-        <p className="text-farm-700 text-sm">
-          📧 {t("email_us")}: support@agroinsta.com
-        </p>
-      </div>
-    </div>
+    </MobilePageContainer>
   );
 }

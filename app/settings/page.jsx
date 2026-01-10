@@ -2,13 +2,17 @@
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import {
-  FaArrowLeft,
-  FaMoon,
-  FaBell,
-  FaGlobe,
-  FaLock,
-  FaTrashAlt,
-} from "react-icons/fa";
+  ArrowLeft,
+  Moon,
+  Sun,
+  Bell,
+  Globe,
+  Lock,
+  Trash2,
+  ChevronRight,
+  ShieldAlert,
+  Settings,
+} from "lucide-react";
 import { useTheme } from "@/Context/themecontext";
 import { useLanguage } from "@/Context/languagecontext";
 import { useLogin } from "@/Context/logincontext";
@@ -25,7 +29,7 @@ export default function SettingsPage() {
   const { user } = useLogin();
   const { showToast } = useToast();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); // Restored unused state if it was there
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   // Load notification preference on mount
@@ -40,7 +44,7 @@ export default function SettingsPage() {
   const handleNotificationToggle = async () => {
     const newValue = !notificationsEnabled;
     setNotificationsEnabled(newValue);
-    
+
     // Save to localStorage
     if (typeof window !== "undefined") {
       localStorage.setItem("notifications_enabled", String(newValue));
@@ -52,7 +56,10 @@ export default function SettingsPage() {
         await supabase.auth.updateUser({
           data: { notifications_enabled: newValue },
         });
-        showToast("success", newValue ? "Notifications enabled 🔔" : "Notifications disabled 🔕");
+        showToast(
+          "success",
+          newValue ? "Notifications enabled 🔔" : "Notifications disabled 🔕"
+        );
       } catch (error) {
         console.error("Error updating notification preference:", error);
         // Revert on error
@@ -69,142 +76,222 @@ export default function SettingsPage() {
 
   return (
     <MobilePageContainer>
-      <div className="py-4">
-        <div className="max-w-3xl w-full mx-auto bg-white dark:bg-[#272727] shadow-lg rounded-2xl p-4 md:p-6 border border-green-100 dark:border-gray-800">
-        
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-          <button
-            onClick={() => router.push("/profile")}
-            className="flex items-center gap-2 text-green-700 hover:text-green-900 transition text-sm font-medium"
-          >
-            <FaArrowLeft /> {t("back_to_profile")}
-          </button>
+      <div className="min-h-screen bg-[#F2F2F7] dark:bg-black pb-24 font-sans safe-area-inset-bottom">
+        {/* Premium Header with Blur */}
+        <header className="sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50">
+          <div className="flex items-center justify-between px-4 h-14">
+            <button
+              onClick={() => router.push("/profile")}
+              className="p-2 -ml-2 rounded-full hover:bg-gray-100 dark:hover:bg-neutral-900 transition-colors"
+            >
+              <ArrowLeft className="w-6 h-6 text-black dark:text-white" />
+            </button>
+            <h1 className="text-lg font-semibold text-black dark:text-white">
+              {t("settings")}
+            </h1>
+            <div className="w-10" /> {/* Spacer */}
+          </div>
+        </header>
 
-          <h1 className="text-2xl font-semibold text-black dark:text-white flex items-center gap-2">
-            <FaGlobe className="text-green-600" /> {t("settings")}
-          </h1>
-        </div>
+        <main className="max-w-md mx-auto sm:px-4 sm:pt-4">
+          {/* Appearance Section */}
+          <h3 className="px-4 py-2 mt-6 text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
+            {t("appearance")}
+          </h3>
+          <div className="overflow-hidden bg-white dark:bg-[#1C1C1E] sm:rounded-xl shadow-sm">
+            <div className="flex flex-col p-4 bg-white dark:bg-[#1C1C1E] active:bg-gray-50 dark:active:bg-[#2C2C2E] transition-colors">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="p-2 rounded-full bg-gray-100 dark:bg-[#2C2C2E] text-gray-600 dark:text-gray-300">
+                    {theme === "dark" ? (
+                      <Moon size={20} strokeWidth={2} />
+                    ) : (
+                      <Sun size={20} strokeWidth={2} />
+                    )}
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-base font-medium text-gray-900 dark:text-white truncate">
+                      {t("dark_mode")}
+                    </span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1">
+                      {t("dark_mode_desc")}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex-shrink-0">
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="sr-only peer"
+                      checked={theme === "dark"}
+                      onChange={() => {
+                        toggleTheme();
+                        showToast(
+                          "info",
+                          theme === "dark"
+                            ? "Switched to light mode ☀️"
+                            : "Switched to dark mode 🌙"
+                        );
+                      }}
+                    />
+                    <div className="w-[50px] h-[30px] bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-[26px] after:w-[26px] after:transition-all dark:border-gray-600 peer-checked:bg-green-500 shadow-sm"></div>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
 
-        {/* Theme */}
-        <div className="border-t border-gray-200 dark:border-gray-800 pt-4 mt-4">
-          <h2 className="text-lg font-semibold text-green-700 flex items-center gap-2 mb-3">
-            <FaMoon /> {t("appearance")}
-          </h2>
-          <div className="flex items-center justify-between bg-gray-50 dark:bg-[#111] p-4 rounded-lg">
-            <div>
-              <span className="text-gray-700 dark:text-white font-medium">
-                {t("dark_mode")}
-              </span>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {t("dark_mode_desc")}
-              </p>
+          {/* Preferences Section */}
+          <h3 className="px-4 py-2 mt-6 text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
+            {t("preferences") || "Preferences"}
+          </h3>
+          <div className="overflow-hidden bg-white dark:bg-[#1C1C1E] sm:rounded-xl shadow-sm">
+            {/* Notifications */}
+            <div className="flex flex-col p-4 bg-white dark:bg-[#1C1C1E] active:bg-gray-50 dark:active:bg-[#2C2C2E] transition-colors border-b border-gray-100 dark:border-[#2C2C2E]">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="p-2 rounded-full bg-gray-100 dark:bg-[#2C2C2E] text-gray-600 dark:text-gray-300">
+                    <Bell size={20} strokeWidth={2} />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-base font-medium text-gray-900 dark:text-white truncate">
+                      {t("notifications")}
+                    </span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1">
+                      {t("enable_notifications")}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex-shrink-0">
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="sr-only peer"
+                      checked={notificationsEnabled}
+                      onChange={handleNotificationToggle}
+                    />
+                    <div className="w-[50px] h-[30px] bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-[26px] after:w-[26px] after:transition-all dark:border-gray-600 peer-checked:bg-green-500 shadow-sm"></div>
+                  </label>
+                </div>
+              </div>
             </div>
 
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={theme === "dark"}
-                onChange={() => {
-                  toggleTheme();
-                  showToast("info", theme === "dark" ? "Switched to light mode ☀️" : "Switched to dark mode 🌙");
-                }}
-                className="sr-only peer"
-              />
-              <div className="w-11 h-6 bg-gray-300 dark:bg-gray-700 rounded-full peer peer-checked:bg-green-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white dark:after:bg-gray-200 after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full relative"></div>
-            </label>
-          </div>
-        </div>
-
-        {/* Notifications */}
-        <div className="border-t border-gray-200 dark:border-gray-800 pt-4 mt-4">
-          <h2 className="text-lg font-semibold text-green-700 flex items-center gap-2 mb-3">
-            <FaBell /> {t("notifications")}
-          </h2>
-          <div className="flex items-center justify-between bg-gray-50 dark:bg-[#111] p-4 rounded-lg">
-            <div>
-              <p className="text-gray-700 dark:text-white font-medium">
-                {t("enable_notifications")}
-              </p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {t("notifications_desc")}
-              </p>
+            {/* Language */}
+            <div className="flex flex-col p-4 bg-white dark:bg-[#1C1C1E] active:bg-gray-50 dark:active:bg-[#2C2C2E] transition-colors">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="p-2 rounded-full bg-gray-100 dark:bg-[#2C2C2E] text-gray-600 dark:text-gray-300">
+                    <Globe size={20} strokeWidth={2} />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-base font-medium text-gray-900 dark:text-white truncate">
+                      {t("language")}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex-shrink-0">
+                  <div className="relative">
+                    <select
+                      value={locale}
+                      onChange={(e) => {
+                        setLocale(e.target.value);
+                        showToast(
+                          "success",
+                          `Language changed to ${
+                            LOCALE_NAMES[e.target.value] || e.target.value
+                          } 🌐`
+                        );
+                      }}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 dark:bg-black dark:text-white"
+                    >
+                      {SUPPORTED_LOCALES.map((code) => (
+                        <option
+                          key={code}
+                          value={code}
+                          className="text-black bg-white dark:bg-black dark:text-white"
+                        >
+                          {LOCALE_NAMES[code] || code}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                      <span className="text-sm font-medium text-gray-900 dark:text-white">
+                        {LOCALE_NAMES[locale] || locale}
+                      </span>
+                      <ChevronRight size={16} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={notificationsEnabled}
-                onChange={handleNotificationToggle}
-                className="sr-only peer"
-              />
-              <div className="w-11 h-6 bg-gray-300 dark:bg-gray-700 rounded-full peer peer-checked:bg-green-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white dark:after:bg-gray-200 after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"></div>
-            </label>
           </div>
-        </div>
 
-        {/* Language */}
-        <div className="border-t border-gray-200 dark:border-gray-800 pt-4 mt-4">
-          <h2 className="text-lg font-semibold text-green-700 flex items-center gap-2 mb-3">
-            <FaGlobe /> {t("language")}
-          </h2>
+          {/* Privacy & Security Section */}
+          <h3 className="px-4 py-2 mt-6 text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
+            {t("privacy") || "Privacy"}
+          </h3>
+          <div className="overflow-hidden bg-white dark:bg-[#1C1C1E] sm:rounded-xl shadow-sm">
+            <div
+              onClick={() => router.push("/settings/privacy")}
+              className="flex flex-col p-4 bg-white dark:bg-[#1C1C1E] active:bg-gray-50 dark:active:bg-[#2C2C2E] transition-colors cursor-pointer"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="p-2 rounded-full bg-gray-100 dark:bg-[#2C2C2E] text-gray-600 dark:text-gray-300">
+                    <Lock size={20} strokeWidth={2} />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-base font-medium text-gray-900 dark:text-white truncate">
+                      {t("privacy_settings") || "Privacy Settings"}
+                    </span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1">
+                      {t("privacy_desc")}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex-shrink-0">
+                  <ChevronRight size={20} className="text-gray-400" />
+                </div>
+              </div>
+            </div>
+          </div>
 
-          <select
-            value={locale}
-            onChange={(e) => {
-              setLocale(e.target.value);
-              showToast("success", `Language changed to ${LOCALE_NAMES[e.target.value] || e.target.value} 🌐`);
-            }}
-            className="w-full border-2 border-green-300 dark:border-gray-700 rounded-lg px-3 py-2 text-black dark:text-white dark:bg-[#111] focus:outline-none focus:ring-2 focus:ring-green-500 transition"
-          >
-            {SUPPORTED_LOCALES.map((code) => (
-              <option key={code} value={code}>
-                {LOCALE_NAMES[code] || code}
-              </option>
-            ))}
-          </select>
-        </div>
+          {/* Danger Zone */}
+          <h3 className="px-4 py-2 mt-6 text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
+            {t("danger_zone")}
+          </h3>
+          <div className="overflow-hidden bg-white dark:bg-[#1C1C1E] sm:rounded-xl shadow-sm">
+            <div
+              onClick={handleDeleteAccountClick}
+              className="flex flex-col p-4 bg-white dark:bg-[#1C1C1E] active:bg-gray-50 dark:active:bg-[#2C2C2E] transition-colors cursor-pointer"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="p-2 rounded-full bg-red-50 dark:bg-red-900/20 text-red-600">
+                    <Trash2 size={20} strokeWidth={2} />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-base font-medium text-red-600 truncate">
+                      {t("delete_account")}
+                    </span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1">
+                      {t("delete_desc")}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex-shrink-0">
+                  <ChevronRight size={20} className="text-red-400" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
 
-        {/* Privacy */}
-        <div className="border-t border-gray-200 dark:border-gray-800 pt-4 mt-4">
-          <h2 className="text-lg font-semibold text-green-700 flex items-center gap-2 mb-3">
-            <FaLock /> {t("privacy")}
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 text-sm mb-3">
-            {t("privacy_desc")}
-          </p>
-          <button
-            onClick={() => router.push("/settings/privacy")}
-            className="w-full border-2 border-green-600 text-green-700 dark:text-green-400 dark:border-green-700 hover:bg-green-600 dark:hover:bg-green-700 hover:text-white transition font-medium py-2 rounded-lg"
-          >
-            {t("manage_privacy")}
-          </button>
-        </div>
-
-        {/* Danger Zone */}
-        <div className="border-t border-gray-200 dark:border-gray-800 pt-6 mt-6">
-          <h2 className="text-lg font-semibold text-red-600 flex items-center gap-2 mb-3">
-            <FaTrashAlt /> {t("danger_zone")}
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 text-sm mb-3">
-            {t("delete_desc")}
-          </p>
-
-          <button
-            onClick={handleDeleteAccountClick}
-            className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 rounded-lg transition flex items-center justify-center gap-2"
-          >
-            <FaTrashAlt />
-            {t("delete_account")}
-          </button>
-        </div>
-        {/* Account Delete Modal */}
         <AccountDeleteModal
           isOpen={showDeleteModal}
           onClose={() => setShowDeleteModal(false)}
         />
       </div>
-      </div>
     </MobilePageContainer>
-);
+  );
 }

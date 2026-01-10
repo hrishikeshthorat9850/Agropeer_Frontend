@@ -15,7 +15,7 @@ export default function MobilePageContainer({
     <div
       className={`
         ${fullWidth ? "w-full" : "w-full max-w-full"}
-        ${noPadding ? "" : "px-4"}
+        ${noPadding ? "" : "px-0"}
         ${className}
       `}
     >
