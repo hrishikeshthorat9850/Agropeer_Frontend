@@ -161,35 +161,12 @@ export default function PostsPage() {
     // If post is NOT in list, selectedPost will be rendered above (handled in render)
   }, [postId, posts]);
 
-<<<<<<< HEAD
-    return (
-      <MobilePageContainer>
-        <div className="py-4">
-          <div className="w-full max-w-2xl mx-auto">
-            <button
-              onClick={() => router.push("/posts")}
-              className="mb-6 flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full shadow-sm text-farm-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all font-medium"
-            >
-              <FaArrowLeft className="w-4 h-4" />
-              View All Posts
-            </button>
-            <Posts post={selectedPost} idx={0} refreshPosts={refreshPosts} />
-            <Suspense fallback={null}>
-              <ClientModalWrapper post={selectedPost} onUpdated={handlePostUpdated} />
-            </Suspense>
-          </div>
-        </div>
-      </MobilePageContainer>
-    );
-  }
-=======
   // 🟢 Deep link fix: Pre-compute if post exists in current page (fixes Android WebView syntax error)
   const postExistsInCurrentPage = postId && posts.length > 0 
     ? posts.some((post) => post.id === postId) 
     : false;
   const shouldShowSelectedPostAbove = selectedPost && posts.length > 0 && !postExistsInCurrentPage;
   const shouldShowSelectedPostWhenEmpty = selectedPost && posts.length === 0;
->>>>>>> origin/translation
 
   // List view
   return (
