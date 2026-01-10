@@ -1,27 +1,45 @@
 "use client";
 import { motion } from "framer-motion";
-import { FaSeedling, FaTractor, FaFlask, FaBug, FaPaw, FaCarrot, FaAppleAlt, FaOilCan, FaTools, FaEllipsisH } from "react-icons/fa";
+import {
+  FaSeedling,
+  FaTractor,
+  FaFlask,
+  FaBug,
+  FaPaw,
+  FaCarrot,
+  FaAppleAlt,
+  FaOilCan,
+  FaTools,
+  FaEllipsisH,
+} from "react-icons/fa";
+
+import { useLanguage } from "@/Context/languagecontext";
 
 /**
  * CategorySelector Component
  * Displays product categories as clickable buttons
- * 
+ *
  * @param {string} selectedCategory - Currently selected category (null for "All")
  * @param {function} onCategoryChange - Callback when category is selected
  */
-export default function CategorySelector({ selectedCategory, onCategoryChange }) {
+export default function CategorySelector({
+  selectedCategory,
+  onCategoryChange,
+}) {
+  const { t } = useLanguage();
+
   const categories = [
-    { key: null, label: "All", icon: FaEllipsisH },
-    { key: "seeds", label: "Seeds", icon: FaSeedling },
-    { key: "fertilizers", label: "Fertilizers", icon: FaFlask },
-    { key: "pesticides", label: "Pesticides", icon: FaBug },
-    { key: "machinery", label: "Machinery", icon: FaTractor },
-    { key: "livestock", label: "Livestock", icon: FaPaw },
-    { key: "vegetables", label: "Vegetables", icon: FaCarrot },
-    { key: "fruits", label: "Fruits", icon: FaAppleAlt },
-    { key: "oil", label: "Oil", icon: FaOilCan },
-    { key: "services", label: "Services", icon: FaTools },
-    { key: "others", label: "Others", icon: FaEllipsisH },
+    { key: null, label: t("cat_all"), icon: FaEllipsisH },
+    { key: "seeds", label: t("cat_seeds"), icon: FaSeedling },
+    { key: "fertilizers", label: t("cat_fertilizers"), icon: FaFlask },
+    { key: "pesticides", label: t("cat_pesticides"), icon: FaBug },
+    { key: "machinery", label: t("cat_machinery"), icon: FaTractor },
+    { key: "livestock", label: t("cat_livestock"), icon: FaPaw },
+    { key: "vegetables", label: t("cat_vegetables"), icon: FaCarrot },
+    { key: "fruits", label: t("cat_fruits"), icon: FaAppleAlt },
+    { key: "oil", label: t("cat_oil"), icon: FaOilCan },
+    { key: "services", label: t("cat_services"), icon: FaTools },
+    { key: "others", label: t("cat_others"), icon: FaEllipsisH },
   ];
 
   return (
@@ -52,4 +70,3 @@ export default function CategorySelector({ selectedCategory, onCategoryChange })
     </div>
   );
 }
-

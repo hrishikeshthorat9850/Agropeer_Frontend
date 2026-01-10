@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import { FaComments, FaShoppingCart } from "react-icons/fa";
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function ProductButtons({
   userId,
@@ -8,6 +9,7 @@ export default function ProductButtons({
   onBuyNow,
   onChatClick,
 }) {
+  const { t } = useLanguage();
   const canChat = userId && sellerId && userId !== sellerId;
 
   return (
@@ -27,7 +29,7 @@ export default function ProductButtons({
         transition-all duration-300 ease-out"
       >
         <FaShoppingCart className="text-xl drop-shadow-[0_2px_1px_rgba(0,0,0,0.2)]" />
-        <span>Buy Now</span>
+        <span>{t("buy_now")}</span>
       </motion.button>
 
       {/* Chat Button (Blue 3D) */}
@@ -46,7 +48,7 @@ export default function ProductButtons({
           transition-all duration-300 ease-out"
         >
           <FaComments className="text-xl drop-shadow-[0_2px_1px_rgba(0,0,0,0.2)]" />
-          <span>Chat with Seller</span>
+          <span>{t("chat_seller")}</span>
         </motion.button>
       )}
     </div>

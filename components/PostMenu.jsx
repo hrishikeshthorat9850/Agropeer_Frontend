@@ -3,8 +3,15 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaEdit, FaTrashAlt, FaFlag } from "react-icons/fa";
 import { supabase } from "@/lib/supabaseClient";
+import { useLanguage } from "@/Context/languagecontext";
 
-export default function PostMenu({ recentPost, user, setRecentPost, menuOpen, setMenuOpen }) {
+export default function PostMenu({
+  recentPost,
+  user,
+  setRecentPost,
+  menuOpen,
+  setMenuOpen,
+}) {
   const [modal, setModal] = useState(null);
   const [editText, setEditText] = useState(recentPost?.content || "");
   const [reportReason, setReportReason] = useState("");
@@ -13,6 +20,7 @@ export default function PostMenu({ recentPost, user, setRecentPost, menuOpen, se
   const editInputRef = useRef();
   const menuRef = useRef(null);
   const modalRef = useRef(null);
+  const { t } = useLanguage();
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -39,7 +47,8 @@ export default function PostMenu({ recentPost, user, setRecentPost, menuOpen, se
     }
 
     if (modal) document.addEventListener("mousedown", handleClickOutsideModal);
-    return () => document.removeEventListener("mousedown", handleClickOutsideModal);
+    return () =>
+      document.removeEventListener("mousedown", handleClickOutsideModal);
   }, [modal]);
 
   // Add selected files
@@ -49,7 +58,11 @@ export default function PostMenu({ recentPost, user, setRecentPost, menuOpen, se
     const total = currentCount + files.length;
 
     if (total > 12) {
-      alert(`You can only upload up to 12 images. You can add ${12 - currentCount} more.`);
+      alert(
+        `You can only upload up to 12 images. You can add ${
+          12 - currentCount
+        } more.`
+      );
       return;
     }
     setEditImages((prev) => [...prev, ...files]);
@@ -63,7 +76,7 @@ export default function PostMenu({ recentPost, user, setRecentPost, menuOpen, se
   // Edit post handler
   const handleEdit = async () => {
     if (!editText.trim() && editImages.length === 0)
-      return alert("Post cannot be empty!");
+      return alert(t("post_empty_error"));
 
     setUploading(true);
     try {
@@ -93,12 +106,16 @@ export default function PostMenu({ recentPost, user, setRecentPost, menuOpen, se
 
       if (error) throw error;
 
-      setRecentPost((prev) => ({ ...prev, content: editText, images: uploadedImages }));
+      setRecentPost((prev) => ({
+        ...prev,
+        content: editText,
+        images: uploadedImages,
+      }));
       setModal(null);
       setMenuOpen(false);
     } catch (err) {
       console.error(err);
-      alert("Error editing post: " + (err.message || JSON.stringify(err)));
+      alert(t("edit_post_error") + " " + (err.message || JSON.stringify(err)));
     } finally {
       setUploading(false);
     }
@@ -106,27 +123,30 @@ export default function PostMenu({ recentPost, user, setRecentPost, menuOpen, se
 
   // Delete post handler
   const handleDelete = async () => {
-    const { error } = await supabase.from("posts").delete().eq("id", recentPost.id);
-    if (error) return alert("Error deleting post");
+    const { error } = await supabase
+      .from("posts")
+      .delete()
+      .eq("id", recentPost.id);
+    if (error) return alert(t("delete_post_error"));
     setRecentPost(null);
     setModal(null);
     setMenuOpen(false);
-    alert("Post deleted successfully");
+    alert(t("post_deleted_success"));
   };
 
   // Report post handler
   const handleReport = async () => {
-    if (!reportReason.trim()) return alert("Please provide a reason");
+    if (!reportReason.trim()) return alert(t("report_reason_required"));
     const { error } = await supabase.from("post_reports").insert({
       post_id: recentPost.id,
       user_id: user.id,
       reason: reportReason,
     });
-    if (error) return alert("Error reporting post");
+    if (error) return alert(t("report_post_error"));
     setModal(null);
     setMenuOpen(false);
     setReportReason("");
-    alert("Post reported successfully");
+    alert(t("post_reported_success"));
   };
 
   return (
@@ -142,13 +162,13 @@ export default function PostMenu({ recentPost, user, setRecentPost, menuOpen, se
                 onClick={() => setModal("edit")}
                 className="w-full text-left px-3 py-2 hover:bg-farm-50 flex items-center gap-2 text-green-900"
               >
-                <FaEdit /> Edit
+                <FaEdit /> {t("edit_menu")}
               </button>
               <button
                 onClick={() => setModal("delete")}
                 className="w-full text-left px-3 py-2 hover:bg-farm-50 flex items-center gap-2 text-red-600"
               >
-                <FaTrashAlt /> Delete
+                <FaTrashAlt /> {t("delete_menu")}
               </button>
             </>
           ) : (
@@ -156,7 +176,7 @@ export default function PostMenu({ recentPost, user, setRecentPost, menuOpen, se
               onClick={() => setModal("report")}
               className="w-full text-left px-3 py-2 hover:bg-farm-50 flex items-center gap-2 text-yellow-700"
             >
-              <FaFlag /> Report
+              <FaFlag /> {t("report_menu")}
             </button>
           )}
         </div>
@@ -178,7 +198,9 @@ export default function PostMenu({ recentPost, user, setRecentPost, menuOpen, se
               animate={{ scale: 1 }}
               exit={{ scale: 0.8 }}
             >
-              <h2 className="text-lg text-green-900 font-semibold mb-4">Edit Post</h2>
+              <h2 className="text-lg text-green-900 font-semibold mb-4">
+                {t("edit_post_modal_title")}
+              </h2>
               <textarea
                 value={editText}
                 onChange={(e) => setEditText(e.target.value)}
@@ -188,7 +210,10 @@ export default function PostMenu({ recentPost, user, setRecentPost, menuOpen, se
               {/* ✅ Image Preview Section (Next.js <Image> used here) */}
               <div className="flex flex-wrap gap-2 mt-3">
                 {editImages.map((img, idx) => (
-                  <div key={idx} className="relative w-24 h-24 rounded overflow-hidden">
+                  <div
+                    key={idx}
+                    className="relative w-24 h-24 rounded overflow-hidden"
+                  >
                     <div className="relative w-full h-full">
                       <Image
                         src={img.url ? img.url : URL.createObjectURL(img)}
@@ -210,7 +235,7 @@ export default function PostMenu({ recentPost, user, setRecentPost, menuOpen, se
                   className="w-24 h-24 flex flex-col items-center justify-center rounded-xl bg-gradient-to-r from-green-500 to-lime-600 text-white font-semibold shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300"
                 >
                   <span className="text-2xl mb-1">+</span>
-                  <span className="text-sm">Add</span>
+                  <span className="text-sm">{t("add_img_btn")}</span>
                 </button>
                 <input
                   type="file"
@@ -227,16 +252,18 @@ export default function PostMenu({ recentPost, user, setRecentPost, menuOpen, se
                   onClick={() => setModal(null)}
                   className="px-4 py-2 rounded-lg bg-gradient-to-r from-red-500 to-red-700 text-white hover:bg-red-600 font-semibold text-sm sm:text-base"
                 >
-                  Cancel
+                  {t("cancel_btn")}
                 </button>
                 <button
                   onClick={handleEdit}
                   disabled={uploading}
                   className={`px-4 py-2 rounded-lg text-white ${
-                    uploading ? "bg-green-300 cursor-not-allowed" : "bg-green-500 hover:bg-green-600"
+                    uploading
+                      ? "bg-green-300 cursor-not-allowed"
+                      : "bg-green-500 hover:bg-green-600"
                   }`}
                 >
-                  {uploading ? "Saving..." : "Save"}
+                  {uploading ? t("saving_btn") : t("save_btn")}
                 </button>
               </div>
             </motion.div>
@@ -257,20 +284,24 @@ export default function PostMenu({ recentPost, user, setRecentPost, menuOpen, se
               animate={{ scale: 1 }}
               exit={{ scale: 0.8 }}
             >
-              <h2 className="text-lg text-red-500 font-semibold mb-4">Delete Post?</h2>
-              <p className="text-gray-700 mb-4">This action cannot be undone.</p>
+              <h2 className="text-lg text-red-500 font-semibold mb-4">
+                {t("delete_post_modal_title")}
+              </h2>
+              <p className="text-gray-700 mb-4">
+                {t("delete_confirmation_desc")}
+              </p>
               <div className="flex justify-end gap-3">
                 <button
                   onClick={() => setModal(null)}
                   className="px-4 py-2 rounded-lg bg-green-500 hover:bg-green-600"
                 >
-                  Cancel
+                  {t("cancel_btn")}
                 </button>
                 <button
                   onClick={handleDelete}
                   className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600"
                 >
-                  Delete
+                  {t("delete_menu")}
                 </button>
               </div>
             </motion.div>
@@ -291,11 +322,13 @@ export default function PostMenu({ recentPost, user, setRecentPost, menuOpen, se
               animate={{ scale: 1 }}
               exit={{ scale: 0.8 }}
             >
-              <h2 className="text-lg font-semibold mb-4">Report Post</h2>
+              <h2 className="text-lg font-semibold mb-4">
+                {t("report_post_modal_title")}
+              </h2>
               <textarea
                 value={reportReason}
                 onChange={(e) => setReportReason(e.target.value)}
-                placeholder="Reason for reporting..."
+                placeholder={t("report_reason_placeholder")}
                 className="w-full h-32 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
               />
               <div className="flex justify-end gap-3 mt-4">
@@ -303,13 +336,13 @@ export default function PostMenu({ recentPost, user, setRecentPost, menuOpen, se
                   onClick={() => setModal(null)}
                   className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300"
                 >
-                  Cancel
+                  {t("cancel_btn")}
                 </button>
                 <button
                   onClick={handleReport}
                   className="px-4 py-2 rounded-lg bg-yellow-500 text-white hover:bg-yellow-600"
                 >
-                  Report
+                  {t("report_menu")}
                 </button>
               </div>
             </motion.div>

@@ -2,40 +2,46 @@
 import { motion } from "framer-motion";
 import { FaCloudSun, FaChartLine, FaAward } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "@/Context/languagecontext";
+
 const QuickActionCards = () => {
+  const { t } = useLanguage();
   const actions = [
     {
-      title: "View Weather",
-      description: "Get 7-day weather forecast for your farm",
+      title: t("action_view_weather"),
+      description: t("action_view_weather_desc"),
       icon: FaCloudSun,
       gradient: "from-sky-400 to-sky-600",
       bgColor: "bg-sky-100",
       iconColor: "text-sky-600",
       pulseColor: "bg-sky-400",
+      originalTitle: "View Weather",
     },
     {
-      title: "View Prices",
-      description: "Check latest market prices for crops",
+      title: t("action_view_prices"),
+      description: t("action_view_prices_desc"),
       icon: FaChartLine,
       gradient: "from-sunset-400 to-sunset-600",
       bgColor: "bg-sunset-100",
       iconColor: "text-sunset-600",
       pulseColor: "bg-sunset-400",
+      originalTitle: "View Prices",
     },
     {
-      title: "Get Tips",
-      description: "Expert farming advice and techniques",
+      title: t("action_get_tips"),
+      description: t("action_get_tips_desc"),
       icon: FaAward,
       gradient: "from-emerald-400 to-teal-600",
       bgColor: "bg-emerald-100",
       iconColor: "text-emerald-600",
       pulseColor: "bg-emerald-400",
+      originalTitle: "Get Tips",
     },
   ];
 
   const router = useRouter();
   const handleQuickActionButton = (title) => {
-    switch(title) {
+    switch (title) {
       case "View Weather":
         console.log("Weather button clicked");
         router.push("/weather");
@@ -45,7 +51,7 @@ const QuickActionCards = () => {
         console.log("Prices button clicked");
         break;
       case "Get Tips":
-        router.push("/explore")
+        router.push("/explore");
         console.log("Tips button clicked");
         break;
       default:
@@ -70,7 +76,9 @@ const QuickActionCards = () => {
         >
           <div className="farm-card p-6 h-full flex flex-col">
             <div className="text-center mb-4">
-              <div className={`w-16 h-16 ${action.bgColor} rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300`}>
+              <div
+                className={`w-16 h-16 ${action.bgColor} rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300`}
+              >
                 <action.icon className={`w-8 h-8 ${action.iconColor}`} />
               </div>
               <h3 className="text-xl font-bold text-farm-900 mb-2">
@@ -80,20 +88,24 @@ const QuickActionCards = () => {
                 {action.description}
               </p>
             </div>
-            
+
             <div className="mt-auto">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={()=>{handleQuickActionButton(action.title)}}
+                onClick={() => {
+                  handleQuickActionButton(action.originalTitle);
+                }}
                 className={`w-full bg-gradient-to-r ${action.gradient} text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden`}
               >
                 <span className="relative z-10">{action.title}</span>
                 <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
-                
+
                 {/* Pulsing indicator */}
                 <div className="absolute top-2 right-2">
-                  <div className={`w-2 h-2 ${action.pulseColor} rounded-full animate-pulse`}></div>
+                  <div
+                    className={`w-2 h-2 ${action.pulseColor} rounded-full animate-pulse`}
+                  ></div>
                 </div>
               </motion.button>
             </div>

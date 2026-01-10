@@ -2,13 +2,15 @@
 import { motion } from "framer-motion";
 import { FaEnvelope, FaArrowRight } from "react-icons/fa";
 import { useState } from "react";
+import { useLanguage } from "@/Context/languagecontext";
 
 const NewsletterSignup = () => {
+  const { t } = useLanguage();
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const [loading,setLoading] = useState(false);
-  
+  const [loading, setLoading] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email) return;
@@ -20,9 +22,9 @@ const NewsletterSignup = () => {
         "https://gwjpmypuqmmoqcjyufln.functions.supabase.co/sendNewsLetterEmail",
         {
           method: "POST",
-          headers: { 
+          headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
           },
           body: JSON.stringify({ email }),
         }
@@ -32,7 +34,7 @@ const NewsletterSignup = () => {
 
       if (!res.ok) {
         console.error("Supabase function error:", data);
-        alert("Subscription failed: " + (data.error || "Unknown error"));
+        alert(t("subscription_failed") + (data.error || "Unknown error"));
       } else {
         console.log("Subscribed successfully:", data);
         setIsSubscribed(true);
@@ -40,13 +42,12 @@ const NewsletterSignup = () => {
       }
     } catch (err) {
       console.error("Network or fetch error:", err);
-      alert("Network error. Please try again.");
+      alert(t("network_error"));
     }
 
     setIsSubmitting(false);
     setEmail("");
   };
-
 
   return (
     <motion.div
@@ -68,13 +69,12 @@ const NewsletterSignup = () => {
               <FaEnvelope className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
             <h2 className="text-3xl sm:text-3xl lg:text-4xl font-display font-black">
-              Stay Updated
+              {t("stay_updated")}
             </h2>
           </div>
 
           <p className="text-white text-base sm:text-lg font-medium sm:font-semibold mb-6 sm:mb-8 max-w-2xl mx-auto px-2">
-            Get the latest farming tips, market updates, and community news
-            delivered right to your inbox.
+            {t("newsletter_desc")}
           </p>
 
           {/* Form / Success Message */}
@@ -83,7 +83,7 @@ const NewsletterSignup = () => {
               <div className="flex flex-col sm:flex-row gap-3">
                 <input
                   type="email"
-                  placeholder="Enter your email address"
+                  placeholder={t("enter_email_placeholder")}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="flex-1 px-4 py-3 sm:py-3.5 rounded-xl border-0 text-farm-900 placeholder-farm-600 focus:outline-none focus:ring-2 focus:ring-white/50 text-sm sm:text-base"
@@ -100,7 +100,7 @@ const NewsletterSignup = () => {
                     <div className="w-5 h-5 border-2 border-sunset-600 border-t-transparent rounded-full animate-spin"></div>
                   ) : (
                     <>
-                      Subscribe
+                      {t("subscribe_btn")}
                       <FaArrowRight className="w-4 h-4" />
                     </>
                   )}
@@ -117,16 +117,19 @@ const NewsletterSignup = () => {
                 <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
                   <FaEnvelope className="w-4 h-4 text-sunset-600" />
                 </div>
-                <h3 className="text-lg sm:text-xl font-bold">Successfully Subscribed!</h3>
+                <h3 className="text-lg sm:text-xl font-bold">
+                  {t("successfully_subscribed")}
+                </h3>
               </div>
               <p className="text-white/90 text-sm sm:text-base px-1">
-                Thank you for subscribing to our newsletter. You'll receive updates soon!
+                {t("subscribe_success_msg")}
               </p>
             </motion.div>
           )}
 
           <p className="text-white/80 text-xs sm:text-sm mt-4">
-            Join <span className="font-semibold">10,000+</span> farmers already subscribed 🌾
+            {t("join_text")} <span className="font-semibold">10,000+</span>{" "}
+            {t("farmers_subscribed")} 🌾
           </p>
         </div>
       </div>

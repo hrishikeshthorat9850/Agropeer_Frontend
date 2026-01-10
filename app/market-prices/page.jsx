@@ -7,23 +7,32 @@ import dynamic from "next/dynamic";
 import MarketFilters from "@/components/market-prices/MarketFilters";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
+import { useLanguage } from "@/Context/languagecontext";
 
 // Lazy load MarketList to improve initial render
-const MarketList = dynamic(() => import("@/components/market-prices/MarketList"), {
-  ssr: false,
-  loading: () => (
-    <div className="flex justify-center items-center py-20">
-      <div className="flex flex-col items-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mb-4"></div>
-        <p className="text-gray-600">Loading list...</p>
-      </div>
-    </div>
-  ),
-});
+const MarketList = dynamic(
+  () => import("@/components/market-prices/MarketList"),
+  {
+    ssr: false,
+    loading: () => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const { t } = useLanguage();
+      return (
+        <div className="flex justify-center items-center py-20">
+          <div className="flex flex-col items-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mb-4"></div>
+            <p className="text-gray-600">{t("loading_list")}</p>
+          </div>
+        </div>
+      );
+    },
+  }
+);
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function MarketPricesPage() {
+  const { t } = useLanguage();
   const [page, setPage] = useState(1);
   const limit = 100;
   const [allStates, setAllStates] = useState([]);
@@ -58,7 +67,11 @@ export default function MarketPricesPage() {
 
   // Update allStates when statesData is loaded
   useEffect(() => {
-    if (statesData?.success && statesData?.states && Array.isArray(statesData.states)) {
+    if (
+      statesData?.success &&
+      statesData?.states &&
+      Array.isArray(statesData.states)
+    ) {
       setAllStates(statesData.states);
       console.log(`✅ Loaded ${statesData.states.length} states`);
     } else if (statesData?.states && Array.isArray(statesData.states)) {
@@ -76,9 +89,16 @@ export default function MarketPricesPage() {
     });
 
     // Only add filters if search has been triggered or if no filters are set (initial load)
-    if (searchTriggered || (!activeFilters.state && !activeFilters.district && !activeFilters.market && !activeFilters.search)) {
+    if (
+      searchTriggered ||
+      (!activeFilters.state &&
+        !activeFilters.district &&
+        !activeFilters.market &&
+        !activeFilters.search)
+    ) {
       if (activeFilters.state) params.append("state", activeFilters.state);
-      if (activeFilters.district) params.append("district", activeFilters.district);
+      if (activeFilters.district)
+        params.append("district", activeFilters.district);
       if (activeFilters.market) params.append("market", activeFilters.market);
       if (activeFilters.search) params.append("search", activeFilters.search);
     }
@@ -87,13 +107,9 @@ export default function MarketPricesPage() {
   };
 
   // Fetch market prices (can load after states)
-  const { data, error, isLoading } = useSWR(
-    buildApiUrl(),
-    fetcher,
-    {
-      revalidateOnFocus: false,
-    }
-  );
+  const { data, error, isLoading } = useSWR(buildApiUrl(), fetcher, {
+    revalidateOnFocus: false,
+  });
 
   const records = data?.data || [];
   const total = data?.total || 0;
@@ -105,15 +121,12 @@ export default function MarketPricesPage() {
   // Update accumulated records when data changes
   useEffect(() => {
     if (data?.data) {
-      setAllRecords(prev => {
+      setAllRecords((prev) => {
         if (page === 1) {
           return data.data;
         }
         // Avoid duplicates unique key
         const newRecords = data.data;
-        const existingIds = new Set(prev.map(r => r._id || `${r.market}_${r.commodity}_${r.arrival_date}`)); // Fallback ID
-        // Note: The API might not return IDs, so using a composite key might be safer or just index if order is guaranteed stable
-        // For simplicity, just appending if we assume pages are distinct. 
         // Best effort de-dupe:
         return [...prev, ...newRecords];
       });
@@ -167,7 +180,7 @@ export default function MarketPricesPage() {
   // Infinite scroll handler
   const loadMore = useCallback(() => {
     if (!isLoading && hasMore) {
-      setPage(p => p + 1);
+      setPage((p) => p + 1);
     }
   }, [isLoading, hasMore]);
 
@@ -182,13 +195,17 @@ export default function MarketPricesPage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-8">
             <h1 className="text-3xl md:text-5xl font-bold text-gray-800 mb-3">
-              📊 Market Prices
+              📊 {t("market_prices_page_title")}
             </h1>
             <p className="text-gray-600">
-              {searchTriggered && (activeFilters.state || activeFilters.district || activeFilters.market || activeFilters.search) ? (
-                <>Showing results</>
+              {searchTriggered &&
+              (activeFilters.state ||
+                activeFilters.district ||
+                activeFilters.market ||
+                activeFilters.search) ? (
+                <>{t("showing_results")}</>
               ) : (
-                <>Latest Market Rates</>
+                <>{t("latest_market_rates")}</>
               )}
             </p>
           </div>
@@ -198,7 +215,7 @@ export default function MarketPricesPage() {
             {statesLoading && allStates.length === 0 && (
               <div className="mb-4 text-sm text-blue-600 flex items-center gap-2">
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                <span>Loading states...</span>
+                <span>{t("loading_states")}</span>
               </div>
             )}
             <MarketFilters
@@ -214,7 +231,9 @@ export default function MarketPricesPage() {
           {/* Error */}
           {error && (
             <div className="bg-red-50 border border-red-200 rounded-2xl p-6 mb-6 text-center">
-              <p className="text-red-700 font-semibold">Error: {error.message}</p>
+              <p className="text-red-700 font-semibold">
+                {t("generic_error")} {error.message}
+              </p>
             </div>
           )}
 
@@ -223,7 +242,7 @@ export default function MarketPricesPage() {
             <div className="flex justify-center items-center py-20">
               <div className="flex flex-col items-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mb-4"></div>
-                <p className="text-gray-600">Loading market data...</p>
+                <p className="text-gray-600">{t("loading_market_data")}</p>
               </div>
             </div>
           )}
@@ -236,15 +255,22 @@ export default function MarketPricesPage() {
               )}
 
               {/* Infinite Scroll Sentinel */}
-              <div ref={loadMoreRef} className="h-24 flex justify-center items-center mt-4">
+              <div
+                ref={loadMoreRef}
+                className="h-24 flex justify-center items-center mt-4"
+              >
                 {isLoading && (
                   <div className="flex flex-col items-center gap-2">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
-                    <span className="text-sm text-gray-500">Loading more prices...</span>
+                    <span className="text-sm text-gray-500">
+                      {t("loading_more_prices")}
+                    </span>
                   </div>
                 )}
                 {!hasMore && (
-                  <p className="text-gray-400 text-sm">No more records</p>
+                  <p className="text-gray-400 text-sm">
+                    {t("no_more_records")}
+                  </p>
                 )}
               </div>
             </>

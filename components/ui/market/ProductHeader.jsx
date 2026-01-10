@@ -1,8 +1,10 @@
 "use client";
 import { FaRupeeSign } from "react-icons/fa";
 import { formatName } from "@/utils/formatName";
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function ProductHeader({ product, sellerInfo }) {
+  const { t } = useLanguage();
   if (!product) return null;
 
   return (
@@ -31,7 +33,7 @@ export default function ProductHeader({ product, sellerInfo }) {
           </div>
           <div className="flex flex-col text-left">
             <p className="text-xs uppercase tracking-[0.1em] text-[#5e7260] font-semibold">
-              Sold By
+              {t("label_sold_by")}
             </p>
             <p className="text-lg font-semibold text-[#1d311d] leading-tight">
               {formatName(sellerInfo)}

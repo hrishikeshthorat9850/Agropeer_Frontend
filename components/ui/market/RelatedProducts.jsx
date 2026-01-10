@@ -7,18 +7,24 @@ import { ProductSkeleton } from "@/components/skeletons";
 import { apiRequest } from "@/utils/apiHelpers";
 import { useLogin } from "@/Context/logincontext";
 import { supabase } from "@/lib/supabaseClient";
+import { useLanguage } from "@/Context/languagecontext";
 
 /**
  * RelatedProducts Component
  * Displays products from the same category, excluding the current product
- * 
+ *
  * @param {string} category - Product category to filter by
  * @param {string|number} currentProductId - ID of the current product to exclude
  * @param {number} limit - Maximum number of related products to show (default: 6)
  */
-export default function RelatedProducts({ category, currentProductId, limit = 6 }) {
+export default function RelatedProducts({
+  category,
+  currentProductId,
+  limit = 6,
+}) {
   const router = useRouter();
   const { user } = useLogin();
+  const { t } = useLanguage();
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -46,11 +52,13 @@ export default function RelatedProducts({ category, currentProductId, limit = 6 
           order: "desc",
         });
 
-        const { data, error: apiError } = await apiRequest(`${BASE_URL}/api/products?${params.toString()}`);
+        const { data, error: apiError } = await apiRequest(
+          `${BASE_URL}/api/products?${params.toString()}`
+        );
 
         if (apiError) {
           console.error("Error fetching related products:", apiError);
-          setError("Failed to load related products");
+          setError("failed_load_related");
           return;
         }
 
@@ -62,7 +70,7 @@ export default function RelatedProducts({ category, currentProductId, limit = 6 
         setRelatedProducts(filtered);
       } catch (err) {
         console.error("Error in fetchRelatedProducts:", err);
-        setError("An error occurred while loading related products");
+        setError("error_loading_related");
       } finally {
         setLoading(false);
       }
@@ -154,7 +162,7 @@ export default function RelatedProducts({ category, currentProductId, limit = 6 
     return (
       <div className="w-full mt-12">
         <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 text-center">
-          Related Products
+          {t("related_products")}
         </h2>
         <ProductSkeleton count={Math.min(limit, 4)} />
       </div>
@@ -166,10 +174,10 @@ export default function RelatedProducts({ category, currentProductId, limit = 6 
     return (
       <div className="w-full mt-12">
         <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 text-center">
-          Related Products
+          {t("related_products")}
         </h2>
         <div className="text-center py-8">
-          <p className="text-gray-600">{error}</p>
+          <p className="text-gray-600">{t(error)}</p>
         </div>
       </div>
     );
@@ -180,10 +188,10 @@ export default function RelatedProducts({ category, currentProductId, limit = 6 
     return (
       <div className="w-full mt-12">
         <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 text-center">
-          Related Products
+          {t("related_products")}
         </h2>
         <div className="text-center py-8">
-          <p className="text-gray-600">No related products found.</p>
+          <p className="text-gray-600">{t("no_related_products")}</p>
         </div>
       </div>
     );
@@ -197,7 +205,7 @@ export default function RelatedProducts({ category, currentProductId, limit = 6 
         animate={{ opacity: 1, y: 0 }}
         className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 text-center"
       >
-        Related Products
+        {t("related_products")}
       </motion.h2>
 
       {/* Products Grid */}
@@ -219,7 +227,9 @@ export default function RelatedProducts({ category, currentProductId, limit = 6 
               currentUserId={user?.id}
               showChatButton={true}
               onFavoriteClick={toggleFavorite}
-              onMenuClick={(productId) => setMenuOpen(menuOpen === productId ? null : productId)}
+              onMenuClick={(productId) =>
+                setMenuOpen(menuOpen === productId ? null : productId)
+              }
               onChatClick={handleChatClick}
             />
           );
@@ -228,4 +238,3 @@ export default function RelatedProducts({ category, currentProductId, limit = 6 
     </div>
   );
 }
-

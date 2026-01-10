@@ -1,133 +1,177 @@
 "use client";
-import { FaRegHeart, FaHeart, FaEllipsisH, FaPaperPlane, FaLeaf } from "react-icons/fa";
+import React, { useState } from "react";
 import { formatName } from "@/utils/formatName";
 import { timeAgo } from "@/utils/timeConverter";
-import { motion } from "framer-motion";
+import {
+  FaRegHeart,
+  FaHeart,
+  FaEllipsisH,
+  FaPaperPlane,
+  FaReply,
+  FaLeaf,
+} from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function ReplyItem({
-  reply,
-  isLiked,
-  nestedReplies = [],
-  showReplyBox,
+  reply, // current reply object
+  currentUserId,
+  replyLikes = {},
+  onLike, // handle reply like
+  onReplyClick, // opens nested reply box
+  onMenuClick, // opens reply menu
+  showReplyBox, // ID of the reply currently being replied to
   replyText,
   onReplyTextChange,
-  onLike,
-  onReply,
-  onSendReply,
-  onMenuClick,
-  menuOpen,
-  replyLikes = {},
-  nestedRepliesMap = {},
+  onSendReply, // function to send nested reply
+  parentId, // ID of the parent comment
+  level = 0, // nesting level
+  allReplies = [], // flattened array of all replies for lookup
 }) {
+  const { t } = useLanguage();
+  // Find nested replies (replies where parent_id matches this reply's id)
+  const nestedReplies = allReplies
+    .filter((r) => r.parent_id === reply.id)
+    .sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+
+  // Determine if this reply is liked by the current user
+  const isLiked =
+    replyLikes[reply.id]?.some((like) => like.user_id === currentUserId) ||
+    false;
+
+  const likeCount = replyLikes[reply.id]?.length || 0;
+
   return (
-    <div className="flex items-start gap-2 p-2 rounded-xl bg-gray-50/80 border border-gray-100 hover:bg-gray-100/80 transition-colors relative dark:bg-[#272727] dark:border-gray-800">
-      <div className="w-5 h-5 rounded-full flex items-center justify-center bg-gradient-to-br from-green-400 to-blue-500 shadow-sm flex-shrink-0">
-        <FaLeaf className="w-2.5 h-2.5 text-white" />
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="text-slate-700 text-xs font-semibold dark:text-white">
-            {reply?.userinfo?.display_name || formatName(reply.userinfo)}
+    <div
+      className={`mt-3 ${
+        level > 0 ? "ml-4 pl-3 border-l-2 border-farm-200/50" : "ml-2"
+      }`}
+    >
+      <motion.div
+        initial={{ opacity: 0, x: -5 }}
+        animate={{ opacity: 1, x: 0 }}
+        className="flex gap-2.5 group/reply"
+      >
+        {/* Avatar */}
+        <div
+          className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-1 shadow-sm"
+          style={{
+            background: "linear-gradient(135deg, #059669 0%, #047857 100%)",
+          }}
+        >
+          <span className="text-[10px] text-white font-bold">
+            {reply.userinfo?.display_name
+              ? reply.userinfo.display_name.charAt(0)
+              : formatName(reply.userinfo).charAt(0)}
           </span>
-          <div className="w-1 h-1 bg-slate-400 rounded-full"></div>
-          <span className="text-slate-500 text-xs">{timeAgo(reply.created_at)}</span>
         </div>
-        <p className="text-slate-600 text-xs leading-relaxed">{reply.comment}</p>
-        
-        {/* Reply Actions */}
-        <div className="flex items-center justify-between mt-1 text-xs text-farm-500">
-          {/* Left side: Like + Reply */}
-          <div className="flex items-center gap-3">
+
+        <div className="flex-1 min-w-0">
+          {/* Bubble */}
+          <div className="bg-farm-50/80 rounded-2xl px-3 py-2 inline-block max-w-full hover:bg-farm-100/80 transition-colors border border-farm-100 dark:bg-[#1a1a1a] dark:border-gray-700">
+            <div className="flex items-baseline gap-2 mb-0.5">
+              <span className="text-farm-900 text-xs font-bold tracking-tight dark:text-gray-200">
+                {reply.userinfo?.display_name || formatName(reply.userinfo)}
+              </span>
+              <span className="text-farm-400 text-[10px] font-medium">
+                {timeAgo(reply.created_at)}
+              </span>
+            </div>
+            <p className="text-farm-800 text-xs leading-relaxed dark:text-gray-300">
+              {reply.comment}
+            </p>
+          </div>
+
+          {/* Actions */}
+          <div className="flex items-center gap-4 mt-1 ml-1">
             <button
-              className={`relative flex items-center gap-1 transition ${isLiked ? "text-red-500" : "hover:text-red-500"}`}
               onClick={() => onLike(reply.id)}
+              className={`flex items-center gap-1 text-[10px] font-semibold transition-colors ${
+                isLiked ? "text-red-500" : "text-farm-500 hover:text-red-500"
+              }`}
             >
               {isLiked ? (
-                <FaHeart className="w-3 h-3 text-red-500" />
+                <FaHeart className="w-3 h-3" />
               ) : (
                 <FaRegHeart className="w-3 h-3" />
               )}
-              <span>
-                {reply.comment_likes?.length > 0 && (
-                  <span className="ml-1">{reply.comment_likes.length}</span>
-                )}
-              </span>
+              {likeCount > 0 && <span>{likeCount}</span>}
             </button>
-            
+
+            {level < 2 && (
+              <button
+                onClick={() => onReplyClick(reply.id)}
+                className="text-[10px] font-semibold text-farm-500 hover:text-farm-700 transition-colors"
+              >
+                {t("reply_btn")}
+              </button>
+            )}
+
             <button
-              className="hover:text-farm-700 transition"
-              onClick={() => onReply(reply.id)}
+              onClick={() => onMenuClick(reply.id)}
+              className="text-farm-400 hover:text-farm-600 transition-colors opacity-0 group-hover/reply:opacity-100 p-0.5"
             >
-              Reply
+              <FaEllipsisH className="w-2.5 h-2.5" />
             </button>
           </div>
 
-          {/* Right side: 3-dot menu */}
-          <button
-            className="text-farm-400 hover:text-farm-700 transition relative"
-            onClick={(e) => onMenuClick(reply.id, e)}
-          >
-            <FaEllipsisH className="w-3 h-3" />
-            {menuOpen === reply.id && (
+          {/* Nested Reply Input */}
+          <AnimatePresence>
+            {showReplyBox === reply.id && (
               <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="absolute right-0 top-6 bg-white rounded-lg shadow-lg border border-gray-200 py-1 min-w-[100px] z-50"
-                onClick={(e) => e.stopPropagation()}
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="mt-2 flex items-center gap-2"
               >
-                <button className="w-full text-left px-4 py-2 text-xs hover:bg-gray-50 text-red-500">
-                  Report
-                </button>
+                <div className="flex-1 relative">
+                  <input
+                    type="text"
+                    value={replyText}
+                    onChange={onReplyTextChange}
+                    onKeyPress={(e) =>
+                      e.key === "Enter" && onSendReply(reply.id)
+                    }
+                    placeholder={t("write_reply_placeholder")}
+                    autoFocus
+                    className="w-full px-3 py-1.5 bg-white border-2 border-farm-200 rounded-full text-xs focus:border-farm-400 focus:outline-none pr-8 dark:bg-[#272727] dark:border-gray-600 dark:text-white"
+                  />
+                  <button
+                    onClick={() => onSendReply(reply.id)}
+                    className="absolute right-1 top-1/2 -translate-y-1/2 p-1 bg-farm-500 text-white rounded-full hover:bg-farm-600 transition-colors"
+                  >
+                    <FaPaperPlane className="w-2.5 h-2.5" />
+                  </button>
+                </div>
               </motion.div>
             )}
-          </button>
+          </AnimatePresence>
+
+          {/* Recursively Render Nested Replies */}
+          {nestedReplies.length > 0 && (
+            <div className="mt-2">
+              {nestedReplies.map((nestedReply) => (
+                <ReplyItem
+                  key={nestedReply.id}
+                  reply={nestedReply}
+                  currentUserId={currentUserId}
+                  replyLikes={replyLikes}
+                  onLike={onLike}
+                  onReplyClick={onReplyClick}
+                  onMenuClick={onMenuClick}
+                  showReplyBox={showReplyBox}
+                  replyText={replyText}
+                  onReplyTextChange={onReplyTextChange}
+                  onSendReply={onSendReply}
+                  parentId={reply.id}
+                  level={level + 1}
+                  allReplies={allReplies}
+                />
+              ))}
+            </div>
+          )}
         </div>
-
-        {/* Reply input box for nested replies */}
-        {showReplyBox === reply.id && (
-          <div className="mt-2 flex items-center gap-2">
-            <input
-              type="text"
-              placeholder="Write a reply..."
-              value={replyText}
-              onChange={onReplyTextChange}
-              onKeyPress={(e) => e.key === 'Enter' && onSendReply()}
-              className="flex-1 text-sm border border-gray-300 rounded-full px-3 py-1 focus:outline-none focus:ring-1 text-gray-700 focus:ring-farm-500"
-            />
-            <button
-              onClick={onSendReply}
-              className="bg-farm-500 hover:bg-farm-600 text-white p-2 rounded-full transition"
-            >
-              <FaPaperPlane className="w-3 h-3" />
-            </button>
-          </div>
-        )}
-
-        {/* Recursively render nested replies */}
-        {nestedReplies?.length > 0 && (
-          <div className="ml-6 mt-2 space-y-2">
-            {nestedReplies.map((nestedReply) => (
-              <ReplyItem
-                key={nestedReply.id}
-                reply={nestedReply}
-                isLiked={replyLikes[nestedReply.id] || false}
-                nestedReplies={nestedRepliesMap[nestedReply.id] || []}
-                showReplyBox={showReplyBox}
-                replyText={replyText}
-                onReplyTextChange={onReplyTextChange}
-                onLike={onLike}
-                onReply={onReply}
-                onSendReply={onSendReply}
-                onMenuClick={onMenuClick}
-                menuOpen={menuOpen}
-                replyLikes={replyLikes}
-                nestedRepliesMap={nestedRepliesMap}
-              />
-            ))}
-          </div>
-        )}
-      </div>
+      </motion.div>
     </div>
   );
 }
-

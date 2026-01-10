@@ -3,9 +3,19 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { FaHeart, FaEllipsisH, FaEdit, FaTrash, FaComments, FaRupeeSign, FaMapMarkerAlt } from "react-icons/fa";
+import {
+  FaHeart,
+  FaEllipsisH,
+  FaEdit,
+  FaTrash,
+  FaComments,
+  FaRupeeSign,
+  FaMapMarkerAlt,
+} from "react-icons/fa";
 import { formatName } from "@/utils/formatName";
 import { useLogin } from "@/Context/logincontext";
+import { useLanguage } from "@/Context/languagecontext";
+
 export default function ProductCard({
   product,
   isFavorite = false,
@@ -18,7 +28,8 @@ export default function ProductCard({
   showChatButton = true,
   currentUserId,
 }) {
-  const {user} = useLogin();
+  const { user } = useLogin();
+  const { t } = useLanguage();
   const [imageError, setImageError] = useState(false);
   const firstPhoto =
     product.photos?.length > 0 && !imageError
@@ -67,7 +78,7 @@ export default function ProductCard({
           </motion.button>
 
           {/* Menu */}
-          {product?.user_id === user?.id &&
+          {product?.user_id === user?.id && (
             <div className="relative">
               <motion.button
                 whileHover={{ scale: 1.08 }}
@@ -79,43 +90,43 @@ export default function ProductCard({
               </motion.button>
 
               {/* Dropdown */}
-                <AnimatePresence>
-                  {menuOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                      transition={{ duration: 0.2 }}
-                      className="absolute right-0 mt-2 w-44 bg-white shadow-2xl rounded-xl overflow-hidden z-50 border border-gray-100"
+              <AnimatePresence>
+                {menuOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute right-0 mt-2 w-44 bg-white shadow-2xl rounded-xl overflow-hidden z-50 border border-gray-100"
+                  >
+                    <motion.button
+                      whileHover={{ backgroundColor: "#f0fdf4" }}
+                      onClick={() => {
+                        onEditClick?.(product);
+                        onMenuClick?.(product.id);
+                      }}
+                      className="flex items-center gap-2 px-4 py-3 w-full hover:bg-green-50 text-green-900 font-medium transition-colors"
                     >
-                          <motion.button
-                            whileHover={{ backgroundColor: "#f0fdf4" }}
-                            onClick={() => {
-                              onEditClick?.(product);
-                              onMenuClick?.(product.id);
-                            }}
-                            className="flex items-center gap-2 px-4 py-3 w-full hover:bg-green-50 text-green-900 font-medium transition-colors"
-                          >
-                            <FaEdit className="w-3.5 h-3.5" />
-                            Edit
-                          </motion.button>
+                      <FaEdit className="w-3.5 h-3.5" />
+                      {t("edit_btn")}
+                    </motion.button>
 
-                          <motion.button
-                            whileHover={{ backgroundColor: "#fef2f2" }}
-                            onClick={() => {
-                              onDeleteClick?.(product.id);
-                              onMenuClick?.(product.id);
-                            }}
-                            className="flex items-center gap-2 px-4 py-3 w-full text-red-600 hover:bg-red-50 font-medium transition-colors border-t border-gray-100"
-                          >
-                            <FaTrash className="w-3.5 h-3.5" />
-                            Delete
-                          </motion.button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                    <motion.button
+                      whileHover={{ backgroundColor: "#fef2f2" }}
+                      onClick={() => {
+                        onDeleteClick?.(product.id);
+                        onMenuClick?.(product.id);
+                      }}
+                      className="flex items-center gap-2 px-4 py-3 w-full text-red-600 hover:bg-red-50 font-medium transition-colors border-t border-gray-100"
+                    >
+                      <FaTrash className="w-3.5 h-3.5" />
+                      {t("delete_btn")}
+                    </motion.button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
-          }
+          )}
         </div>
       </div>
 
@@ -165,7 +176,11 @@ export default function ProductCard({
                   Location
                 </p> */}
                 <p className="text-xs text-gray-700 truncate">
-                  {[product.location.village, product.location.taluka, product.location.district]
+                  {[
+                    product.location.village,
+                    product.location.taluka,
+                    product.location.district,
+                  ]
                     .filter(Boolean)
                     .join(", ")}
                 </p>
@@ -184,7 +199,7 @@ export default function ProductCard({
             shadow-[0_4px_14px_rgba(47,112,48,0.3)] hover:shadow-[0_6px_20px_rgba(47,112,48,0.35)] 
             transition-all duration-300"
           >
-            View Details
+            {t("view_details")}
           </Link>
 
           {showChatButton &&
@@ -201,8 +216,8 @@ export default function ProductCard({
                 shadow-[0_4px_10px_rgba(56,189,248,0.4)] 
                 hover:shadow-[0_6px_18px_rgba(37,99,235,0.4)] 
                 transition-all duration-300"
-                title="Chat with seller"
-                aria-label="Chat with seller"
+                title={t("chat_with_seller")}
+                aria-label={t("chat_with_seller")}
               >
                 <FaComments className="w-4 h-4" />
               </motion.button>

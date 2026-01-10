@@ -8,9 +8,11 @@ import {
   FaCircle,
 } from "react-icons/fa";
 import { useSocket } from "@/Context/SocketContext";
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function ChatHeader({ sellerUserInfo, onClose }) {
   const { onlineUsers } = useSocket();
+  const { t } = useLanguage();
   const isOnline = !!(sellerUserInfo?.id && onlineUsers?.[sellerUserInfo.id]);
 
   return (
@@ -20,7 +22,8 @@ export default function ChatHeader({ sellerUserInfo, onClose }) {
         <div className="relative">
           {/* Avatar */}
           <div className="w-11 h-11 rounded-full bg-gradient-to-br from-emerald-900 to-green-800 flex items-center justify-center text-white font-semibold shadow-md border border-white/20">
-            {sellerUserInfo?.profile_url || formatName(sellerUserInfo).charAt(0)}
+            {sellerUserInfo?.profile_url ||
+              formatName(sellerUserInfo).charAt(0)}
           </div>
 
           {/* Online Dot */}
@@ -34,7 +37,7 @@ export default function ChatHeader({ sellerUserInfo, onClose }) {
         {/* User Info */}
         <div className="leading-tight">
           <h3 className="font-semibold text-white text-base md:text-lg tracking-tight">
-            {sellerUserInfo ? formatName(sellerUserInfo) : "Unknown Name"}
+            {sellerUserInfo ? formatName(sellerUserInfo) : t("unknown_name")}
           </h3>
           <div className="flex items-center gap-1">
             <span
@@ -43,7 +46,7 @@ export default function ChatHeader({ sellerUserInfo, onClose }) {
               }`}
             ></span>
             <span className="text-xs text-green-100">
-              {isOnline ? "Online" : "Offline"}
+              {isOnline ? t("online_status") : t("offline_status")}
             </span>
           </div>
         </div>
@@ -72,7 +75,7 @@ export default function ChatHeader({ sellerUserInfo, onClose }) {
         <button
           onClick={onClose}
           className="p-2.5 rounded-full bg-white/30 hover:bg-red-500/80 transition-all shadow-sm hover:shadow-md backdrop-blur-sm"
-          title="Close Chat"
+          title={t("close_chat_tooltip")}
         >
           <FaTimes className="text-white text-sm" />
         </button>

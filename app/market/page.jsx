@@ -7,12 +7,21 @@ import { useRouter, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { supabase } from "@/lib/supabaseClient"; // Still needed for favorites and other operations
 import { FaPlus, FaTimes } from "react-icons/fa";
-import { ProductCard, ProductSearch, ProductImageSlider, ProductHeader, ProductActions, ProductDetailsSection, ProductButtons } from "@/components/ui/market";
+import {
+  ProductCard,
+  ProductSearch,
+  ProductImageSlider,
+  ProductHeader,
+  ProductActions,
+  ProductDetailsSection,
+  ProductButtons,
+} from "@/components/ui/market";
 import useToast from "@/hooks/useToast";
 import CategorySelector from "@/components/ui/market/CategorySelector";
 import ProductFilters from "@/components/ui/market/ProductFilters";
 import { ads } from "@/lib/ads";
 import { useLogin } from "@/Context/logincontext";
+import { useLanguage } from "@/Context/languagecontext";
 import { ProductSkeleton } from "@/components/skeletons";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import PlantLoader from "@/components/PlantLoader";
@@ -26,11 +35,15 @@ const SellForm = dynamic(() => import("@/components/SellForm"), {
 });
 
 const AdPost = dynamic(() => import("@/components/AdPost"), {
-  loading: () => <div className="w-full h-64 bg-gray-100 animate-pulse rounded-xl" />,
+  loading: () => (
+    <div className="w-full h-64 bg-gray-100 animate-pulse rounded-xl" />
+  ),
 });
 
 const AdBanner = dynamic(() => import("@/components/AdBanner"), {
-  loading: () => <div className="w-full h-32 bg-gray-100 animate-pulse rounded-xl mb-6" />,
+  loading: () => (
+    <div className="w-full h-32 bg-gray-100 animate-pulse rounded-xl mb-6" />
+  ),
 });
 
 const ChatModal = dynamic(() => import("@/components/ChatModal"), {
@@ -38,25 +51,32 @@ const ChatModal = dynamic(() => import("@/components/ChatModal"), {
   loading: () => null, // Modal handles its own loading state
 });
 
-const RelatedProducts = dynamic(() => import("@/components/ui/market/RelatedProducts"), {
-  loading: () => (
-    <div className="w-full mt-12">
-      <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 text-center">
-        Related Products
-      </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
-        {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="h-80 bg-gray-100 animate-pulse rounded-3xl" />
-        ))}
+const RelatedProducts = dynamic(
+  () => import("@/components/ui/market/RelatedProducts"),
+  {
+    loading: () => (
+      <div className="w-full mt-12">
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 text-center">
+          Related Products
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div
+              key={i}
+              className="h-80 bg-gray-100 animate-pulse rounded-3xl"
+            />
+          ))}
+        </div>
       </div>
-    </div>
-  ),
-});
+    ),
+  }
+);
 
 export default function AgriMarket() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, userinfo, loading, error } = useLogin();
+  const { t } = useLanguage();
   const [products, setProducts] = useState([]);
   const [allProducts, setAllProducts] = useState([]); // Store all fetched products
   const [productsLoading, setProductsLoading] = useState(true);
@@ -83,7 +103,7 @@ export default function AgriMarket() {
     isOpen: false,
     product: null,
     sellerId: null,
-    sellerInfo: null
+    sellerInfo: null,
   });
 
   // Filter state - NEW (initialize from URL params if present)
@@ -91,8 +111,12 @@ export default function AgriMarket() {
     return searchParams.get("category") || null;
   });
   const [filters, setFilters] = useState(() => ({
-    priceMin: searchParams.get("priceMin") ? parseFloat(searchParams.get("priceMin")) : null,
-    priceMax: searchParams.get("priceMax") ? parseFloat(searchParams.get("priceMax")) : null,
+    priceMin: searchParams.get("priceMin")
+      ? parseFloat(searchParams.get("priceMin"))
+      : null,
+    priceMax: searchParams.get("priceMax")
+      ? parseFloat(searchParams.get("priceMax"))
+      : null,
     district: searchParams.get("district") || null,
   }));
 
@@ -116,18 +140,18 @@ export default function AgriMarket() {
   }, [selectedCategory]);
 
   // Fetch product on page change or category change
-  // Note: changing category sets page to 1. 
+  // Note: changing category sets page to 1.
   // We need to trigger fetch when page changes.
   useEffect(() => {
     fetchProducts(page);
   }, [page, selectedCategory]); // Dependency on selectedCategory ensures we fetch if category changes but page stays 1 (e.g. was 1, set 1)
-  // Actually if we set page 1->1 it won't trigger. 
+  // Actually if we set page 1->1 it won't trigger.
   // Let's rely on explicit call in the category effect?
   // Or just accept that if page is 1, and category changes, we fetch.
 
   // Revised approach:
   // 1. useEffect on [page].
-  // 2. useEffect on [selectedCategory] -> setPage(1), setAllProducts([]). 
+  // 2. useEffect on [selectedCategory] -> setPage(1), setAllProducts([]).
   // If we setPage(1) and it was already 1, effect [page] won't fire?
   // So we should include selectedCategory in the fetch effect.
 
@@ -143,9 +167,8 @@ export default function AgriMarket() {
     }
   }, [allProducts]);
 
-
   useEffect(() => {
-    console.log("User in market page is :", user?.id)
+    console.log("User in market page is :", user?.id);
     if (!loading && user?.id) fetchFavorites();
   }, [user?.id]);
 
@@ -201,7 +224,6 @@ export default function AgriMarket() {
     fetchProductDetail();
   }, [productId, user?.id]);
 
-
   const fetchProducts = async (pageNum = 1, forceReset = false) => {
     setProductsLoading(true);
     try {
@@ -217,23 +239,27 @@ export default function AgriMarket() {
         params.append("category", selectedCategory);
       }
 
-      const response = await fetch(`${BASE_URL}/api/products?${params.toString()}`);
+      const response = await fetch(
+        `${BASE_URL}/api/products?${params.toString()}`
+      );
       const result = await response.json();
 
       if (response.ok && result.data) {
         // Ensure photos array exists
-        const productsWithPhotos = result.data.map(product => ({
+        const productsWithPhotos = result.data.map((product) => ({
           ...product,
           photos: Array.isArray(product.photos) ? product.photos : [],
         }));
 
-        setAllProducts(prev => {
+        setAllProducts((prev) => {
           if (pageNum === 1 || forceReset) {
             return productsWithPhotos;
           }
           // Avoid duplicates by ID if possible
-          const existingIds = new Set(prev.map(p => p.id));
-          const newUnique = productsWithPhotos.filter(p => !existingIds.has(p.id));
+          const existingIds = new Set(prev.map((p) => p.id));
+          const newUnique = productsWithPhotos.filter(
+            (p) => !existingIds.has(p.id)
+          );
           return [...prev, ...newUnique];
         });
 
@@ -243,7 +269,6 @@ export default function AgriMarket() {
         } else {
           setHasMore(true);
         }
-
       } else {
         console.error("Failed to fetch products:", result);
         if (pageNum === 1) {
@@ -265,13 +290,13 @@ export default function AgriMarket() {
 
   const loadMore = useCallback(() => {
     if (!productsLoading && hasMore) {
-      setPage(prev => prev + 1);
+      setPage((prev) => prev + 1);
     }
   }, [productsLoading, hasMore]);
 
   const loadMoreRef = useIntersectionObserver({
     onIntersect: loadMore,
-    enabled: !!hasMore
+    enabled: !!hasMore,
   });
 
   // Apply client-side filters (price, location) - NEW
@@ -295,7 +320,9 @@ export default function AgriMarket() {
     // District filter
     if (filters.district) {
       filtered = filtered.filter((p) => {
-        return p.location?.district?.toLowerCase() === filters.district.toLowerCase();
+        return (
+          p.location?.district?.toLowerCase() === filters.district.toLowerCase()
+        );
       });
     }
 
@@ -328,8 +355,8 @@ export default function AgriMarket() {
 
       // Filter nulls and extract product IDs
       const favs = (data || [])
-        .map(row => row.product_id)
-        .filter(id => id !== null);
+        .map((row) => row.product_id)
+        .filter((id) => id !== null);
 
       setFavorites(favs);
     } catch (err) {
@@ -337,56 +364,61 @@ export default function AgriMarket() {
     }
   };
 
-
   const toggleFavorite = async (product) => {
-    if (!user?.id) return showToast("Please log in to add favorites", "error");
+    if (!user?.id) return showToast(t("login_to_favorite_error"), "error");
 
     const isFav = favorites.includes(product.id);
 
     try {
       if (isFav) {
-        const { data, error } = await supabase.from("user_favorites")
+        const { data, error } = await supabase
+          .from("user_favorites")
           .delete()
           .eq("user_id", user?.id)
-          .eq("product_id", product.id)
-        setFavorites(prev => prev.filter(id => id !== product.id));
-        showToast("error", "Removed from Favorites ❌");
-
+          .eq("product_id", product.id);
+        setFavorites((prev) => prev.filter((id) => id !== product.id));
+        showToast("error", t("removed_from_favorites"));
       } else {
         console.log("Product id is :", product?.id);
-        console.log("Type of product id is :", typeof product?.id)
-        const { data, error } = await supabase.from("user_favorites")
-          .insert({ user_id: user?.id, product_id: product?.id })
-        setFavorites(prev => [...prev, product.id]);
-        showToast("success", "Added to Favorites ❤️");
+        console.log("Type of product id is :", typeof product?.id);
+        const { data, error } = await supabase
+          .from("user_favorites")
+          .insert({ user_id: user?.id, product_id: product?.id });
+        setFavorites((prev) => [...prev, product.id]);
+        showToast("success", t("added_to_favorites"));
       }
     } catch (err) {
       console.error(err);
-      showToast("error", "Something went wrong!");
+      showToast("error", t("generic_error"));
     }
   };
 
-
   const handleDelete = async (id) => {
-    if (!confirm("Are you sure you want to delete this product?")) return;
-    const { error } = await supabase.from("agri_products").delete().eq("id", id);
-    if (error) return showToast("error", "Delete failed!");
+    if (!confirm(t("delete_product_confirm"))) return;
+    const { error } = await supabase
+      .from("agri_products")
+      .delete()
+      .eq("id", id);
+    if (error) return showToast("error", t("delete_failed"));
     setProducts((prev) => prev.filter((p) => p.id !== id));
-    showToast("success", "Product deleted successfully 🗑️");
+    showToast("success", t("product_deleted_success"));
   };
 
   const handleEditClick = (product) => setEditingProduct(product);
-  const handleEditClose = () => { setEditingProduct(null); fetchProducts(); };
+  const handleEditClose = () => {
+    setEditingProduct(null);
+    fetchProducts();
+  };
 
   const handleChatClick = async (product) => {
     if (!user?.id) {
-      showToast("error", "Please log in to start a conversation");
+      showToast("error", t("login_to_chat_error"));
       return;
     }
     console.log("product is  :", product);
 
     if (product.user_id === user?.id) {
-      showToast("error", "You cannot chat with yourself");
+      showToast("error", t("chat_with_self_error"));
       return;
     }
     try {
@@ -402,16 +434,21 @@ export default function AgriMarket() {
         isOpen: true,
         product: product,
         sellerId: product.user_id,
-        sellerInfo: sellerInfo
+        sellerInfo: sellerInfo,
       });
     } catch (error) {
       console.error("Error fetching seller info:", error);
-      showToast("Error loading chat", "error");
+      showToast(t("chat_load_error"), "error");
     }
   };
 
   const handleChatClose = () => {
-    setChatModal({ isOpen: false, product: null, sellerId: null, sellerInfo: null });
+    setChatModal({
+      isOpen: false,
+      product: null,
+      sellerId: null,
+      sellerInfo: null,
+    });
   };
 
   // Handle product selection from search
@@ -432,14 +469,14 @@ export default function AgriMarket() {
           .eq("user_id", user.id)
           .eq("product_id", selectedProduct.id);
         setProductFavorite(false);
-        showToast("error", "Removed from Favorites ❌");
+        showToast("error", t("removed_from_favorites"));
       } else {
         await supabase.from("saved").insert({
           user_id: user.id,
           product_id: selectedProduct.id,
         });
         setProductFavorite(true);
-        showToast("success", "Added to Favorites ❤️");
+        showToast("success", t("added_to_favorites"));
       }
     } catch (err) {
       console.error(err);
@@ -450,9 +487,11 @@ export default function AgriMarket() {
     if (Capacitor.isNativePlatform()) {
       const result = shareContent({
         title: selectedProduct?.title || "Agri Product",
-        text: `Check out this product: ${selectedProduct?.title} for ₹${selectedProduct?.price}`,
+        text: t("share_product_text")
+          .replace("{title}", selectedProduct?.title || "")
+          .replace("{price}", selectedProduct?.price || ""),
         id: selectedProduct?.id,
-        route: "market"
+        route: "market",
       });
 
       // 📌 Utility returned results - you just respond:
@@ -465,7 +504,7 @@ export default function AgriMarket() {
       }
 
       if (result.platform === "copy") {
-        showToast("info", "📋 Link copied to clipboard!");
+        showToast("info", t("link_copied"));
       }
 
       if (!result.success) {
@@ -476,11 +515,11 @@ export default function AgriMarket() {
 
   const handleProductDetailChat = async () => {
     if (!user?.id) {
-      showToast("error", "Please log in to start a conversation");
+      showToast("error", t("login_to_chat_error"));
       return;
     }
     if (selectedProduct.user_id === user.id) {
-      showToast("error", "You cannot chat with yourself");
+      showToast("error", t("chat_with_self_error"));
       return;
     }
     setProductDetailChatModal({
@@ -550,7 +589,11 @@ export default function AgriMarket() {
     if (productLoading) {
       return (
         <div className="fixed inset-0 flex items-center justify-center w-full h-full bg-white/80 backdrop-blur-sm z-50">
-          <PlantLoader size="lg" text="Loading product..." variant="blinking" />
+          <PlantLoader
+            size="lg"
+            text={t("loading_product")}
+            variant="blinking"
+          />
         </div>
       );
     }
@@ -558,7 +601,9 @@ export default function AgriMarket() {
     if (!selectedProduct) {
       return (
         <div className="flex items-center justify-center min-h-[calc(100vh-122px)]">
-          <p className="text-center text-gray-600 text-lg">Product not found.</p>
+          <p className="text-center text-gray-600 text-lg">
+            {t("product_not_found")}
+          </p>
         </div>
       );
     }
@@ -604,7 +649,7 @@ export default function AgriMarket() {
                 />
               </svg>
               <h1 className="text-3xl md:text-4xl font-bold text-farm-900">
-                Product Details & Insights
+                {t("product_details_insights")}
               </h1>
             </div>
 
@@ -654,7 +699,9 @@ export default function AgriMarket() {
                     <ProductButtons
                       userId={user?.id}
                       sellerId={selectedProduct.user_id}
-                      onBuyNow={() => showToast("success", "Buy Now feature coming soon!")}
+                      onBuyNow={() =>
+                        showToast("success", t("buy_now_coming_soon"))
+                      }
                       onChatClick={handleProductDetailChat}
                     />
                   </div>
@@ -675,18 +722,23 @@ export default function AgriMarket() {
             )}
 
             {selectedProduct && (
-              <Suspense fallback={
-                <div className="w-full mt-12">
-                  <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 text-center">
-                    Related Products
-                  </h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
-                    {Array.from({ length: 4 }).map((_, i) => (
-                      <div key={i} className="h-80 bg-gray-100 animate-pulse rounded-3xl" />
-                    ))}
+              <Suspense
+                fallback={
+                  <div className="w-full mt-12">
+                    <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 text-center">
+                      {t("related_products")}
+                    </h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+                      {Array.from({ length: 4 }).map((_, i) => (
+                        <div
+                          key={i}
+                          className="h-80 bg-gray-100 animate-pulse rounded-3xl"
+                        />
+                      ))}
+                    </div>
                   </div>
-                </div>
-              }>
+                }
+              >
                 <RelatedProducts
                   category={selectedProduct.category}
                   currentProductId={selectedProduct.id}
@@ -713,10 +765,10 @@ export default function AgriMarket() {
             {/* Center Text */}
             <div className="flex flex-col items-center gap-3">
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight">
-                🌾 AgriMarket
+                🌾 {t("market_page_title")}
               </h1>
               <p className="text-gray-600 text-base sm:text-lg md:text-lg font-medium max-w-md sm:max-w-lg md:max-w-xl">
-                Buy & Sell trusted agriculture products directly from farmers & dealers.
+                {t("market_page_subtitle")}
               </p>
             </div>
 
@@ -730,7 +782,7 @@ export default function AgriMarket() {
                 href="/sell/choose"
                 className="flex items-center gap-2 bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 text-white px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 text-base sm:text-lg font-semibold"
               >
-                <FaPlus /> Sell Product
+                <FaPlus /> {t("sell_product_btn")}
               </Link>
             </motion.div>
           </motion.div>
@@ -777,7 +829,11 @@ export default function AgriMarket() {
 
           {/* Ad Banner */}
           {clientLoaded && (
-            <Suspense fallback={<div className="w-full h-32 bg-gray-100 animate-pulse rounded-xl mb-6" />}>
+            <Suspense
+              fallback={
+                <div className="w-full h-32 bg-gray-100 animate-pulse rounded-xl mb-6" />
+              }
+            >
               <AdBanner ads={ads} />
             </Suspense>
           )}
@@ -795,7 +851,12 @@ export default function AgriMarket() {
               {finalGridItems.map((item, idx) => {
                 if (item.isAd) {
                   return (
-                    <Suspense key={`ad-${idx}`} fallback={<div className="w-full h-64 bg-gray-100 animate-pulse rounded-xl" />}>
+                    <Suspense
+                      key={`ad-${idx}`}
+                      fallback={
+                        <div className="w-full h-64 bg-gray-100 animate-pulse rounded-xl" />
+                      }
+                    >
                       <AdPost ad={item.ad} />
                     </Suspense>
                   );
@@ -813,7 +874,9 @@ export default function AgriMarket() {
                     currentUserId={user?.id}
                     showChatButton={true}
                     onFavoriteClick={toggleFavorite}
-                    onMenuClick={(productId) => setMenuOpen(menuOpen === productId ? null : productId)}
+                    onMenuClick={(productId) =>
+                      setMenuOpen(menuOpen === productId ? null : productId)
+                    }
                     onEditClick={handleEditClick}
                     onDeleteClick={handleDelete}
                     onChatClick={handleChatClick}
@@ -822,15 +885,22 @@ export default function AgriMarket() {
               })}
 
               {/* Sentinel */}
-              <div ref={loadMoreRef} className="col-span-full h-20 flex justify-center items-center">
+              <div
+                ref={loadMoreRef}
+                className="col-span-full h-20 flex justify-center items-center"
+              >
                 {productsLoading && (
                   <div className="flex flex-col items-center gap-2">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
-                    <span className="text-sm text-gray-500">Loading more products...</span>
+                    <span className="text-sm text-gray-500">
+                      {t("loading_more_products")}
+                    </span>
                   </div>
                 )}
                 {!productsLoading && !hasMore && finalGridItems.length > 0 && (
-                  <span className="text-gray-400 text-sm">No more products to show.</span>
+                  <span className="text-gray-400 text-sm">
+                    {t("no_more_products")}
+                  </span>
                 )}
               </div>
             </motion.div>
@@ -844,12 +914,21 @@ export default function AgriMarket() {
           {editingProduct && (
             <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4 overflow-auto">
               <div className="bg-white rounded-2xl max-h-[90vh] w-full sm:w-3/4 md:w-1/2 lg:w-2/5 p-6 relative dark:bg-[#272727]">
-                <button className="absolute top-3 right-3 text-gray-600 hover:text-gray-800" onClick={handleEditClose}>
+                <button
+                  className="absolute top-3 right-3 text-gray-600 hover:text-gray-800"
+                  onClick={handleEditClose}
+                >
                   <FaTimes className="text-gray-600 text-lg" />
                 </button>
-                <h2 className="text-2xl font-semibold text-green-900 mb-4">Edit Product</h2>
+                <h2 className="text-2xl font-semibold text-green-900 mb-4">
+                  {t("edit_product_title")}
+                </h2>
                 <Suspense fallback={<LoadingSpinner />}>
-                  <SellForm category={editingProduct.category} productData={editingProduct} onClose={handleEditClose} />
+                  <SellForm
+                    category={editingProduct.category}
+                    productData={editingProduct}
+                    onClose={handleEditClose}
+                  />
                 </Suspense>
               </div>
             </div>

@@ -42,12 +42,20 @@ function ConfirmModal({
             transition={{ duration: 0.25, ease: "easeOut" }}
             className="bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl w-full max-w-md text-center border border-gray-100 dark:border-neutral-800 p-6"
           >
-            <div className={`mx-auto flex items-center justify-center w-14 h-14 rounded-full ${color} bg-opacity-10 mb-4`}>
-              <div className={`text-2xl ${color.replace("bg-", "text-")}`}>{icon}</div>
+            <div
+              className={`mx-auto flex items-center justify-center w-14 h-14 rounded-full ${color} bg-opacity-10 mb-4`}
+            >
+              <div className={`text-2xl ${color.replace("bg-", "text-")}`}>
+                {icon}
+              </div>
             </div>
 
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{title}</h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">{message}</p>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              {title}
+            </h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+              {message}
+            </p>
             {children}
 
             <div className="flex justify-center gap-3 mt-6">
@@ -55,7 +63,7 @@ function ConfirmModal({
                 onClick={onClose}
                 className="px-4 py-2 rounded-md bg-gray-100 dark:bg-neutral-800 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-neutral-700 transition-colors"
               >
-                Cancel
+                {t("cancel_btn") || "Cancel"}
               </button>
 
               <button
@@ -76,7 +84,13 @@ function ConfirmModal({
 //
 // ⭐ FIXED DROPDOWN — NOW MODALS ALSO WORK
 //
+//
+// ⭐ FIXED DROPDOWN — NOW MODALS ALSO WORK
+//
+import { useLanguage } from "@/Context/languagecontext";
+
 export default function ChatOptionsMenu() {
+  const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [modal, setModal] = useState(null);
   const [reportReason, setReportReason] = useState("");
@@ -127,17 +141,17 @@ export default function ChatOptionsMenu() {
     >
       <MenuItem
         icon={<FaExclamationTriangle className="text-red-500" />}
-        label="Report"
+        label={t("report_label")}
         onClick={() => setModal("report")}
       />
       <MenuItem
         icon={<FaBroom className="text-yellow-500" />}
-        label="Clear Chat"
+        label={t("clear_chat")}
         onClick={() => setModal("clear")}
       />
       <MenuItem
         icon={<FaTrash className="text-red-600" />}
-        label="Delete Chat"
+        label={t("delete_chat")}
         onClick={() => setModal("delete")}
       />
     </div>
@@ -182,9 +196,9 @@ export default function ChatOptionsMenu() {
         <ConfirmModal
           open
           icon={<FaExclamationTriangle />}
-          title="Report Chat"
-          message="Please describe why you're reporting this chat."
-          confirmLabel="Submit"
+          title={t("report_chat")}
+          message={t("report_chat_message")}
+          confirmLabel={t("submit_btn")}
           color="bg-red-600"
           onClose={() => setModal(null)}
           onConfirm={() => setModal(null)}
@@ -194,7 +208,7 @@ export default function ChatOptionsMenu() {
             onChange={(e) => setReportReason(e.target.value)}
             className="w-full mt-4 p-2 bg-gray-50 dark:bg-neutral-800 border dark:border-neutral-700 rounded-md text-gray-800 dark:text-gray-200"
             rows={3}
-            placeholder="Write your reason..."
+            placeholder={t("report_reason_placeholder")}
           />
         </ConfirmModal>
       )}
@@ -204,9 +218,9 @@ export default function ChatOptionsMenu() {
         <ConfirmModal
           open
           icon={<FaBroom />}
-          title="Clear Chat"
-          message="Are you sure?"
-          confirmLabel="Clear"
+          title={t("clear_chat")}
+          message={t("clear_chat_message")}
+          confirmLabel={t("clear_btn")}
           color="bg-yellow-500"
           onClose={() => setModal(null)}
           onConfirm={() => setModal(null)}
@@ -218,9 +232,9 @@ export default function ChatOptionsMenu() {
         <ConfirmModal
           open
           icon={<FaTrash />}
-          title="Delete Chat"
-          message="This will permanently delete this chat."
-          confirmLabel="Delete"
+          title={t("delete_chat")}
+          message={t("delete_chat_message")}
+          confirmLabel={t("delete_btn")}
           color="bg-red-600"
           onClose={() => setModal(null)}
           onConfirm={() => setModal(null)}

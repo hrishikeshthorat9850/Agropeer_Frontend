@@ -3,26 +3,46 @@
 import { useState, useEffect } from "react";
 import { FaSearch, FaFilter } from "react-icons/fa";
 import useSWR from "swr";
+import { useLanguage } from "@/Context/languagecontext";
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
-export default function MarketFilters({ data, onFilterChange, allStates = [], onSearch, onClear, filters = {} }) {
+export default function MarketFilters({
+  data,
+  onFilterChange,
+  allStates = [],
+  onSearch,
+  onClear,
+  filters = {},
+}) {
+  const { t } = useLanguage();
   const [selectedState, setSelectedState] = useState(filters.state || "");
-  const [selectedDistrict, setSelectedDistrict] = useState(filters.district || "");
+  const [selectedDistrict, setSelectedDistrict] = useState(
+    filters.district || ""
+  );
   const [selectedMarket, setSelectedMarket] = useState(filters.market || "");
   const [searchQuery, setSearchQuery] = useState(filters.search || "");
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   // Use allStates if provided, otherwise extract from current data
-  const states = allStates.length > 0 
-    ? allStates 
-    : (data && Array.isArray(data)
-        ? [...new Set(data.filter(item => item && item.state).map((item) => item.state))].sort()
-        : []);
+  const states =
+    allStates.length > 0
+      ? allStates
+      : data && Array.isArray(data)
+      ? [
+          ...new Set(
+            data.filter((item) => item && item.state).map((item) => item.state)
+          ),
+        ].sort()
+      : [];
 
   // Fetch districts from database when state is selected
   const { data: districtsData } = useSWR(
-    selectedState ? `${BASE_URL}/api/get-districts?state=${encodeURIComponent(selectedState)}` : null,
+    selectedState
+      ? `${BASE_URL}/api/get-districts?state=${encodeURIComponent(
+          selectedState
+        )}`
+      : null,
     fetcher,
     { revalidateOnFocus: false }
   );
@@ -31,8 +51,14 @@ export default function MarketFilters({ data, onFilterChange, allStates = [], on
 
   // Fetch markets from database when state and optionally district are selected
   const { data: marketsData } = useSWR(
-    selectedState 
-      ? `${BASE_URL}/api/get-markets?state=${encodeURIComponent(selectedState)}${selectedDistrict ? `&district=${encodeURIComponent(selectedDistrict)}` : ''}`
+    selectedState
+      ? `${BASE_URL}/api/get-markets?state=${encodeURIComponent(
+          selectedState
+        )}${
+          selectedDistrict
+            ? `&district=${encodeURIComponent(selectedDistrict)}`
+            : ""
+        }`
       : null,
     fetcher,
     { revalidateOnFocus: false }
@@ -82,10 +108,12 @@ export default function MarketFilters({ data, onFilterChange, allStates = [], on
 
   // Auto-trigger search when district or market changes (if state is already selected)
   useEffect(() => {
-    if (selectedState && 
-        ((selectedDistrict && selectedDistrict !== prevDistrict) || 
-         (selectedMarket && selectedMarket !== prevMarket)) && 
-        onSearch) {
+    if (
+      selectedState &&
+      ((selectedDistrict && selectedDistrict !== prevDistrict) ||
+        (selectedMarket && selectedMarket !== prevMarket)) &&
+      onSearch
+    ) {
       if (selectedDistrict !== prevDistrict) setPrevDistrict(selectedDistrict);
       if (selectedMarket !== prevMarket) setPrevMarket(selectedMarket);
       const timer = setTimeout(() => {
@@ -99,7 +127,8 @@ export default function MarketFilters({ data, onFilterChange, allStates = [], on
   // Sync with external filter changes
   useEffect(() => {
     if (filters.state !== undefined) setSelectedState(filters.state || "");
-    if (filters.district !== undefined) setSelectedDistrict(filters.district || "");
+    if (filters.district !== undefined)
+      setSelectedDistrict(filters.district || "");
     if (filters.market !== undefined) setSelectedMarket(filters.market || "");
     if (filters.search !== undefined) setSearchQuery(filters.search || "");
   }, [filters]);
@@ -125,11 +154,12 @@ export default function MarketFilters({ data, onFilterChange, allStates = [], on
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 border border-gray-200 dark:bg-[#1E1E1E] dark:border-none">
-
       {/* Header */}
       <div className="flex items-center gap-2 mb-4">
         <FaFilter className="text-green-600 text-xl" />
-        <h2 className="text-xl font-bold text-gray-800 dark:text-white">Filter Market Prices</h2>
+        <h2 className="text-xl font-bold text-gray-800 dark:text-white">
+          {t("filter_market_prices")}
+        </h2>
       </div>
 
       {/* Search Bar (Top Full Width) */}
@@ -139,7 +169,7 @@ export default function MarketFilters({ data, onFilterChange, allStates = [], on
           {/* Input Field */}
           <input
             type="text"
-            placeholder="Search by commodity name..."
+            placeholder={t("search_placeholder_commodity")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="bg-transparent outline-none flex-1 text-sm text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500"
@@ -149,16 +179,17 @@ export default function MarketFilters({ data, onFilterChange, allStates = [], on
 
       {/* All Filters Under Search */}
       <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-4">
-
         {/* State Dropdown */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">State</label>
+          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            {t("state_label")}
+          </label>
           <select
             value={selectedState}
             onChange={(e) => setSelectedState(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-[#363636]"
           >
-            <option value="">All States</option>
+            <option value="">{t("all_states")}</option>
             {states.map((state) => (
               <option key={state} value={state}>
                 {state}
@@ -169,14 +200,16 @@ export default function MarketFilters({ data, onFilterChange, allStates = [], on
 
         {/* District Dropdown */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">District</label>
+          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            {t("district_label")}
+          </label>
           <select
             value={selectedDistrict}
             onChange={(e) => setSelectedDistrict(e.target.value)}
             disabled={!selectedState}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white disabled:bg-gray-100 disabled:cursor-not-allowed dark:bg-[#363636]"
           >
-            <option value="">All Districts</option>
+            <option value="">{t("all_districts")}</option>
             {districts.map((district) => (
               <option key={district} value={district}>
                 {district}
@@ -187,14 +220,16 @@ export default function MarketFilters({ data, onFilterChange, allStates = [], on
 
         {/* Market Dropdown */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Market</label>
+          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            {t("market_label")}
+          </label>
           <select
             value={selectedMarket}
             onChange={(e) => setSelectedMarket(e.target.value)}
             disabled={!selectedState}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white disabled:bg-gray-100 disabled:cursor-not-allowed dark:bg-[#363636]"
           >
-            <option value="">All Markets</option>
+            <option value="">{t("all_markets")}</option>
             {markets.map((market) => (
               <option key={market} value={market}>
                 {market}
@@ -205,14 +240,13 @@ export default function MarketFilters({ data, onFilterChange, allStates = [], on
 
         {/* Search + Clear Buttons */}
         <div className="flex items-end gap-3">
-          
           {/* Search Button */}
           <button
             onClick={handleSearchClick}
             className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-green-700 text-white px-4 py-2 rounded-xl shadow-lg transform transition-transform hover:scale-105"
           >
             <FaSearch className="text-sm" />
-            Search
+            {t("search_btn")}
           </button>
 
           {/* Clear Filters */}
@@ -220,12 +254,10 @@ export default function MarketFilters({ data, onFilterChange, allStates = [], on
             onClick={handleClearFilters}
             className="flex-1 sm:flex-none px-4 py-2 rounded-xl text-black bg-gray-50 hover:bg-gray-100 border border-gray-200 dark:text-white dark:bg-[#333] dark:hover:bg-[#444]"
           >
-            Clear
+            {t("clear_btn")}
           </button>
-
         </div>
       </div>
     </div>
   );
 }
-

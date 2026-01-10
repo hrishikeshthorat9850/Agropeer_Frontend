@@ -2,6 +2,7 @@
 import { FaRegComment } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import CommentItem from "./CommentItem";
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function CommentsSection({
   comments,
@@ -25,11 +26,10 @@ export default function CommentsSection({
   currentUserId,
   loading = false,
 }) {
+  const { t } = useLanguage();
   if (!comments || comments.length === 0) return null;
 
-  const visibleComments = showAllComments 
-    ? comments 
-    : comments.slice(0, 2);
+  const visibleComments = showAllComments ? comments : comments.slice(0, 2);
 
   return (
     <>
@@ -40,9 +40,16 @@ export default function CommentsSection({
       >
         <div className="flex items-center justify-between">
           <span className="text-farm-900 font-medium text-sm dark:text-farm-600">
-            {comments.length} {comments.length === 1 ? 'Comment' : 'Comments'}
+            {comments.length}{" "}
+            {comments.length === 1
+              ? t("comment_singular")
+              : t("comment_plural")}
           </span>
-          <FaRegComment className={`text-farm-900 transition-transform duration-300 ${showCommentsSection ? 'rotate-180' : ''}`} />
+          <FaRegComment
+            className={`text-farm-900 transition-transform duration-300 ${
+              showCommentsSection ? "rotate-180" : ""
+            }`}
+          />
         </div>
       </button>
 
@@ -63,39 +70,48 @@ export default function CommentsSection({
                 </div>
               ) : (
                 [...comments]
-                  .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                  .sort(
+                    (a, b) => new Date(b.created_at) - new Date(a.created_at)
+                  )
                   .map((comment) => {
-                  // Check if user liked this comment
-                  const isLiked = currentUserId && comment?.comment_likes?.some(like => like.user_id === currentUserId) || false;
-                  
-                  return (
-                    <CommentItem
-                      key={comment.id}
-                      comment={comment}
-                      isLiked={isLiked}
-                      replies={commentReplies[comment.id] || []}
-                      nestedReplies={nestedReplies}
-                      showReplyBox={showReplyBox}
-                      replyText={replyText}
-                      onReplyTextChange={onReplyTextChange}
-                      onLike={onCommentLike}
-                      onReply={onCommentReply}
-                      onSendReply={onSendReply}
-                      onMenuClick={onCommentMenu}
-                      replyMenuOpen={replyMenuOpen}
-                      replyLikes={replyLikes}
-                      onReplyMenu={onReplyMenu}
-                    />
-                  );
+                    // Check if user liked this comment
+                    const isLiked =
+                      (currentUserId &&
+                        comment?.comment_likes?.some(
+                          (like) => like.user_id === currentUserId
+                        )) ||
+                      false;
+
+                    return (
+                      <CommentItem
+                        key={comment.id}
+                        comment={comment}
+                        isLiked={isLiked}
+                        replies={commentReplies[comment.id] || []}
+                        nestedReplies={nestedReplies}
+                        showReplyBox={showReplyBox}
+                        replyText={replyText}
+                        onReplyTextChange={onReplyTextChange}
+                        onLike={onCommentLike}
+                        onReply={onCommentReply}
+                        onSendReply={onSendReply}
+                        onMenuClick={onCommentMenu}
+                        replyMenuOpen={replyMenuOpen}
+                        replyLikes={replyLikes}
+                        onReplyMenu={onReplyMenu}
+                      />
+                    );
                   })
               )}
-              
+
               {!loading && totalCommentCount > 2 && (
                 <button
                   onClick={onToggleShowAll}
                   className="text-farm-500 text-xs font-medium hover:text-farm-700 transition-colors ml-6"
                 >
-                  {showAllComments ? 'Show less' : `View all ${totalCommentCount} comments`}
+                  {showAllComments
+                    ? t("show_less")
+                    : t("view_all_comments", { count: totalCommentCount })}
                 </button>
               )}
             </div>
@@ -105,4 +121,3 @@ export default function CommentsSection({
     </>
   );
 }
-

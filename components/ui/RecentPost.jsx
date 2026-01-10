@@ -11,12 +11,15 @@ import CommentsSection from "./post/CommentsSection";
 import TextClamp from "./Text/TextClamp";
 import { Capacitor } from "@capacitor/core";
 import { shareContent } from "@/utils/shareHandler";
+import { useLanguage } from "@/Context/languagecontext";
+import useToast from "@/hooks/useToast";
+
 export default function RecentPost({
-  post,               
-  user,                
-  onLike,              
-  onAddComment,        
-  formatName,                
+  post,
+  user,
+  onLike,
+  onAddComment,
+  formatName,
 }) {
   const [showCommentsSection, setShowCommentsSection] = useState(false);
   const [commentText, setCommentText] = useState("");
@@ -36,6 +39,8 @@ export default function RecentPost({
   const [replyText, setReplyText] = useState("");
   const [showAllComments, setShowAllComments] = useState(false);
   const commentIconRef = useRef(null);
+  const { t } = useLanguage();
+  const { showToast } = useToast();
 
   // Initialize like state
   useEffect(() => {
@@ -53,7 +58,8 @@ export default function RecentPost({
       // Optimized: select specific fields to reduce egress
       const { data, error } = await supabase
         .from("post_comments")
-        .select(`
+        .select(
+          `
           id,
           comment,
           created_at,
@@ -62,9 +68,10 @@ export default function RecentPost({
           parent_comment_id,
           userinfo(id, firstName, lastName, display_name, profile_url, avatar_url),
           comment_likes(id, user_id, comment_id)
-        `)
+        `
+        )
         .eq("post_id", post.id)
-        .order('created_at', { ascending: true })
+        .order("created_at", { ascending: true })
         .limit(100); // Limit comments to reduce egress
 
       if (error) {
@@ -73,15 +80,17 @@ export default function RecentPost({
       }
 
       // Separate main comments from replies
-      const mainComments = data.filter(comment => !comment.parent_comment_id);
-      const replies = data.filter(comment => comment.parent_comment_id);
+      const mainComments = data.filter((comment) => !comment.parent_comment_id);
+      const replies = data.filter((comment) => comment.parent_comment_id);
 
       // Group replies by parent ID
       const repliesByParent = {};
       const nestedRepliesMap = {};
 
-      replies.forEach(reply => {
-        const isParentComment = mainComments.some(c => c.id === reply.parent_comment_id);
+      replies.forEach((reply) => {
+        const isParentComment = mainComments.some(
+          (c) => c.id === reply.parent_comment_id
+        );
 
         if (isParentComment) {
           if (!repliesByParent[reply.parent_comment_id]) {
@@ -99,8 +108,10 @@ export default function RecentPost({
       // Track which replies the user has liked
       if (user) {
         const likedRepliesMap = {};
-        replies.forEach(reply => {
-          const isLiked = reply.comment_likes?.some(like => like.user_id === user.id);
+        replies.forEach((reply) => {
+          const isLiked = reply.comment_likes?.some(
+            (like) => like.user_id === user.id
+          );
           likedRepliesMap[reply.id] = isLiked || false;
         });
         setReplyLikes(likedRepliesMap);
@@ -122,8 +133,8 @@ export default function RecentPost({
       }
     };
 
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
   }, [replyMenuOpen]);
 
   // Refresh comments function
@@ -132,23 +143,27 @@ export default function RecentPost({
 
     const { data, error } = await supabase
       .from("post_comments")
-      .select(`
+      .select(
+        `
         *,
         userinfo(*),
         comment_likes(*)
-      `)
+      `
+      )
       .eq("post_id", post.id)
-      .order('created_at', { ascending: true });
+      .order("created_at", { ascending: true });
 
     if (!error) {
-      const mainComments = data.filter(comment => !comment.parent_comment_id);
-      const replies = data.filter(comment => comment.parent_comment_id);
+      const mainComments = data.filter((comment) => !comment.parent_comment_id);
+      const replies = data.filter((comment) => comment.parent_comment_id);
 
       const repliesByParent = {};
       const nestedRepliesMap = {};
 
-      replies.forEach(reply => {
-        const isParentComment = mainComments.some(c => c.id === reply.parent_comment_id);
+      replies.forEach((reply) => {
+        const isParentComment = mainComments.some(
+          (c) => c.id === reply.parent_comment_id
+        );
 
         if (isParentComment) {
           if (!repliesByParent[reply.parent_comment_id]) {
@@ -165,8 +180,10 @@ export default function RecentPost({
 
       if (user) {
         const likedRepliesMap = {};
-        replies.forEach(reply => {
-          const isLiked = reply.comment_likes?.some(like => like.user_id === user.id);
+        replies.forEach((reply) => {
+          const isLiked = reply.comment_likes?.some(
+            (like) => like.user_id === user.id
+          );
           likedRepliesMap[reply.id] = isLiked || false;
         });
         setReplyLikes(likedRepliesMap);
@@ -182,17 +199,17 @@ export default function RecentPost({
   const handleLikeClick = async () => {
     const newLike = !isLike;
     setIsLike(newLike);
-    setLikeCount(prev => newLike ? prev + 1 : prev - 1);
+    setLikeCount((prev) => (newLike ? prev + 1 : prev - 1));
     onLike?.(post.id);
   };
 
   // Handle comment submission
   const handleCommentSubmit = async () => {
     if (!commentText.trim() || isSubmitting) return;
-    
+
     setIsSubmitting(true);
     setError(null);
-    
+
     try {
       // Call parent handler if provided
       if (onAddComment) {
@@ -206,21 +223,23 @@ export default function RecentPost({
         // Fallback: direct Supabase insertion
         const { data, error } = await supabase
           .from("post_comments")
-          .insert([{
-            post_id: post.id,
-            user_id: user.id,
-            comment: commentText.trim(),
-          }])
+          .insert([
+            {
+              post_id: post.id,
+              user_id: user.id,
+              comment: commentText.trim(),
+            },
+          ])
           .select()
           .single();
 
         if (error) throw error;
-        
-      setCommentText("");
+
+        setCommentText("");
         await refreshComments();
       }
     } catch (err) {
-      setError("Failed to add comment");
+      setError(t("add_comment_failed"));
       console.error("Error adding comment:", err);
     } finally {
       setIsSubmitting(false);
@@ -234,15 +253,16 @@ export default function RecentPost({
     }
   };
 
-  const handleShareClick = () => {
+  const handleShareClick = async () => {
     if (Capacitor.isNativePlatform()) {
-      shareContent({
-        title: 'Farm Post',
+      const result = await shareContent({
+        title: t("share_title"),
         text: post?.caption || post?.content || "",
-        id : post?.id,
-        route : "posts"
+        id: post?.id,
+        route: "posts",
       });
-            if (result.platform === "native") {
+
+      if (result.platform === "native") {
         console.log("✔ Shared via native bottom sheet");
       }
 
@@ -251,20 +271,20 @@ export default function RecentPost({
       }
 
       if (result.platform === "copy") {
-        showToast("info", "📋 Link copied to clipboard!");
+        showToast("info", t("link_copied_toast"));
       }
 
       if (!result.success) {
         return;
       }
     }
-  }
+  };
 
   // Reply handlers
   const handleSendReply = async () => {
     if (!replyText.trim()) return;
     if (!user) {
-      alert("You must be logged in to reply");
+      alert(t("login_required_reply"));
       return;
     }
     if (!replyingTo) return;
@@ -272,13 +292,16 @@ export default function RecentPost({
     try {
       const { data, error } = await supabase
         .from("post_comments")
-        .insert([{
-          post_id: post.id,
-          user_id: user.id,
-          comment: replyText,
-          parent_comment_id: replyingTo,
-        }])
-        .select(`
+        .insert([
+          {
+            post_id: post.id,
+            user_id: user.id,
+            comment: replyText,
+            parent_comment_id: replyingTo,
+          },
+        ])
+        .select(
+          `
           id,
           comment,
           created_at,
@@ -286,22 +309,23 @@ export default function RecentPost({
           post_id,
           parent_comment_id,
           userinfo(id, firstName, lastName, display_name, profile_url, avatar_url)
-        `)
+        `
+        )
         .single();
 
       if (error) throw error;
 
-      const isReplyingToComment = commentInfo.some(c => c.id === replyingTo);
+      const isReplyingToComment = commentInfo.some((c) => c.id === replyingTo);
 
       if (isReplyingToComment) {
         setCommentReplies((prev) => ({
           ...prev,
-          [replyingTo]: [...(prev[replyingTo] || []), data]
+          [replyingTo]: [...(prev[replyingTo] || []), data],
         }));
       } else {
         setNestedReplies((prev) => ({
           ...prev,
-          [replyingTo]: [...(prev[replyingTo] || []), data]
+          [replyingTo]: [...(prev[replyingTo] || []), data],
         }));
       }
 
@@ -316,7 +340,7 @@ export default function RecentPost({
 
   const handleCommentLike = async (commentId) => {
     if (!user) {
-      alert("You must be logged in to like comments");
+      alert(t("login_required_like_comment"));
       return;
     }
 
@@ -353,16 +377,16 @@ export default function RecentPost({
 
   const handleCommentReply = (parentId) => {
     if (!user) {
-      alert("You have to login to reply....");
+      alert(t("login_required_reply"));
       return;
     }
-    setShowReplyBox((prev) => prev === parentId ? null : parentId);
+    setShowReplyBox((prev) => (prev === parentId ? null : parentId));
     setReplyingTo(parentId);
   };
 
   const handleReplyLike = async (replyId) => {
     if (!user) {
-      alert("You must be logged in to like replies");
+      alert(t("login_required_like_reply"));
       return;
     }
 
@@ -383,14 +407,14 @@ export default function RecentPost({
           .eq("id", existingLike.id);
 
         if (deleteError) throw deleteError;
-        setReplyLikes(prev => ({ ...prev, [replyId]: false }));
+        setReplyLikes((prev) => ({ ...prev, [replyId]: false }));
       } else {
         const { error: insertError } = await supabase
           .from("comment_likes")
           .insert([{ comment_id: replyId }]);
 
         if (insertError) throw insertError;
-        setReplyLikes(prev => ({ ...prev, [replyId]: true }));
+        setReplyLikes((prev) => ({ ...prev, [replyId]: true }));
       }
       await refreshComments();
     } catch (err) {
@@ -404,26 +428,29 @@ export default function RecentPost({
 
   const handleReplyMenu = (replyId, event) => {
     event?.stopPropagation();
-    setReplyMenuOpen((prev) => prev === replyId ? null : replyId);
+    setReplyMenuOpen((prev) => (prev === replyId ? null : replyId));
   };
 
   if (!post) return null;
 
   return (
     <AnimatePresence>
-        <motion.article
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="relative group hover-lift w-full max-w-2xl mx-auto mb-6 overflow-hidden rounded-3xl shadow-2xl mt-6"
-          style={{
-            background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 25%, #f1f5f9 50%, #e2e8f0 75%, #cbd5e1 100%)',
-            border: typeof window !== "undefined" &&
-              document.documentElement.classList.contains("dark")
-                ? "2px solid rgb(51 42 42)"
-                : "1px solid rgba(255, 255, 255, 0.2)",
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05)'
-          }}
+      <motion.article
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="relative group hover-lift w-full max-w-2xl mx-auto mb-6 overflow-hidden rounded-3xl shadow-2xl mt-6"
+        style={{
+          background:
+            "linear-gradient(135deg, #ffffff 0%, #f8fafc 25%, #f1f5f9 50%, #e2e8f0 75%, #cbd5e1 100%)",
+          border:
+            typeof window !== "undefined" &&
+            document.documentElement.classList.contains("dark")
+              ? "2px solid rgb(51 42 42)"
+              : "1px solid rgba(255, 255, 255, 0.2)",
+          boxShadow:
+            "0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05)",
+        }}
       >
         <PostBackground />
 
@@ -444,7 +471,7 @@ export default function RecentPost({
               lines={2}
               className="text-farm-700 text-base leading-relaxed font-sans"
             />
-              </div>
+          </div>
         )}
 
         {/* Post Media */}
@@ -490,16 +517,16 @@ export default function RecentPost({
         {/* Comment Input */}
         {user && (
           <CommentInput
-                      value={commentText}
-                      onChange={(e) => setCommentText(e.target.value)}
+            value={commentText}
+            onChange={(e) => setCommentText(e.target.value)}
             onSubmit={handleCommentSubmit}
-                      placeholder="Add a comment..."
+            placeholder={t("add_comment_placeholder")}
             isSubmitting={isSubmitting}
             error={error}
             inputRef={commentIconRef}
           />
         )}
-        </motion.article>
+      </motion.article>
     </AnimatePresence>
   );
 }

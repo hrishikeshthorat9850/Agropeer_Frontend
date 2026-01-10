@@ -4,37 +4,44 @@ import { useEffect, useCallback } from "react";
 import { useAndroidNotifications } from "@/hooks/useAndroidNotifications";
 import useNativeFcmToken from "@/hooks/useNativeFcmToken";
 import { useLogin } from "@/Context/logincontext";
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function AndroidNotificationHandler() {
   const { user } = useLogin();
   const { isAndroid, isReady } = useAndroidNotifications();
-  const handleForegroundPush = useCallback(async (notification) => {
-    const { showAndroidNotification } = await import("@/utils/capacitorNotifications");
-    const payload = notification.notification ?? notification;
-    const data = payload?.data ?? notification.data ?? {};
+  const { t } = useLanguage();
 
-    const title =
-      payload.title ||
-      payload.notification?.title ||
-      data.title ||
-      data.msg_title ||
-      "AgroGram";
+  const handleForegroundPush = useCallback(
+    async (notification) => {
+      const { showAndroidNotification } = await import(
+        "@/utils/capacitorNotifications"
+      );
+      const payload = notification.notification ?? notification;
+      const data = payload?.data ?? notification.data ?? {};
 
-    const body =
-      payload.body ||
-      payload.notification?.body ||
-      data.body ||
-      data.message ||
-      data.msg ||
-      "You have a new notification";
+      const title =
+        payload.title ||
+        payload.notification?.title ||
+        data.title ||
+        data.msg_title ||
+        t("notification_default_title");
 
+      const body =
+        payload.body ||
+        payload.notification?.body ||
+        data.body ||
+        data.message ||
+        data.msg ||
+        t("notification_default_body");
 
-    await showAndroidNotification({
-      title,
-      body,
-      data,
-    });
-  }, []);
+      await showAndroidNotification({
+        title,
+        body,
+        data,
+      });
+    },
+    [t]
+  );
 
   const handlePushAction = useCallback((notification) => {
     const data = notification.notification?.data ?? notification.data ?? {};
@@ -57,17 +64,22 @@ export default function AndroidNotificationHandler() {
 
     async function setupAndroidListeners() {
       try {
-        const { LocalNotifications } = await import("@capacitor/local-notifications");
+        const { LocalNotifications } = await import(
+          "@capacitor/local-notifications"
+        );
         const { App } = await import("@capacitor/app");
 
-        LocalNotifications.addListener("localNotificationActionPerformed", (notification) => {
-          const data = notification.notification.data;
-          if (data?.url) {
-            window.location.href = data.url;
-          } else if (data?.conversationId) {
-            window.location.href = `/chats?conversation=${data.conversationId}`;
+        LocalNotifications.addListener(
+          "localNotificationActionPerformed",
+          (notification) => {
+            const data = notification.notification.data;
+            if (data?.url) {
+              window.location.href = data.url;
+            } else if (data?.conversationId) {
+              window.location.href = `/chats?conversation=${data.conversationId}`;
+            }
           }
-        });
+        );
 
         App.addListener("appStateChange", ({ isActive }) => {
           if (isActive) {
@@ -88,7 +100,10 @@ export default function AndroidNotificationHandler() {
 
   useEffect(() => {
     if (!nativeToken) return;
-    console.log("✅ Native FCM token ready:", nativeToken.substring(0, 24) + "…");
+    console.log(
+      "✅ Native FCM token ready:",
+      nativeToken.substring(0, 24) + "…"
+    );
   }, [nativeToken]);
 
   useEffect(() => {
@@ -98,4 +113,3 @@ export default function AndroidNotificationHandler() {
 
   return null;
 }
-

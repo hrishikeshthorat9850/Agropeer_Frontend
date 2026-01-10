@@ -1,9 +1,9 @@
-"use client";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaSearch, FaTimes } from "react-icons/fa";
 import ContactRow from "./ContactRow";
 import UnreadBadge from "./UnreadBadge";
 import { useEffect } from "react";
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function ChatSidebar({
   showContacts,
@@ -12,6 +12,7 @@ export default function ChatSidebar({
   onSelectUser,
   selected,
 }) {
+  const { t } = useLanguage();
 
   // useEffect(() => {
   //     if (showContacts) {
@@ -26,7 +27,7 @@ export default function ChatSidebar({
   //       document.body.style.position = "static";
   //       document.body.style.touchAction = "auto";
   //     }
-
+  //
   //     return () => {
   //       document.documentElement.style.overflow = "auto";
   //       document.body.style.overflow = "auto";
@@ -34,9 +35,10 @@ export default function ChatSidebar({
   //       document.body.style.touchAction = "auto";
   //     };
   //   }, [showContacts]);
-  const isNative = typeof window !== "undefined"
-    ? window.Capacitor?.isNativePlatform?.()
-    : false;
+  const isNative =
+    typeof window !== "undefined"
+      ? window.Capacitor?.isNativePlatform?.()
+      : false;
 
   return (
     <AnimatePresence>
@@ -50,9 +52,7 @@ export default function ChatSidebar({
         dark:border-neutral-800 md:rounded-2xl p-4 z-10 w-full md:w-[340px] flex flex-col 
         shadow-lg md:h-full overflow-hidden"
           style={{
-            top: isNative
-              ? "calc(56px + env(safe-area-inset-top))"
-              : "56px",
+            top: isNative ? "calc(56px + env(safe-area-inset-top))" : "56px",
           }}
         >
           {/* Header */}
@@ -61,7 +61,9 @@ export default function ChatSidebar({
               <h1 className="font-bold text-xl text-sky-700 dark:text-sky-300">
                 AgroPeer
               </h1>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Chats</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {t("chats_sidebar_title")}
+              </p>
             </div>
 
             <div className="flex gap-2">
@@ -80,7 +82,7 @@ export default function ChatSidebar({
           <div className="flex items-center gap-2 bg-gray-50 dark:bg-neutral-800 rounded-lg px-3 py-2 border dark:border-neutral-700 flex-shrink-0">
             <FaSearch className="text-gray-400" />
             <input
-              placeholder="Search or start new chat"
+              placeholder={t("search_chat_placeholder")}
               className="bg-transparent outline-none flex-1 text-sm text-gray-700 dark:text-gray-200"
             />
           </div>
@@ -98,7 +100,10 @@ export default function ChatSidebar({
               <div key={c?.conversation_id || c?.id} className="relative">
                 <ContactRow
                   user={c}
-                  active={selected?.id === c?.id || selected?.conversation_id === c?.conversation_id}
+                  active={
+                    selected?.id === c?.id ||
+                    selected?.conversation_id === c?.conversation_id
+                  }
                   onClick={(contact) => {
                     if (onSelectUser) onSelectUser(contact);
                     handleFaTimesClick();

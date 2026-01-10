@@ -17,6 +17,8 @@ import { useLogin } from "@/Context/logincontext";
 import { v4 as uuidv4 } from "uuid";
 import { motion, AnimatePresence } from "framer-motion";
 import useToast from "@/hooks/useToast";
+import { useLanguage } from "@/Context/languagecontext";
+
 export default function PostCreation({ onSuccess }) {
   const { user } = useLogin();
   const { showToast } = useToast();
@@ -36,13 +38,15 @@ export default function PostCreation({ onSuccess }) {
   const [commentText, setCommentText] = useState("");
   const [alertMessage, setAlertMessage] = useState("");
   const [showAlert, setShowAlert] = useState(false);
-  const [recentPost,setRecentPost] = useState({});
+  const [recentPost, setRecentPost] = useState({});
+  const { t } = useLanguage();
 
-  const userRecentPost = async ()=>{
+  const userRecentPost = async () => {
     // Optimized: select specific fields to reduce egress
     const { data, error } = await supabase
-    .from("posts")
-    .select(`
+      .from("posts")
+      .select(
+        `
       id,
       user_id,
       caption,
@@ -52,25 +56,27 @@ export default function PostCreation({ onSuccess }) {
       userinfo(id, firstName, lastName, display_name, profile_url, avatar_url),
       post_comments(id, comment, created_at, user_id, post_id),
       post_likes(id, user_id, post_id, created_at)
-    `)
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .single();
+    `
+      )
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single();
 
-    if(!error) setRecentPost(data);
-  }
+    if (!error) setRecentPost(data);
+  };
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchPosts();
     userRecentPost();
-  },[user?.id]);
+  }, [user?.id]);
 
   const fetchPosts = async () => {
     // Optimized: select specific fields to reduce egress
     const { data, error } = await supabase
       .from("posts")
-      .select(`
+      .select(
+        `
         id,
         user_id,
         caption,
@@ -80,7 +86,8 @@ export default function PostCreation({ onSuccess }) {
         userinfo(id, firstName, lastName, display_name, profile_url, avatar_url),
         post_comments(id, comment, created_at, user_id, post_id),
         post_likes(id, user_id, post_id, created_at)
-      `)
+      `
+      )
       .order("created_at", { ascending: false })
       .limit(50); // Add limit to reduce egress
 
@@ -88,7 +95,7 @@ export default function PostCreation({ onSuccess }) {
   };
 
   const handleFiles = (e) => {
-    const selected = Array.from(e.target.files || []).map(file => ({
+    const selected = Array.from(e.target.files || []).map((file) => ({
       file,
       preview: URL.createObjectURL(file),
       type: file.type.startsWith("video/") ? "video" : "image",
@@ -96,27 +103,27 @@ export default function PostCreation({ onSuccess }) {
 
     const total = [...files, ...selected];
     if (total.length > 12) {
-      setAlertMessage("You can only upload up to 12 files.");
+      setAlertMessage(t("upload_limit_error"));
       setShowAlert(true);
-      showToast("error", "You can only upload up to 12 files.");
+      showToast("error", t("upload_limit_error"));
       setTimeout(() => setShowAlert(false), 3000);
       return;
     }
     setFiles(total);
-    setPreviews(total); 
+    setPreviews(total);
   };
   const removeImage = (idx) => {
-    setFiles(f => f.filter((_, i) => i !== idx));
-    setPreviews(p => p.filter((_, i) => i !== idx));
+    setFiles((f) => f.filter((_, i) => i !== idx));
+    setPreviews((p) => p.filter((_, i) => i !== idx));
   };
 
   const uploadAndCreatePost = async () => {
     if (!user) {
-      showToast("error", "Please login to post.");
+      showToast("error", t("login_required_post"));
       return;
     }
     if (!files.length && !postText.trim()) {
-      showToast("error", "Add image or text.");
+      showToast("error", t("add_image_text_error"));
       return;
     }
 
@@ -124,30 +131,43 @@ export default function PostCreation({ onSuccess }) {
     try {
       const uploadedFiles = [];
       for (let i = 0; i < files.length; i++) {
-        const fileObj = files[i]; 
-        const file = fileObj.file; 
-        const ext = file.name.split(".").pop(); 
+        const fileObj = files[i];
+        const file = fileObj.file;
+        const ext = file.name.split(".").pop();
         const fileName = `${user.id}/${Date.now()}_${i}_${uuidv4()}.${ext}`;
-        
+
         const { data: uploadData, error: upError } = await supabase.storage
           .from("post_images")
           .upload(fileName, file, { cacheControl: "3600", upsert: false });
 
         if (upError) throw upError;
 
-        const publicUrl = supabase.storage.from("post_images").getPublicUrl(uploadData.path).data.publicUrl;
-        uploadedFiles.push({ url: publicUrl, path: uploadData.path, type: fileObj.type });
+        const publicUrl = supabase.storage
+          .from("post_images")
+          .getPublicUrl(uploadData.path).data.publicUrl;
+        uploadedFiles.push({
+          url: publicUrl,
+          path: uploadData.path,
+          type: fileObj.type,
+        });
       }
       const { data: inserted } = await supabase
         .from("posts")
-        .insert([{ user_id: user.id, caption: postText || null, images: uploadedFiles }])
+        .insert([
+          {
+            user_id: user.id,
+            caption: postText || null,
+            images: uploadedFiles,
+          },
+        ])
         .select()
         .single();
 
       // Optimized: select specific fields to reduce egress
       const { data: newPostWithRelations } = await supabase
         .from("posts")
-        .select(`
+        .select(
+          `
           id,
           user_id,
           caption,
@@ -157,7 +177,8 @@ export default function PostCreation({ onSuccess }) {
           userinfo(id, firstName, lastName, display_name, profile_url, avatar_url),
           post_comments(id, comment, created_at, user_id, post_id),
           post_likes(id, user_id, post_id, created_at)
-        `)
+        `
+        )
         .eq("id", inserted.id)
         .single();
 
@@ -165,20 +186,37 @@ export default function PostCreation({ onSuccess }) {
       const prepared = {
         ...finalPost,
         images: finalPost.images || uploadedFiles,
-        userinfo: finalPost.userinfo || { id: user.id, firstName: user.name || "You", lastName: "", profile_url: user.avatar || null },
+        userinfo: finalPost.userinfo || {
+          id: user.id,
+          firstName: user.name || "You",
+          lastName: "",
+          profile_url: user.avatar || null,
+        },
         post_comments: finalPost.post_comments || [],
         post_likes: finalPost.post_likes || [],
-        created_at: finalPost.created_at || new Date().toISOString()
+        created_at: finalPost.created_at || new Date().toISOString(),
       };
 
-      setPosts(prev => [prepared, ...prev]);
-      setFiles([]); setPreviews([]); setPostText(""); setCurrentIndex(0); setMenuOpen(false); setLiked(false);
-      showToast("success", "Post created successfully! 🌾");
+      setPosts((prev) => [prepared, ...prev]);
+      setFiles([]);
+      setPreviews([]);
+      setPostText("");
+      setCurrentIndex(0);
+      setMenuOpen(false);
+      setLiked(false);
+      showToast("success", t("post_created_success_toast"));
       if (onSuccess) onSuccess(prepared);
     } catch (err) {
       console.error(err);
-      showToast("error", "Error creating post: " + (err.message || "Please try again."));
-    } finally { setUploading(false); }
+      showToast(
+        "error",
+        t("post_create_error_toast") +
+          " " +
+          (err.message || "Please try again.")
+      );
+    } finally {
+      setUploading(false);
+    }
   };
 
   // const handleLikeClick = async (postId) => {
@@ -207,23 +245,24 @@ export default function PostCreation({ onSuccess }) {
   //   }
   // };
 
-
   const handleLikeClick = async (postId) => {
     if (!user) {
-      showToast("error", "Please login to like posts.");
+      showToast("error", t("login_required_toast"));
       return;
     }
 
-    const post = posts.find(p => p.id === postId);
-    const hasLiked = post?.post_likes?.some(like => like.user_id === user.id);
+    const post = posts.find((p) => p.id === postId);
+    const hasLiked = post?.post_likes?.some((like) => like.user_id === user.id);
 
     // Optimistic UI update
     const updatedLikes = hasLiked
-      ? post.post_likes.filter(l => l.user_id !== user.id)
+      ? post.post_likes.filter((l) => l.user_id !== user.id)
       : [...(post.post_likes || []), { user_id: user.id }];
 
-    setPosts(prevPosts =>
-      prevPosts.map(p => p.id === postId ? { ...p, post_likes: updatedLikes } : p)
+    setPosts((prevPosts) =>
+      prevPosts.map((p) =>
+        p.id === postId ? { ...p, post_likes: updatedLikes } : p
+      )
     );
 
     try {
@@ -239,34 +278,50 @@ export default function PostCreation({ onSuccess }) {
         // Add like (upsert avoids duplicates)
         const { error } = await supabase
           .from("post_likes")
-          .upsert([{ post_id: postId, user_id: user.id }], { onConflict: "post_id,user_id" });
+          .upsert([{ post_id: postId, user_id: user.id }], {
+            onConflict: "post_id,user_id",
+          });
         if (error) throw error;
       }
     } catch (err) {
       console.error("Error updating like:", err);
       // Rollback UI
-      setPosts(prevPosts =>
-        prevPosts.map(p => p.id === postId ? post : p)
+      setPosts((prevPosts) =>
+        prevPosts.map((p) => (p.id === postId ? post : p))
       );
     }
   };
 
   const toggleLike = async (postId) => {
     if (!user) {
-      showToast("error", "Please login to like posts.");
+      showToast("error", t("login_required_toast"));
       return;
     }
-    const { data: existing } = await supabase.from("post_likes").select("*").eq("post_id", postId).eq("user_id", user.id).maybeSingle();
-    if (existing) await supabase.from("post_likes").delete().eq("id", existing.id);
-    else await supabase.from("post_likes").insert([{ post_id: postId, user_id: user.id }]);
-    const { data: updated } = await supabase.from("post_likes").select("*").eq("post_id", postId);
+    const { data: existing } = await supabase
+      .from("post_likes")
+      .select("*")
+      .eq("post_id", postId)
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (existing)
+      await supabase.from("post_likes").delete().eq("id", existing.id);
+    else
+      await supabase
+        .from("post_likes")
+        .insert([{ post_id: postId, user_id: user.id }]);
+    const { data: updated } = await supabase
+      .from("post_likes")
+      .select("*")
+      .eq("post_id", postId);
     setLiked(!existing);
-    setPosts(prev => prev.map(p => 
-      p.id === postId ? { ...p, post_likes: updated || [] } : p
-    ));
+    setPosts((prev) =>
+      prev.map((p) =>
+        p.id === postId ? { ...p, post_likes: updated || [] } : p
+      )
+    );
   };
 
-  const addComment = async (postId,text) => {
+  const addComment = async (postId, text) => {
     if (!user || !text.trim()) return;
 
     try {
@@ -279,8 +334,8 @@ export default function PostCreation({ onSuccess }) {
       if (error) throw error;
 
       // Update posts state
-      setPosts(prev =>
-        prev.map(p =>
+      setPosts((prev) =>
+        prev.map((p) =>
           p.id === postId
             ? { ...p, post_comments: [...(p.post_comments || []), inserted] }
             : p
@@ -289,17 +344,20 @@ export default function PostCreation({ onSuccess }) {
 
       // Update recentPost if needed
       if (recentPost.id === postId) {
-        setRecentPost(prev => ({
+        setRecentPost((prev) => ({
           ...prev,
-          post_comments: [...(prev.post_comments || []), inserted]
+          post_comments: [...(prev.post_comments || []), inserted],
         }));
       }
 
       setCommentText("");
-      showToast("success", "Comment added successfully!");
+      showToast("success", t("add_comment_success"));
     } catch (err) {
       console.error("Failed to add comment:", err);
-      showToast("error", "Failed to add comment: " + (err.message || "Please try again."));
+      showToast(
+        "error",
+        t("add_comment_failed") + " " + (err.message || "Please try again.")
+      );
     }
   };
 
@@ -338,16 +396,18 @@ export default function PostCreation({ onSuccess }) {
             <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6 flex-wrap">
               <div className="relative">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-farm-400 to-farm-600 rounded-full flex items-center justify-center shadow-lg">
-                  <span className="text-white font-bold text-base sm:text-lg">U</span>
+                  <span className="text-white font-bold text-base sm:text-lg">
+                    U
+                  </span>
                 </div>
                 <div className="absolute -bottom-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-green-500 rounded-full border-2 border-white"></div>
               </div>
               <div className="flex-1 min-w-[60%]">
                 <h3 className="text-base sm:text-lg font-bold text-farm-900 leading-tight">
-                  Share Your Farm Story
+                  {t("share_story_title")}
                 </h3>
                 <p className="text-xs sm:text-sm text-farm-600">
-                  What's happening on your farm today?
+                  {t("happening_on_farm_subtitle")}
                 </p>
               </div>
               <motion.button
@@ -356,23 +416,33 @@ export default function PostCreation({ onSuccess }) {
                 onClick={() => setIsExpanded(!isExpanded)}
                 className="p-1.5 sm:p-2 rounded-full bg-farm-100 hover:bg-farm-200 transition-colors"
               >
-                {isExpanded ? <FaTimes className="w-4 h-4 text-farm-600" /> : <FaPlus className="w-4 h-4 text-farm-600" />}
+                {isExpanded ? (
+                  <FaTimes className="w-4 h-4 text-farm-600" />
+                ) : (
+                  <FaPlus className="w-4 h-4 text-farm-600" />
+                )}
               </motion.button>
             </div>
 
             {/* Textarea Section */}
-            <motion.div initial={false} animate={{ height: isExpanded ? "auto" : "55px" }} transition={{ duration: 0.3 }} className="overflow-hidden">
+            <motion.div
+              initial={false}
+              animate={{ height: isExpanded ? "auto" : "55px" }}
+              transition={{ duration: 0.3 }}
+              className="overflow-hidden"
+            >
               <div className="relative">
                 <textarea
                   value={postText}
                   onChange={(e) => setPostText(e.target.value)}
-                  placeholder="Share what's happening on your farm... 🌱"
+                  placeholder={t("post_placeholder")}
                   className="w-full p-3 sm:p-4 pr-10 rounded-2xl border-0 resize-none focus:outline-none text-farm-800 placeholder-farm-500 transition-all duration-300 text-sm sm:text-base"
                   style={{
                     background:
                       "linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.8) 100%)",
                     backdropFilter: "blur(20px)",
-                    boxShadow: "inset 0 2px 8px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.1)",
+                    boxShadow:
+                      "inset 0 2px 8px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.1)",
                     border: "1px solid rgba(255,255,255,0.3)",
                   }}
                   rows={isExpanded ? 4 : 1}
@@ -393,7 +463,6 @@ export default function PostCreation({ onSuccess }) {
                     transition={{ duration: 0.3 }}
                     className="mt-4 space-y-4"
                   >
-
                     {/* Upload Buttons */}
                     <div className="flex flex-wrap gap-3 justify-between">
                       <div className="flex items-center gap-2 sm:gap-3">
@@ -417,19 +486,40 @@ export default function PostCreation({ onSuccess }) {
                         >
                           <FaMapMarkerAlt className="w-4 h-4 sm:w-5 sm:h-5 text-farm-600" />
                         </motion.button>
-                        <input ref={photoinputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFiles}/>
-                        <input ref={videoinputRef} type="file" accept="video/*" className="hidden" onChange={handleFiles}/>
-
+                        <input
+                          ref={photoinputRef}
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          className="hidden"
+                          onChange={handleFiles}
+                        />
+                        <input
+                          ref={videoinputRef}
+                          type="file"
+                          accept="video/*"
+                          className="hidden"
+                          onChange={handleFiles}
+                        />
                       </div>
 
                       <div className="flex items-center gap-2 sm:gap-3 flex-wrap justify-end">
                         <motion.button
                           whileHover={{ scale: 1.05 }}
                           onClick={uploadAndCreatePost}
-                          disabled={!postText.trim() && files.length === 0 || uploading}
+                          disabled={
+                            (!postText.trim() && files.length === 0) ||
+                            uploading
+                          }
                           className="px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-farm-500 to-farm-600 text-white rounded-xl font-semibold shadow-lg text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                         >
-                          {uploading ? "Posting..." : <><FaPaperPlane /> Post</>}
+                          {uploading ? (
+                            t("posting_btn")
+                          ) : (
+                            <>
+                              <FaPaperPlane /> {t("post_btn")}
+                            </>
+                          )}
                         </motion.button>
                       </div>
                     </div>
@@ -438,13 +528,26 @@ export default function PostCreation({ onSuccess }) {
                     {previews.length > 0 && (
                       <div className="mt-3 grid grid-cols-3 gap-2">
                         {previews.map((item, idx) => (
-                          <div key={idx} className="relative rounded overflow-hidden group">
+                          <div
+                            key={idx}
+                            className="relative rounded overflow-hidden group"
+                          >
                             {item.type === "image" ? (
                               <div className="relative w-full h-28">
-                                <Image src={item.preview} alt={`preview-${idx}`} fill className="object-cover rounded" unoptimized />
+                                <Image
+                                  src={item.preview}
+                                  alt={`preview-${idx}`}
+                                  fill
+                                  className="object-cover rounded"
+                                  unoptimized
+                                />
                               </div>
                             ) : (
-                              <video src={item.preview} controls className="object-cover w-full h-28" />
+                              <video
+                                src={item.preview}
+                                controls
+                                className="object-cover w-full h-28"
+                              />
                             )}
                             <button
                               onClick={() => removeImage(idx)}
@@ -456,7 +559,6 @@ export default function PostCreation({ onSuccess }) {
                         ))}
                       </div>
                     )}
-
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -471,7 +573,7 @@ export default function PostCreation({ onSuccess }) {
                     className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-sky-100 hover:bg-sky-200 text-sky-700 text-sm sm:text-base font-medium"
                     onClick={() => photoinputRef.current.click()}
                   >
-                    <FaImage className="w-4 h-4" /> Photo
+                    <FaImage className="w-4 h-4" /> {t("photo_btn")}
                   </motion.button>
                   <input
                     ref={photoinputRef}
@@ -483,10 +585,10 @@ export default function PostCreation({ onSuccess }) {
                   />
                   <motion.button
                     whileHover={{ scale: 1.05 }}
-                    className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-sunset-100 hover:bg-sunset-200 text-sunset-700 text-sm sm:text-base font-medium"
+                    className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-sunset-100 hover:bg-sunset-200 text-sunset-700 text-sunset-700 text-sm sm:text-base font-medium"
                     onClick={() => videoinputRef.current.click()}
                   >
-                    <FaVideo className="w-4 h-4" /> Video
+                    <FaVideo className="w-4 h-4" /> {t("video_btn")}
                   </motion.button>
                   <input
                     ref={videoinputRef}
@@ -494,16 +596,24 @@ export default function PostCreation({ onSuccess }) {
                     accept="video/*"
                     className="hidden"
                     onChange={handleFiles}
-                  />                  
+                  />
                 </div>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    onClick={uploadAndCreatePost}
-                    disabled={!postText.trim() && files.length === 0 || uploading}
-                    className="px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-farm-500 to-farm-600 text-white rounded-xl font-semibold shadow-lg text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                  >
-                    {uploading ? "Posting..." : <><FaPaperPlane /> Post</>}
-                  </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  onClick={uploadAndCreatePost}
+                  disabled={
+                    (!postText.trim() && files.length === 0) || uploading
+                  }
+                  className="px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-farm-500 to-farm-600 text-white rounded-xl font-semibold shadow-lg text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                  {uploading ? (
+                    t("posting_btn")
+                  ) : (
+                    <>
+                      <FaPaperPlane /> {t("post_btn")}
+                    </>
+                  )}
+                </motion.button>
               </div>
             )}
           </div>

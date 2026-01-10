@@ -1,7 +1,9 @@
 "use client";
 import React from "react";
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function DateSeparator({ date }) {
+  const { t } = useLanguage();
   if (!date) return null;
 
   const formatDate = (inputDate) => {
@@ -12,8 +14,8 @@ export default function DateSeparator({ date }) {
         (1000 * 60 * 60 * 24)
     );
 
-    if (diffDays === 0) return "Today";
-    if (diffDays === 1) return "Yesterday";
+    if (diffDays === 0) return t("today_date");
+    if (diffDays === 1) return t("yesterday_date");
     if (diffDays < 7) {
       return msgDate.toLocaleDateString("en-US", { weekday: "long" });
     }

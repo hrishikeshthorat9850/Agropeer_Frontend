@@ -1,58 +1,66 @@
 "use client";
-
 import Image from "next/image";
 import { useLogin } from "@/Context/logincontext";
+import { useLanguage } from "@/Context/languagecontext";
 
 const products = [
   {
     id: 1,
     title: "Dairy Cow",
-    image: "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=400&q=80",
+    image:
+      "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=400&q=80",
     price: "₹60,000",
     type: "Buy",
   },
   {
     id: 2,
     title: "Goat",
-    image: "https://images.unsplash.com/photo-1508672019048-805c876b67e2?auto=format&fit=crop&w=400&q=80",
+    image:
+      "https://images.unsplash.com/photo-1508672019048-805c876b67e2?auto=format&fit=crop&w=400&q=80",
     price: "₹8,000",
     type: "Buy",
   },
   {
     id: 3,
     title: "Organic Wheat (100kg)",
-    image: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80",
+    image:
+      "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80",
     price: "₹3,500",
     type: "Sell",
   },
   {
     id: 4,
     title: "Fresh Corn (50kg)",
-    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
+    image:
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
     price: "₹2,000",
     type: "Sell",
   },
   {
     id: 5,
     title: "Tractor (Used)",
-    image: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=400&q=80",
+    image:
+      "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=400&q=80",
     price: "₹3,00,000",
     type: "Sell",
   },
   {
     id: 6,
     title: "Buffalo",
-    image: "https://images.unsplash.com/photo-1468421870903-4df1664ac249?auto=format&fit=crop&w=400&q=80",
+    image:
+      "https://images.unsplash.com/photo-1468421870903-4df1664ac249?auto=format&fit=crop&w=400&q=80",
     price: "₹55,000",
     type: "Buy",
   },
 ];
 
 export default function AgriMarket() {
+  const { t } = useLanguage();
+
   return (
     <section className="w-full max-w-5xl mx-auto my-10 p-6 bg-white rounded-2xl shadow-lg ml-[250]">
       <h2 className="text-2xl md:text-3xl font-bold text-green-800 mb-6 text-center tracking-tight">
-        AgriMarket: Buy & Sell Agriculture Products
+        {t("agrimarket_title")}
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {products.map((product) => (
@@ -85,7 +93,7 @@ export default function AgriMarket() {
                     : "bg-blue-600 hover:bg-blue-700"
                 }`}
               >
-                {product.type === "Buy" ? "Buy Now" : "Sell Now"}
+                {product.type === "Buy" ? t("buy_now_btn") : t("sell_now_btn")}
               </button>
             </div>
           </div>

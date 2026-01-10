@@ -4,7 +4,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Search, X } from "lucide-react";
 import Image from "next/image";
 
+import { useLanguage } from "@/Context/languagecontext";
+
 export default function ProductSearch({ products = [], onSelect }) {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -143,7 +146,7 @@ export default function ProductSearch({ products = [], onSelect }) {
           onFocus={handleFocus}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
-          placeholder="Search products by name, category, or description..."
+          placeholder={t("product_search_placeholder")}
           className="w-full pl-12 pr-4 py-4 text-gray-900 placeholder-gray-400 bg-transparent border-0 rounded-xl focus:outline-none text-base md:text-lg"
           aria-label="Search products"
           aria-expanded={showDropdown}
@@ -183,7 +186,8 @@ export default function ProductSearch({ products = [], onSelect }) {
               <div className="max-h-[250px] overflow-y-auto custom-scrollbar">
                 {filteredProducts.map((product, index) => {
                   const isSelected = index === selectedIndex;
-                  const productName = product.name || product.title || "Untitled";
+                  const productName =
+                    product.name || product.title || "Untitled";
                   const productImage =
                     product.image ||
                     product.photos?.[0] ||
@@ -246,9 +250,11 @@ export default function ProductSearch({ products = [], onSelect }) {
                 <div className="w-16 h-16 mx-auto mb-3 bg-gray-100 rounded-full flex items-center justify-center">
                   <Search className="text-gray-400 w-6 h-6" />
                 </div>
-                <p className="text-gray-600 font-medium">No matching products</p>
+                <p className="text-gray-600 font-medium">
+                  {t("product_no_results")}
+                </p>
                 <p className="text-sm text-gray-400 mt-1">
-                  Try searching with different keywords
+                  {t("product_try_different")}
                 </p>
               </div>
             )}
@@ -258,4 +264,3 @@ export default function ProductSearch({ products = [], onSelect }) {
     </div>
   );
 }
-

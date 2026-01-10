@@ -10,10 +10,26 @@ import Messages from "./ui/market/chat/Messages";
 import MessageInput from "./ui/market/chat/MesssageInput";
 import { FaCheck, FaCheckDouble } from "react-icons/fa";
 import useToast from "@/hooks/useToast";
-export default function ChatModal({ isOpen, onClose, product, sellerId, sellerInfo }) {
+import { useLanguage } from "@/Context/languagecontext";
+
+export default function ChatModal({
+  isOpen,
+  onClose,
+  product,
+  sellerId,
+  sellerInfo,
+}) {
   const { user } = useLogin();
   const { showToast } = useToast();
-  const { socket, joinConversation, sendMessage, markAsRead, sendTyping, typingUsers, findOrCreateConversation } = useSocket();
+  const {
+    socket,
+    joinConversation,
+    sendMessage,
+    markAsRead,
+    sendTyping,
+    typingUsers,
+    findOrCreateConversation,
+  } = useSocket();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -25,16 +41,18 @@ export default function ChatModal({ isOpen, onClose, product, sellerId, sellerIn
   const typingTimeoutRef = useRef(null);
   const conversationIdRef = useRef(null);
   const messageFallbackTimeoutRef = useRef(null);
+  const { t } = useLanguage();
 
   const fetchMessages = async (convId) => {
     if (!convId || !user?.id) return;
-    
+
     setLoading(true);
     try {
       // Optimized: select specific fields to reduce egress
       const { data, error } = await supabase
         .from("messages")
-        .select(`
+        .select(
+          `
           id,
           conversation_id,
           sender_id,
@@ -42,18 +60,19 @@ export default function ChatModal({ isOpen, onClose, product, sellerId, sellerIn
           created_at,
           read_at,
           sender:userinfo(id, firstName, lastName, display_name, profile_url, avatar_url)
-        `)
+        `
+        )
         .eq("conversation_id", convId)
         .order("created_at", { ascending: true });
-        
+
       if (error) {
         console.error("Error fetching messages:", error);
         setMessages([]);
         return;
       }
-      
+
       // Transform messages to match /chats page format: { id, from, text, at, seen }
-      const transformedMessages = (data || []).map(msg => ({
+      const transformedMessages = (data || []).map((msg) => ({
         id: msg.id,
         from: msg.sender_id === user.id ? "me" : msg.sender_id,
         text: msg.content || "",
@@ -66,7 +85,7 @@ export default function ChatModal({ isOpen, onClose, product, sellerId, sellerIn
         read_at: msg.read_at,
         conversation_id: msg.conversation_id,
       }));
-      
+
       setMessages(transformedMessages);
     } catch (error) {
       console.error("Unexpected error fetching messages:", error);
@@ -111,7 +130,7 @@ export default function ChatModal({ isOpen, onClose, product, sellerId, sellerIn
           const convId = response.conversation_id;
           setConversationId(convId);
           conversationIdRef.current = convId;
-          
+
           // Join the conversation room using socket context
           joinConversation(convId);
           // Fetch messages after joining
@@ -123,7 +142,7 @@ export default function ChatModal({ isOpen, onClose, product, sellerId, sellerIn
       .catch((error) => {
         if (!isMounted) return;
         console.error("Error finding/creating conversation:", error);
-        showToast("error", "Failed to start conversation. Please try again.");
+        showToast("error", t("start_conv_error"));
         setLoading(false);
       });
 
@@ -157,7 +176,7 @@ export default function ChatModal({ isOpen, onClose, product, sellerId, sellerIn
           if (!Array.isArray(prev)) return prev;
 
           const isMyMessage = msg.sender_id === user.id;
-          
+
           // If it's my message, replace the temp message with the real one (matches /chats page behavior)
           if (isMyMessage) {
             // Clear fallback timeout since message was received
@@ -165,12 +184,17 @@ export default function ChatModal({ isOpen, onClose, product, sellerId, sellerIn
               clearTimeout(messageFallbackTimeoutRef.current);
               messageFallbackTimeoutRef.current = null;
             }
-            
+
             // Find and replace the temp message that matches this content
             const tempIndex = prev.findIndex(
-              (m) => m && m.id && m.id.startsWith("temp-") && m.from === "me" && m.text === msg.content
+              (m) =>
+                m &&
+                m.id &&
+                m.id.startsWith("temp-") &&
+                m.from === "me" &&
+                m.text === msg.content
             );
-            
+
             if (tempIndex !== -1) {
               // Replace temp message with real one
               const newMessages = [...prev];
@@ -188,7 +212,7 @@ export default function ChatModal({ isOpen, onClose, product, sellerId, sellerIn
               };
               return newMessages;
             }
-            
+
             // If temp message not found, check if real message already exists
             const exists = prev.some((m) => m && m.id === msg.id);
             if (exists) return prev;
@@ -197,7 +221,7 @@ export default function ChatModal({ isOpen, onClose, product, sellerId, sellerIn
             const exists = prev.some((m) => m && m.id === msg.id);
             if (exists) return prev;
           }
-          
+
           // Transform message to match /chats page format
           const transformedMsg = {
             id: msg.id,
@@ -212,17 +236,26 @@ export default function ChatModal({ isOpen, onClose, product, sellerId, sellerIn
             read_at: msg.read_at,
             conversation_id: msg.conversation_id,
           };
-          
+
           return [...prev, transformedMsg];
         });
       }
     };
 
-    const handleMessagesSeen = ({ conversation_id, reader_id, seen_message_ids }) => {
-      if (!conversation_id || !reader_id || !Array.isArray(seen_message_ids)) return;
+    const handleMessagesSeen = ({
+      conversation_id,
+      reader_id,
+      seen_message_ids,
+    }) => {
+      if (!conversation_id || !reader_id || !Array.isArray(seen_message_ids))
+        return;
 
       // Only update if it's for current conversation and someone else read my messages
-      if (conversation_id === conversationId && reader_id !== user.id && seen_message_ids.length > 0) {
+      if (
+        conversation_id === conversationId &&
+        reader_id !== user.id &&
+        seen_message_ids.length > 0
+      ) {
         setMessages((prev) => {
           if (!Array.isArray(prev)) return prev;
 
@@ -250,7 +283,7 @@ export default function ChatModal({ isOpen, onClose, product, sellerId, sellerIn
   // Listen for typing indicators from socket context
   useEffect(() => {
     if (!conversationId || !sellerId) return;
-    
+
     const conversationTyping = typingUsers[conversationId];
     const otherUserTyping = conversationTyping && conversationTyping[sellerId];
     setIsTyping(otherUserTyping || false);
@@ -258,17 +291,17 @@ export default function ChatModal({ isOpen, onClose, product, sellerId, sellerIn
 
   const addMessage = () => {
     if (!newMessage || !newMessage.trim()) {
-      showToast("error", "Message cannot be empty");
+      showToast("error", t("msg_empty_error"));
       return;
     }
     if (!conversationId || !user?.id || !socket) {
-      showToast("error", "Unable to send message. Please try again.");
+      showToast("error", t("send_msg_error"));
       return;
     }
-    
+
     const messageContent = newMessage.trim();
     setSending(true);
-    
+
     // Add optimistic message (matches /chats page behavior)
     const optimisticMsg = {
       id: "temp-" + Date.now(),
@@ -286,26 +319,28 @@ export default function ChatModal({ isOpen, onClose, product, sellerId, sellerIn
       if (!Array.isArray(prev)) return [optimisticMsg];
       return [...prev, optimisticMsg];
     });
-    
+
     // Ensure we're joined to the conversation room before sending
     joinConversation(conversationId);
-    
+
     // Send message using socket context
     sendMessage({
       sender_id: user.id,
       conversation_id: conversationId,
       content: messageContent,
     });
-    
+
     // Fallback: If message isn't received via socket within 2 seconds, refetch messages
     if (messageFallbackTimeoutRef.current) {
       clearTimeout(messageFallbackTimeoutRef.current);
     }
-    
+
     messageFallbackTimeoutRef.current = setTimeout(() => {
       setMessages((prev) => {
         if (!Array.isArray(prev)) return prev;
-        const tempMsgExists = prev.some(m => m && m.id === optimisticMsg.id && m.id.startsWith("temp-"));
+        const tempMsgExists = prev.some(
+          (m) => m && m.id === optimisticMsg.id && m.id.startsWith("temp-")
+        );
         if (tempMsgExists) {
           fetchMessages(conversationId);
         }
@@ -313,7 +348,7 @@ export default function ChatModal({ isOpen, onClose, product, sellerId, sellerIn
       });
       messageFallbackTimeoutRef.current = null;
     }, 2000);
-    
+
     setNewMessage("");
     setSending(false);
   };
@@ -323,18 +358,18 @@ export default function ChatModal({ isOpen, onClose, product, sellerId, sellerIn
 
     const value = e.target.value || "";
     setNewMessage(value);
-    
+
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
     }
-    
+
     setIsTyping(true);
-    
+
     // Send typing indicator using socket context
     if (conversationId && sendTyping) {
       sendTyping(conversationId, true);
     }
-    
+
     typingTimeoutRef.current = setTimeout(() => {
       setIsTyping(false);
       // Stop typing indicator
@@ -357,7 +392,7 @@ export default function ChatModal({ isOpen, onClose, product, sellerId, sellerIn
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
-  
+
   useEffect(() => {
     if (Array.isArray(messages) && messages.length > 0) {
       scrollToBottom();
@@ -416,7 +451,7 @@ export default function ChatModal({ isOpen, onClose, product, sellerId, sellerIn
           initial={{ scale: 0.96, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.96, opacity: 0 }}
-          transition={{ duration: 0.25, ease: 'easeOut' }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
           className="w-full sm:w-[420px] h-full flex flex-col overflow-hidden 
                      bg-white rounded-3xl shadow-[0_12px_45px_rgba(0,0,0,0.2)] 
                      border border-emerald-100 self-end"

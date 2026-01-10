@@ -10,6 +10,7 @@ import { formatName } from "@/utils/formatName";
 import { timeAgo } from "@/utils/timeConverter";
 import { motion } from "framer-motion";
 import ReplyItem from "./ReplyItem";
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function CommentItem({
   comment,
@@ -27,22 +28,26 @@ export default function CommentItem({
   replyLikes = {},
   onReplyMenu,
 }) {
+  const { t } = useLanguage();
   return (
     <motion.div
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
       className="flex items-start gap-3 py-3 px-4 rounded-3xl hover:scale-[1.01] transition-all duration-300 group/comment shadow-lg"
       style={{
-        background: typeof window !== "undefined" &&
+        background:
+          typeof window !== "undefined" &&
           document.documentElement.classList.contains("dark")
             ? "rgba(35,35,35,0.9)" // dark gray background
             : "linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.45) 100%)",
         backdropFilter: "blur(20px)",
-        border: typeof window !== "undefined" &&
+        border:
+          typeof window !== "undefined" &&
           document.documentElement.classList.contains("dark")
             ? "1px solid rgba(255,255,255,0.08)"
             : "1px solid rgba(255,255,255,0.25)",
-        boxShadow: typeof window !== "undefined" &&
+        boxShadow:
+          typeof window !== "undefined" &&
           document.documentElement.classList.contains("dark")
             ? "0 2px 10px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05)"
             : "0 8px 24px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.4)",
@@ -64,7 +69,9 @@ export default function CommentItem({
         {/* 🧾 Name + Time */}
         <div className="flex items-center gap-2">
           <span className="text-slate-800 text-[0.95rem] font-semibold tracking-tight dark:text-white">
-            {comment?.userinfo?.display_name ? comment?.userinfo?.display_name : formatName(comment?.userinfo)}
+            {comment?.userinfo?.display_name
+              ? comment?.userinfo?.display_name
+              : formatName(comment?.userinfo)}
           </span>
           <div className="w-1 h-1 bg-slate-300 rounded-full"></div>
           <span className="text-slate-400 text-[0.75rem] font-medium">
@@ -107,7 +114,7 @@ export default function CommentItem({
               onClick={() => onReply(comment.id)}
               className="flex items-center gap-1 text-[0.8rem] font-semibold text-farm-700 hover:text-farm-800 transition-all duration-200 active:scale-95"
             >
-              Reply
+              {t("reply_btn")}
               {comment?.replies?.length > 0 && (
                 <span className="text-[0.75rem] text-slate-400 font-medium">
                   ({comment.replies.length})
@@ -134,7 +141,7 @@ export default function CommentItem({
             >
               <input
                 type="text"
-                placeholder="Write a reply..."
+                placeholder={t("write_reply_placeholder")}
                 value={replyText}
                 onChange={onReplyTextChange}
                 onKeyPress={(e) => e.key === "Enter" && onSendReply()}

@@ -10,13 +10,20 @@ import CommentInput from "./ui/post/CommentInput";
 import CommentsSection from "./ui/post/CommentsSection";
 import useToast from "@/hooks/useToast";
 import { supabase } from "@/lib/supabaseClient";
-import { apiRequest, validateComment, sanitizeComment } from "@/utils/apiHelpers";
+import {
+  apiRequest,
+  validateComment,
+  sanitizeComment,
+} from "@/utils/apiHelpers";
 import { Capacitor } from "@capacitor/core";
 import { shareContent } from "@/utils/shareHandler";
-export default function PostCard({ post, comment, idx , refreshPosts }) {
-  const { user,accessToken} = useLogin();
+import { useLanguage } from "@/Context/languagecontext";
+
+export default function PostCard({ post, comment, idx, refreshPosts }) {
+  const { user, accessToken } = useLogin();
   const { showToast } = useToast();
-  
+  const { t } = useLanguage();
+
   // State management
   const [postCaption, setPostCaption] = useState(post?.caption || "");
   const [showAllComments, setShowAllComments] = useState(false);
@@ -49,34 +56,36 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
   function sanitizeCaption(str) {
     if (!str) return "";
     return str
-      .replace(/[`]/g, "'")       // escape backticks
-      .replace(/["]/g, "'")       // escape quotes
-      .replace(/\(/g, "&#40;")    // escape (
-      .replace(/\)/g, "&#41;")    // escape )
-      .replace(/→/g, "\u2192")    // safe arrow
-      .replace(/\n/g, "<br/>");   // safe line breaks
+      .replace(/[`]/g, "'") // escape backticks
+      .replace(/["]/g, "'") // escape quotes
+      .replace(/\(/g, "&#40;") // escape (
+      .replace(/\)/g, "&#41;") // escape )
+      .replace(/→/g, "\u2192") // safe arrow
+      .replace(/\n/g, "<br/>"); // safe line breaks
   }
 
-  const copyToClipboard = useCallback(async (text) => {
-    try {
-      if (Capacitor.isNativePlatform()) {
-        // Native clipboard for Capacitor Android
-        const { Clipboard } = await import("@capacitor/clipboard");
-        await Clipboard.write({ string: text });
-        showToast("success", "Link copied");
-        return;
+  const copyToClipboard = useCallback(
+    async (text) => {
+      try {
+        if (Capacitor.isNativePlatform()) {
+          // Native clipboard for Capacitor Android
+          const { Clipboard } = await import("@capacitor/clipboard");
+          await Clipboard.write({ string: text });
+          showToast("success", t("link_copied_success"));
+          return;
+        }
+
+        // Browser clipboard
+        await navigator.clipboard.writeText(text);
+        showToast("success", t("link_copied_success"));
+      } catch (err) {
+        console.error("Clipboard error:", err);
+        showToast("error", t("clipboard_blocked_error"));
       }
+    },
+    [showToast, t]
+  );
 
-      // Browser clipboard
-      await navigator.clipboard.writeText(text);
-      showToast("success", "Link copied");
-
-    } catch (err) {
-      console.error("Clipboard error:", err);
-      showToast("error", "Clipboard blocked. Try again.");
-    }
-  }, [showToast]);
-  
   // Initialize post data - use stable references
   useEffect(() => {
     if (!user || !post) return;
@@ -84,13 +93,18 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
     setIsLike(liked);
     setLikeCount(post?.post_likes?.length || 0);
     setcommentCount(post?.post_comments?.length || 0);
-  }, [post?.id, user?.id, post?.post_likes?.length, post?.post_comments?.length]);
+  }, [
+    post?.id,
+    user?.id,
+    post?.post_likes?.length,
+    post?.post_comments?.length,
+  ]);
 
   // Check if post is bookmarked
   useEffect(() => {
     const checkBookmarkStatus = async () => {
       if (!user || !post?.id) return;
-      
+
       try {
         const { data, error } = await supabase
           .from("user_favorites")
@@ -98,36 +112,39 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
           .eq("post_id", post?.id)
           .eq("user_id", user?.id)
           .maybeSingle();
-        
+
         if (error) {
           console.error("Error checking bookmark status:", error);
           return;
         }
-        
+
         setIsBookmarked(!!data);
       } catch (err) {
         console.error("Error checking bookmark status:", err);
       }
     };
-    
+
     checkBookmarkStatus();
   }, [user?.id, post?.id]);
 
   // Process comments data (memoized)
   const processCommentsData = useCallback((data) => {
-    if (!data || !Array.isArray(data)) return { mainComments: [], repliesByParent: {}, nestedRepliesMap: {} };
+    if (!data || !Array.isArray(data))
+      return { mainComments: [], repliesByParent: {}, nestedRepliesMap: {} };
 
     // Separate main comments from replies
-    const mainComments = data.filter(comment => !comment.parent_comment_id);
-    const replies = data.filter(comment => comment.parent_comment_id);
-    
+    const mainComments = data.filter((comment) => !comment.parent_comment_id);
+    const replies = data.filter((comment) => comment.parent_comment_id);
+
     // Group replies by parent ID
     const repliesByParent = {};
     const nestedRepliesMap = {};
-    
-    replies.forEach(reply => {
-      const isParentComment = mainComments.some(c => c.id === reply.parent_comment_id);
-      
+
+    replies.forEach((reply) => {
+      const isParentComment = mainComments.some(
+        (c) => c.id === reply.parent_comment_id
+      );
+
       if (isParentComment) {
         if (!repliesByParent[reply.parent_comment_id]) {
           repliesByParent[reply.parent_comment_id] = [];
@@ -140,20 +157,21 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
         nestedRepliesMap[reply.parent_comment_id].push(reply);
       }
     });
-    
+
     return { mainComments, repliesByParent, nestedRepliesMap };
   }, []);
 
   // Fetch comments - use stable user.id instead of user object
   const fetchComments = useCallback(async () => {
     if (!post?.id) return;
-    
+
     setLoadingComments(true);
     try {
       // Optimized: select specific fields and limit comments to reduce egress
       const { data, error } = await supabase
         .from("post_comments")
-        .select(`
+        .select(
+          `
           id,
           comment,
           created_at,
@@ -161,9 +179,10 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
           post_id,
           userinfo(id, firstName, lastName, display_name, profile_url, avatar_url),
           comment_likes(id, user_id, comment_id)
-        `)
+        `
+        )
         .eq("post_id", post?.id)
-        .order('created_at', { ascending: true })
+        .order("created_at", { ascending: true })
         .limit(100); // Limit comments to reduce egress
 
       if (error) {
@@ -172,19 +191,22 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
         return;
       }
 
-      const { mainComments, repliesByParent, nestedRepliesMap } = processCommentsData(data || []);
-      
+      const { mainComments, repliesByParent, nestedRepliesMap } =
+        processCommentsData(data || []);
+
       // Track which replies the user has liked
       if (user?.id && data) {
         const likedRepliesMap = {};
-        const replies = data.filter(comment => comment.parent_comment_id);
-        replies.forEach(reply => {
-          const isLiked = reply.comment_likes?.some(like => like.user_id === user.id);
+        const replies = data.filter((comment) => comment.parent_comment_id);
+        replies.forEach((reply) => {
+          const isLiked = reply.comment_likes?.some(
+            (like) => like.user_id === user.id
+          );
           likedRepliesMap[reply.id] = isLiked || false;
         });
         setReplyLikes(likedRepliesMap);
       }
-      
+
       setcommentInfo(mainComments);
       setCommentReplies(repliesByParent);
       setNestedReplies(nestedRepliesMap);
@@ -203,7 +225,9 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
 
   // Calculate top-level comment count
   useEffect(() => {
-    const topLevelCommentsCount = commentInfo.filter(comment => comment.parent_comment_id === null).length;
+    const topLevelCommentsCount = commentInfo.filter(
+      (comment) => comment.parent_comment_id === null
+    ).length;
     setOriginalCommentCount(topLevelCommentsCount);
   }, [commentInfo]);
 
@@ -214,9 +238,9 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
         setReplyMenuOpen(null);
       }
     };
-    
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
+
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
   }, [replyMenuOpen]);
 
   // Refresh comments function - remove showToast dependency to prevent rebuilds
@@ -233,7 +257,7 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
 
   const saveComment = useCallback(async () => {
     if (!com.trim() || isSubmitting || !user) return;
-    
+
     // Validate comment
     const validation = validateComment(com);
     if (!validation.valid) {
@@ -244,25 +268,28 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
 
     setIsSubmitting(true);
     setError(null);
-    
+
     try {
       const sanitizedComment = sanitizeComment(com);
-      
-      const { data, error: apiError } = await apiRequest(`${BASE_URL}/api/post-comment`, {
-        method: "POST",
-        headers : {
-          "Authorization" : `Bearer ${accessToken}`
-        },
-        body: JSON.stringify({
-          post_id: post.id,
-          comment: sanitizedComment,
-          user_id: user.id
-        })
-      });
+
+      const { data, error: apiError } = await apiRequest(
+        `${BASE_URL}/api/post-comment`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({
+            post_id: post.id,
+            comment: sanitizedComment,
+            user_id: user.id,
+          }),
+        }
+      );
 
       if (apiError) {
-        setError(apiError.message || "Failed to save comment");
-        showToast("error", apiError.message || "Failed to save comment");
+        setError(apiError.message || t("add_comment_failed"));
+        showToast("error", apiError.message || t("add_comment_failed"));
         return;
       }
 
@@ -270,22 +297,31 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
       if (data?.data) {
         const newComment = Array.isArray(data.data) ? data.data[0] : data.data;
         if (newComment) {
-          setcommentInfo(prev => [...prev, newComment]);
-          setcommentCount(prev => prev + 1);
+          setcommentInfo((prev) => [...prev, newComment]);
+          setcommentCount((prev) => prev + 1);
         }
       }
 
       setCom("");
       await refreshComments();
-      // showToast("success", "Comment saved successfully");
+      showToast("success", t("add_comment_success"));
     } catch (e) {
-      setError("Network error occurred");
-      showToast("error", "Network error. Please try again.");
+      setError(t("network_error"));
+      showToast("error", t("network_error") + " Please try again.");
       console.error("Error saving comment:", e);
     } finally {
       setIsSubmitting(false);
     }
-  }, [com, isSubmitting, user?.id, post?.id, refreshComments]);
+  }, [
+    com,
+    isSubmitting,
+    user?.id,
+    post?.id,
+    refreshComments,
+    accessToken,
+    showToast,
+    t,
+  ]);
 
   const handleCommentClick = useCallback(() => {
     setShowCommentsSection((prev) => !prev);
@@ -297,7 +333,7 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
   // Like handlers with optimistic updates
   const handleLikeClick = useCallback(async () => {
     if (!user) {
-      showToast("error", "Please login first");
+      showToast("error", t("login_required_toast"));
       return;
     }
 
@@ -307,23 +343,26 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
     const previousLike = isLike;
     const previousCount = likeCount;
     setIsLike(!isLike);
-    setLikeCount(prev => previousLike ? Math.max(0, prev - 1) : prev + 1);
+    setLikeCount((prev) => (previousLike ? Math.max(0, prev - 1) : prev + 1));
     setLoadingLike(true);
 
     try {
-      const { data, error: apiError } = await apiRequest(`${BASE_URL}/api/posts/${post.id}/like`, {
-        method: "POST",
-        headers : {
-          "Authorization" : `Bearer ${accessToken}`
-        },
-        body: JSON.stringify({ user_id: user.id })
-      });
+      const { data, error: apiError } = await apiRequest(
+        `${BASE_URL}/api/posts/${post.id}/like`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({ user_id: user.id }),
+        }
+      );
 
       if (apiError) {
         // Rollback on error
         setIsLike(previousLike);
         setLikeCount(previousCount);
-        showToast("error", apiError.message || "Failed to update like");
+        showToast("error", apiError.message || t("like_update_failed"));
         return;
       }
 
@@ -336,16 +375,25 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
       // Rollback on error
       setIsLike(previousLike);
       setLikeCount(previousCount);
-      showToast("error", "An error occurred. Please try again.");
+      showToast("error", t("network_error") + " Please try again.");
       console.error("Unexpected error:", err);
     } finally {
       setLoadingLike(false);
     }
-  }, [user?.id, isLike, likeCount, post?.id, loadingLike]);
+  }, [
+    user?.id,
+    isLike,
+    likeCount,
+    post?.id,
+    loadingLike,
+    accessToken,
+    showToast,
+    t,
+  ]);
 
   const handleBookmarkClick = useCallback(async () => {
     if (!user) {
-      showToast("warning", "You are not logged in...");
+      showToast("warning", t("login_required_toast"));
       return;
     }
 
@@ -356,18 +404,21 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
     setLoadingBookmark(true);
 
     try {
-      const { data, error: apiError } = await apiRequest(`${BASE_URL}/api/posts/${post.id}/bookmark`, {
-        method: "POST",
-        headers : {
-          "Authorization" : `Bearer ${accessToken}`
-        },
-        body: JSON.stringify({ user_id: user.id })
-      });
+      const { data, error: apiError } = await apiRequest(
+        `${BASE_URL}/api/posts/${post.id}/bookmark`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({ user_id: user.id }),
+        }
+      );
 
       if (apiError) {
         // Rollback on error
         setIsBookmarked(originalStatus);
-        showToast("error", apiError.message || "Something went wrong");
+        showToast("error", apiError.message || t("network_error"));
         return;
       }
 
@@ -375,46 +426,54 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
         setIsBookmarked(data.bookmarked);
         showToast(
           data.bookmarked ? "success" : "info",
-          data.bookmarked ? "Post saved in favorites" : "Post removed from bookmarks"
+          data.bookmarked ? t("bookmark_added") : t("bookmark_removed")
         );
       }
     } catch (err) {
       // Rollback on error
       setIsBookmarked(originalStatus);
-      showToast("error", "An unexpected error occurred");
+      showToast("error", t("network_error"));
       console.error("Error while bookmarking:", err);
     } finally {
       setLoadingBookmark(false);
     }
-  }, [user?.id, isBookmarked, post?.id, loadingBookmark]);
+  }, [
+    user?.id,
+    isBookmarked,
+    post?.id,
+    loadingBookmark,
+    accessToken,
+    showToast,
+    t,
+  ]);
 
   const handleShareClick = useCallback(async () => {
-      const postId = post?.id;
+    const postId = post?.id;
 
-      const result = await shareContent({
-        title: "Farm Post",
-        text: postCaption || post?.text,
-        id : postId,
-        route : "posts", // <--- this decides links like /post/ or /market/
-      });
+    const result = await shareContent({
+      title: t("share_title"),
+      text: postCaption || post?.text,
+      id: postId,
+      route: "posts", // <--- this decides links like /post/ or /market/
+    });
 
-      // 📌 Utility returned results - you just respond:
-      if (result.platform === "native") {
-        console.log("✔ Shared via native bottom sheet");
-      }
+    // 📌 Utility returned results - you just respond:
+    if (result.platform === "native") {
+      console.log("✔ Shared via native bottom sheet");
+    }
 
-      if (result.platform === "web") {
-        console.log("🌍 Shared via browser share dialog");
-      }
+    if (result.platform === "web") {
+      console.log("🌍 Shared via browser share dialog");
+    }
 
-      if (result.platform === "copy") {
-        showToast("info", "📋 Link copied to clipboard!");
-      }
+    if (result.platform === "copy") {
+      showToast("info", t("link_copied_success"));
+    }
 
-      if (!result.success) {
-        return;
-      }
-  }, [postCaption, post?.text, post?.id]);
+    if (!result.success) {
+      return;
+    }
+  }, [postCaption, post?.text, post?.id, showToast, t]);
 
   // Reply handlers
   const handleSendReply = useCallback(async () => {
@@ -429,114 +488,144 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
 
     try {
       const sanitizedReply = sanitizeComment(replyText);
-      
-      const { data, error: apiError } = await apiRequest(`${BASE_URL}/api/post-comment`, {
-        method: "POST",
-        headers : {
-          "Authorization" : `Bearer ${accessToken}`
-        },
-        body: JSON.stringify({
-          post_id: post.id,
-          comment: sanitizedReply,
-          user_id: user.id,
-          parent_comment_id: replyingTo
-        })
-      });
+
+      const { data, error: apiError } = await apiRequest(
+        `${BASE_URL}/api/post-comment`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({
+            post_id: post.id,
+            comment: sanitizedReply,
+            user_id: user.id,
+            parent_comment_id: replyingTo,
+          }),
+        }
+      );
 
       if (apiError) {
-        showToast("error", apiError.message || "Failed to send reply");
+        showToast("error", apiError.message || t("reply_send_failed"));
         return;
       }
 
       // Refresh comments to get the new reply with all data
       await refreshComments();
-      
+
       setReplyText("");
       setShowReplyBox(null);
       setReplyingTo(null);
-      showToast("success", "Reply sent successfully");
+      showToast("success", t("reply_sent_success"));
     } catch (err) {
       console.error("Error sending reply:", err);
-      showToast("error", "Failed to send reply. Please try again.");
+      showToast("error", t("reply_send_failed") + " Please try again.");
     }
-  }, [replyText, user?.id, replyingTo, post?.id, refreshComments]);
+  }, [
+    replyText,
+    user?.id,
+    replyingTo,
+    post?.id,
+    refreshComments,
+    accessToken,
+    showToast,
+    t,
+  ]);
 
-  const handleCommentLike = useCallback(async (commentId) => {
-    if (!user) {
-      showToast("error", "You must be logged in to like comments");
-      return;
-    }
-
-    try {
-      const { data, error: apiError } = await apiRequest(`${BASE_URL}/api/comments/${commentId}/like`, {
-        method: "POST",
-        headers : {
-          "Authorization" : `Bearer ${accessToken}`
-        },
-        body: JSON.stringify({ user_id: user.id })
-      });
-
-      if (apiError) {
-        showToast("error", apiError.message || "Failed to like comment");
+  const handleCommentLike = useCallback(
+    async (commentId) => {
+      if (!user) {
+        showToast("error", t("login_required_like_comment"));
         return;
       }
 
-      // Refresh comments to get updated like counts
-      await refreshComments();
-    } catch (err) {
-      console.error("Error toggling comment like:", err);
-      showToast("error", "An error occurred. Please try again.");
-    }
-  }, [user?.id, refreshComments]);
+      try {
+        const { data, error: apiError } = await apiRequest(
+          `${BASE_URL}/api/comments/${commentId}/like`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({ user_id: user.id }),
+          }
+        );
 
-  const handleCommentReply = useCallback((parentId) => {
-    if (!user) {
-      showToast("error", "You have to login to reply");
-      return;
-    }
-    setShowReplyBox((prev) => prev === parentId ? null : parentId);
-    setReplyingTo(parentId);
-  }, [user?.id]);
+        if (apiError) {
+          showToast("error", apiError.message || t("like_comment_failed"));
+          return;
+        }
 
-  const handleReplyToReply = useCallback((replyId) => {
-    if (!user) {
-      showToast("error", "You have to login to reply");
-      return;
-    }
-    setShowReplyBox((prev) => prev === replyId ? null : replyId);
-    setReplyingTo(replyId);
-  }, [user?.id]);
+        // Refresh comments to get updated like counts
+        await refreshComments();
+      } catch (err) {
+        console.error("Error toggling comment like:", err);
+        showToast("error", t("network_error") + " Please try again.");
+      }
+    },
+    [user?.id, refreshComments, accessToken, showToast, t]
+  );
 
-  const handleReplyLike = useCallback(async (replyId) => {
-    if (!user) {
-      showToast("error", "You must be logged in to like replies");
-      return;
-    }
+  const handleCommentReply = useCallback(
+    (parentId) => {
+      if (!user) {
+        showToast("error", t("login_required_reply"));
+        return;
+      }
+      setShowReplyBox((prev) => (prev === parentId ? null : parentId));
+      setReplyingTo(parentId);
+    },
+    [user?.id, showToast, t]
+  );
 
-    try {
-      const { data, error: apiError } = await apiRequest(`${BASE_URL}/api/comments/${replyId}/like`, {
-        method: "POST",
-        headers : {
-          "Authorization" : `Bearer ${accessToken}`
-        },
-        body: JSON.stringify({ user_id: user.id })
-      });
+  const handleReplyToReply = useCallback(
+    (replyId) => {
+      if (!user) {
+        showToast("error", t("login_required_reply"));
+        return;
+      }
+      setShowReplyBox((prev) => (prev === replyId ? null : replyId));
+      setReplyingTo(replyId);
+    },
+    [user?.id, showToast, t]
+  );
 
-      if (apiError) {
-        showToast("error", apiError.message || "Failed to like reply");
+  const handleReplyLike = useCallback(
+    async (replyId) => {
+      if (!user) {
+        showToast("error", t("login_required_like_reply"));
         return;
       }
 
-      // Update local state optimistically
-      setReplyLikes(prev => ({ ...prev, [replyId]: data?.liked || false }));
-      
-      // Refresh to get accurate counts
-      await refreshComments();
-    } catch (err) {
-      console.error("Error toggling reply like:", err);
-      showToast("error", "An error occurred. Please try again.");
-    }
-  }, [user?.id, refreshComments]);
+      try {
+        const { data, error: apiError } = await apiRequest(
+          `${BASE_URL}/api/comments/${replyId}/like`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({ user_id: user.id }),
+          }
+        );
+
+        if (apiError) {
+          showToast("error", apiError.message || t("like_reply_failed"));
+          return;
+        }
+
+        // Update local state optimistically
+        setReplyLikes((prev) => ({ ...prev, [replyId]: data?.liked || false }));
+
+        // Refresh to get accurate counts
+        await refreshComments();
+      } catch (err) {
+        console.error("Error toggling reply like:", err);
+        showToast("error", t("network_error") + " Please try again.");
+      }
+    },
+    [user?.id, refreshComments, accessToken, showToast, t]
+  );
 
   const handleCommentMenu = useCallback(() => {
     if (!user) return;
@@ -544,7 +633,7 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
 
   const handleReplyMenu = useCallback((replyId, event) => {
     event?.stopPropagation();
-    setReplyMenuOpen((prev) => prev === replyId ? null : replyId);
+    setReplyMenuOpen((prev) => (prev === replyId ? null : replyId));
   }, []);
 
   const onOptionsClick = useCallback(() => {
@@ -553,8 +642,8 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
 
   const onDelete = useCallback(async () => {
     onOptionsClick();
-    
-    if (!confirm("Are you sure you want to delete this post?")) {
+
+    if (!confirm(t("delete_post_confirm"))) {
       return;
     }
 
@@ -567,32 +656,41 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
 
       if (error) {
         console.error("Error deleting post:", error);
-        showToast("error", "Failed to delete post");
+        showToast("error", t("failed_delete_post"));
       } else {
-        showToast("success", "Post deleted successfully");
+        showToast("success", t("post_deleted_success"));
         // Optionally trigger a refresh in parent component
-        if (typeof window !== 'undefined') {
+        if (typeof window !== "undefined") {
           window.location.reload();
         }
       }
     } catch (err) {
       console.error("Unexpected error deleting post:", err);
-      showToast("error", "An error occurred while deleting the post");
+      showToast("error", t("error_deleting_post"));
     }
-  }, [post?.id, user?.id, onOptionsClick]);
+  }, [post?.id, user?.id, onOptionsClick, showToast, t]);
 
   const onPostUpdated = useCallback((newCaption) => {
     setPostCaption(newCaption);
   }, []);
 
   // Memoize handlers to prevent unnecessary re-renders
-  const commentHandlers = useMemo(() => ({
-    onCommentLike: handleCommentLike,
-    onCommentReply: handleCommentReply,
-    onSendReply: handleSendReply,
-    onCommentMenu: handleCommentMenu,
-    onReplyMenu: handleReplyMenu,
-  }), [handleCommentLike, handleCommentReply, handleSendReply, handleCommentMenu, handleReplyMenu]);
+  const commentHandlers = useMemo(
+    () => ({
+      onCommentLike: handleCommentLike,
+      onCommentReply: handleCommentReply,
+      onSendReply: handleSendReply,
+      onCommentMenu: handleCommentMenu,
+      onReplyMenu: handleReplyMenu,
+    }),
+    [
+      handleCommentLike,
+      handleCommentReply,
+      handleSendReply,
+      handleCommentMenu,
+      handleReplyMenu,
+    ]
+  );
 
   return (
     <motion.article
@@ -602,12 +700,15 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
       transition={{ duration: 0.5, delay: idx * 0.1 }}
       className="relative group hover-lift w-full max-w-2xl mx-auto mb-6 overflow-hidden rounded-3xl shadow-2xl"
       style={{
-        background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 25%, #f1f5f9 50%, #e2e8f0 75%, #cbd5e1 100%)',
-        border: typeof window !== "undefined" &&
+        background:
+          "linear-gradient(135deg, #ffffff 0%, #f8fafc 25%, #f1f5f9 50%, #e2e8f0 75%, #cbd5e1 100%)",
+        border:
+          typeof window !== "undefined" &&
           document.documentElement.classList.contains("dark")
             ? "none"
             : "1px solid rgba(255, 255, 255, 0.2)",
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05)'
+        boxShadow:
+          "0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05)",
       }}
     >
       <PostBackground />
@@ -678,7 +779,7 @@ export default function PostCard({ post, comment, idx , refreshPosts }) {
           value={com}
           onChange={handleComment}
           onSubmit={saveComment}
-          placeholder="Share your thoughts..."
+          placeholder={t("share_thoughts_placeholder")}
           isSubmitting={isSubmitting}
           error={error}
           inputRef={commentIconRef}

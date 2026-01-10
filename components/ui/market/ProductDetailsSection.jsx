@@ -1,19 +1,16 @@
 "use client";
-import { 
-  FaTag, 
-  FaList, 
-  FaCalendarAlt,
-  FaMapMarkerAlt
-} from "react-icons/fa";
+import { FaTag, FaList, FaCalendarAlt, FaMapMarkerAlt } from "react-icons/fa";
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function ProductDetailsSection({ product }) {
+  const { t } = useLanguage();
   if (!product) return null;
 
   return (
     <div className="relative bg-gradient-to-br from-[#f8fbf8] via-[#f3f8f5] to-[#eaf3ed] rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.06)] border border-farm-200 px-8 py-10 md:px-10 md:py-12 space-y-8 transition-all duration-300 dark:bg-none dark:bg-[#272727] dark:border-none">
       {/* Header */}
       <h2 className="text-3xl font-extrabold text-[#1b2e1b] text-center tracking-tight border-b-2 border-[#a8d5a8] pb-4">
-        Product Details
+        {t("product_details_title")}
       </h2>
 
       {/* Info Grid */}
@@ -22,8 +19,14 @@ export default function ProductDetailsSection({ product }) {
         <div className="flex items-center gap-3 p-4 bg-white/70 backdrop-blur-sm border border-[#e4f0e6] rounded-2xl shadow-sm hover:shadow-md hover:scale-[1.01] transition-all dark:bg-[#1E1E1E] dark:border-white/20">
           <FaTag className="text-[#2f7030] text-xl flex-shrink-0" />
           <div>
-            <p className="text-xs text-[#6b7a6c] uppercase tracking-wide">Category</p>
-            <p className="font-semibold text-[#1b2e1b]">{product.category || "-"}</p>
+            <p className="text-xs text-[#6b7a6c] uppercase tracking-wide">
+              {t("label_category")}
+            </p>
+            <p className="font-semibold text-[#1b2e1b]">
+              {t(`cat_${product.category.toLowerCase()}`) ||
+                product.category ||
+                "-"}
+            </p>
           </div>
         </div>
 
@@ -32,7 +35,9 @@ export default function ProductDetailsSection({ product }) {
           <div className="flex items-center gap-3 p-4 bg-white/70 backdrop-blur-sm border border-[#e4f0e6] rounded-2xl shadow-sm hover:shadow-md hover:scale-[1.01] transition-all dark:bg-[#1E1E1E] dark:border-white/20">
             <FaList className="text-[#2f7030] text-xl flex-shrink-0" />
             <div>
-              <p className="text-xs text-[#6b7a6c] uppercase tracking-wide">Quantity</p>
+              <p className="text-xs text-[#6b7a6c] uppercase tracking-wide">
+                {t("label_quantity")}
+              </p>
               <p className="font-semibold text-[#1b2e1b]">{product.quantity}</p>
             </div>
           </div>
@@ -42,7 +47,9 @@ export default function ProductDetailsSection({ product }) {
         <div className="flex items-center gap-3 p-4 bg-white/70 backdrop-blur-sm border border-[#e4f0e6] rounded-2xl shadow-sm hover:shadow-md hover:scale-[1.01] transition-all dark:bg-[#1E1E1E] dark:border-white/20">
           <FaCalendarAlt className="text-[#2f7030] text-xl flex-shrink-0" />
           <div>
-            <p className="text-xs text-[#6b7a6c] uppercase tracking-wide">Listed On</p>
+            <p className="text-xs text-[#6b7a6c] uppercase tracking-wide">
+              {t("label_listed_on")}
+            </p>
             <p className="font-semibold text-[#1b2e1b]">
               {product.date
                 ? new Date(product.date).toLocaleDateString("en-IN", {
@@ -65,38 +72,52 @@ export default function ProductDetailsSection({ product }) {
         </div> */}
 
         {/* Location */}
-        {product.location && (product.location.district || product.location.taluka || product.location.village) && (
-          <div className="flex items-start gap-3 p-4 bg-gradient-to-br from-[#edf8f3] to-[#e5f3ec] rounded-2xl border border-[#d3ead8] shadow-sm hover:shadow-md transition-all dark:bg-none dark:bg-[#1E1E1E] dark:border-white/20">
-            <FaMapMarkerAlt className="text-[#317a32] text-xl flex-shrink-0 mt-1" />
-            <div className="flex-1">
-              <p className="text-xs text-[#5e7260] uppercase tracking-wide mb-1">Location</p>
-              <div className="space-y-1 text-[#1b2e1b]">
-                {product.location.village && (
-                  <p className="font-medium">
-                    <span className="text-[#617161]">Village: </span> <br/> {product.location.village}
-                  </p>
-                )}
-                {product.location.taluka && (
-                  <p className="font-medium">
-                    <span className="text-[#617161]">Taluka: </span> <br/> {product.location.taluka}
-                  </p>
-                )}
-                {product.location.district && (
-                  <p className="font-medium">
-                    <span className="text-[#617161]">District: </span> <br/> {product.location.district}
-                  </p>
-                )}
+        {product.location &&
+          (product.location.district ||
+            product.location.taluka ||
+            product.location.village) && (
+            <div className="flex items-start gap-3 p-4 bg-gradient-to-br from-[#edf8f3] to-[#e5f3ec] rounded-2xl border border-[#d3ead8] shadow-sm hover:shadow-md transition-all dark:bg-none dark:bg-[#1E1E1E] dark:border-white/20">
+              <FaMapMarkerAlt className="text-[#317a32] text-xl flex-shrink-0 mt-1" />
+              <div className="flex-1">
+                <p className="text-xs text-[#5e7260] uppercase tracking-wide mb-1">
+                  {t("filter_location")}
+                </p>
+                <div className="space-y-1 text-[#1b2e1b]">
+                  {product.location.village && (
+                    <p className="font-medium">
+                      <span className="text-[#617161]">
+                        {t("label_village")}:{" "}
+                      </span>{" "}
+                      <br /> {product.location.village}
+                    </p>
+                  )}
+                  {product.location.taluka && (
+                    <p className="font-medium">
+                      <span className="text-[#617161]">
+                        {t("label_taluka")}:{" "}
+                      </span>{" "}
+                      <br /> {product.location.taluka}
+                    </p>
+                  )}
+                  {product.location.district && (
+                    <p className="font-medium">
+                      <span className="text-[#617161]">
+                        {t("label_district")}:{" "}
+                      </span>{" "}
+                      <br /> {product.location.district}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
       </div>
 
       {/* Description */}
       {product.description && (
         <div className="border-t border-[#d9e9dd] dark:border-none">
           <h3 className="text-2xl md:text-3xl font-bold text-[#1b2e1b] mb-4 border-b border-[#b6e0b6] pb-2">
-            Description
+            {t("description")}
           </h3>
           <p className="text-[#2e3d2f] whitespace-pre-line leading-relaxed text-base md:text-lg tracking-wide">
             {product.description}
@@ -108,7 +129,7 @@ export default function ProductDetailsSection({ product }) {
       {product.additional && Object.keys(product.additional).length > 0 && (
         <div className="border-t border-[#d9e9dd] dark:border-none">
           <h3 className="text-2xl md:text-3xl font-bold text-[#1b2e1b] mb-4 border-b border-[#b6e0b6] pb-2">
-            Additional Information
+            {t("label_additional_info")}
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {Object.entries(product.additional).map(([key, val]) => (

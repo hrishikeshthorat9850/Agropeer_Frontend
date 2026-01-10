@@ -3,9 +3,19 @@ import { timeAgo } from "@/utils/timeConverter";
 import { formatName } from "@/utils/formatName";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import { useLanguage } from "@/Context/languagecontext";
 
-export default function CommentCard({ comments = [], showAllComments, onLike, onReply, onEdit, onDelete, onReport }) {
+export default function CommentCard({
+  comments = [],
+  showAllComments,
+  onLike,
+  onReply,
+  onEdit,
+  onDelete,
+  onReport,
+}) {
   const [activeMenu, setActiveMenu] = useState(null); // track which comment menu is open
+  const { t } = useLanguage();
 
   const toggleMenu = (id) => {
     setActiveMenu((prev) => (prev === id ? null : id));
@@ -25,29 +35,41 @@ export default function CommentCard({ comments = [], showAllComments, onLike, on
             transition={{ delay: idx * 0.05 }}
             className="flex items-start gap-3 py-3 px-4 rounded-2xl hover:scale-[1.02] transition-all duration-300 group/comment relative"
             style={{
-              background: 'linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 100%)',
-              backdropFilter: 'blur(20px)',
-              border: '1px solid rgba(255,255,255,0.3)',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.5)'
+              background:
+                "linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 100%)",
+              backdropFilter: "blur(20px)",
+              border: "1px solid rgba(255,255,255,0.3)",
+              boxShadow:
+                "0 8px 32px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.5)",
             }}
           >
             {/* User Avatar */}
-            <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 shadow-lg group-hover/comment:scale-110 transition-transform duration-300"
-                 style={{
-                   background: 'linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%)',
-                   boxShadow: '0 4px 12px rgba(16, 185, 129, 0.4), inset 0 1px 0 rgba(255,255,255,0.2)'
-                 }}>
+            <div
+              className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 shadow-lg group-hover/comment:scale-110 transition-transform duration-300"
+              style={{
+                background:
+                  "linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%)",
+                boxShadow:
+                  "0 4px 12px rgba(16, 185, 129, 0.4), inset 0 1px 0 rgba(255,255,255,0.2)",
+              }}
+            >
               <FaLeaf className="w-3 h-3 text-white" />
             </div>
 
             {/* Comment Content */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-slate-800 text-sm font-semibold">{formatName(comment.userinfo)}</span>
+                <span className="text-slate-800 text-sm font-semibold">
+                  {formatName(comment.userinfo)}
+                </span>
                 <div className="w-1 h-1 bg-slate-400 rounded-full"></div>
-                <span className="text-slate-500 text-xs">{timeAgo(comment.created_at)}</span>
+                <span className="text-slate-500 text-xs">
+                  {timeAgo(comment.created_at)}
+                </span>
               </div>
-              <p className="text-slate-700 text-sm leading-relaxed">{comment.comment}</p>
+              <p className="text-slate-700 text-sm leading-relaxed">
+                {comment.comment}
+              </p>
 
               {/* Comment Actions */}
               <div className="flex items-center gap-4 mt-1 text-xs text-farm-500">
@@ -55,14 +77,15 @@ export default function CommentCard({ comments = [], showAllComments, onLike, on
                   className="flex items-center gap-1 hover:text-red-500 transition"
                   onClick={() => onLike(comment)}
                 >
-                  <FaRegHeart className="w-3 h-3" /> <span>Like</span>
+                  <FaRegHeart className="w-3 h-3" />{" "}
+                  <span>{t("like_btn")}</span>
                 </button>
 
                 <button
                   className="hover:text-farm-700 transition"
                   onClick={() => onReply(comment)}
                 >
-                  Reply
+                  {t("reply_btn")}
                 </button>
 
                 {/* Three-dot menu */}
@@ -86,21 +109,30 @@ export default function CommentCard({ comments = [], showAllComments, onLike, on
                       >
                         <button
                           className="px-4 py-2 text-left hover:bg-gray-100 text-sm"
-                          onClick={() => { onEdit(comment); setActiveMenu(null); }}
+                          onClick={() => {
+                            onEdit(comment);
+                            setActiveMenu(null);
+                          }}
                         >
-                          Edit
+                          {t("edit_btn")}
                         </button>
                         <button
                           className="px-4 py-2 text-left hover:bg-gray-100 text-sm"
-                          onClick={() => { onDelete(comment); setActiveMenu(null); }}
+                          onClick={() => {
+                            onDelete(comment);
+                            setActiveMenu(null);
+                          }}
                         >
-                          Delete
+                          {t("delete_btn")}
                         </button>
                         <button
                           className="px-4 py-2 text-left hover:bg-gray-100 text-sm"
-                          onClick={() => { onReport(comment); setActiveMenu(null); }}
+                          onClick={() => {
+                            onReport(comment);
+                            setActiveMenu(null);
+                          }}
                         >
-                          Report
+                          {t("report_btn")}
                         </button>
                       </motion.div>
                     )}

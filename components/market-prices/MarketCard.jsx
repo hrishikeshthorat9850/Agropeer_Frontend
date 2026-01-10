@@ -7,8 +7,10 @@ import {
   FaArrowUp,
   FaArrowDown,
 } from "react-icons/fa";
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function MarketCard({ data }) {
+  const { t } = useLanguage();
   const minPrice = parseFloat(data.min_price);
   const maxPrice = parseFloat(data.max_price);
   const modalPrice = parseFloat(data.modal_price);
@@ -73,7 +75,9 @@ export default function MarketCard({ data }) {
               </div>
               <div className="flex items-center gap-1.5 text-gray-600 dark:text-gray-300">
                 <FaCalendarAlt className="text-sky-600 dark:text-sky-400 text-sm" />
-                <span className="font-medium">{formatDate(data.arrival_date)}</span>
+                <span className="font-medium">
+                  {formatDate(data.arrival_date)}
+                </span>
               </div>
             </div>
 
@@ -83,20 +87,20 @@ export default function MarketCard({ data }) {
                 {/* Modal price */}
                 <div>
                   <p className="text-[11px] uppercase tracking-wide text-emerald-100 font-medium">
-                    Modal Price
+                    {t("modal_price")}
                   </p>
                   <p className="mt-1 text-[26px] font-extrabold text-white leading-none">
                     ₹{formatPrice(modalPrice)}
                   </p>
                   <p className="mt-1 text-[11px] text-emerald-100/90">
-                    per quintal
+                    {t("per_quintal")}
                   </p>
                 </div>
 
                 {/* Min / Max stacked chips */}
                 <div className="flex flex-col items-end gap-1 text-[11px]">
                   <span className="px-2 py-1 rounded-full bg-white/10 text-emerald-50 font-semibold">
-                    Min – Max
+                    {t("min_max")}
                   </span>
                   <span className="px-2 py-1 rounded-full bg-black/15 text-emerald-50 font-bold text-[12px]">
                     ₹{formatPrice(minPrice)} – ₹{formatPrice(maxPrice)}
@@ -164,7 +168,7 @@ export default function MarketCard({ data }) {
               </div>
               <div className="flex-1 min-w-0">
                 <span className="text-[10px] text-sky-600 dark:text-sky-200 font-semibold uppercase tracking-wide block">
-                  Date
+                  {t("date_label")}
                 </span>
                 <p className="text-xs font-bold text-gray-900 dark:text-white truncate">
                   {formatDate(data.arrival_date)}
@@ -176,10 +180,10 @@ export default function MarketCard({ data }) {
             <div className="mb-3 flex-grow">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-[10px] font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Price Range
+                  {t("price_range_label")}
                 </span>
                 <span className="text-[10px] text-gray-400 dark:text-gray-400">
-                  ₹/Qtl
+                  {t("price_unit")}
                 </span>
               </div>
 
@@ -205,7 +209,7 @@ export default function MarketCard({ data }) {
                   <FaArrowDown className="text-emerald-600 dark:text-emerald-300 text-[10px]" />
                   <div className="min-w-0">
                     <span className="text-[10px] text-emerald-600 dark:text-emerald-200 font-semibold block">
-                      Min
+                      {t("min_label")}
                     </span>
                     <span className="text-xs font-bold text-emerald-700 dark:text-emerald-100 truncate">
                       ₹{formatPrice(minPrice)}
@@ -216,7 +220,7 @@ export default function MarketCard({ data }) {
                   <FaArrowUp className="text-red-600 dark:text-red-300 text-[10px]" />
                   <div className="min-w-0">
                     <span className="text-[10px] text-red-600 dark:text-red-200 font-semibold block">
-                      Max
+                      {t("max_label")}
                     </span>
                     <span className="text-xs font-bold text-red-700 dark:text-red-100 truncate">
                       ₹{formatPrice(maxPrice)}
@@ -235,9 +239,11 @@ export default function MarketCard({ data }) {
                 <div className="flex items-center justify-between">
                   <div>
                     <span className="text-emerald-100 text-[10px] font-semibold uppercase tracking-wide block">
-                      Modal
+                      {t("modal_price")}
                     </span>
-                    <span className="text-emerald-50 text-[10px]">per quintal</span>
+                    <span className="text-emerald-50 text-[10px]">
+                      {t("per_quintal")}
+                    </span>
                   </div>
                   <div className="text-right">
                     <span className="text-2xl font-extrabold text-white drop-shadow-lg">
