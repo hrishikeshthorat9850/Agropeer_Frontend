@@ -2,11 +2,10 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaSeedling } from "react-icons/fa";
+import { Sprout } from "lucide-react";
 import PhoneLogin from "@/components/login/PhoneLogin";
 import OtpVerifyCard from "@/components/login/OtpVerifyCard";
 import LoginForm from "@/components/login/LoginForm";
-import { FaUserTie } from "react-icons/fa";
 import useToast from "@/hooks/useToast";
 import { Capacitor } from "@capacitor/core";
 import { useLanguage } from "@/Context/languagecontext";
@@ -44,21 +43,11 @@ export default function LoginPage() {
 
   // Prevent scrolling on Android
   useEffect(() => {
-    const isAndroid = Capacitor.isNativePlatform() && Capacitor.getPlatform() === "android";
+    const isAndroid =
+      Capacitor.isNativePlatform() && Capacitor.getPlatform() === "android";
 
     if (isAndroid) {
-      // Store original styles
-      const originalBodyOverflow = document.body.style.overflow;
-      const originalBodyPosition = document.body.style.position;
-      const originalBodyHeight = document.body.style.height;
-      const originalBodyWidth = document.body.style.width;
-      const originalHtmlOverflow = document.documentElement.style.overflow;
-      const originalHtmlHeight = document.documentElement.style.height;
-
-      // Add no-scroll class for CSS support
       document.body.classList.add("no-scroll");
-
-      // Prevent body scrolling using position fixed (most reliable method)
       document.body.style.overflow = "hidden";
       document.body.style.position = "fixed";
       document.body.style.height = "100vh";
@@ -67,162 +56,120 @@ export default function LoginPage() {
       document.documentElement.style.height = "100vh";
 
       return () => {
-        // Remove no-scroll class
         document.body.classList.remove("no-scroll");
-
-        // Restore original styles
-        document.body.style.overflow = originalBodyOverflow;
-        document.body.style.position = originalBodyPosition;
-        document.body.style.height = originalBodyHeight;
-        document.body.style.width = originalBodyWidth;
-        document.documentElement.style.overflow = originalHtmlOverflow;
-        document.documentElement.style.height = originalHtmlHeight;
+        document.body.style.overflow = "";
+        document.body.style.position = "";
+        document.body.style.height = "";
+        document.body.style.width = "";
+        document.documentElement.style.overflow = "";
+        document.documentElement.style.height = "";
       };
     }
   }, []);
 
   return (
-    <div
-      className="
-      relative min-h-[100dvh] flex flex-col
-      overflow-hidden
-      bg-gradient-to-br from-green-50 via-white to-green-50/30
-      dark:from-gray-900 dark:via-gray-800 dark:to-gray-900
-    "
-    >
-      {/* ================= STATUS BAR BACKGROUND ================= */}
-      <div
-        className="
-        fixed top-0 left-0 right-0 z-40
-        h-[env(safe-area-inset-top)]
-        bg-white dark:bg-gray-900
-      "
-      />
+    <div className="h-[100dvh] w-full overflow-hidden relative flex flex-col bg-white dark:bg-black font-sans">
+      {/* Background Decor */}
+      <div className="absolute top-[-20%] left-[-20%] w-[140%] h-[80%] bg-gradient-to-br from-green-600/10 to-transparent dark:from-green-900/20 rounded-b-[100%] pointer-events-none" />
 
-      {/* ================= BACKGROUND (VISUAL ONLY) ================= */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-br from-green-100/20 via-transparent to-green-50/10 dark:from-green-900/10" />
-
-        <motion.div
-          animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.4, 0.3] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          className="
-          absolute w-[600px] h-[600px]
-          bg-green-200/10 dark:bg-green-500/5
-          rounded-full blur-3xl
-          top-0 left-0
-          -translate-x-1/4 -translate-y-1/4
-        "
-        />
-
-        <motion.div
-          animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.35, 0.2] }}
-          transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-          className="
-          absolute w-[500px] h-[500px]
-          bg-green-300/10 dark:bg-green-400/5
-          rounded-full blur-3xl
-          bottom-0 right-0
-          translate-x-1/4 translate-y-1/4
-        "
-        />
+      {/* Top Section: Logo & Brand */}
+      <div className="flex-none pt-12 pb-6 flex flex-col items-center justify-center relative z-10">
+        <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl shadow-lg shadow-green-500/30 flex items-center justify-center text-white mb-4">
+          <Sprout size={36} fill="currentColor" />
+        </div>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+          AgroPeer
+        </h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 font-medium">
+          {t("welcome_back") || "Welcome back"}
+        </p>
       </div>
 
-      {/* ================= OAUTH ERROR ================= */}
-      {oauthError && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="
-          relative z-30 w-full max-w-md
-          mx-auto mt-[env(safe-area-inset-top)]
-          px-4 pt-4
-        "
-        >
-          <div className="bg-red-50 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded-xl p-4">
-            <p className="text-sm text-red-700 dark:text-red-300">
-              {oauthError}
-            </p>
-            <button
-              onClick={() => setOauthError("")}
-              className="mt-2 text-xs text-red-600 dark:text-red-400"
-            >
-              {t("dismiss")}
-            </button>
-          </div>
-        </motion.div>
-      )}
+      {/* Main Card Section (Bottom Sheet Style) */}
+      <div className="flex-1 w-full relative z-20 flex flex-col justify-end">
+        <div className="w-full h-auto bg-transparent px-6 pb-6 sm:max-w-md sm:mx-auto">
+          {/* OAUTH ERROR ALERT */}
+          <AnimatePresence>
+            {oauthError && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl text-center"
+              >
+                <p className="text-xs text-red-600 dark:text-red-400 font-medium">
+                  {oauthError}
+                </p>
+                <button
+                  onClick={() => setOauthError("")}
+                  className="text-[10px] underline text-red-500 mt-1"
+                >
+                  {t("dismiss")}
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-      {/* ================= CONTENT ================= */}
-      <div className="relative z-20 flex-1 w-full overflow-y-auto pt-[env(safe-area-inset-top)]">
-        {/* Centering wrapper */}
-        <div className="min-h-full flex items-center justify-center px-4">
-          {/* Slight upward shift on mobile */}
-          <div className="w-full max-w-6xl mx-auto translate-y-[-4vh] sm:translate-y-0">
-            <AnimatePresence mode="wait">
-              {method === "phone" ? (
-                <motion.div
-                  key="phone"
-                  initial={{ opacity: 0, x: -30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 30 }}
-                  transition={{ duration: 0.4 }}
-                  className="w-full max-w-sm mx-auto"
-                >
-                  <PhoneLogin
-                    onSwitchToEmail={() => {
-                      setMethod("email");
-                      setOtpMode(false);
-                    }}
-                    onSendSuccess={(fullPhone, confirmation) => {
-                      setPhone(fullPhone);
-                      setConfirmationResult(confirmation);
-                      setOtpMode(true);
-                    }}
-                  />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="email"
-                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                  transition={{ duration: 0.4 }}
-                  className="w-full max-w-sm mx-auto"
-                >
-                  <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden">
-                    <div className="h-1 bg-gradient-to-r from-green-500 to-green-400" />
-                    <div className="px-6 py-6">
-                      <LoginForm />
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+          <AnimatePresence mode="wait">
+            {method === "phone" ? (
+              <motion.div
+                key="phone"
+                initial={{ x: "100%", opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: "-100%", opacity: 0 }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              >
+                <PhoneLogin
+                  onSwitchToEmail={() => {
+                    setMethod("email");
+                    setOtpMode(false);
+                  }}
+                  onSendSuccess={(fullPhone, confirmation) => {
+                    setPhone(fullPhone);
+                    setConfirmationResult(confirmation);
+                    setOtpMode(true);
+                  }}
+                />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="email"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: -20, opacity: 0 }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              >
+                <LoginForm />
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-            {/* OTP */}
-            <AnimatePresence>
-              {otpMode && method === "phone" && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.4 }}
-                  className="w-full max-w-sm mx-auto mt-4"
+          {/* OTP verify Overlay */}
+          <AnimatePresence>
+            {otpMode && method === "phone" && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="absolute inset-0 z-30 bg-white dark:bg-black px-6 pt-10"
+              >
+                <button
+                  onClick={() => setOtpMode(false)}
+                  className="mb-6 text-sm text-gray-500 font-medium"
                 >
-                  <OtpVerifyCard
-                    phone={phone}
-                    confirmationResult={confirmationResult}
-                    onCodeResent={setConfirmationResult}
-                    onEditNumber={() => setOtpMode(false)}
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+                  ← Back
+                </button>
+                <OtpVerifyCard
+                  phone={phone}
+                  confirmationResult={confirmationResult}
+                  onCodeResent={setConfirmationResult}
+                  onEditNumber={() => setOtpMode(false)}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>
   );
-
 }

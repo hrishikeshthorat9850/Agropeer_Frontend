@@ -1,15 +1,16 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+// import { FaEye, FaEyeSlash } from "react-icons/fa"; // Removed
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import OAuthButtons from "@/components/login/OAuthButtons";
 import useToast from "@/hooks/useToast";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/Context/languagecontext";
+import { User, Mail, Phone, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
 
-/* ================= Helpers ================= */
+/* ================= Helpers (Preserved Logic) ================= */
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const hasUpper = (s) => /[A-Z]/.test(s);
 const hasLower = (s) => /[a-z]/.test(s);
@@ -37,14 +38,15 @@ export default function SignupForm() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  /* ================= Validation ================= */
+  /* ================= Validation (Preserved Logic) ================= */
   const emailValid = emailRegex.test(form.email);
   const passLen = form.password.length >= 8;
   const passUpper = hasUpper(form.password);
   const passLower = hasLower(form.password);
   const passNum = hasNumber(form.password);
   const passSpec = hasSpecial(form.password);
-  const passwordsMatch = form.password === form.confirm && form.confirm.length > 0;
+  const passwordsMatch =
+    form.password === form.confirm && form.confirm.length > 0;
 
   const allGood =
     emailValid &&
@@ -58,7 +60,7 @@ export default function SignupForm() {
     form.lastName &&
     /^[0-9]{10}$/.test(form.phone);
 
-  /* ================= Handlers ================= */
+  /* ================= Handlers (Preserved Logic) ================= */
   const handleChange = (e) => {
     const { id, value } = e.target;
 
@@ -83,15 +85,13 @@ export default function SignupForm() {
       if (error) throw error;
       if (!data?.user?.id) throw new Error(t("user_id_missing"));
 
-      const { error: profileError } = await supabase
-        .from("userinfo")
-        .insert({
-          id: data.user.id,
-          firstName: form.firstName,
-          lastName: form.lastName,
-          mobile: form.phone,
-          country: form.country || null,
-        });
+      const { error: profileError } = await supabase.from("userinfo").insert({
+        id: data.user.id,
+        firstName: form.firstName,
+        lastName: form.lastName,
+        mobile: form.phone,
+        country: form.country || null,
+      });
 
       if (profileError) throw profileError;
 
@@ -107,332 +107,229 @@ export default function SignupForm() {
 
   /* ================= UI ================= */
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-      className="w-full"
-    >
-      <div
-        className="relative bg-white dark:bg-gray-800 rounded-3xl shadow-lg dark:shadow-2xl overflow-hidden"
-        style={{
-          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.08), 0 1px 0 rgba(255, 255, 255, 0.5) inset",
-        }}
-      >
-        {/* Material Design 3 top accent */}
-        <div className="h-1 bg-gradient-to-r from-green-500 via-green-400 to-green-500" />
+    <div className="w-full pb-10">
+      <div className="text-center mb-6">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+          {t("create_account")}
+        </h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          {t("join_agropeer") || "Join our growing community"}
+        </p>
+      </div>
 
-        <div className="px-6 py-6 sm:px-8 sm:py-8">
-          {/* Material Design 3 Header */}
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="mb-8 text-center"
-          >
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-              {t("create_account")}
-            </h1>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
-              {t("join_agropeer")}
-            </p>
-          </motion.div>
-
-          <motion.form
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.4 }}
-            onSubmit={handleSubmit}
-            className="space-y-5"
-          >
-            {/* Name Fields */}
-            <div className="grid grid-cols-2 gap-4">
-              <Input
-                id="firstName"
-                label={t("first_name")}
-                value={form.firstName}
-                onChange={handleChange}
-                isValid={form.firstName.length > 0}
-              />
-              <Input
-                id="lastName"
-                label={t("last_name")}
-                value={form.lastName}
-                onChange={handleChange}
-                isValid={form.lastName.length > 0}
-              />
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Name Fields Grid */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className="relative group">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-green-600 transition-colors pointer-events-none">
+              <User size={18} />
             </div>
-
-            {/* Email */}
-            <Input
-              id="email"
-              label={t("email_label")}
-              type="email"
-              value={form.email}
+            <input
+              id="firstName"
+              value={form.firstName}
               onChange={handleChange}
-              isValid={emailValid && form.email.length > 0}
-              error={form.email.length > 0 && !emailValid ? t("enter_email_placeholder") : ""}
+              placeholder={t("first_name")}
+              className="w-full h-12 pl-10 pr-3 bg-gray-50 dark:bg-[#1C1C1E] rounded-xl border-none outline-none text-gray-900 dark:text-white placeholder-gray-400 text-sm font-medium focus:ring-2 focus:ring-green-500/20 transition-all shadow-sm"
+              required
             />
-
-            {/* Phone */}
-            <Input
-              id="phone"
-              label={t("mobile_number")}
-              type="tel"
-              value={form.phone}
+          </div>
+          <div className="relative group">
+            {/* No icon for last name to keep cleaner look or can reuse User */}
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-green-600 transition-colors pointer-events-none">
+              <User size={18} />
+            </div>
+            <input
+              id="lastName"
+              value={form.lastName}
               onChange={handleChange}
-              placeholder={t("ten_digit_placeholder")}
-              isValid={/^[0-9]{10}$/.test(form.phone)}
-              error={form.phone.length > 0 && !/^[0-9]{10}$/.test(form.phone) ? t("valid_10_digit_error") : ""}
+              placeholder={t("last_name")}
+              className="w-full h-12 pl-10 pr-3 bg-gray-50 dark:bg-[#1C1C1E] rounded-xl border-none outline-none text-gray-900 dark:text-white placeholder-gray-400 text-sm font-medium focus:ring-2 focus:ring-green-500/20 transition-all shadow-sm"
+              required
             />
+          </div>
+        </div>
 
-            {/* Password */}
-            <PasswordInput
+        {/* Email */}
+        <div className="relative group">
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-green-600 transition-colors pointer-events-none">
+            <Mail size={18} />
+          </div>
+          <input
+            id="email"
+            type="email"
+            value={form.email}
+            onChange={handleChange}
+            placeholder={t("email_label")}
+            className={`w-full h-12 pl-10 pr-4 bg-gray-50 dark:bg-[#1C1C1E] rounded-xl border-none outline-none text-gray-900 dark:text-white placeholder-gray-400 text-sm font-medium focus:ring-2 focus:ring-green-500/20 transition-all shadow-sm ${
+              form.email.length > 0 && !emailValid
+                ? "ring-2 ring-red-500/20 bg-red-50/50"
+                : ""
+            }`}
+            required
+          />
+        </div>
+
+        {/* Phone */}
+        <div className="relative group">
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-green-600 transition-colors pointer-events-none">
+            <Phone size={18} />
+          </div>
+          <input
+            id="phone"
+            type="tel"
+            value={form.phone}
+            onChange={handleChange}
+            placeholder={t("mobile_number")}
+            className="w-full h-12 pl-10 pr-4 bg-gray-50 dark:bg-[#1C1C1E] rounded-xl border-none outline-none text-gray-900 dark:text-white placeholder-gray-400 text-sm font-medium focus:ring-2 focus:ring-green-500/20 transition-all shadow-sm"
+            maxLength={10}
+            required
+          />
+        </div>
+
+        {/* Passwords */}
+        <div className="space-y-3">
+          <div className="relative group">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-green-600 transition-colors pointer-events-none">
+              <Lock size={18} />
+            </div>
+            <input
               id="password"
-              label={t("password_label")}
-              show={showPass}
-              toggle={() => setShowPass(!showPass)}
+              type={showPass ? "text" : "password"}
               value={form.password}
               onChange={handleChange}
-              passwordStrength={{
-                length: passLen,
-                upper: passUpper,
-                lower: passLower,
-                number: passNum,
-                special: passSpec,
-              }}
-              t={t}
+              placeholder={t("password_label")}
+              className="w-full h-12 pl-10 pr-10 bg-gray-50 dark:bg-[#1C1C1E] rounded-xl border-none outline-none text-gray-900 dark:text-white placeholder-gray-400 text-sm font-medium focus:ring-2 focus:ring-green-500/20 transition-all shadow-sm"
+              required
             />
+            <button
+              type="button"
+              onClick={() => setShowPass(!showPass)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1"
+            >
+              {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
+          </div>
 
-            {/* Confirm Password */}
-            <PasswordInput
+          <div className="relative group">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-green-600 transition-colors pointer-events-none">
+              <Lock size={18} />
+            </div>
+            <input
               id="confirm"
-              label={t("confirm_password")}
-              show={showConfirm}
-              toggle={() => setShowConfirm(!showConfirm)}
+              type={showConfirm ? "text" : "password"}
               value={form.confirm}
               onChange={handleChange}
-              isValid={passwordsMatch && form.confirm.length > 0}
-              error={form.confirm.length > 0 && !passwordsMatch ? t("passwords_no_match") : ""}
-              t={t}
+              placeholder={t("confirm_password")}
+              className="w-full h-12 pl-10 pr-10 bg-gray-50 dark:bg-[#1C1C1E] rounded-xl border-none outline-none text-gray-900 dark:text-white placeholder-gray-400 text-sm font-medium focus:ring-2 focus:ring-green-500/20 transition-all shadow-sm"
+              required
             />
-
-            {/* Error Message */}
-            {errorMsg && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-xl p-4"
-              >
-                <p className="text-sm text-red-700 dark:text-red-300 font-medium text-center">
-                  {errorMsg}
-                </p>
-              </motion.div>
-            )}
-
-            {/* Material Design 3 Button */}
-            <motion.button
-              type="submit"
-              disabled={!allGood || loading}
-              className={`w-full py-4 rounded-xl font-semibold text-white text-base transition-all duration-200 ${!allGood || loading
-                ? "bg-gray-300 dark:bg-gray-700 cursor-not-allowed opacity-60"
-                : "bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 active:scale-[0.98] shadow-lg shadow-green-500/30 dark:shadow-green-500/20"
-                }`}
-              whileTap={!loading && allGood ? { scale: 0.98 } : {}}
+            <button
+              type="button"
+              onClick={() => setShowConfirm(!showConfirm)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1"
             >
-              <span className="flex items-center justify-center gap-2">
-                {loading ? (
-                  <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-                    <span>{t("creating_account")}</span>
-                  </>
-                ) : (
-                  <span>{t("create_account_btn")}</span>
-                )}
-              </span>
-            </motion.button>
-
-            {/* Divider */}
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
-                  {t("or_continue_with")}
-                </span>
-              </div>
-            </div>
-
-            {/* OAuth Buttons */}
-            <OAuthButtons mode="signup" />
-
-            {/* Login Link */}
-            <div className="text-center pt-2">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                {t("already_have_account")}{" "}
-                <Link
-                  href="/login"
-                  className="font-semibold text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors"
-                >
-                  {t("sign_in")}
-                </Link>
-              </p>
-            </div>
-          </motion.form>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-/* ================= Reusable Inputs ================= */
-
-function Input({ label, id, isValid = false, error = "", ...props }) {
-  const hasValue = props.value && props.value.length > 0;
-  const showError = error && hasValue;
-
-  return (
-    <div className="space-y-1.5">
-      <label
-        htmlFor={id}
-        className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-      >
-        {label}
-      </label>
-      <div className="relative">
-        <input
-          id={id}
-          {...props}
-          className={`w-full px-4 py-3.5 rounded-xl border-2 transition-all duration-200 text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700/50 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-0 ${isValid && hasValue
-            ? "border-green-500 dark:border-green-400 bg-white dark:bg-gray-700"
-            : showError
-              ? "border-red-500 dark:border-red-400"
-              : "border-gray-300 dark:border-gray-600 focus:border-green-500 dark:focus:border-green-400"
-            }`}
-          required
-          style={{
-            fontSize: "16px", // Prevents zoom on iOS
-          }}
-        />
-        {isValid && hasValue && !showError && (
-          <div className="absolute right-3 top-1/2 -translate-y-1/2">
-            <svg className="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
+              {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
           </div>
-        )}
-      </div>
-      {showError && (
-        <motion.p
-          initial={{ opacity: 0, y: -5 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-sm text-red-600 dark:text-red-400 flex items-center gap-1.5"
-        >
-          <span className="text-red-500">•</span>
-          {error}
-        </motion.p>
-      )}
-    </div>
-  );
-}
+        </div>
 
-function PasswordInput({ label, show, toggle, passwordStrength, isValid = false, error = "", t, ...props }) {
-  const hasValue = props.value && props.value.length > 0;
-  const showError = error && hasValue;
-  const strength = passwordStrength || {};
-
-  return (
-    <div className="space-y-1.5">
-      <label
-        htmlFor={props.id}
-        className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-      >
-        {label}
-      </label>
-      <div className="relative">
-        <input
-          {...props}
-          type={show ? "text" : "password"}
-          className={`w-full px-4 py-3.5 rounded-xl border-2 transition-all duration-200 text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700/50 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-0 pr-12 ${isValid && hasValue
-            ? "border-green-500 dark:border-green-400 bg-white dark:bg-gray-700"
-            : showError
-              ? "border-red-500 dark:border-red-400"
-              : "border-gray-300 dark:border-gray-600 focus:border-green-500 dark:focus:border-green-400"
-            }`}
-          required
-          style={{
-            fontSize: "16px", // Prevents zoom on iOS
-          }}
-        />
-        <button
-          type="button"
-          onClick={toggle}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 active:scale-95 transition-all p-1 rounded-lg"
-          aria-label={show ? "Hide password" : "Show password"}
-        >
-          {show ? <FaEyeSlash className="w-5 h-5" /> : <FaEye className="w-5 h-5" />}
-        </button>
-      </div>
-
-      {/* Password Strength Indicator */}
-      {passwordStrength && hasValue && (
-        <div className="mt-2 space-y-1.5">
-          <div className="flex items-center gap-2 text-xs">
-            <div className={`flex-1 h-1.5 rounded-full ${strength.length && strength.upper && strength.lower && strength.number && strength.special
-              ? "bg-green-500"
-              : strength.length && (strength.upper || strength.lower) && strength.number
-                ? "bg-yellow-500"
-                : "bg-gray-300"
-              }`} />
-            <span className={`text-xs ${strength.length && strength.upper && strength.lower && strength.number && strength.special
-              ? "text-green-600 dark:text-green-400"
-              : strength.length && (strength.upper || strength.lower) && strength.number
-                ? "text-yellow-600 dark:text-yellow-400"
-                : "text-gray-500"
-              }`}>
-              {strength.length && strength.upper && strength.lower && strength.number && strength.special
-                ? t ? t("password_strength_strong") : "Strong"
-                : strength.length && (strength.upper || strength.lower) && strength.number
-                  ? t ? t("password_strength_medium") : "Medium"
-                  : t ? t("password_strength_weak") : "Weak"}
+        {/* Requirements Indicators (Compact) */}
+        {form.password.length > 0 && (
+          <div className="flex flex-wrap gap-2 text-[10px] items-center justify-center opacity-80">
+            <span
+              className={passLen ? "text-green-600 font-bold" : "text-gray-400"}
+            >
+              8+ Chars
+            </span>{" "}
+            •
+            <span
+              className={
+                passUpper ? "text-green-600 font-bold" : "text-gray-400"
+              }
+            >
+              Upper
+            </span>{" "}
+            •
+            <span
+              className={
+                passLower ? "text-green-600 font-bold" : "text-gray-400"
+              }
+            >
+              Lower
+            </span>{" "}
+            •
+            <span
+              className={passNum ? "text-green-600 font-bold" : "text-gray-400"}
+            >
+              Num
+            </span>{" "}
+            •
+            <span
+              className={
+                passSpec ? "text-green-600 font-bold" : "text-gray-400"
+              }
+            >
+              Special
             </span>
           </div>
-          <div className="grid grid-cols-2 gap-1.5 text-xs">
-            <div className={`flex items-center gap-1.5 ${strength.length ? "text-green-600 dark:text-green-400" : "text-gray-400"}`}>
-              <span>{strength.length ? "✓" : "○"}</span>
-              <span>{t ? t("password_req_chars") : "8+ characters"}</span>
-            </div>
-            <div className={`flex items-center gap-1.5 ${strength.upper ? "text-green-600 dark:text-green-400" : "text-gray-400"}`}>
-              <span>{strength.upper ? "✓" : "○"}</span>
-              <span>{t ? t("password_req_upper") : "Uppercase"}</span>
-            </div>
-            <div className={`flex items-center gap-1.5 ${strength.lower ? "text-green-600 dark:text-green-400" : "text-gray-400"}`}>
-              <span>{strength.lower ? "✓" : "○"}</span>
-              <span>{t ? t("password_req_lower") : "Lowercase"}</span>
-            </div>
-            <div className={`flex items-center gap-1.5 ${strength.number ? "text-green-600 dark:text-green-400" : "text-gray-400"}`}>
-              <span>{strength.number ? "✓" : "○"}</span>
-              <span>{t ? t("password_req_number") : "Number"}</span>
-            </div>
-            <div className={`flex items-center gap-1.5 col-span-2 ${strength.special ? "text-green-600 dark:text-green-400" : "text-gray-400"}`}>
-              <span>{strength.special ? "✓" : "○"}</span>
-              <span>{t ? t("password_req_special") : "Special character"}</span>
-            </div>
-          </div>
-        </div>
-      )}
+        )}
 
-      {showError && (
-        <motion.p
-          initial={{ opacity: 0, y: -5 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-sm text-red-600 dark:text-red-400 flex items-center gap-1.5 mt-1"
+        {/* Error Message */}
+        <AnimatePresence>
+          {errorMsg && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              className="bg-red-50 dark:bg-red-900/20 px-4 py-2 rounded-xl text-center"
+            >
+              <p className="text-xs text-red-600 dark:text-red-400 font-medium">
+                {errorMsg}
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          disabled={!allGood || loading}
+          className="w-full h-12 bg-green-600 hover:bg-green-700 active:scale-[0.98] transition-all rounded-xl text-white font-bold text-sm shadow-lg shadow-green-600/30 flex items-center justify-center gap-2 disabled:opacity-70 disabled:active:scale-100 mt-2"
         >
-          <span className="text-red-500">•</span>
-          {error}
-        </motion.p>
-      )}
+          {loading ? (
+            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+          ) : (
+            <>
+              {t("create_account_btn")}
+              <ArrowRight size={16} strokeWidth={2.5} />
+            </>
+          )}
+        </button>
+
+        {/* Divider */}
+        <div className="flex items-center gap-4 py-1">
+          <div className="h-px bg-gray-200 dark:bg-gray-800 flex-1" />
+          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+            {t("or_continue_with")}
+          </span>
+          <div className="h-px bg-gray-200 dark:bg-gray-800 flex-1" />
+        </div>
+
+        {/* OAuth */}
+        <OAuthButtons mode="signup" />
+
+        {/* Login Link */}
+        <div className="text-center pt-2">
+          <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+            {t("already_have_account")}{" "}
+            <Link
+              href="/login"
+              className="text-green-600 dark:text-green-500 font-bold hover:underline"
+            >
+              {t("sign_in")}
+            </Link>
+          </p>
+        </div>
+      </form>
     </div>
   );
 }

@@ -111,9 +111,9 @@ export default function UserSidebar({ onClose } = {}) {
             ) : (
               <div className="flex flex-col gap-1">
                 <h3 className="font-bold text-2xl">AgroPeer</h3>
-                <p className="text-sm text-green-100 opacity-90">
+                {/* <p className="text-sm text-green-100 opacity-90">
                   {t("welcome_guest") || "Welcome, Guest!"}
-                </p>
+                </p> */}
               </div>
             )}
           </div>

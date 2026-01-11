@@ -2,7 +2,8 @@
 import { useEffect, useState } from "react";
 import { Capacitor } from "@capacitor/core";
 import Signup from "@/components/SignupForm";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { Sprout } from "lucide-react";
 
 export default function SignupPage() {
   const [isMobile, setIsMobile] = useState(false);
@@ -17,74 +18,65 @@ export default function SignupPage() {
 
   // Prevent scrolling on Android
   useEffect(() => {
-    const isAndroid = Capacitor.isNativePlatform() && Capacitor.getPlatform() === "android";
-    
+    const isAndroid =
+      Capacitor.isNativePlatform() && Capacitor.getPlatform() === "android";
+
     if (isAndroid) {
-      // Store original styles
-      const originalBodyOverflow = document.body.style.overflow;
-      const originalBodyPosition = document.body.style.position;
-      const originalBodyHeight = document.body.style.height;
-      const originalBodyWidth = document.body.style.width;
-      const originalHtmlOverflow = document.documentElement.style.overflow;
-      const originalHtmlHeight = document.documentElement.style.height;
-      
-      // Add no-scroll class for CSS support
       document.body.classList.add("no-scroll");
-      
-      // Prevent body scrolling using position fixed (most reliable method)
       document.body.style.overflow = "hidden";
       document.body.style.position = "fixed";
       document.body.style.height = "100vh";
       document.body.style.width = "100%";
       document.documentElement.style.overflow = "hidden";
       document.documentElement.style.height = "100vh";
-      
+
       return () => {
-        // Remove no-scroll class
         document.body.classList.remove("no-scroll");
-        
-        // Restore original styles
-        document.body.style.overflow = originalBodyOverflow;
-        document.body.style.position = originalBodyPosition;
-        document.body.style.height = originalBodyHeight;
-        document.body.style.width = originalBodyWidth;
-        document.documentElement.style.overflow = originalHtmlOverflow;
-        document.documentElement.style.height = originalHtmlHeight;
+        document.body.style.overflow = "";
+        document.body.style.position = "";
+        document.body.style.height = "";
+        document.body.style.width = "";
+        document.documentElement.style.overflow = "";
+        document.documentElement.style.height = "";
       };
     }
   }, []);
 
   return (
-    <div className={`fixed inset-0 h-[100dvh] flex flex-col items-center justify-center overflow-hidden overflow-x-hidden overflow-y-hidden overscroll-none touch-none bg-gradient-to-br from-green-50 via-white to-green-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 ${
-      isMobile ? "pt-[calc(56px+env(safe-area-inset-top,0px))] pb-[calc(90px+env(safe-area-inset-bottom,0px))]" : ""
-    }`}>
-      {/* Modern Material Design Background */}
-      <div className="absolute inset-0 overflow-hidden">
-        {/* Subtle gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-green-100/20 via-transparent to-green-50/10 dark:from-green-900/10 dark:via-transparent dark:to-transparent" />
-        
-        {/* Material Design 3 subtle patterns */}
+    <div className="h-[100dvh] w-full overflow-hidden relative flex flex-col bg-white dark:bg-black font-sans">
+      {/* Background Decor */}
+      <div className="absolute top-[-20%] left-[-20%] w-[140%] h-[80%] bg-gradient-to-br from-green-600/10 to-transparent dark:from-green-900/20 rounded-b-[100%] pointer-events-none" />
+
+      {/* Top Section: Logo & Brand */}
+      <div className="flex-none pt-8 pb-4 flex flex-col items-center justify-center relative z-10">
         <motion.div
-          animate={{ 
-            scale: [1, 1.1, 1],
-            opacity: [0.3, 0.4, 0.3]
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute w-[600px] h-[600px] bg-green-200/10 dark:bg-green-500/5 rounded-full blur-3xl -top-1/4 -left-1/4"
-        />
-        <motion.div
-          animate={{ 
-            scale: [1, 1.15, 1],
-            opacity: [0.2, 0.35, 0.2]
-          }}
-          transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute w-[500px] h-[500px] bg-green-300/10 dark:bg-green-400/5 rounded-full blur-3xl -bottom-1/4 -right-1/4"
-        />
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl shadow-lg shadow-green-500/30 flex items-center justify-center text-white mb-3"
+        >
+          <Sprout size={32} fill="currentColor" />
+        </motion.div>
+        <motion.h1
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.1 }}
+          className="text-xl font-bold text-gray-900 dark:text-white tracking-tight"
+        >
+          AgroPeer
+        </motion.h1>
       </div>
 
-      {/* Signup Form */}
-      <div className="relative w-full max-w-md mx-auto px-4 z-10 overflow-y-auto" style={{ maxHeight: isMobile ? 'calc(100vh - 146px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))' : '100%' }}>
-        <Signup />
+      {/* Main Card Section (Bottom Sheet Style) */}
+      <div className="flex-1 w-full relative z-20 flex flex-col justify-end overflow-hidden">
+        <motion.div
+          initial={{ y: "100%" }}
+          animate={{ y: 0 }}
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          className="w-full h-full bg-transparent px-6 pb-6 sm:max-w-md sm:mx-auto overflow-y-auto"
+          style={{ maxHeight: "calc(100vh - 120px)" }} // Ensure scrollable area fits below header
+        >
+          <Signup />
+        </motion.div>
       </div>
     </div>
   );
