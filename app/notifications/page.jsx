@@ -193,7 +193,7 @@ export default function NotificationsPage() {
 
   return (
     <MobilePageContainer>
-      <div className="min-h-screen bg-gray-50 dark:bg-black">
+      <div className="bg-gray-50 dark:bg-black">
         {/* Creative Sticky Header */}
         <div className="sticky top-0 z-30 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-gray-100 dark:border-white/10 shadow-sm">
           <div className="px-5 py-4 flex items-center justify-between">
