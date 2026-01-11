@@ -69,27 +69,21 @@ export default function ChatArea({ messages = [], selected, sendMessage }) {
 
   return (
     <main
-      className="flex flex-col w-full relative rounded-2xl"
+      className="fixed left-0 right-0 bg-white dark:bg-black z-0"
       style={{
-        height: isNative
-          ? "calc(100dvh - 56px - 70px - env(safe-area-inset-top) - env(safe-area-inset-bottom))"
-          : "calc(100vh - 56px - 70px)",
+        top: isNative ? "calc(56px + env(safe-area-inset-top))" : "56px",
+        bottom: isNative ? "calc(80px + env(safe-area-inset-bottom))" : "80px",
       }}
     >
-      <div
-        className="flex flex-col flex-1 bg-white dark:bg-neutral-900 
-        border dark:border-neutral-800 rounded-2xl overflow-hidden shadow-2xl"
-      >
+      <div className="flex flex-col w-full h-full overflow-hidden">
         <ChatHeader selected={selected} />
 
         <div
           ref={messagesContainerRef}
-          className="flex-1 px-4 py-2 overflow-y-auto scroll-smooth space-y-2 
+          className="flex-1 px-4 py-2 overflow-y-auto scroll-smooth space-y-2
           md:scrollbar-thin md:scrollbar-thumb-gray-300 dark:md:scrollbar-thumb-neutral-700"
           style={{
-            paddingBottom: isNative
-              ? "calc(20px + env(safe-area-inset-bottom))"
-              : "20px",          
+            paddingBottom: "20px",
           }}
         >
           {allMessages.map((m, i) => {

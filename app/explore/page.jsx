@@ -87,7 +87,8 @@ export default function ExplorePage() {
   }, [locale]);
 
   const sortedCrops = useMemo(
-    () => localizedCrops.sort((a, b) => (a.name || "").localeCompare(b.name || "")),
+    () =>
+      localizedCrops.sort((a, b) => (a.name || "").localeCompare(b.name || "")),
     [localizedCrops]
   );
 
@@ -95,7 +96,8 @@ export default function ExplorePage() {
   const filteredCrops = useMemo(() => {
     const categoryMatchFn = (crop) =>
       categoryFilter === t("categories_all") ||
-      crop.category?.trim()?.toLowerCase() === categoryFilter.trim().toLowerCase();
+      crop.category?.trim()?.toLowerCase() ===
+        categoryFilter.trim().toLowerCase();
 
     const searchMatchFn = (crop) =>
       (crop.name || "").toLowerCase().includes(searchTerm.toLowerCase());
@@ -115,104 +117,128 @@ export default function ExplorePage() {
 
   return (
     <MobilePageContainer>
-      <div className="py-4">
-        <div className="w-full max-w-7xl mx-auto">
-      {/* 🌾 Header Section */}
-      <div className="text-center mb-8">
-        {/* PAGE HEADER — PREMIUM */}
-<div
-  className="
-    rounded-3xl p-6 mb-6
-    shadow-[0_10px_30px_-10px_rgba(0,0,0,0.25)]
-    bg-gradient-to-br from-[#d7ffe8] to-[#f4fff8]
-    dark:from-[#0b2718] dark:to-[#0e3821]
-    border-b border-white/60 dark:border-[#1a4a2d]
-    text-center
-  "
->
-  <h1 className="text-3xl font-extrabold text-farm-900 dark:text-white mb-2">
-    {t("explore_title")}
-  </h1>
+      <div className="pb-24 pt-2">
+        <div className="w-full max-w-7xl mx-auto px-4">
+          {/* 🔍 App-Like Header */}
+          <div className="sticky top-0 z-10 bg-white/80 dark:bg-black/80 backdrop-blur-md py-4 -mx-4 px-4 mb-6 border-b border-gray-100 dark:border-gray-800">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                  {t("explore_title")}
+                </h1>
+                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                  {t("explore_subtitle")}
+                </p>
+              </div>
 
-  <p className="text-farm-700 dark:text-white/80 text-lg max-w-xl mx-auto">
-    {t("explore_subtitle")}
-  </p>
-</div>
+              {/* Profile/Menu Placeholder or Action - Keeping minimal for now */}
+              <div className="w-10 h-10 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center text-green-600">
+                <FaUsers className="w-5 h-5" />
+              </div>
+            </div>
 
-        <div className="flex justify-center gap-3">
-          <input
-            className="p-3 w-80 rounded-xl border text-farm-900 border-green-300 shadow-sm focus:ring-2 focus:ring-green-400"
-            placeholder={t("search_placeholder")}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            {/* 🔎 Search Bar - iOS/Material Style */}
+            <div className="relative">
+              <input
+                className="w-full bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white rounded-2xl py-3.5 pl-12 pr-4 outline-none focus:ring-2 focus:ring-green-500/50 transition-all font-medium placeholder-gray-400"
+                placeholder={t("search_placeholder")}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <svg
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            {/* 📈 Market Section Widget */}
+            <div className="hidden md:block">
+              <MarketSection router={router} />
+            </div>
+
+            {/* ⚙️ Tools Grid */}
+            <ToolsSection
+              tool={tool}
+              setTool={setTool}
+              selectedToolCrop={selectedToolCrop}
+              setSelectedToolCrop={setSelectedToolCrop}
+              areaInput={areaInput}
+              setAreaInput={setAreaInput}
+              soilN={soilN}
+              soilP={soilP}
+              soilK={soilK}
+              setSoilN={setSoilN}
+              setSoilP={setSoilP}
+              setSoilK={setSoilK}
+              marketPrice={marketPrice}
+              setMarketPrice={setMarketPrice}
+              toolResult={toolResult}
+              setToolResult={setToolResult}
+              loadingTool={loadingTool}
+              setLoadingTool={setLoadingTool}
+              errors={errors}
+              setErrors={setErrors}
+              uniqueCrops={localizedCrops}
+              LoadingSpinner={LoadingSpinner}
+            />
+
+            {/* 🌱 Crop Discovery (Categories + Grid) */}
+            <CropDiscoverySection
+              categories={categories}
+              categoryFilter={categoryFilter}
+              setCategoryFilter={setCategoryFilter}
+              filteredCrops={filteredCrops}
+              showAllCrops={showAllCrops}
+              setShowAllCrops={setShowAllCrops}
+              setSelectedCrop={setSelectedCrop}
+              SkeletonCard={SkeletonCard}
+            />
+
+            {/* 📚 Farmer Stories & Community */}
+            <FarmerStories
+              router={router}
+              setShowStoryModal={setShowStoryModal}
+            />
+
+            {/* 🔒 Community Teaser */}
+            <section className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-3xl p-6 border border-green-100 dark:border-green-800">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="p-2 bg-green-100 dark:bg-green-800 rounded-full text-green-600 dark:text-green-300">
+                  <FaUsers className="w-5 h-5" />
+                </div>
+                <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+                  {t("community_highlights")}
+                </h2>
+              </div>
+              <p className="text-green-700 dark:text-green-300 text-sm font-medium ml-1">
+                {t("coming_soon")}
+              </p>
+            </section>
+          </div>
+
+          {/* Modals */}
+          {showStoryModal && (
+            <StoryFormModal
+              open={showStoryModal}
+              onClose={() => setShowStoryModal(false)}
+            />
+          )}
+
+          <CropDetailModal
+            crop={selectedCrop}
+            onClose={() => setSelectedCrop(null)}
           />
-        </div>
-      </div>
-
-      {/* 📈 Market Section */}
-      <div className="hidden md:block">
-        <MarketSection router={router} />
-      </div>
-
-      {/* ⚙️ Tools Section */}
-      <ToolsSection
-        tool={tool}
-        setTool={setTool}
-        selectedToolCrop={selectedToolCrop}
-        setSelectedToolCrop={setSelectedToolCrop}
-        areaInput={areaInput}
-        setAreaInput={setAreaInput}
-        soilN={soilN}
-        soilP={soilP}
-        soilK={soilK}
-        setSoilN={setSoilN}
-        setSoilP={setSoilP}
-        setSoilK={setSoilK}
-        marketPrice={marketPrice}
-        setMarketPrice={setMarketPrice}
-        toolResult={toolResult}
-        setToolResult={setToolResult}
-        loadingTool={loadingTool}
-        setLoadingTool={setLoadingTool}
-        errors={errors}
-        setErrors={setErrors}
-        uniqueCrops={localizedCrops}
-        LoadingSpinner={LoadingSpinner}
-      />
-
-      {/* 📚 Farmer Stories */}
-      <FarmerStories router={router} setShowStoryModal={setShowStoryModal} />
-
-      {/* 🌱 Crop Discovery */}
-      <CropDiscoverySection
-        categories={categories}
-        categoryFilter={categoryFilter}
-        setCategoryFilter={setCategoryFilter}
-        filteredCrops={filteredCrops}
-        showAllCrops={showAllCrops}
-        setShowAllCrops={setShowAllCrops}
-        setSelectedCrop={setSelectedCrop}
-        SkeletonCard={SkeletonCard}
-      />
-
-      {/* 🧑‍🌾 Community Highlights */}
-      <section className="mb-4">
-        <h2 className="text-2xl font-semibold flex items-center gap-2 text-green-800">
-          <FaUsers className="text-green-600" /> {t("community_highlights")}
-        </h2>
-        <p className="text-green-700 mt-3 ml-8">{t("coming_soon")}</p>
-      </section>
-
-      {/* ✍️ Add Story Modal */}
-      {showStoryModal && (
-        <StoryFormModal
-          open={showStoryModal}
-          onClose={() => setShowStoryModal(false)}
-        />
-      )}
-
-      {/* 🌾 Crop Detail Modal */}
-      <CropDetailModal crop={selectedCrop} onClose={() => setSelectedCrop(null)} />
         </div>
       </div>
     </MobilePageContainer>

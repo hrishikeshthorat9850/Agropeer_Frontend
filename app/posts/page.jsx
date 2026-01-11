@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { FaUsers, FaPlus, FaArrowLeft } from "react-icons/fa";
@@ -171,264 +171,222 @@ export default function PostsPage() {
     // If post is NOT in list, selectedPost will be rendered above (handled in render)
   }, [postId, posts]);
 
+  const postExistsInList = posts?.some((post) => post.id === postId);
+  const shouldShowSelectedPostAbove = selectedPost && !postExistsInList;
+
   return (
-    <MobilePageContainer>
-      <div className="py-4">
-        <div className="w-full max-w-2xl mx-auto">
-          <button
-            onClick={() => router.push("/posts")}
-            className="mb-6 flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full shadow-sm text-farm-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all font-medium"
+    <ErrorBoundary>
+      <MobilePageContainer>
+        <div className="py-4">
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6"
           >
-            <FaArrowLeft className="w-4 h-4" />
-            {t("view_all_posts")}
-          </button>
-          <Posts post={selectedPost} idx={0} refreshPosts={refreshPosts} />
-          <Suspense fallback={null}>
-            <ClientModalWrapper
-              post={selectedPost}
-              onUpdated={handlePostUpdated}
-            />
-          </Suspense>
-        </div>
-      </div>
-    </MobilePageContainer>
-  );
-}
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+              <div>
+                <h1 className="text-2xl md:text-3xl font-display font-bold text-farm-900 dark:text-white mb-2">
+                  {t("all_posts_title")}
+                </h1>
+                <p className="text-farm-600 dark:text-gray-300 text-base">
+                  {t("posts_subtitle")}
+                </p>
+              </div>
 
-// List view
-return (
-  <ErrorBoundary>
-    <MobilePageContainer>
-      <div className="py-4">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-6"
-        >
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-display font-bold text-farm-900 dark:text-white mb-2">
-                {t("all_posts_title")}
-              </h1>
-              <p className="text-farm-600 dark:text-gray-300 text-base">
-                {t("posts_subtitle")}
-              </p>
+              {/* Total Posts */}
+              <div className="flex items-center gap-2 text-sm font-semibold text-farm-700 dark:text-farm-300 bg-farm-50 dark:bg-farm-900/30 px-4 py-2 rounded-full">
+                <FaUsers className="w-4 h-4" />
+                <span>
+                  {pagination.total} {t("posts_count_suffix")}
+                </span>
+              </div>
             </div>
 
-            {/* Total Posts */}
-            <div className="flex items-center gap-2 text-sm font-semibold text-farm-700 dark:text-farm-300 bg-farm-50 dark:bg-farm-900/30 px-4 py-2 rounded-full">
-              <FaUsers className="w-4 h-4" />
-              <span>
-                {pagination.total} {t("posts_count_suffix")}
-              </span>
+            {/* Add / Close Button */}
+            <div className="mt-4 w-full">
+              {!isCreating ? (
+                <button
+                  onClick={() => setIsCreating(true)}
+                  className="w-full md:w-auto bg-farm-700 text-white px-6 py-3 rounded-full shadow-lg hover:bg-farm-800 transition flex items-center justify-center gap-2 font-semibold active:scale-95"
+                >
+                  <FaPlus className="w-4 h-4" /> {t("add_post_btn")}
+                </button>
+              ) : (
+                <button
+                  onClick={() => setIsCreating(false)}
+                  className="w-full md:w-auto bg-red-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-red-700 transition flex items-center justify-center gap-2 font-semibold active:scale-95"
+                >
+                  {t("close_btn")}
+                </button>
+              )}
             </div>
-          </div>
 
-          {/* Add / Close Button */}
-          <div className="mt-4 w-full">
-            {!isCreating ? (
-              <button
-                onClick={() => setIsCreating(true)}
-                className="w-full md:w-auto bg-farm-700 text-white px-6 py-3 rounded-full shadow-lg hover:bg-farm-800 transition flex items-center justify-center gap-2 font-semibold active:scale-95"
+            {/* Post Creation Form */}
+            {isCreating && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-6 mb-6"
               >
-                <FaPlus className="w-4 h-4" /> {t("add_post_btn")}
-              </button>
-            ) : (
-              <button
-                onClick={() => setIsCreating(false)}
-                className="w-full md:w-auto bg-red-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-red-700 transition flex items-center justify-center gap-2 font-semibold active:scale-95"
-              >
-                {t("close_btn")}
-              </button>
+                <PostCreation
+                  onSuccess={() => {
+                    setIsCreating(false);
+                    refreshPosts();
+                  }}
+                />
+              </motion.div>
             )}
-          </div>
+          </motion.div>
 
-          {/* Post Creation Form */}
-          {isCreating && (
+          {/* Loading State - Initial Load Only */}
+          {loading && posts.length === 0 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="mt-6"
+            >
+              <PostSkeleton count={5} />
+            </motion.div>
+          )}
+
+          {/* Error State */}
+          {error && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mt-6 mb-6"
+              className="bg-white dark:bg-gray-800 rounded-2xl p-8 text-center mb-6 shadow-lg"
             >
-              <PostCreation
-                onSuccess={() => {
-                  setIsCreating(false);
-                  refreshPosts();
-                }}
-              />
+              <div className="text-6xl mb-4">⚠️</div>
+              <h3 className="text-xl font-semibold text-farm-700 dark:text-white mb-2">
+                {t("something_wrong")}
+              </h3>
+              <p className="text-farm-600 dark:text-gray-300 mb-4">{error}</p>
+              <button
+                onClick={refreshPosts}
+                className="px-6 py-3 bg-farm-500 text-white rounded-lg hover:bg-farm-600 transition-colors font-semibold active:scale-95"
+              >
+                {t("try_again_btn")}
+              </button>
             </motion.div>
           )}
-        </motion.div>
 
-        {/* Loading State - Initial Load Only */}
-        {loading && posts.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="mt-6"
-          >
-            <PostSkeleton count={5} />
-          </motion.div>
-        )}
-
-        {/* Error State */}
-        {error && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white dark:bg-gray-800 rounded-2xl p-8 text-center mb-6 shadow-lg"
-          >
-            <div className="text-6xl mb-4">⚠️</div>
-            <h3 className="text-xl font-semibold text-farm-700 dark:text-white mb-2">
-              {t("something_wrong")}
-            </h3>
-            <p className="text-farm-600 dark:text-gray-300 mb-4">{error}</p>
-            <button
-              onClick={refreshPosts}
-              className="px-6 py-3 bg-farm-500 text-white rounded-lg hover:bg-farm-600 transition-colors font-semibold active:scale-95"
-            >
-              {t("try_again_btn")}
-            </button>
-          </motion.div>
-        )}
-
-        {/* 🟢 Deep link fix: Show selectedPost detail if not in current page */}
-        {postId && !loading && !error && (
-          <>
-            {postLoading ? (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="mb-6"
-              >
-                <PostSkeleton count={1} />
-              </motion.div>
-            ) : postError ? (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-white dark:bg-gray-800 rounded-2xl p-8 text-center mb-6 shadow-lg"
-              >
-                <div className="text-6xl mb-4">🔍</div>
-                <h3 className="text-xl font-semibold text-farm-700 dark:text-white mb-2">
-                  {t("post_not_found_error")}
-                </h3>
-                <p className="text-farm-600 dark:text-gray-300 mb-4">
-                  {postError}
-                </p>
-                <button
-                  onClick={() => router.push("/posts")}
-                  className="px-6 py-3 bg-farm-500 text-white rounded-lg hover:bg-farm-600 transition-colors font-semibold active:scale-95"
-                >
-                  {t("view_all_posts")}
-                </button>
-              </motion.div>
-            ) : shouldShowSelectedPostAbove ? (
-              // Render selectedPost above list if it's not in current page (only if posts are loaded)
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mb-6"
-              >
+          {/* 🟢 Deep link fix: Show selectedPost detail if not in current page */}
+          {postId && !loading && !error && (
+            <>
+              {postLoading ? (
                 <motion.div
-                  id={`post-${selectedPost.id}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="mb-6"
+                >
+                  <PostSkeleton count={1} />
+                </motion.div>
+              ) : postError ? (
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="border-2 border-farm-500 rounded-2xl p-2"
+                  className="bg-white dark:bg-gray-800 rounded-2xl p-8 text-center mb-6 shadow-lg"
                 >
-                  <Posts
-                    post={selectedPost}
-                    comment={selectedPost.post_comments || []}
-                    idx={0}
-                    refreshPosts={refreshPosts}
-                  />
+                  <div className="text-6xl mb-4">🔍</div>
+                  <h3 className="text-xl font-semibold text-farm-700 dark:text-white mb-2">
+                    {t("post_not_found_error")}
+                  </h3>
+                  <p className="text-farm-600 dark:text-gray-300 mb-4">
+                    {postError}
+                  </p>
+                  <button
+                    onClick={() => router.push("/posts")}
+                    className="px-6 py-3 bg-farm-500 text-white rounded-lg hover:bg-farm-600 transition-colors font-semibold active:scale-95"
+                  >
+                    {t("view_all_posts")}
+                  </button>
                 </motion.div>
-              </motion.div>
-            ) : shouldShowSelectedPostWhenEmpty ? (
-              // If no posts in list but selectedPost exists, show it
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mb-6"
-              >
+              ) : shouldShowSelectedPostAbove ? (
+                // Render selectedPost above list if it's not in current page (only if posts are loaded)
                 <motion.div
-                  id={`post-${selectedPost.id}`}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="border-2 border-farm-500 rounded-2xl p-2"
+                  className="mb-6"
                 >
-                  <Posts
-                    post={selectedPost}
-                    comment={selectedPost.post_comments || []}
-                    idx={0}
-                    refreshPosts={refreshPosts}
-                  />
-                </motion.div>
-              </motion.div>
-            ) : null}
-          </>
-        )}
-
-        {/* Posts List */}
-        {!loading && !error && (
-          <>
-            {posts.length === 0 ? (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-white dark:bg-gray-800 rounded-2xl p-12 text-center shadow-lg"
-              >
-                <div className="text-6xl mb-4">🌱</div>
-                <h3 className="text-xl font-semibold text-farm-700 dark:text-white mb-2">
-                  {t("no_posts_yet")}
-                </h3>
-                <p className="text-farm-600 dark:text-gray-300">
-                  {t("no_posts_desc")}
-                </p>
-              </motion.div>
-            ) : (
-              <div className="space-y-4 mt-6">
-                {posts.map((post, idx) => (
                   <motion.div
-                    key={post.id}
-                    id={`post-${post.id}`}
+                    id={`post-${selectedPost.id}`}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: idx * 0.05, duration: 0.4 }}
+                    className="border-2 border-farm-500 rounded-2xl p-2"
                   >
                     <Posts
-                      post={post}
-                      comment={post.post_comments || []}
-                      idx={idx}
+                      post={selectedPost}
+                      comment={selectedPost.post_comments || []}
+                      idx={0}
+                      refreshPosts={refreshPosts}
                     />
                   </motion.div>
-                ))}
+                </motion.div>
+              ) : null}
+            </>
+          )}
 
-                {/* Infinite Scroll Sentinel */}
-                <div
-                  ref={loadMoreRef}
-                  className="h-20 flex justify-center items-center"
+          {/* Posts List */}
+          {!loading && !error && (
+            <>
+              {posts.length === 0 ? (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-white dark:bg-gray-800 rounded-2xl p-12 text-center shadow-lg"
                 >
-                  {isFetchingMore && hasMore && (
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-farm-600"></div>
-                      <span className="text-sm text-gray-500">
-                        {t("loading_more_posts")}
-                      </span>
-                    </div>
-                  )}
-                  {!hasMore && posts.length > 0 && (
-                    <p className="text-gray-500 text-sm">
-                      {t("reached_end_posts")}
-                    </p>
-                  )}
+                  <div className="text-6xl mb-4">🌱</div>
+                  <h3 className="text-xl font-semibold text-farm-700 dark:text-white mb-2">
+                    {t("no_posts_yet")}
+                  </h3>
+                  <p className="text-farm-600 dark:text-gray-300">
+                    {t("no_posts_desc")}
+                  </p>
+                </motion.div>
+              ) : (
+                <div className="space-y-4 mt-6">
+                  {posts.map((post, idx) => (
+                    <motion.div
+                      key={post.id}
+                      id={`post-${post.id}`}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: idx * 0.05, duration: 0.4 }}
+                    >
+                      <Posts
+                        post={post}
+                        comment={post.post_comments || []}
+                        idx={idx}
+                      />
+                    </motion.div>
+                  ))}
+
+                  {/* Infinite Scroll Sentinel */}
+                  <div
+                    ref={loadMoreRef}
+                    className="h-20 flex justify-center items-center"
+                  >
+                    {isFetchingMore && hasMore && (
+                      <div className="flex flex-col items-center gap-2">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-farm-600"></div>
+                        <span className="text-sm text-gray-500">
+                          {t("loading_more_posts")}
+                        </span>
+                      </div>
+                    )}
+                    {!hasMore && posts.length > 0 && (
+                      <p className="text-gray-500 text-sm">
+                        {t("reached_end_posts")}
+                      </p>
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
-          </>
-        )}
-      </div>
-    </MobilePageContainer>
-  </ErrorBoundary>
-);
+              )}
+            </>
+          )}
+        </div>
+      </MobilePageContainer>
+    </ErrorBoundary>
+  );
+}

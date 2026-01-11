@@ -18,7 +18,7 @@ export default function SelectedChat() {
   if (!selected) {
     return (
       <div className="flex justify-center items-center h-[100dvh]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary">No selected Chat</div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }

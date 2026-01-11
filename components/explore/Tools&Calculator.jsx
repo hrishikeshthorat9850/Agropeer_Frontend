@@ -1,8 +1,9 @@
 "use client";
+import { useState, useRef, useEffect } from "react";
 import { FaTools, FaTimes } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/Context/languagecontext";
-import { useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 export default function ToolsSection({
   tool,
@@ -30,7 +31,12 @@ export default function ToolsSection({
 }) {
   const { t } = useLanguage();
   const formRef = useRef(null);
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+  const [mounted, setMounted] = useState(false);
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (tool) {
@@ -60,7 +66,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     };
   }, [tool]);
 
-  // ✅ API endpoints
+  // ✅ API endpoints (Using BASE_URL)
   const endpointMap = {
     seed: `${BASE_URL}/api/seed-calculator`,
     fertilizer: `${BASE_URL}/api/fertilizer-planner`,
@@ -117,40 +123,35 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     if (tool === "cost") body.marketPrice = Number(marketPrice || 0);
 
     try {
-      const res = await fetch(endpointMap[tool], {
+      if (!BASE_URL) console.warn("Missing NEXT_PUBLIC_BASE_URL");
+      const url = endpointMap[tool];
+      console.log("Fetching tool:", url, body);
+
+      const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
       const data = await res.json();
-      if (!res.ok) setToolResult({ error: data.error || t("server_error") });
-      else setToolResult(data);
-    } catch {
+      if (!res.ok) {
+        console.error("Tool Error:", data);
+        setToolResult({ error: data.error || t("server_error") });
+      } else {
+        setToolResult(data);
+      }
+    } catch (err) {
+      console.error("Network Error:", err);
       setToolResult({ error: t("server_error") });
     }
     setLoadingTool(false);
   };
 
-  // ✅ Close animation (slide up)
+  // ✅ Close animation
   const handleCloseForm = () => {
-    if (formRef.current) {
-      const anim = formRef.current.animate(
-        [
-          { opacity: 1, transform: "translateY(0)" },
-          { opacity: 0, transform: "translateY(-60px)" },
-        ],
-        { duration: 400, easing: "ease-in-out" }
-      );
-      anim.onfinish = () => {
-        setTool(null);
-        setToolResult(null);
-        setErrors({});
-      };
-    } else {
-      setTool(null);
-      setToolResult(null);
-      setErrors({});
-    }
+    // Logic to close
+    setTool(null);
+    setToolResult(null);
+    setErrors({});
   };
 
   // ✅ Label with color-changing *
@@ -167,216 +168,380 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     </label>
   );
 
-
   return (
-    <section className="mb-12">
-      <h2 className="text-2xl font-semibold text-green-800 mb-4 flex gap-2 items-center">
-        <FaTools className="text-green-600"/> {t("tools_section_title")}
-      </h2>
+    <section className="mb-8">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-full text-blue-600 dark:text-blue-400">
+            <FaTools className="w-5 h-5" />
+          </div>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+            {t("tools_section_title")}
+          </h2>
+        </div>
+      </div>
 
-      {/* 🌾 Tool Buttons */}
-      <div className="flex gap-3 mb-4 flex-wrap">
+      {/* 🌾 Tool Quick Actions (Grid) */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
         {Object.keys(endpointMap).map((tKey) => (
-          <button
+          <motion.button
             key={tKey}
+            whileTap={{ scale: 0.98 }}
             onClick={() => {
               setTool(tKey);
               setToolResult(null);
               setErrors({});
             }}
-            className={`w-full sm:w-auto px-4 py-2 rounded-xl font-semibold shadow-sm transition-colors ${
-              tool === tKey
-                ? "bg-green-600 text-white"
-                : "bg-green-50 text-green-700 hover:bg-green-100 border border-green-600"
-            }`}
+            className={`
+              flex flex-col items-center justify-center p-4 rounded-2xl border text-center transition-all h-28
+              ${
+                tool === tKey
+                  ? "bg-green-600 text-white border-green-600 shadow-md"
+                  : "bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-green-200 dark:hover:border-green-800 hover:bg-green-50/50 dark:hover:bg-gray-700"
+              }
+            `}
           >
-            {toolLabels[tKey]}
-          </button>
+            {/* Icons mapping logic embedded for UI */}
+            <div
+              className={`mb-2 text-2xl ${
+                tool === tKey
+                  ? "text-white"
+                  : "text-green-600 dark:text-green-400"
+              }`}
+            >
+              {tKey === "seed" && "🌱"}
+              {tKey === "fertilizer" && "🧪"}
+              {tKey === "water" && "💧"}
+              {tKey === "density" && "📏"}
+              {tKey === "yield" && "🚜"}
+              {tKey === "cost" && "💰"}
+            </div>
+            <span className="text-sm font-semibold leading-tight">
+              {toolLabels[tKey]}
+            </span>
+          </motion.button>
         ))}
       </div>
 
-      {/* 🌱 Tool Form */}
-      <AnimatePresence>
-        {tool && (
-          <motion.div
-            className="fixed inset-0 z-[999] flex items-center justify-center p-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            {/* Backdrop */}
-            <motion.div
-              className="absolute inset-0 bg-black/40"
-              onClick={handleCloseForm}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.4 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            />
+      {/* 🌱 Tool Form - Bottom Sheet (PORTAL) */}
+      {mounted &&
+        createPortal(
+          <AnimatePresence>
+            {tool && (
+              <>
+                {/* Backdrop */}
+                <motion.div
+                  key="backdrop"
+                  className="fixed inset-0 z-[99998] bg-black/60 backdrop-blur-sm"
+                  onClick={handleCloseForm}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                />
 
-            {/* Modal Box */}
-            <motion.div
-              ref={formRef}
-              className="relative z-10 max-w-xl w-full bg-white dark:bg-[#272727] rounded-2xl border border-green-300 shadow-xl p-6 flex flex-col gap-4 max-h-[90vh] overflow-y-auto"
-              initial={{ y: -40, scale: 0.95, opacity: 0 }}
-              animate={{ y: 0, scale: 1, opacity: 1 }}
-              exit={{ y: -40, scale: 0.95, opacity: 0 }}
-              transition={{ type: 'spring', stiffness: 260, damping: 25 }}
-            >
-              {/* ❌ Close Button */}
-              <button
-                onClick={handleCloseForm}
-                className="absolute top-3 right-3 text-green-700 hover:text-red-600 transition-colors"
-              >
-                <FaTimes size={20} />
-              </button>
-
-              {/* Title */}
-              <h3 className="text-lg font-semibold text-green-800 mb-3">
-                {toolLabels[tool]}
-              </h3>
-
-              <div className="flex flex-col gap-4">
-                {/* Crop Select */}
-                <div className="flex flex-col">
-                  <Label text={t("select_crop")} fieldKey="selectedToolCrop" />
-                  <select
-                    className={`p-3 border rounded-xl shadow-sm focus:ring-2 text-green-700 focus:ring-green-400 ${
-                      errors.selectedToolCrop ? "border-red-500" : "border-green-300"
-                    }`}
-                    value={selectedToolCrop}
-                    onChange={(e) => setSelectedToolCrop(e.target.value)}
+                {/* Bottom Sheet */}
+                <motion.div
+                  key="sheet"
+                  className="fixed bottom-0 left-0 right-0 z-[99999] bg-white dark:bg-gray-900 rounded-t-[2rem] shadow-2xl overflow-hidden flex flex-col max-h-[85vh]"
+                  initial={{ y: "100%" }}
+                  animate={{ y: 0 }}
+                  exit={{ y: "100%" }}
+                  transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                >
+                  {/* Drag Handle */}
+                  <div
+                    className="flex justify-center pt-3 pb-1"
+                    onClick={handleCloseForm}
                   >
-                    <option value="">{t("select_crop")}</option>
-                    {uniqueCrops.map((c) => (
-                      <option key={c.id} value={c.name}>
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                    <div className="w-12 h-1.5 bg-gray-300 dark:bg-gray-700 rounded-full" />
+                  </div>
 
-                {/* Area Input */}
-                <div className="flex flex-col">
-                  <Label text={t("area_label")} fieldKey="areaInput" />
-                  <input
-                    className={`p-3 border rounded-xl shadow-sm focus:ring-2 text-farm-700 focus:ring-green-400 ${
-                      errors.areaInput ? "border-red-500" : "border-green-300"
-                    }`}
-                    type="number"
-                    placeholder={t("enter_area")}
-                    value={areaInput}
-                    onWheel={(e) => e.target.blur()}
-                    onChange={(e) => setAreaInput(e.target.value)}
-                  />
-                </div>
+                  {/* Header */}
+                  <div className="px-6 py-4 flex items-center justify-between border-b border-gray-100 dark:border-gray-800">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                      <span className="text-2xl">
+                        {tool === "seed" && "🌱"}
+                        {tool === "fertilizer" && "🧪"}
+                        {tool === "water" && "💧"}
+                        {tool === "density" && "📏"}
+                        {tool === "yield" && "🚜"}
+                        {tool === "cost" && "💰"}
+                      </span>
+                      {toolLabels[tool]}
+                    </h3>
+                    <button
+                      onClick={handleCloseForm}
+                      className="p-2 bg-gray-100 dark:bg-gray-800 rounded-full text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+                    >
+                      <FaTimes />
+                    </button>
+                  </div>
 
-                {/* Fertilizer Inputs */}
-                {tool === "fertilizer" && (
-                  <div className="grid grid-cols-3 gap-4">
-                    {["N", "P", "K"].map((el) => (
-                      <div key={el} className="flex flex-col">
-                        <Label text={t("soil_label").replace("{value}", el)} fieldKey={`soil${el}`} />
-                        <input
-                          className={`p-3 border rounded-xl shadow-sm focus:ring-2 text-farm-700 focus:ring-green-400 ${
-                            errors[`soil${el}`] ? "border-red-500" : "border-green-300"
+                  {/* Scrollable Content */}
+                  <div className="p-6 overflow-y-auto pb-safe">
+                    <div className="flex flex-col gap-5">
+                      {/* Crop Select */}
+                      <div className="flex flex-col gap-1.5">
+                        <Label
+                          text={t("select_crop")}
+                          fieldKey="selectedToolCrop"
+                        />
+                        <select
+                          className={`w-full p-4 bg-gray-50 dark:bg-gray-800 border rounded-xl outline-none focus:ring-2 focus:ring-green-500/20 text-gray-900 dark:text-white text-base ${
+                            errors.selectedToolCrop
+                              ? "border-red-500"
+                              : "border-gray-200 dark:border-gray-700"
                           }`}
-                          placeholder={`Enter ${el}`}
-                          value={{ N: soilN, P: soilP, K: soilK }[el]}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            if (/^\d*$/.test(val)) {
-                              el === "N"
-                                ? setSoilN(val)
-                                : el === "P"
-                                ? setSoilP(val)
-                                : setSoilK(val);
-                            }
-                          }}
+                          value={selectedToolCrop}
+                          onChange={(e) => setSelectedToolCrop(e.target.value)}
+                        >
+                          <option value="">{t("select_crop")}</option>
+                          {uniqueCrops.map((c) => (
+                            <option key={c.id} value={c.name}>
+                              {c.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      {/* Area Input */}
+                      <div className="flex flex-col gap-1.5">
+                        <Label text={t("area_label")} fieldKey="areaInput" />
+                        <input
+                          className={`w-full p-4 bg-gray-50 dark:bg-gray-800 border rounded-xl outline-none focus:ring-2 focus:ring-green-500/20 text-gray-900 dark:text-white text-base ${
+                            errors.areaInput
+                              ? "border-red-500"
+                              : "border-gray-200 dark:border-gray-700"
+                          }`}
+                          type="number"
+                          placeholder={t("enter_area")}
+                          value={areaInput}
+                          onWheel={(e) => e.target.blur()}
+                          onChange={(e) => setAreaInput(e.target.value)}
                         />
                       </div>
-                    ))}
-                  </div>
-                )}
+                      {/* Fertilizer Inputs */}
+                      {tool === "fertilizer" && (
+                        <div className="grid grid-cols-3 gap-3">
+                          {["N", "P", "K"].map((el) => (
+                            <div key={el} className="flex flex-col gap-1.5">
+                              <Label
+                                text={t("soil_label").replace("{value}", el)}
+                                fieldKey={`soil${el}`}
+                              />
+                              <input
+                                className={`w-full p-3 bg-gray-50 dark:bg-gray-800 border rounded-xl outline-none focus:ring-2 focus:ring-green-500/20 text-center text-gray-900 dark:text-white font-medium ${
+                                  errors[`soil${el}`]
+                                    ? "border-red-500"
+                                    : "border-gray-200 dark:border-gray-700"
+                                }`}
+                                placeholder="0"
+                                value={{ N: soilN, P: soilP, K: soilK }[el]}
+                                onChange={(e) => {
+                                  const val = e.target.value;
+                                  if (/^\d*$/.test(val)) {
+                                    el === "N"
+                                      ? setSoilN(val)
+                                      : el === "P"
+                                      ? setSoilP(val)
+                                      : setSoilK(val);
+                                  }
+                                }}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {/* Market Price */}
+                      {tool === "cost" && (
+                        <div className="flex flex-col gap-1.5">
+                          <Label
+                            text={t("market_price_label")}
+                            fieldKey="marketPrice"
+                          />
+                          <div className="relative">
+                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">
+                              ₹
+                            </span>
+                            <input
+                              className={`w-full p-4 pl-10 bg-gray-50 dark:bg-gray-800 border rounded-xl outline-none focus:ring-2 focus:ring-green-500/20 text-gray-900 dark:text-white font-medium ${
+                                errors.marketPrice
+                                  ? "border-red-500"
+                                  : "border-gray-200 dark:border-gray-700"
+                              }`}
+                              placeholder="0.00"
+                              value={marketPrice}
+                              onChange={(e) => setMarketPrice(e.target.value)}
+                            />
+                          </div>
+                        </div>
+                      )}
+                      {/* Calculate Button */}
+                      <button
+                        onClick={handleToolSubmit}
+                        disabled={loadingTool}
+                        className="w-full bg-black dark:bg-white text-white dark:text-black py-4 rounded-xl font-bold shadow-lg shadow-gray-200 dark:shadow-none active:scale-[0.98] transition-transform flex justify-center items-center gap-3 mt-2"
+                      >
+                        {loadingTool && (
+                          <svg
+                            className="animate-spin h-5 w-5 text-current"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                          </svg>
+                        )}
+                        <span>{t("calculate_button")}</span>
+                      </button>
+                      {/* 🌾 Results Card */}
+                      <AnimatePresence>
+                        {toolResult && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className={`mt-2 rounded-2xl p-5 border ${
+                              toolResult.error
+                                ? "bg-red-50 border-red-100 text-red-800"
+                                : "bg-green-50 dark:bg-green-900/20 border-green-100 dark:border-green-800 text-green-900 dark:text-green-100"
+                            }`}
+                          >
+                            {toolResult.error ? (
+                              <div className="flex items-center gap-2 font-medium">
+                                <FaTimes /> {toolResult.error}
+                              </div>
+                            ) : (
+                              <div className="grid gap-3">
+                                <div className="text-sm font-medium opacity-70 uppercase tracking-wide">
+                                  Result
+                                </div>
 
-                {/* Market Price */}
-                {tool === "cost" && (
-                  <div className="flex flex-col">
-                    <Label text={t("market_price_label")} fieldKey="marketPrice" />
-                    <input
-                      className={`p-3 border rounded-xl shadow-sm focus:ring-2 text-farm-700 focus:ring-green-400 ${
-                        errors.marketPrice ? "border-red-500" : "border-green-300"
-                      }`}
-                      placeholder={t("enter_market_price")}
-                      value={marketPrice}
-                      onChange={(e) => setMarketPrice(e.target.value)}
-                    />
-                  </div>
-                )}
+                                {tool === "seed" && (
+                                  <div className="text-3xl font-bold">
+                                    {formatNumber(toolResult.seedRequiredKg)}{" "}
+                                    <span className="text-lg font-normal">
+                                      kg
+                                    </span>
+                                  </div>
+                                )}
 
-                {/* Calculate Button */}
-                <button
-                  onClick={handleToolSubmit}
-                  className="w-full bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white py-3 rounded-xl font-semibold shadow-md flex justify-center items-center gap-2 transition-all mt-2"
-                >
-                  {loadingTool && (
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  )}
-                  <span>{t("calculate_button")}</span>
-                </button>
-              </div>
+                                {tool === "fertilizer" && (
+                                  <div className="grid grid-cols-3 gap-2">
+                                    {/* Fertilizer Output Blocks */}
+                                    <div className="bg-white/50 dark:bg-black/20 p-2 rounded-lg text-center">
+                                      <div className="text-xs opacity-70 font-bold">
+                                        N
+                                      </div>
+                                      <div className="text-lg font-bold">
+                                        {formatNumber(toolResult.fertilizer?.N)}
+                                      </div>
+                                    </div>
+                                    <div className="bg-white/50 dark:bg-black/20 p-2 rounded-lg text-center">
+                                      <div className="text-xs opacity-70 font-bold">
+                                        P
+                                      </div>
+                                      <div className="text-lg font-bold">
+                                        {formatNumber(toolResult.fertilizer?.P)}
+                                      </div>
+                                    </div>
+                                    <div className="bg-white/50 dark:bg-black/20 p-2 rounded-lg text-center">
+                                      <div className="text-xs opacity-70 font-bold">
+                                        K
+                                      </div>
+                                      <div className="text-lg font-bold">
+                                        {formatNumber(toolResult.fertilizer?.K)}
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
 
-              {/* 🌾 Results */}
-              {toolResult && (
-                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-green-900 bg-green-50 rounded-xl p-4 shadow dark:bg-[#272727]">
-                  {toolResult.error && (
-                    <p className="text-red-600 font-semibold">{toolResult.error}</p>
-                  )}
+                                {tool === "water" && (
+                                  <div className="text-3xl font-bold">
+                                    {formatNumber(toolResult.totalWater_liters)}{" "}
+                                    <span className="text-lg font-normal">
+                                      L
+                                    </span>
+                                  </div>
+                                )}
 
-                  {tool === "seed" && (
-                    <p className="font-semibold">
-                      {t("seed_required_label")} {formatNumber(toolResult.seedRequiredKg)} kg
-                    </p>
-                  )}
+                                {tool === "density" && (
+                                  <div className="text-3xl font-bold">
+                                    {formatNumber(toolResult.plants)}{" "}
+                                    <span className="text-lg font-normal">
+                                      plants
+                                    </span>
+                                  </div>
+                                )}
 
-                  {tool === "fertilizer" && (
-                    <div className="flex flex-col gap-1">
-                      <p className="font-semibold">{t("fertilizer_requirement_label")}</p>
-                      <p>N: {formatNumber(toolResult.fertilizer?.N)} kg</p>
-                      <p>P: {formatNumber(toolResult.fertilizer?.P)} kg</p>
-                      <p>K: {formatNumber(toolResult.fertilizer?.K)} kg</p>
+                                {tool === "yield" && (
+                                  <div className="text-3xl font-bold">
+                                    {formatNumber(toolResult.yield)}{" "}
+                                    <span className="text-lg font-normal">
+                                      kg
+                                    </span>
+                                  </div>
+                                )}
+
+                                {tool === "cost" && (
+                                  <div className="space-y-2">
+                                    <div className="flex justify-between items-end border-b border-black/10 dark:border-white/10 pb-2">
+                                      <span className="opacity-70">
+                                        {t("profit_label")}
+                                      </span>
+                                      <span
+                                        className={`text-2xl font-bold ${
+                                          toolResult.profit >= 0
+                                            ? "text-green-600 dark:text-green-400"
+                                            : "text-red-500"
+                                        }`}
+                                      >
+                                        ₹{formatNumber(toolResult.profit)}
+                                      </span>
+                                    </div>
+                                    <div className="flex justify-between text-sm">
+                                      <span className="opacity-70">
+                                        {t("revenue_label")}
+                                      </span>
+                                      <span className="font-semibold">
+                                        ₹{formatNumber(toolResult.revenue)}
+                                      </span>
+                                    </div>
+                                    <div className="flex justify-between text-sm">
+                                      <span className="opacity-70">
+                                        {t("cost_label")}
+                                      </span>
+                                      <span className="font-semibold text-red-500">
+                                        -₹{formatNumber(toolResult.totalCost)}
+                                      </span>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                      <div className="h-4" /> {/* Safe Area Spacer */}
                     </div>
-                  )}
-
-                  {tool === "water" && (
-                    <p>{t("total_water_label")} {formatNumber(toolResult.totalWater_liters)} liters</p>
-                  )}
-
-                  {tool === "density" && (
-                    <p>{t("total_plants_label")} {formatNumber(toolResult.plants)}</p>
-                  )}
-
-                  {tool === "yield" && (
-                    <p>{t("estimated_yield_label")} {formatNumber(toolResult.yield)} kg</p>
-                  )}
-
-                  {tool === "cost" && (
-                    <div className="flex flex-col gap-1">
-                      <p className="font-semibold">{t("cost_profit_label")}</p>
-                      <p className={toolResult.profit >= 0 ? "text-green-700" : "text-red-600"}>
-                        {t("profit_label")} ₹{formatNumber(toolResult.profit)}
-                      </p>
-                      <p>{t("revenue_label")} ₹{formatNumber(toolResult.revenue)}</p>
-                      <p>{t("cost_label")} ₹{formatNumber(toolResult.totalCost)}</p>
-                    </div>
-                  )}
-                </div>
-              )}
-            </motion.div>
-          </motion.div>
+                  </div>
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>,
+          document.body
         )}
-      </AnimatePresence>
-
     </section>
   );
 }
