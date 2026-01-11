@@ -14,7 +14,7 @@ import {
   FaBullhorn,
   FaGlobe,
   FaVideo,
-  FaUserClock
+  FaUserClock,
 } from "react-icons/fa";
 import { FaIndianRupeeSign } from "react-icons/fa6";
 import { useWeather } from "@/Context/WeatherContext";
@@ -22,7 +22,12 @@ import { openAppSettings } from "./utils/openAppSettings";
 import HomeBanner from "./HomeBanner";
 
 export default function MobileHome() {
-  const { weather, loading: weatherLoading, getWeather, error: weatherError } = useWeather();
+  const {
+    weather,
+    loading: weatherLoading,
+    getWeather,
+    error: weatherError,
+  } = useWeather();
   const { position } = useGeolocation();
   /* Scroll logic removed for performance */
   // ✅ Refactored to use global weather context directly (like MobileHome)
@@ -35,34 +40,42 @@ export default function MobileHome() {
   }, [position, weather, weatherLoading, getWeather]);
 
   // ✅ memoized success handler
-  const onLocationSuccess = useCallback((lat, lng) => {
-    getWeather(lat, lng);
-  }, [getWeather]);
+  const onLocationSuccess = useCallback(
+    (lat, lng) => {
+      getWeather(lat, lng);
+    },
+    [getWeather]
+  );
 
   const { status, retry } = useLocation(onLocationSuccess);
 
   const cleanTemp =
-    typeof weather?.temperature === "number" ? weather.temperature.toFixed(1) : "--";
+    typeof weather?.temperature === "number"
+      ? weather.temperature.toFixed(1)
+      : "--";
 
   const rainChance =
     typeof weather?.forecast?.[0]?.rainChance === "number"
       ? weather.forecast[0].rainChance
       : "--";
 
-  const humidity = typeof weather?.humidity === "number" ? weather?.humidity : "--";
+  const humidity =
+    typeof weather?.humidity === "number" ? weather?.humidity : "--";
 
-  const windSpeed = typeof weather?.windspeed === "number" ? weather?.windspeed?.toFixed(1) : "--";
+  const windSpeed =
+    typeof weather?.windspeed === "number"
+      ? weather?.windspeed?.toFixed(1)
+      : "--";
 
   return (
-    <div className="md:hidden pb-1 min-h-screen bg-[#FAF7F2] dark:bg-[#0d0d0d] relative">
-
+    <div className="md:hidden min-h-screen bg-white dark:bg-black relative">
       {/* ================================================================= */}
       {/*                        TOP HEADER SECTION                         */}
       {/* ================================================================= */}
 
       {/* ================= TOP HEADER + FLOATING CARD ================= */}
       {/* ================= TOP HEADER ================= */}
-      <div className="relative w-full z-10 pt-4 px-4 pb-2">
+      <div className="relative w-full z-10 px-0 pb-0">
         <HomeBanner />
       </div>
 
@@ -73,16 +86,17 @@ export default function MobileHome() {
       {/*                        PREMIUM WEATHER CARD                     */}
       {/* =============================================================== */}
 
-      <div className="mt-6 px-4">
-        <div className="
+      <div className="mt-4 px-4">
+        <div
+          className="
           relative overflow-hidden 
           rounded-[32px]
           p-5
           bg-mesh-sky dark:bg-sky-900
           border border-sky-200 dark:border-sky-800
           shadow-elevation-1
-        ">
-
+        "
+        >
           {/* Blur circle removed */}
 
           <div className="flex items-center justify-between">
@@ -92,7 +106,10 @@ export default function MobileHome() {
             {status === LOCATION.LOADING && <p>Detecting location…</p>}
 
             {status === LOCATION.DENIED && (
-              <button onClick={retry} className="px-4 py-2 bg-red-600 text-white rounded-full">
+              <button
+                onClick={retry}
+                className="px-4 py-2 bg-red-600 text-white rounded-full"
+              >
                 Allow Location
               </button>
             )}
@@ -107,7 +124,12 @@ export default function MobileHome() {
             )}
             <div className="relative w-12 h-12">
               <div className="absolute inset-0 animate-pulse">
-                <svg viewBox="0 0 24 24" fill="none" stroke="orange" strokeWidth="1.4">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="orange"
+                  strokeWidth="1.4"
+                >
                   <circle cx="12" cy="12" r="5" fill="orange" stroke="orange" />
                   <path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" />
                 </svg>
@@ -184,7 +206,7 @@ export default function MobileHome() {
             <span className="text-3xl bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent dark:from-blue-400 dark:via-purple-400 dark:to-green-400 animate-pulse">
               AgroPeer
             </span>
-            <span className="text-2xl sm:text-3xl lg:text-4xl ml-2 animate-bounce">🚀</span>
+            {/* <span className="text-2xl sm:text-3xl lg:text-4xl ml-2 animate-bounce">🚀</span> */}
           </h1>
 
           {/* ENHANCED DESCRIPTION */}
@@ -220,25 +242,31 @@ export default function MobileHome() {
       {/* ================================================================= */}
 
       <div className="mt-6 px-4">
-        <div className="
-          bg-surface-50 dark:bg-surface-900
+        <div
+          className="
+          bg-white dark:bg-neutral-900
           rounded-[24px] p-5
-          border border-surface-200 dark:border-surface-800
-          shadow-elevation-1
-        ">
+          border border-gray-100 dark:border-neutral-800
+          shadow-sm
+        "
+        >
           <div className="flex items-center gap-3 mb-3">
             <div
               className="w-10 h-10 rounded-xl 
                 bg-farm-100 dark:bg-farm-900
-                flex items-center justify-center">
-              <FaUserClock size={20} className="text-farm-700 dark:text-farm-400" />
+                flex items-center justify-center"
+            >
+              <FaUserClock
+                size={20}
+                className="text-farm-700 dark:text-farm-400"
+              />
             </div>
-            <h2 className="text-lg font-bold text-surface-900 dark:text-white">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white">
               Recent Posts
             </h2>
           </div>
 
-          <p className="text-sm text-surface-600 dark:text-surface-400 leading-relaxed mb-4">
+          <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-4">
             See what farmers around you are posting right now.
           </p>
 
@@ -259,34 +287,39 @@ export default function MobileHome() {
       {/*                        MOST LIKED (PREMIUM)                      */}
       {/* ================================================================= */}
 
-      <div className="mt-4 px-4 pb-24">
-        <div className="
-          bg-surface-50 dark:bg-surface-900
+      <div className="mt-4 px-4 pb-2">
+        <div
+          className="
+          bg-white dark:bg-neutral-900
           rounded-[24px] p-5
-          border border-surface-200 dark:border-surface-800
-          shadow-elevation-1
-        ">
-
+          border border-gray-100 dark:border-neutral-800
+          shadow-sm
+        "
+        >
           <div className="flex items-center gap-3 mb-3">
-            <div className="
+            <div
+              className="
               w-10 h-10 rounded-xl 
               bg-earth-100 dark:bg-earth-900 
               flex items-center justify-center
-            ">
+            "
+            >
               <svg width="20" height="20" fill="#e65100" viewBox="0 0 24 24">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 
+                <path
+                  d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 
                         2 6 4 4 6.5 4c1.74 0 3.41 1 4.13 2.44h.74C13.09 
                         5 14.76 4 16.5 4 19 4 21 6 21 8.5c0 
-                        3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                />
               </svg>
             </div>
 
-            <h2 className="text-lg font-bold text-surface-900 dark:text-white">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white">
               Most Liked
             </h2>
           </div>
 
-          <p className="text-sm text-surface-600 dark:text-surface-400 leading-relaxed mb-4">
+          <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-4">
             Trending among farmers — most liked and shared.
           </p>
 
@@ -312,22 +345,81 @@ export default function MobileHome() {
 
 function FeatureGrid() {
   const cards = [
-    { href: "/farmer-dashboard", icon: <FaLeaf className="text-green-700 text-xl" />, bg: "bg-green-100", label: "Farmer Dashboard" },
-    { href: "/market", icon: <FaTractor className="text-orange-600 text-xl" />, bg: "bg-orange-100", label: "Market" },
-    { href: "/market-prices", icon: <FaIndianRupeeSign className="text-orange-600 text-xl" />, bg: "bg-orange-100", label: "Market Prices" },
-    { href: "/posts", icon: <FaImages className="text-blue-600 text-xl" />, bg: "bg-blue-100", label: "Posts" },
-    { href: "/weather", icon: <FaCloudSun className="text-yellow-600 text-xl" />, bg: "bg-yellow-100", label: "Weather" },
-    { href: "/explore", icon: <FaLeaf className="text-pink-600 text-xl" />, bg: "bg-pink-100", label: "Explore" },
-    { href: "/government-schemes", icon: <FaBullhorn className="text-purple-600 text-xl" />, bg: "bg-purple-100", label: "Schemes" },
-    { href: "/news", icon: <FaNewspaper className="text-red-600 text-xl" />, bg: "bg-red-100", label: "News" },
-    { href: "/milk-rate-calculator", icon: <FaGlobe className="text-teal-600 text-xl" />, bg: "bg-teal-100", label: "Milk Rate" },
-    { href: "/reels", icon: <FaVideo className="text-indigo-600 text-xl" />, bg: "bg-indigo-100", label: "Reels" },
+    {
+      href: "/farmer-dashboard",
+      icon: <FaLeaf className="text-green-700 text-xl" />,
+      bg: "bg-green-100",
+      label: "Farmer Dashboard",
+    },
+    {
+      href: "/market",
+      icon: <FaTractor className="text-orange-600 text-xl" />,
+      bg: "bg-orange-100",
+      label: "Market",
+    },
+    {
+      href: "/market-prices",
+      icon: <FaIndianRupeeSign className="text-orange-600 text-xl" />,
+      bg: "bg-orange-100",
+      label: "Market Prices",
+    },
+    {
+      href: "/posts",
+      icon: <FaImages className="text-blue-600 text-xl" />,
+      bg: "bg-blue-100",
+      label: "Posts",
+    },
+    {
+      href: "/weather",
+      icon: <FaCloudSun className="text-yellow-600 text-xl" />,
+      bg: "bg-yellow-100",
+      label: "Weather",
+    },
+    {
+      href: "/explore",
+      icon: <FaLeaf className="text-pink-600 text-xl" />,
+      bg: "bg-pink-100",
+      label: "Explore",
+    },
+    {
+      href: "/government-schemes",
+      icon: <FaBullhorn className="text-purple-600 text-xl" />,
+      bg: "bg-purple-100",
+      label: "Schemes",
+    },
+    {
+      href: "/news",
+      icon: <FaNewspaper className="text-red-600 text-xl" />,
+      bg: "bg-red-100",
+      label: "News",
+    },
+    {
+      href: "/milk-rate-calculator",
+      icon: <FaGlobe className="text-teal-600 text-xl" />,
+      bg: "bg-teal-100",
+      label: "Milk Rate",
+    },
+    {
+      href: "/reels",
+      icon: <FaVideo className="text-indigo-600 text-xl" />,
+      bg: "bg-indigo-100",
+      label: "Reels",
+    },
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-3 gap-3 px-1">
       {cards.map((c, i) => (
-        <FeatureCard key={i} {...c} />
+        <div
+          key={i}
+          className={
+            i === cards.length - 1
+              ? "col-span-3 flex justify-center"
+              : "col-span-1"
+          }
+        >
+          <FeatureCard {...c} isLast={i === cards.length - 1} />
+        </div>
       ))}
     </div>
   );
@@ -337,33 +429,41 @@ function FeatureGrid() {
 /*                           FEATURE CARD                            */
 /* ================================================================= */
 
-function FeatureCard({ href, icon, bg, label }) {
+const FeatureCard = ({ href, icon, bg, label, isLast }) => {
   return (
     <Link
       href={href}
-      className="
-        p-4 rounded-3xl
+      className={`
         relative overflow-hidden
-        bg-surface-50 dark:bg-surface-800
-        border border-surface-200 dark:border-surface-700
-        shadow-elevation-1
+        rounded-[24px]
+        bg-white dark:bg-[#1a1a1a]
+        border border-gray-100 dark:border-white/5
+        shadow-sm hover:shadow-md
         flex flex-col items-center justify-center gap-3
-        active:scale-95 transition-all duration-200
-        hover:shadow-elevation-2 hover:bg-surface-100 dark:hover:bg-surface-700
+        active:scale-95 transition-all duration-300
         group
-        h-32
-      "
+        ${
+          isLast
+            ? "w-full max-w-[200px] aspect-[2/1] flex-row px-6"
+            : "w-full aspect-square p-3"
+        }
+      `}
     >
-      <div className={`
-        relative z-10 w-12 h-12 rounded-2xl flex items-center justify-center 
-        ${bg} shadow-sm group-hover:scale-110 transition-transform duration-200
-      `}>
+      <div
+        className={`
+        relative z-10 
+        ${isLast ? "w-10 h-10" : "w-12 h-12"} 
+        rounded-2xl flex items-center justify-center 
+        ${bg} bg-opacity-80 dark:bg-opacity-20
+        shadow-sm group-hover:scale-110 transition-transform duration-200
+      `}
+      >
         {icon}
       </div>
 
-      <span className="relative z-10 font-semibold text-surface-800 dark:text-surface-100 text-[13px] text-center leading-tight">
+      <span className="relative z-10 font-medium text-gray-700 dark:text-gray-300 text-[11px] text-center leading-tight px-1">
         {label}
       </span>
     </Link>
   );
-}
+};

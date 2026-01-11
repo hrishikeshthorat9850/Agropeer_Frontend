@@ -30,7 +30,7 @@ export default function ExitConfirmModal({ open, onCancel, onConfirm }) {
         </h2>
 
         <p className="text-green-700 text-center mt-2">
-          Are you sure you want to close Agrogram?
+          Are you sure you want to close Agropeer?
         </p>
 
         <div className="flex justify-center gap-4 mt-6">

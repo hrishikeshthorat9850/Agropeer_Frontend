@@ -15,7 +15,7 @@ import {
   FaSeedling,
 } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import { StatusBar, Style } from '@capacitor/status-bar';
+import { StatusBar, Style } from "@capacitor/status-bar";
 
 export default function MobileSidebar() {
   const [open, setOpen] = useState(false);
@@ -77,7 +77,11 @@ export default function MobileSidebar() {
   }, [open]);
   const MENU_ITEMS = [
     { href: "/about-us", label: "About Us", icon: <FaLeaf /> },
-    { href: "/how-it-works", label: "How AgroPeer Works", icon: <FaSeedling /> },
+    {
+      href: "/how-it-works",
+      label: "How AgroPeer Works",
+      icon: <FaSeedling />,
+    },
     { href: "/help", label: "Help Center", icon: <FaQuestionCircle /> },
     { href: "/farming-tips", label: "Farming Tips", icon: <FaLeaf /> },
     { href: "/expert-advice", label: "Expert Advice", icon: <FaComments /> },
@@ -100,9 +104,9 @@ export default function MobileSidebar() {
           {/* LEFT SIDEBAR */}
           <motion.div
             className="fixed left-0 top-0 w-3/4 max-w-[300px]
-              bg-gradient-to-b from-green-900 to-green-700
-              text-white p-6 pb-10 z-[9999] rounded-r-3xl shadow-xl
-              flex flex-col h-[100dvh]
+              bg-gradient-to-b from-[#111827] via-[#0f172a] to-black
+              text-white p-6 pb-10 z-[9999] rounded-r-3xl shadow-2xl
+              flex flex-col h-[100dvh] border-r border-white/5 backdrop-blur-xl
             "
             initial={{ x: "-100%" }}
             animate={{ x: 0 }}
@@ -112,7 +116,7 @@ export default function MobileSidebar() {
             {/* Fixed Header */}
             <div className="flex items-center justify-between mb-8 flex-shrink-0">
               <div className="relative">
-                <h3 className="text-xl mt-6 font-bold bg-gradient-to-r from-white via-white/90 to-white/70 bg-clip-text text-transparent px-4 rounded-xl backdrop-blur-sm bg-white/10 shadow-lg">
+                <h3 className="text-xl mt-6 font-bold text-white px-4 tracking-wide">
                   Menu
                 </h3>
                 <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-0.5 bg-gradient-to-r from-transparent via-purple-400 to-transparent rounded-full"></div>
@@ -120,7 +124,7 @@ export default function MobileSidebar() {
             </div>
 
             {/* Scrollable Content */}
-            <div className="flex-1 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+            <div className="flex-1 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
               {/* Menu Items */}
               <nav className="flex flex-col gap-2">
                 {MENU_ITEMS.map((it) => (
@@ -128,16 +132,18 @@ export default function MobileSidebar() {
                     key={it.href}
                     href={it.href}
                     onClick={() => setOpen(false)}
-                    className="flex items-center gap-3 py-3 px-2 rounded-lg hover:bg-white/10"
+                    className="flex items-center gap-3 py-3 px-2 rounded-lg hover:bg-white/5 transition-all duration-300 group"
                   >
-                    <span className="text-lg">{it.icon}</span>
+                    <span className="text-lg text-white/70 group-hover:text-white group-hover:scale-110 transition-all">
+                      {it.icon}
+                    </span>
                     <span>{it.label}</span>
                   </Link>
                 ))}
               </nav>
 
               {/* Creative Access Hub */}
-              <div className="mt-8 pt-6 border-t border-white/20">
+              <div className="mt-8 pt-6 border-t border-white/10">
                 <div className="relative">
                   {/* Floating Background Elements */}
                   <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -147,7 +153,7 @@ export default function MobileSidebar() {
 
                   {/* Section Title */}
                   <div className="relative mb-6">
-                    <h4 className="text-sm font-bold bg-gradient-to-r from-white via-white/90 to-white/70 bg-clip-text text-transparent">
+                    <h4 className="text-sm font-bold text-white/90 uppercase tracking-wider">
                       Access Hub
                     </h4>
                     <div className="w-8 h-0.5 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full mt-1"></div>
@@ -161,9 +167,11 @@ export default function MobileSidebar() {
                       onClick={() => setOpen(false)}
                       className="group relative block"
                     >
-                      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-rose-500/20 via-pink-500/15 to-orange-500/20 backdrop-blur-md border border-white/20 p-5 hover:bg-gradient-to-br hover:from-rose-500/30 hover:via-pink-500/25 hover:to-orange-500/30 transition-all duration-500 hover:scale-105 hover:-translate-y-1 hover:shadow-2xl hover:shadow-rose-500/25"
+                      <div
+                        className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-rose-500/20 via-pink-500/15 to-orange-500/20 backdrop-blur-md border border-white/20 p-5 hover:bg-gradient-to-br hover:from-rose-500/30 hover:via-pink-500/25 hover:to-orange-500/30 transition-all duration-500 hover:scale-105 hover:-translate-y-1 hover:shadow-2xl hover:shadow-rose-500/25"
                         style={{
-                          clipPath: 'polygon(0% 15%, 15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%)'
+                          clipPath:
+                            "polygon(0% 15%, 15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%)",
                         }}
                       >
                         {/* Animated Background Pattern */}
@@ -182,8 +190,12 @@ export default function MobileSidebar() {
                               <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-yellow-400 to-orange-400 rounded-full animate-pulse"></div>
                             </div>
                             <div>
-                              <span className="text-white font-bold text-base">Favorites</span>
-                              <p className="text-white/70 text-xs mt-0.5">Your saved treasures</p>
+                              <span className="text-white font-bold text-base">
+                                Favorites
+                              </span>
+                              <p className="text-white/70 text-xs mt-0.5">
+                                Your saved treasures
+                              </p>
                             </div>
                           </div>
                           <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -201,9 +213,11 @@ export default function MobileSidebar() {
                       onClick={() => setOpen(false)}
                       className="group relative block"
                     >
-                      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-500/20 via-purple-500/15 to-blue-500/20 backdrop-blur-md border border-white/20 p-5 hover:bg-gradient-to-br hover:from-indigo-500/30 hover:via-purple-500/25 hover:to-blue-500/30 transition-all duration-500 hover:scale-105 hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-500/25"
+                      <div
+                        className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-500/20 via-purple-500/15 to-blue-500/20 backdrop-blur-md border border-white/20 p-5 hover:bg-gradient-to-br hover:from-indigo-500/30 hover:via-purple-500/25 hover:to-blue-500/30 transition-all duration-500 hover:scale-105 hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-500/25"
                         style={{
-                          clipPath: 'polygon(0% 15%, 15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%)'
+                          clipPath:
+                            "polygon(0% 15%, 15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%)",
                         }}
                       >
                         {/* Animated Background Pattern */}
@@ -222,8 +236,12 @@ export default function MobileSidebar() {
                               <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-cyan-400 to-blue-400 rounded-full animate-pulse"></div>
                             </div>
                             <div>
-                              <span className="text-white font-bold text-base">Settings</span>
-                              <p className="text-white/70 text-xs mt-0.5">Customize your experience</p>
+                              <span className="text-white font-bold text-base">
+                                Settings
+                              </span>
+                              <p className="text-white/70 text-xs mt-0.5">
+                                Customize your experience
+                              </p>
                             </div>
                           </div>
                           <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -241,9 +259,11 @@ export default function MobileSidebar() {
                       onClick={() => setOpen(false)}
                       className="group relative block"
                     >
-                      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500/20 via-teal-500/15 to-green-500/20 backdrop-blur-md border border-white/20 p-5 hover:bg-gradient-to-br hover:from-emerald-500/30 hover:via-teal-500/25 hover:to-green-500/30 transition-all duration-500 hover:scale-105 hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-500/25"
+                      <div
+                        className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500/20 via-teal-500/15 to-green-500/20 backdrop-blur-md border border-white/20 p-5 hover:bg-gradient-to-br hover:from-emerald-500/30 hover:via-teal-500/25 hover:to-green-500/30 transition-all duration-500 hover:scale-105 hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-500/25"
                         style={{
-                          clipPath: 'polygon(0% 15%, 15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%)'
+                          clipPath:
+                            "polygon(0% 15%, 15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%)",
                         }}
                       >
                         {/* Animated Background Pattern */}
@@ -262,8 +282,12 @@ export default function MobileSidebar() {
                               <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-lime-400 to-green-400 rounded-full animate-pulse"></div>
                             </div>
                             <div>
-                              <span className="text-white font-bold text-base">Profile</span>
-                              <p className="text-white/70 text-xs mt-0.5">Your digital identity</p>
+                              <span className="text-white font-bold text-base">
+                                Profile
+                              </span>
+                              <p className="text-white/70 text-xs mt-0.5">
+                                Your digital identity
+                              </p>
                             </div>
                           </div>
                           <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -280,9 +304,10 @@ export default function MobileSidebar() {
 
               {/* Social icons */}
               <div className="mt-6 border-t border-white/10 pt-5">
-                <h4 className="text-sm font-semibold mb-3">Connect With Us</h4>
+                <h4 className="text-sm font-semibold mb-3 text-white/80">
+                  Connect With Us
+                </h4>
                 <div className="flex gap-3">
-
                   <a
                     href="https://www.facebook.com/profile.php?id=61584709015575"
                     target="_blank"
@@ -322,7 +347,6 @@ export default function MobileSidebar() {
                   >
                     <FaYoutube />
                   </a>
-
                 </div>
               </div>
             </div>

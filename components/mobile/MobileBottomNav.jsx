@@ -1,12 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  FaHome,
-  FaPlusCircle,
-  FaTractor,
-  FaImages,
-} from "react-icons/fa";
+import { FaHome, FaPlusCircle, FaTractor, FaImages } from "react-icons/fa";
 import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles } from "lucide-react";
@@ -65,7 +60,9 @@ export default function MobileBottomNav({ onAI }) {
             <div className="w-14 h-14 rounded-full bg-earth-500 text-white shadow-elevation-3 flex items-center justify-center">
               <FaTractor size={20} />
             </div>
-            <span className="text-xs font-semibold text-white bg-black/50 px-2 py-1 rounded-md backdrop-blur-md">Sell</span>
+            <span className="text-xs font-semibold text-white bg-black/50 px-2 py-1 rounded-md backdrop-blur-md">
+              Sell
+            </span>
           </motion.button>
         )}
       </AnimatePresence>
@@ -92,7 +89,9 @@ export default function MobileBottomNav({ onAI }) {
             <div className="w-14 h-14 rounded-full bg-farm-500 text-white shadow-elevation-3 flex items-center justify-center">
               <FaImages size={20} />
             </div>
-            <span className="text-xs font-semibold text-white bg-black/50 px-2 py-1 rounded-md backdrop-blur-md">Post</span>
+            <span className="text-xs font-semibold text-white bg-black/50 px-2 py-1 rounded-md backdrop-blur-md">
+              Post
+            </span>
           </motion.button>
         )}
       </AnimatePresence>
@@ -112,28 +111,40 @@ export default function MobileBottomNav({ onAI }) {
 
       {/* ⭐ MATERIAL 3 BOTTOM NAVIGATION */}
       <div
-        className="fixed bottom-0 left-0 right-0 md:hidden z-[999] bg-surface-50 dark:bg-surface-900 border-t border-surface-200 dark:border-surface-800"
+        className="fixed bottom-0 left-0 right-0 md:hidden z-[999] bg-white dark:bg-black"
         style={{
           paddingBottom: "env(safe-area-inset-bottom)",
           height: "calc(80px + env(safe-area-inset-bottom))",
         }}
       >
         <div className="flex items-center justify-between px-4 h-[80px]">
-
           {/* HOME */}
           <button
             onClick={() => router.push("/")}
             className="flex-1 flex flex-col items-center gap-1 group"
           >
-            <div className={`
+            <div
+              className={`
               px-5 py-1.5 rounded-full transition-all duration-300
-              ${pathname === "/"
-                ? "bg-farm-200 dark:bg-farm-800 text-farm-900 dark:text-farm-100"
-                : "text-surface-600 dark:text-surface-400 group-hover:bg-surface-100 dark:group-hover:bg-surface-800"}
-            `}>
-              <FaHome size={24} className={pathname === "/" ? "" : "opacity-70"} />
+              ${
+                pathname === "/"
+                  ? "bg-farm-200 dark:bg-farm-800 text-farm-900 dark:text-farm-100"
+                  : "text-surface-600 dark:text-surface-400 group-hover:bg-surface-100 dark:group-hover:bg-surface-800"
+              }
+            `}
+            >
+              <FaHome
+                size={24}
+                className={pathname === "/" ? "" : "opacity-90"}
+              />
             </div>
-            <span className={`text-xs font-medium ${pathname === "/" ? "text-farm-900 dark:text-farm-100" : "text-surface-600 dark:text-surface-400"}`}>
+            <span
+              className={`text-xs font-medium ${
+                pathname === "/"
+                  ? "text-farm-900 dark:text-farm-100"
+                  : "text-surface-600 dark:text-surface-400"
+              }`}
+            >
               Home
             </span>
           </button>
@@ -165,17 +176,18 @@ export default function MobileBottomNav({ onAI }) {
             onClick={openAI}
             className="flex-1 flex flex-col items-center gap-1 group"
           >
-            <div className={`
+            <div
+              className={`
               px-5 py-1.5 rounded-full transition-all duration-300
               text-surface-600 dark:text-surface-400 group-hover:bg-surface-100 dark:group-hover:bg-surface-800
-            `}>
+            `}
+            >
               <Sparkles size={24} className="opacity-70 text-earth-500" />
             </div>
             <span className="text-xs font-medium text-surface-600 dark:text-surface-400">
               Ask AI
             </span>
           </button>
-
         </div>
       </div>
     </>
