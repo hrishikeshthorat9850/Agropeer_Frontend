@@ -29,54 +29,64 @@ export default function NewsCard({ article, index = 0 }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.4 }}
-      whileHover={{ y: -4 }}
-      className="farm-card overflow-hidden hover-lift group"
+      className="bg-white dark:bg-[#1E1E1E] rounded-3xl overflow-hidden shadow-sm border border-gray-100 dark:border-white/5"
     >
       <Link href={`/news?id=${article.id}`} className="block">
-        {/* Image */}
+        {/* Header / Meta */}
+        <div className="px-5 pt-5 pb-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-green-400 to-green-600 flex items-center justify-center text-white font-bold text-xs">
+              {article.category
+                ? article.category.charAt(0).toUpperCase()
+                : "N"}
+            </div>
+            <div className="flex flex-col">
+              <span className="text-sm font-bold text-gray-900 dark:text-white leading-none">
+                {article.category || "News"}
+              </span>
+              <span className="text-[10px] text-gray-500 font-medium mt-0.5">
+                {formatDate(article.date)}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Categories / Tags (Optional - can be inline) */}
+
+        {/* Title */}
+        <div className="px-5 pb-3">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-snug line-clamp-2">
+            {article.title}
+          </h3>
+        </div>
+
+        {/* Image - Full Width */}
         {article.image_url && (
-          <div className="relative w-full h-48 overflow-hidden bg-farm-100">
+          <div className="relative w-full aspect-video bg-gray-100 dark:bg-zinc-800">
             <Image
               src={article.image_url}
               alt={article.title}
               fill
-              className="object-cover group-hover:scale-110 transition-transform duration-500"
+              className="object-cover"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           </div>
         )}
 
-        {/* Content */}
-        <div className="p-6">
-          {/* Category Badge */}
-          {article.category && (
-            <div className="inline-flex items-center gap-1 px-3 py-1 bg-farm-100 text-farm-700 rounded-full text-xs font-semibold mb-3">
-              <FaTag className="w-3 h-3" />
-              {t(`news_cat_${article.category.replace(/\s+/g, "_")}`) || article.category}
-            </div>
-          )}
-
-          {/* Title */}
-          <h3 className="text-xl font-display font-bold text-farm-900 mb-3 group-hover:text-farm-700 transition-colors line-clamp-2">
-            {article.title}
-          </h3>
-
-          {/* Summary/Description */}
+        {/* Summary & Footer */}
+        <div className="p-5">
           {article.summary && (
-            <p className="text-farm-700 text-sm mb-4 line-clamp-3">
+            <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 leading-relaxed mb-4">
               {article.summary}
             </p>
           )}
 
-          {/* Footer */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-xs text-farm-600">
-              <FaCalendar className="w-3 h-3" />
-              <span>{formatDate(article.date)}</span>
-            </div>
-            <div className="flex items-center gap-2 text-farm-600 group-hover:text-farm-700 transition-colors">
-              <span className="text-sm font-semibold">{t("read_more")}</span>
-              <FaArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+          <div className="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-white/5">
+            <button className="text-xs font-bold text-gray-500 uppercase tracking-wide hover:text-green-600 transition-colors">
+              {t("read_more")}
+            </button>
+            <div className="flex items-center gap-3">
+              <FaArrowRight className="text-gray-400 w-4 h-4 -rotate-45" />
             </div>
           </div>
         </div>

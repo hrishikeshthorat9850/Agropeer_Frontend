@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useLanguage } from "@/Context/languagecontext";
@@ -20,6 +21,14 @@ import {
 
 export default function HowItWorks() {
   const { t } = useLanguage();
+  const [expandedFeatures, setExpandedFeatures] = useState({});
+
+  const toggleFeature = (index) => {
+    setExpandedFeatures((prev) => ({
+      ...prev,
+      [index]: !prev[index], // Toggle state
+    }));
+  };
 
   const gettingStartedSteps = [
     {
@@ -30,11 +39,7 @@ export default function HowItWorks() {
       color: "from-blue-400 to-blue-600",
       bgColor: "bg-blue-100",
       iconColor: "text-blue-600",
-      features: [
-        t("step1_feature1"),
-        t("step1_feature2"),
-        t("step1_feature3"),
-      ],
+      features: [t("step1_feature1"), t("step1_feature2"), t("step1_feature3")],
     },
     {
       step: 2,
@@ -44,11 +49,7 @@ export default function HowItWorks() {
       color: "from-green-400 to-green-600",
       bgColor: "bg-green-100",
       iconColor: "text-green-600",
-      features: [
-        t("step2_feature1"),
-        t("step2_feature2"),
-        t("step2_feature3"),
-      ],
+      features: [t("step2_feature1"), t("step2_feature2"), t("step2_feature3")],
     },
     {
       step: 3,
@@ -58,11 +59,7 @@ export default function HowItWorks() {
       color: "from-purple-400 to-purple-600",
       bgColor: "bg-purple-100",
       iconColor: "text-purple-600",
-      features: [
-        t("step3_feature1"),
-        t("step3_feature2"),
-        t("step3_feature3"),
-      ],
+      features: [t("step3_feature1"), t("step3_feature2"), t("step3_feature3")],
     },
   ];
 
@@ -71,12 +68,7 @@ export default function HowItWorks() {
       title: t("mf1_title"),
       description: t("mf1_desc"),
       icon: <FaChartLine className="w-8 h-8" />,
-      steps: [
-        t("mf1_step1"),
-        t("mf1_step2"),
-        t("mf1_step3"),
-        t("mf1_step4"),
-      ],
+      steps: [t("mf1_step1"), t("mf1_step2"), t("mf1_step3"), t("mf1_step4")],
       color: "from-sunset-400 to-sunset-600",
       bgColor: "bg-sunset-100",
       iconColor: "text-sunset-600",
@@ -102,12 +94,7 @@ export default function HowItWorks() {
       title: t("mf3_title"),
       description: t("mf3_desc"),
       icon: <FaCloudSun className="w-8 h-8" />,
-      steps: [
-        t("mf3_step1"),
-        t("mf3_step2"),
-        t("mf3_step3"),
-        t("mf3_step4"),
-      ],
+      steps: [t("mf3_step1"), t("mf3_step2"), t("mf3_step3"), t("mf3_step4")],
       color: "from-sky-400 to-sky-600",
       bgColor: "bg-sky-100",
       iconColor: "text-sky-600",
@@ -187,274 +174,223 @@ export default function HowItWorks() {
   ];
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className="min-h-[calc(100vh-122px)]"
-    >
+    <div className="min-h-screen bg-gray-50 dark:bg-black">
+      {/* Sticky Mobile Header */}
+      <nav className="sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-100 dark:border-white/10 px-4 py-3 flex items-center justify-between">
+        <h1 className="text-lg font-bold text-gray-900 dark:text-white">
+          {t("how_title")}
+        </h1>
+        <Link
+          href="/about-us"
+          className="w-8 h-8 bg-gray-100 dark:bg-white/10 rounded-full flex items-center justify-center"
+        >
+          <FaArrowRight className="text-farm-600 dark:text-farm-400 w-4 h-4" />
+        </Link>
+      </nav>
 
-      {/* Hero Section */}
-      <div className="bg-farm-50 py-16 dark:bg-[#1E1E1E]">
-        <div className="container mx-auto px-6 text-center">
-          <div className="flex justify-center mb-6">
-            <div className="w-20 h-20 bg-gradient-to-r from-farm-500 to-farm-600 rounded-2xl flex items-center justify-center shadow-lg">
-              <FaRocket className="w-10 h-10 text-white" />
-            </div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="px-2 pt-6 space-y-8"
+      >
+        {/* Onboarding Hero Style */}
+        <section className="text-center py-6">
+          <div className="w-20 h-20 mx-auto bg-gradient-to-tr from-farm-400 to-green-600 rounded-3xl flex items-center justify-center shadow-xl mb-6 rotate-3">
+            <FaRocket className="w-10 h-10 text-white" />
           </div>
-
-          <h1 className="text-3xl md:text-5xl font-display font-bold text-farm-900 mb-6 dark:text-white">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
             {t("how_title")}
-          </h1>
-
-          <p className="text-farm-700 max-w-3xl mx-auto text-lg md:text-xl leading-relaxed dark:text-gray-300">
+          </h2>
+          <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed px-4">
             {t("how_subtitle")}
           </p>
-        </div>
-      </div>
+        </section>
 
-      {/* Getting Started Section */}
-      <div className="container mx-auto !px-5 py-16">
-        <h2 className="text-3xl md:text-4xl font-bold text-farm-900 mb-4 dark:text-white text-center">
-          {t("getting_started_title")}
-        </h2>
-
-        <p className="text-farm-700 max-w-2xl mx-auto text-lg text-center dark:text-gray-300">
-          {t("getting_started_subtitle")}
-        </p>
-
-        <div className="grid md:grid-cols-3 gap-8 mt-12">
-          {gettingStartedSteps.map((item, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 + i * 0.1 }}
-              className="relative"
-            >
-              {/* Step Number */}
-              <div className="absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-r from-farm-500 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg z-10">
-                {item.step}
-              </div>
-
-              <div className="bg-white rounded-2xl p-8 shadow-lg border border-farm-200 dark:bg-[#272727] dark:border-white/20">
-                <div className={`w-16 h-16 ${item.bgColor} rounded-xl flex items-center justify-center mb-6 ${item.iconColor}`}>
-                  {item.icon}
-                </div>
-
-                <h3 className="text-2xl font-bold text-farm-900 mb-4 dark:text-white">
-                  {item.title}
-                </h3>
-
-                <p className="text-farm-700 leading-relaxed mb-6 dark:text-gray-300">
-                  {item.description}
-                </p>
-
-                <ul className="space-y-2">
-                  {item.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-center gap-2 text-sm text-farm-600 dark:text-gray-400">
-                      <FaCheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Connector Arrow */}
-              {i < gettingStartedSteps.length - 1 && (
-                <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2 z-20">
-                  <FaArrowRight className="w-8 h-8 text-farm-400" />
-                </div>
-              )}
-            </motion.div>
-          ))}
-        </div>
-      </div>
-
-      {/* Main Features */}
-      <div className="bg-white py-16 dark:bg-[#272727]">
-        <div className="container mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-bold text-farm-900 mb-10 text-center dark:text-white">
-            {t("main_features_title")}
-          </h2>
-
-          <div className="space-y-8">
-            {mainFeatures.map((feature, i) => (
+        {/* Getting Started - Vertical Timeline */}
+        <section>
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="font-bold text-lg text-gray-900 dark:text-white">
+              {t("getting_started_title")}
+            </h3>
+          </div>
+          <div className="relative pl-4 border-l-2 border-gray-100 dark:border-white/10 space-y-8 ml-2">
+            {gettingStartedSteps.map((item, i) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, x: i % 2 === 0 ? -30 : 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.8 + i * 0.1 }}
-                className={`flex flex-col ${i % 2 === 1 ? "md:flex-row-reverse" : "md:flex-row"} gap-8 items-center`}
+                initial={{ opacity: 0, x: -10 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="relative pl-2"
               >
-                <div className="flex-1">
-                  <div className={`w-20 h-20 ${feature.bgColor} rounded-2xl flex items-center justify-center mb-6 ${feature.iconColor}`}>
-                    {feature.icon}
-                  </div>
-
-                  <h3 className="text-2xl md:text-3xl font-bold text-farm-900 mb-4 dark:text-white">
-                    {feature.title}
-                  </h3>
-
-                  <p className="text-farm-700 text-lg mb-6 leading-relaxed dark:text-gray-300">
-                    {feature.description}
-                  </p>
-
-                  <ul className="space-y-3 mb-6">
-                    {feature.steps.map((step, idx) => (
-                      <li key={idx} className="flex items-start gap-3">
-                        <FaCheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-1" />
-                        <span className="text-farm-700 dark:text-gray-300">{step}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <Link
-                    href={feature.link}
-                    className={`inline-flex items-center gap-2 bg-gradient-to-r ${feature.color} text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all transform hover:scale-105`}
-                  >
-                    {t("explore_feature")}
-                    <FaArrowRight className="w-4 h-4" />
-                  </Link>
+                {/* Timeline Dot */}
+                <div
+                  className={`absolute -left-[25px] top-0 w-8 h-8 rounded-full border-4 border-white dark:border-black ${item.bgColor} flex items-center justify-center z-10`}
+                >
+                  <span className="text-xs font-bold text-farm-700">
+                    {item.step}
+                  </span>
                 </div>
-                <div className="flex-1">
-                  <div className={`bg-gradient-to-br ${feature.color} rounded-2xl p-12 text-white text-center shadow-xl`}>
-                    <div className="text-6xl mb-4">🌾</div>
-                    <p className="text-white/90 text-lg">
-                      {feature.title}
-                    </p>
+
+                <div className="bg-white dark:bg-[#121212] rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-white/5">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div
+                      className={`w-10 h-10 ${item.bgColor} rounded-full flex items-center justify-center ${item.iconColor}`}
+                    >
+                      {item.icon}
+                    </div>
+                    <h4 className="font-bold text-gray-900 dark:text-white text-base">
+                      {item.title}
+                    </h4>
+                  </div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
+                    {item.description}
+                  </p>
+                  <div className="space-y-2">
+                    {item.features.map((feature, idx) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <FaCheckCircle className="w-3.5 h-3.5 text-green-500 shrink-0" />
+                        <span className="text-xs text-gray-500 font-medium">
+                          {feature}
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </motion.div>
             ))}
           </div>
-        </div>
-      </div>
+        </section>
 
-      {/* Benefits */}
-      <div className="container mx-auto px-6 py-16">
-        <h2 className="text-3xl md:text-4xl font-bold text-farm-900 mb-4 text-center dark:text-white">
-          {t("benefits_title")}
-        </h2>
-
-        <p className="text-farm-700 max-w-2xl mx-auto text-lg text-center dark:text-gray-300">
-          {t("benefits_subtitle")}
-        </p>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
-          {benefits.map((benefit, i) => (
-            <motion.div
+        {/* Main Features - Feed Style */}
+        <section className="space-y-6">
+          <div className="flex items-center justify-between px-1">
+            <h3 className="font-bold text-lg text-gray-900 dark:text-white">
+              {t("main_features_title")}
+            </h3>
+          </div>
+          {mainFeatures.map((feature, i) => (
+            <div
               key={i}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.5 + i * 0.1 }}
-              className="bg-white rounded-xl p-6 shadow-md border border-farm-200 text-center hover:shadow-xl transition dark:bg-[#272727] dark:border-white/20"
+              className="bg-white dark:bg-[#121212] rounded-3xl overflow-hidden shadow-sm border border-gray-100 dark:border-white/5"
             >
-              <div className="w-16 h-16 bg-farm-100 rounded-xl flex items-center justify-center mx-auto mb-4 text-farm-600">
-                {benefit.icon}
-              </div>
-
-              <h3 className="text-xl font-bold text-farm-900 mb-3 dark:text-white">
-                {benefit.title}
-              </h3>
-
-              <p className="text-farm-700 text-sm dark:text-gray-300">
-                {benefit.description}
-              </p>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-
-      {/* Mobile App */}
-      <div className="bg-farm-50 py-16 dark:bg-[#1E1E1E]">
-        <div className="container mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.6 }}
-            className="flex flex-col md:flex-row items-center gap-12"
-          >
-            <div className="flex-1 text-center md:text-left">
-              <div className="w-16 h-16 bg-farm-600 rounded-xl flex items-center justify-center mx-auto md:mx-0 mb-6 text-white">
-                <FaMobileAlt className="w-8 h-8" />
-              </div>
-
-              <h2 className="text-3xl md:text-4xl font-bold text-farm-900 mb-4 dark:text-white">
-                {t("mobile_title")}
-              </h2>
-
-              <p className="text-farm-700 text-lg mb-6 leading-relaxed dark:text-gray-300">
-                {t("mobile_desc")}
-              </p>
-
-              <ul className="space-y-3 mb-8">
-                {[
-                  t("mobile_f1"),
-                  t("mobile_f2"),
-                  t("mobile_f3"),
-                  t("mobile_f4"),
-                ].map((item, idx) => (
-                  <li key={idx} className="flex items-center gap-3 text-farm-700 dark:text-gray-300">
-                    <FaCheckCircle className="w-5 h-5 text-green-500" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="flex-1">
-              <div className="bg-white rounded-2xl p-8 shadow-2xl dark:bg-purple-500">
-                <div className="text-center">
-                  <div className="text-6xl mb-4">📱</div>
-                  <p className="text-farm-700 font-semibold dark:text-gray-300">
-                    {t("mobile_box")}
-                  </p>
+              {/* Card Header */}
+              <div className="p-4 flex items-center gap-3 border-b border-gray-50 dark:border-white/5">
+                <div
+                  className={`w-10 h-10 ${feature.bgColor} rounded-full flex items-center justify-center ${feature.iconColor}`}
+                >
+                  {feature.icon}
+                </div>
+                <div>
+                  <h4 className="font-bold text-gray-900 dark:text-white text-sm">
+                    {feature.title}
+                  </h4>
+                  <p className="text-xs text-gray-500">Agropeer Feature</p>
                 </div>
               </div>
+
+              {/* Content */}
+              <div className="p-5">
+                <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
+                  {feature.description}
+                </p>
+                <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-4 mb-4 space-y-2">
+                  {(expandedFeatures[i] ? feature.steps : feature.steps.slice(0, 3)).map((step, idx) => (
+                    <div key={idx} className="flex items-start gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-farm-400 mt-1.5 shrink-0"></div>
+                      <span className="text-xs text-gray-500 leading-snug">
+                        {step}
+                      </span>
+                    </div>
+                  ))}
+                  {!expandedFeatures[i] && feature.steps.length > 3 && (
+                    <button
+                      onClick={() => toggleFeature(i)}
+                      className="text-xs text-farm-600 font-bold pl-3.5 pt-1 hover:underline focus:outline-none"
+                    >
+                      +{feature.steps.length - 3} more steps
+                    </button>
+                  )}
+                </div>
+
+                <Link
+                  href={feature.link}
+                  className="w-full bg-black dark:bg-white dark:text-black text-white py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform"
+                >
+                  {t("explore_feature")} <FaArrowRight className="w-3 h-3" />
+                </Link>
+              </div>
             </div>
+          ))}
+        </section>
 
-          </motion.div>
-        </div>
-      </div>
+        {/* Benefits Grid */}
+        <section>
+          <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-4 px-1">
+            {t("benefits_title")}
+          </h3>
+          <div className="grid grid-cols-2 gap-3">
+            {benefits.map((benefit, i) => (
+              <div
+                key={i}
+                className="bg-farm-50 dark:bg-farm-900/10 p-4 rounded-2xl border border-farm-100 dark:border-white/5"
+              >
+                <div className="bg-white dark:bg-white/10 w-8 h-8 rounded-lg flex items-center justify-center text-farm-600 dark:text-farm-400 mb-3 shadow-sm">
+                  {benefit.icon}
+                </div>
+                <h4 className="font-bold text-gray-900 dark:text-white text-sm mb-1">
+                  {benefit.title}
+                </h4>
+                <p className="text-[10px] text-gray-500 leading-relaxed">
+                  {benefit.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
 
-      {/* CTA */}
-      <div className="bg-gradient-to-r from-farm-500 to-green-600 py-16 text-white">
-        <div className="container mx-auto px-6 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.7 }}
-          >
-
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              {t("cta_title")}
-            </h2>
-
-            <p className="text-white/90 text-lg mb-8 max-w-2xl mx-auto">
-              {t("cta_subtitle")}
+        {/* Mobile App Promo */}
+        <section className="bg-gradient-to-r from-gray-900 to-black rounded-3xl p-6 text-white relative overflow-hidden">
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm">
+                <FaMobileAlt />
+              </div>
+              <span className="font-bold text-sm text-white/80">
+                Get the App
+              </span>
+            </div>
+            <h3 className="text-2xl font-bold mb-2">{t("mobile_title")}</h3>
+            <p className="text-sm text-white/60 mb-6 leading-relaxed">
+              {t("mobile_desc")}
             </p>
+            <button className="bg-white text-black px-6 py-3 rounded-xl font-bold text-sm w-full active:scale-95 transition-transform">
+              Download Now
+            </button>
+          </div>
+          <div className="absolute -right-4 -bottom-10 w-32 h-32 bg-farm-500 rounded-full blur-3xl opacity-50"></div>
+        </section>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/signup"
-                className="bg-white text-farm-600 px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all transform hover:scale-105 inline-flex items-center justify-center gap-2"
-              >
-                <FaUserPlus className="w-5 h-5" />
-                {t("cta_signup")}
-              </Link>
-
-              <Link
-                href="/about-us"
-                className="bg-white/10 backdrop-blur-sm text-white border-2 border-white px-8 py-3 rounded-xl font-semibold hover:bg-white/20 transition-all inline-flex items-center justify-center gap-2"
-              >
-                {t("cta_learn_more")}
-                <FaArrowRight className="w-5 h-5" />
-              </Link>
-            </div>
-          </motion.div>
-        </div>
-      </div>
-    </motion.div>
+        {/* Bottom CTA */}
+        <section className="bg-farm-500 rounded-3xl p-6 text-center text-white shadow-lg shadow-farm-500/20">
+          <h3 className="text-xl font-bold mb-2">{t("cta_title")}</h3>
+          <p className="text-sm text-white/90 mb-6">{t("cta_subtitle")}</p>
+          <div className="flex flex-col gap-3">
+            <Link
+              href="/signup"
+              className="w-full bg-white text-farm-600 py-3.5 rounded-xl font-bold active:scale-95 transition-transform flex items-center justify-center gap-2"
+            >
+              <FaUserPlus /> {t("cta_signup")}
+            </Link>
+            <Link
+              href="/about-us"
+              className="w-full bg-farm-600 border border-white/20 py-3.5 rounded-xl font-bold active:scale-95 transition-transform"
+            >
+              {t("cta_learn_more")}
+            </Link>
+          </div>
+        </section>
+      </motion.div>
+    </div>
   );
 }

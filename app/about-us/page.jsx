@@ -124,180 +124,194 @@ export default function AboutUs() {
   ];
 
   const stats = [
-    { value: "28+", label: t("stats_states"), icon: <FaGlobe className="w-6 h-6" /> },
-    { value: "1000+", label: t("stats_farmers"), icon: <FaUsers className="w-6 h-6" /> },
-    { value: "500+", label: t("stats_crops"), icon: <FaSeedling className="w-6 h-6" /> },
-    { value: "24/7", label: t("stats_support"), icon: <FaComments className="w-6 h-6" /> },
+    {
+      value: "28+",
+      label: t("stats_states"),
+      icon: <FaGlobe className="w-6 h-6" />,
+    },
+    {
+      value: "1000+",
+      label: t("stats_farmers"),
+      icon: <FaUsers className="w-6 h-6" />,
+    },
+    {
+      value: "500+",
+      label: t("stats_crops"),
+      icon: <FaSeedling className="w-6 h-6" />,
+    },
+    {
+      value: "24/7",
+      label: t("stats_support"),
+      icon: <FaComments className="w-6 h-6" />,
+    },
   ];
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className="min-h-[calc(100vh-122px)]"
-    >
-      {/* Hero Section */}
-      <div className="container mx-auto px-6 py-12 md:py-16 text-center">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-          <div className="flex justify-center mb-6">
-            <div className="w-20 h-20 bg-gradient-to-r from-farm-500 to-farm-600 rounded-2xl flex items-center justify-center shadow-lg">
+    <div className="min-h-screen bg-gray-50 dark:bg-black">
+      {/* Sticky Mobile Header */}
+      <nav className="sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-100 dark:border-white/10 px-4 py-3 flex items-center justify-between">
+        <h1 className="text-lg font-bold text-gray-900 dark:text-white">
+          {t("about_title")}
+        </h1>
+        <div className="w-8 h-8 bg-gray-100 dark:bg-white/10 rounded-full flex items-center justify-center">
+          <FaSeedling className="text-farm-600 dark:text-farm-400" />
+        </div>
+      </nav>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="px-2 pt-6 space-y-8"
+      >
+        {/* Hero Card */}
+        <section className="bg-white dark:bg-[#121212] rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-white/5 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-farm-500/10 rounded-full blur-3xl -mr-10 -mt-10"></div>
+          <div className="relative z-10 text-center">
+            <div className="w-20 h-20 mx-auto bg-gradient-to-tr from-farm-400 to-green-600 rounded-2xl flex items-center justify-center shadow-lg mb-6 transform rotate-3">
               <FaSeedling className="w-10 h-10 text-white" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+              {t("about_title")}
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-sm">
+              {t("about_subtitle")}
+            </p>
+          </div>
+        </section>
+
+        {/* Stats "Stories" */}
+        <section>
+          <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide">
+            {stats.map((stat, i) => (
+              <div
+                key={i}
+                className="min-w-[140px] bg-white dark:bg-[#121212] p-4 rounded-2xl border border-gray-100 dark:border-white/5 flex flex-col items-center justify-center gap-2 shadow-sm"
+              >
+                <div className="p-2 bg-gray-50 dark:bg-white/5 rounded-full text-farm-600">
+                  {stat.icon}
+                </div>
+                <h3 className="font-bold text-xl text-gray-900 dark:text-white">
+                  {stat.value}
+                </h3>
+                <p className="text-xs text-gray-500 font-medium uppercase tracking-wide text-center">
+                  {stat.label}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Vision & Mission "Feed Cards" */}
+        <section className="space-y-6">
+          {/* Vision */}
+          <div className="bg-white dark:bg-[#121212] rounded-3xl overflow-hidden shadow-sm border border-gray-100 dark:border-white/5">
+            <div className="p-4 flex items-center gap-3 border-b border-gray-50 dark:border-white/5">
+              <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center text-blue-600 dark:text-blue-400">
+                <FaGlobe />
+              </div>
+              <div>
+                <h3 className="font-bold text-gray-900 dark:text-white text-sm">
+                  {t("vision_title")}
+                </h3>
+                <p className="text-xs text-gray-500">Agropeer Vision</p>
+              </div>
+            </div>
+            <div className="p-5">
+              <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+                {t("vision_text")}
+              </p>
             </div>
           </div>
 
-          <h1 className="text-3xl md:text-5xl font-display font-bold text-farm-900 mb-6">
-            {t("about_title")} 🌱
-          </h1>
+          {/* Mission */}
+          <div className="bg-white dark:bg-[#121212] rounded-3xl overflow-hidden shadow-sm border border-gray-100 dark:border-white/5">
+            <div className="p-4 flex items-center gap-3 border-b border-gray-50 dark:border-white/5">
+              <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center text-purple-600 dark:text-purple-400">
+                <FaRocket />
+              </div>
+              <div>
+                <h3 className="font-bold text-gray-900 dark:text-white text-sm">
+                  {t("mission_title")}
+                </h3>
+                <p className="text-xs text-gray-500">Our Mission</p>
+              </div>
+            </div>
+            <div className="p-5">
+              <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+                {t("mission_text")}
+              </p>
+            </div>
+          </div>
+        </section>
 
-          <p className="text-farm-700 max-w-3xl mx-auto text-lg md:text-xl leading-relaxed mb-8">
-            {t("about_subtitle")}
-          </p>
-        </motion.div>
-      </div>
+        {/* Who We Are Context */}
+        <section className="bg-gradient-to-br from-farm-600 to-green-700 rounded-3xl p-6 text-white shadow-lg relative overflow-hidden">
+          <FaUsers className="absolute -bottom-4 -right-4 w-32 h-32 text-white/10" />
+          <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+            <FaAward className="opacity-80" /> {t("who_we_are_title")}
+          </h3>
+          <div className="space-y-3 text-sm text-white/90 relative z-10">
+            <p>{t("who_we_are_p1")}</p>
+            <p>{t("who_we_are_p2")}</p>
+          </div>
+        </section>
 
-      {/* Stats */}
-      <div className="bg-farm-50 py-12 dark:bg-[#1E1E1E]">
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {stats.map((stat, i) => (
+        {/* Features Grid */}
+        <section>
+          <div className="flex items-center justify-between mb-4 px-1">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+              {t("features_title")}
+            </h3>
+            <span className="text-xs font-medium text-farm-600 dark:text-farm-400 bg-farm-50 dark:bg-farm-900/30 px-2 py-1 rounded-lg">
+              All Apps
+            </span>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            {coreFeatures.map((feature, i) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.3 + i * 0.1 }}
-                className="text-center"
+                whileTap={{ scale: 0.98 }}
+                className="bg-white dark:bg-[#121212] p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-white/5 flex flex-col gap-3 h-full"
               >
-                <div className="flex justify-center mb-3 text-farm-600">{stat.icon}</div>
-                <div className="text-3xl md:text-4xl font-bold text-farm-900 mb-2 dark:text-white">
-                  {stat.value}
+                <div
+                  className={`w-10 h-10 ${feature.bgColor} ${feature.iconColor} rounded-xl flex items-center justify-center shrink-0`}
+                >
+                  {feature.icon}
                 </div>
-                <div className="text-sm md:text-base text-farm-700 font-semibold">{stat.label}</div>
+                <div>
+                  <h4 className="font-bold text-gray-900 dark:text-white text-sm leading-tight mb-2">
+                    {feature.title}
+                  </h4>
+                  <p className="text-xs text-gray-500 leading-relaxed">
+                    {feature.description}
+                  </p>
+                </div>
               </motion.div>
             ))}
           </div>
-        </div>
-      </div>
+        </section>
 
-      {/* Who We Are */}
-      <div className="container mx-auto px-6 py-16">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 }}>
-            <h2 className="text-3xl md:text-4xl font-bold text-farm-900 mb-6">{t("who_we_are_title")}</h2>
-
-            <div className="space-y-4 text-farm-700 leading-relaxed">
-              <p className="text-lg">{t("who_we_are_p1")}</p>
-              <p>{t("who_we_are_p2")}</p>
-              <p>{t("who_we_are_p3")}</p>
-            </div>
-          </motion.div>
-
-          <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }}>
-            <div className="rounded-2xl overflow-hidden shadow-2xl border border-farm-200 dark:border-white/20">
-              <div className="bg-gradient-to-br from-farm-400 to-green-500 p-12 text-white text-center">
-                <FaRocket className="w-16 h-16 mx-auto mb-4" />
-                <h3 className="text-2xl font-bold mb-2">{t("vision_title")}</h3>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </div>
-
-      {/* Vision + Mission */}
-      <div className="bg-white py-16 dark:bg-[#272727]">
-        <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Vision */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              className="bg-farm-50 rounded-2xl p-8 shadow-lg border border-farm-200 dark:bg-[#1E1E1E] dark:border-white/20"
+        {/* CTA */}
+        <section className="bg-gray-900 dark:bg-white rounded-3xl p-6 text-center text-white dark:text-black">
+          <h3 className="text-xl font-bold mb-2">{t("cta_title")}</h3>
+          <p className="text-sm opacity-80 mb-6">{t("cta_subtitle")}</p>
+          <div className="flex flex-col gap-3">
+            <Link
+              href="/signup"
+              className="w-full bg-farm-500 text-white py-3.5 rounded-xl font-bold active:scale-95 transition-transform"
             >
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-farm-600 rounded-xl flex items-center justify-center">
-                  <FaGlobe className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-2xl font-bold text-farm-900">{t("vision_title")}</h3>
-              </div>
-
-              <p className="text-farm-700 leading-relaxed text-lg">{t("vision_text")}</p>
-            </motion.div>
-
-            {/* Mission */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 }}
-              className="bg-farm-50 rounded-2xl p-8 shadow-lg border border-sky-200 dark:bg-[#1E1E1E] dark:border-white/20"
+              {t("cta_get_started")}
+            </Link>
+            <Link
+              href="/how-it-works"
+              className="w-full bg-transparent border border-white/20 dark:border-black/20 text-white dark:text-black py-3.5 rounded-xl font-bold active:scale-95 transition-transform"
             >
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-sky-600 rounded-xl flex items-center justify-center">
-                  <FaRocket className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-2xl font-bold text-farm-900">{t("mission_title")}</h3>
-              </div>
-
-              <p className="text-farm-700 leading-relaxed text-lg">{t("mission_text")}</p>
-            </motion.div>
+              {t("cta_how_it_works")}
+            </Link>
           </div>
-        </div>
-      </div>
-
-      {/* Core Features */}
-      <div className="container mx-auto px-6 py-16">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-          className="text-center mb-12"
-        >
-          <h2 className="text-3xl md:text-4xl font-bold text-farm-900 mb-4">{t("features_title")}</h2>
-          <p className="text-farm-700 max-w-2xl mx-auto text-lg">{t("features_subtitle")}</p>
-        </motion.div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {coreFeatures.map((feature, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9 + i * 0.05 }}
-            >
-              <div className="bg-white rounded-xl p-6 shadow-md border border-farm-200 hover:shadow-xl transition-all duration-300 h-full dark:bg-[#1E1E1E] dark:border-white/20">
-                <div className={`w-16 h-16 ${feature.bgColor} rounded-xl flex items-center justify-center mb-4 ${feature.iconColor}`}>
-                  {feature.icon}
-                </div>
-                <h3 className="text-xl font-bold text-farm-900 mb-3 dark:text-white">{feature.title}</h3>
-                <p className="text-farm-700 leading-relaxed dark:text-gray-300">{feature.description}</p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-
-      {/* CTA */}
-      <div className="bg-gradient-to-r from-farm-500 to-green-600 py-16 text-white">
-        <div className="container mx-auto px-6 text-center">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.2 }}>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">{t("cta_title")}</h2>
-            <p className="text-white/90 text-lg mb-8 max-w-2xl mx-auto">{t("cta_subtitle")}</p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/signup" className="bg-white text-farm-600 px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
-                {t("cta_get_started")}
-              </Link>
-
-              <Link
-                href="/how-it-works"
-                className="bg-white/10 backdrop-blur-sm text-white border-2 border-white px-8 py-3 rounded-xl font-semibold hover:bg-white/20 transition-all"
-              >
-                {t("cta_how_it_works")}
-              </Link>
-            </div>
-          </motion.div>
-        </div>
-      </div>
-    </motion.div>
+        </section>
+      </motion.div>
+    </div>
   );
 }

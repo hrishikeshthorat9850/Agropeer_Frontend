@@ -26,8 +26,8 @@ export default function NewsSearch({ onSearch, placeholder }) {
     <form onSubmit={handleSubmit} className="w-full">
       <div className="mb-4">
         <div
-          className="flex items-center gap-2 bg-gray-50 dark:bg-neutral-800 
-                    rounded-lg px-3 py-2 border border-gray-200 dark:border-neutral-700"
+          className="flex items-center gap-3 bg-white dark:bg-[#1E1E1E] 
+                    rounded-full px-5 py-3.5 border border-gray-100 dark:border-white/10 shadow-sm focus-within:ring-2 focus-within:ring-farm-500 focus-within:border-transparent transition-all"
         >
           {/* Search Icon */}
           <FaSearch className="text-gray-400 dark:text-gray-500" />
@@ -39,8 +39,8 @@ export default function NewsSearch({ onSearch, placeholder }) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={displayPlaceholder}
-            className="flex-1 bg-transparent outline-none text-sm 
-                      text-gray-700 dark:text-gray-200 
+            className="flex-1 bg-transparent outline-none text-sm font-medium
+                      text-gray-900 dark:text-white 
                       placeholder-gray-400 dark:placeholder-gray-500"
           />
 
@@ -52,9 +52,9 @@ export default function NewsSearch({ onSearch, placeholder }) {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
               onClick={clearSearch}
-              className="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-neutral-700 transition-colors"
+              className="p-1 rounded-full bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 transition-colors"
             >
-              <FaTimes className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+              <FaTimes className="w-3 h-3 text-gray-500 dark:text-gray-400" />
             </motion.button>
           )}
         </div>
@@ -62,4 +62,3 @@ export default function NewsSearch({ onSearch, placeholder }) {
     </form>
   );
 }
-

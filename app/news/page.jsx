@@ -4,7 +4,17 @@ import { motion } from "framer-motion";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { FaNewspaper, FaArrowLeft, FaWhatsapp, FaCopy, FaCheck, FaTag, FaCalendar, FaUser, FaShareAlt } from "react-icons/fa";
+import {
+  FaNewspaper,
+  FaArrowLeft,
+  FaWhatsapp,
+  FaCopy,
+  FaCheck,
+  FaTag,
+  FaCalendar,
+  FaUser,
+  FaShareAlt,
+} from "react-icons/fa";
 import NewsSearch from "@/components/news/NewsSearch";
 import NewsFilterBar from "@/components/news/NewsFilterBar";
 import NewsList from "@/components/news/NewsList";
@@ -110,7 +120,9 @@ export default function NewsPage() {
       setArticleLoading(true);
       setArticleError(null);
       try {
-        const { data, error: apiError } = await apiRequest(`${BASE_URL}/api/news/${articleId}`);
+        const { data, error: apiError } = await apiRequest(
+          `${BASE_URL}/api/news/${articleId}`
+        );
 
         if (apiError) {
           setArticleError(apiError.message || t("failed_load_article"));
@@ -120,7 +132,9 @@ export default function NewsPage() {
         setSelectedArticle(data?.data);
       } catch (err) {
         console.error("Unexpected error:", err);
-        setArticleError("An unexpected error occurred. Please refresh the page.");
+        setArticleError(
+          "An unexpected error occurred. Please refresh the page."
+        );
       } finally {
         setArticleLoading(false);
       }
@@ -138,7 +152,7 @@ export default function NewsPage() {
         title: targetArticle.title,
         text: targetArticle.summary,
         id: targetArticle.id,
-        route: "news"
+        route: "news",
       }).then((result) => {
         if (result.platform === "copy") {
           showToast("info", "📋 Link copied to clipboard!");
@@ -182,7 +196,7 @@ export default function NewsPage() {
     if (articleLoading) {
       return (
         <ErrorBoundary>
-          <div className="min-h-[calc(100vh-122px)] flex items-center justify-center">
+          <div className="min-h-screen bg-gray-50 dark:bg-black flex items-center justify-center">
             <LoadingSpinner text={t("loading_article")} />
           </div>
         </ErrorBoundary>
@@ -192,20 +206,23 @@ export default function NewsPage() {
     if (articleError || !selectedArticle) {
       return (
         <ErrorBoundary>
-          <div className="min-h-[calc(100vh-122px)] flex items-center justify-center px-4">
+          <div className="min-h-screen bg-gray-50 dark:bg-black flex items-center justify-center px-4">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="farm-card p-12 text-center max-w-md"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-white dark:bg-[#1E1E1E] p-8 rounded-3xl text-center max-w-md shadow-lg"
             >
               <div className="text-6xl mb-4">⚠️</div>
-              <h3 className="text-xl font-semibold text-farm-700 mb-2">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                 {articleError || t("article_not_found")}
               </h3>
-              <p className="text-farm-600 mb-4">
+              <p className="text-gray-500 dark:text-gray-400 mb-6">
                 {articleError || t("article_not_found_desc")}
               </p>
-              <Link href="/news" className="farm-button inline-block">
+              <Link
+                href="/news"
+                className="inline-block px-6 py-3 bg-farm-600 text-white rounded-xl font-bold active:scale-95 transition-transform"
+              >
                 {t("back_to_news")}
               </Link>
             </motion.div>
@@ -218,332 +235,169 @@ export default function NewsPage() {
 
     return (
       <ErrorBoundary>
-        <MobilePageContainer>
-          <div className="py-4">
-            <div className="md:hidden px-4 mb-6">
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="rounded-3xl p-6 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.25)] bg-gradient-to-br from-[#d7ffe8] to-[#f4fff8] dark:from-[#0b2718] dark:to-[#0e3821] border border-white/60 dark:border-[#1a4a2d]"
+        <div className="min-h-screen bg-white dark:bg-black pb-24">
+          {/* Immersive Header */}
+          <div className="relative w-full h-[40vh] md:h-[50vh]">
+            {selectedArticle.image_url ? (
+              <Image
+                src={selectedArticle.image_url}
+                alt={selectedArticle.title}
+                fill
+                className="object-cover"
+                priority
+              />
+            ) : (
+              <div className="w-full h-full bg-farm-100 dark:bg-white/5" />
+            )}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/90 pointer-events-none" />
+
+            {/* Top Nav */}
+            <div className="absolute top-0 left-0 right-0 p-4 flex items-center justify-between z-10">
+              <button
+                onClick={() => router.push("/news")}
+                className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white active:scale-95 transition-transform"
               >
-                <button
-                  onClick={() => router.push("/news")}
-                  className="flex items-center gap-2 text-green-800 dark:text-white mb-4"
-                >
-                  <FaArrowLeft className="w-4 h-4" />
-                  <span className="font-medium">{t("back")}</span>
-                </button>
-
-                {selectedArticle.category && (
-                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/40 dark:bg-white/10 rounded-full text-sm font-semibold mb-3">
-                    <FaTag className="w-4 h-4" />
-                    {selectedArticle.category}
-                  </div>
-                )}
-
-                <h1 className="text-2xl font-bold text-green-900 dark:text-white leading-snug">
-                  {selectedArticle.title}
-                </h1>
-
-                <div className="flex flex-wrap items-center gap-3 text-sm text-green-700 dark:text-green-300 mt-3">
-                  <div className="flex items-center gap-2">
-                    <FaCalendar className="w-4 h-4" /> {dateInfo.full}
-                  </div>
-                  {selectedArticle.source && (
-                    <div className="flex items-center gap-2">
-                      <FaUser className="w-4 h-4" /> {selectedArticle.source}
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="hidden md:block bg-gradient-to-r from-farm-500 to-farm-700 text-white py-12"
-            >
-              <div className="w-full max-w-4xl mx-auto px-4">
-                <button
-                  onClick={() => router.push("/news")}
-                  className="flex items-center gap-2 text-white/90 hover:text-white mb-6"
-                >
-                  <FaArrowLeft className="w-4 h-4" />
-                  <span>{t("back")}</span>
-                </button>
-
-                {selectedArticle.category && (
-                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 rounded-full text-sm font-semibold mb-4">
-                    <FaTag className="w-4 h-4" />
-                    {selectedArticle.category}
-                  </div>
-                )}
-
-                <h1 className="text-4xl md:text-5xl font-display font-bold mb-4 leading-tight">
-                  {selectedArticle.title}
-                </h1>
-
-                <div className="flex items-center gap-4 text-white/90 text-sm">
-                  <div className="flex items-center gap-2">
-                    <FaCalendar className="w-4 h-4" /> {dateInfo.full}
-                  </div>
-                  {selectedArticle.source && (
-                    <div className="flex items-center gap-2">
-                      <FaUser className="w-4 h-4" /> {selectedArticle.source}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </motion.div>
-
-            <div className="w-full max-w-4xl mx-auto px-4 py-12">
-              {selectedArticle.image_url && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 }}
-                  className="mb-8 rounded-2xl overflow-hidden shadow-md"
-                >
-                  <div className="relative w-full h-96">
-                    <Image
-                      src={selectedArticle.image_url}
-                      alt={selectedArticle.title}
-                      fill
-                      className="object-cover"
-                      priority
-                    />
-                  </div>
-                </motion.div>
-              )}
-
-              {selectedArticle.summary && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="farm-card p-6 mb-8"
-                >
-                  <p className="text-lg font-medium text-farm-900 dark:text-white leading-relaxed">
-                    {selectedArticle.summary}
-                  </p>
-                </motion.div>
-              )}
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="farm-card p-8 md:p-12 mb-8"
-              >
-                {selectedArticle.content ? (
-                  <div
-                    className="text-farm-700 dark:text-gray-300 leading-relaxed whitespace-pre-line"
-                    dangerouslySetInnerHTML={{
-                      __html: selectedArticle.content.replace(/\n/g, "<br />"),
-                    }}
-                  />
-                ) : (
-                  <p className="text-farm-700 dark:text-gray-300 leading-relaxed">
-                    {selectedArticle.summary}
-                  </p>
-                )}
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.25 }}
-                className="farm-card p-6 mb-8 md:block hidden"
-              >
-                <h3 className="text-lg font-bold text-farm-900 mb-4">Share this article</h3>
+                <FaArrowLeft />
+              </button>
+              <div className="flex gap-2">
                 <button
                   onClick={() => handleShare(selectedArticle)}
-                  className="px-4 py-2 bg-green-500 text-white rounded-xl mr-3 font-semibold shadow-sm hover:shadow-md transition-shadow"
+                  className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white active:scale-95 transition-transform"
                 >
-                  Share Article
+                  <FaShareAlt />
                 </button>
-              </motion.div>
-
-              {selectedArticle.relatedNews && selectedArticle.relatedNews.length > 0 && (
-                <motion.section
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="mb-8"
-                >
-                  <h2 className="text-2xl font-display font-bold text-farm-900 mb-6">Related Articles</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {selectedArticle.relatedNews.map((item) => (
-                      <NewsCard key={item.id} article={item} />
-                    ))}
-                  </div>
-                </motion.section>
-              )}
+              </div>
             </div>
 
-            <div className="md:hidden fixed bottom-24 right-6 z-[999]">
-              <motion.button
-                onClick={() => setFabOpen((prev) => !prev)}
-                whileTap={{ scale: 0.9 }}
-                className="w-14 h-14 rounded-full shadow-xl bg-green-600 text-white flex items-center justify-center text-xl"
-              >
-                <FaShareAlt />
-              </motion.button>
+            {/* Title & Metadata overlaid on bottom of image */}
+            <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
+              {selectedArticle.category && (
+                <span className="inline-block px-3 py-1 bg-farm-600 text-white text-xs font-bold rounded-full mb-3 shadow-lg">
+                  {selectedArticle.category}
+                </span>
+              )}
+              <h1 className="text-2xl md:text-4xl font-bold text-white leading-tight mb-3 drop-shadow-md">
+                {selectedArticle.title}
+              </h1>
+              <div className="flex items-center gap-3 text-white/90 text-sm font-medium">
+                <span className="flex items-center gap-1.5">
+                  <FaCalendar className="w-3.5 h-3.5" /> {dateInfo.relative}
+                </span>
+                {selectedArticle.source && (
+                  <>
+                    <span className="w-1 h-1 bg-white/60 rounded-full" />
+                    <span className="flex items-center gap-1.5">
+                      <FaUser className="w-3.5 h-3.5" />{" "}
+                      {selectedArticle.source}
+                    </span>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
 
-              {fabOpen && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  className="absolute bottom-16 right-0 flex flex-col gap-3"
-                >
-                  <div className="bg-white dark:bg-gray-800 p-2 rounded-xl shadow-xl">
-                    <button
-                      onClick={() => handleShare(selectedArticle)}
-                      className="w-12 h-12 rounded-full shadow-md bg-green-500 text-white flex items-center justify-center mb-2"
-                    >
-                      <FaWhatsapp />
-                    </button>
-                    <button
-                      onClick={() => {
-                        const url = `${window.location.origin}/news?id=${selectedArticle?.id}`;
-                        navigator.clipboard.writeText(url).then(() => {
-                          showToast("success", "Link Copied!");
-                          setFabOpen(false);
-                        });
-                      }}
-                      className="w-12 h-12 rounded-full shadow-md bg-gray-600 text-white flex items-center justify-center"
-                    >
-                      <FaCopy />
-                    </button>
-                  </div>
-                </motion.div>
+          {/* Content Body */}
+          <div className="max-w-3xl mx-auto px-5 py-8 -mt-6 bg-white dark:bg-black relative rounded-t-3xl text-gray-800 dark:text-gray-200">
+            {/* Decorative handle for 'sheet' look */}
+            <div className="w-12 h-1.5 bg-gray-200 dark:bg-white/10 rounded-full mx-auto mb-8" />
+
+            {selectedArticle.summary && (
+              <p className="text-lg font-medium leading-relaxed mb-8 text-gray-900 dark:text-white border-l-4 border-farm-500 pl-4">
+                {selectedArticle.summary}
+              </p>
+            )}
+
+            <div className="prose prose-lg dark:prose-invert prose-green max-w-none">
+              {selectedArticle.content ? (
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: selectedArticle.content.replace(/\n/g, "<br />"),
+                  }}
+                />
+              ) : (
+                <p>{t("news_no_content")}</p>
               )}
             </div>
           </div>
-        </MobilePageContainer>
+
+          {/* Related News */}
+          {selectedArticle.relatedNews &&
+            selectedArticle.relatedNews.length > 0 && (
+              <div className="px-5 pb-12 max-w-3xl mx-auto">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                  {t("related_news")}
+                </h3>
+                <div className="grid grid-cols-1 gap-4">
+                  {selectedArticle.relatedNews.map((item) => (
+                    <NewsCard key={item.id} article={item} />
+                  ))}
+                </div>
+              </div>
+            )}
+        </div>
       </ErrorBoundary>
     );
   }
+
   // List view
   return (
     <ErrorBoundary>
-      <MobilePageContainer>
-        <div className="py-4">
+      <div className="min-h-screen bg-gray-50 dark:bg-black pb-24">
+        {/* Sticky Header */}
+        <nav className="sticky top-0 z-40 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-100 dark:border-white/10 px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center text-green-600 dark:text-green-400">
+              <FaNewspaper className="w-4 h-4" />
+            </div>
+            <h1 className="text-lg font-bold text-gray-900 dark:text-white">
+              {t("news_header_title")}
+            </h1>
+          </div>
+        </nav>
 
-          {/* ================= MOBILE HEADER (Premium UI) ================= */}
-          <div className="md:hidden px-4 mb-8">
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="
-              rounded-3xl p-6 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.25)]
-              bg-gradient-to-br from-[#d7ffe8] to-[#f4fff8]
-              dark:from-[#0b2718] dark:to-[#0e3821]
-              border border-white/60 dark:border-[#1a4a2d]
-            "
-            >
-              <div className="flex items-center gap-4">
-                <div
-                  className="
-                  w-14 h-14 rounded-2xl 
-                  bg-white/70 dark:bg-white/10 
-                  flex items-center justify-center
-                  shadow-inner
-                "
-                >
-                  <FaNewspaper className="text-3xl text-green-700 dark:text-white" />
-                </div>
-
-                <div>
-                  <h1 className="text-2xl font-bold text-green-800 dark:text-white">
-                    {t("news_header_title")}
-                  </h1>
-                  <p className="text-sm text-green-700 dark:text-green-300 mt-1">
-                    {t("news_header_subtitle")}
-                  </p>
-                </div>
-              </div>
-            </motion.div>
+        <div className="px-4 pt-4 w-full max-w-5xl mx-auto">
+          {/* Search & Stats Row */}
+          <div className="mb-4">
+            <NewsSearch onSearch={handleSearch} />
           </div>
 
-          {/* ================= DESKTOP HEADER (unchanged) ================= */}
-          <div className="hidden md:block w-full max-w-7xl mx-auto px-4">
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-8 text-center"
-            >
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <FaNewspaper className="text-4xl text-farm-600" />
-                <h1 className="text-5xl font-display font-bold text-farm-900">
-                  {t("news_header_title")}
-                </h1>
-              </div>
-              <p className="text-lg text-farm-600 max-w-2xl mx-auto">
-                {t("news_header_desc")}
+          {/* Horizontal Filters */}
+          <div className="mb-6 -mx-4 px-4">
+            <NewsFilterBar
+              onCategoryChange={handleCategoryChange}
+              selectedCategory={selectedCategory}
+            />
+          </div>
+
+          {/* Result Info */}
+          {!loading && !error && (
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                {t("top_stories")}
               </p>
-            </motion.div>
-          </div>
+              <span className="text-xs text-gray-400">
+                {articles.length} {t("results")}
+              </span>
+            </div>
+          )}
 
-          {/* ================= MOBILE CONTENT ================= */}
-          <div className="w-full max-w-7xl mx-auto px-4">
+          {/* News List */}
+          <NewsList articles={articles} loading={loading} error={error} />
 
-            {/* Search */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="mb-6"
-            >
-              <NewsSearch onSearch={handleSearch} />
-            </motion.div>
-
-            {/* Filters */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="mb-6"
-            >
-              <NewsFilterBar
-                onCategoryChange={handleCategoryChange}
-                selectedCategory={selectedCategory}
+          {/* Pagination */}
+          {!loading && !error && pagination.totalPages > 1 && (
+            <div className="mt-12 mb-8">
+              <Pagination
+                currentPage={pagination.page}
+                totalPages={pagination.totalPages}
+                hasNextPage={pagination.hasNextPage}
+                hasPreviousPage={pagination.hasPreviousPage}
+                onPageChange={handlePageChange}
               />
-            </motion.div>
-
-            {/* Result Count */}
-            {!loading && !error && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="mb-6 text-sm text-farm-600 dark:text-green-300 md:text-left text-center"
-              >
-                {t("showing_articles").replace("{current}", articles.length).replace("{total}", pagination.total)}
-              </motion.div>
-            )}
-
-            {/* List */}
-            <NewsList articles={articles} loading={loading} error={error} />
-
-            {/* Pagination */}
-            {!loading && !error && pagination.totalPages > 1 && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-                className="mt-10"
-              >
-                <Pagination
-                  currentPage={pagination.page}
-                  totalPages={pagination.totalPages}
-                  hasNextPage={pagination.hasNextPage}
-                  hasPreviousPage={pagination.hasPreviousPage}
-                  onPageChange={handlePageChange}
-                />
-              </motion.div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
-      </MobilePageContainer>
+      </div>
     </ErrorBoundary>
   );
 }
