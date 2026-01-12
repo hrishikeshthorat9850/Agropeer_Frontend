@@ -218,22 +218,22 @@ const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
 
   const getAlertColor = (type) => {
     const colors = {
-      warning: "from-orange-400 to-red-500 dark:bg-[#272727] dark:border-white/20",
-      info: "from-blue-400 to-sky-500 dark:bg-[#272727] dark:border-white/20",
-      success: "from-green-400 to-emerald-500 dark:bg-[#272727] dark:border-white/20",
-      urgent: "from-red-500 to-pink-600 dark:bg-[#272727] dark:border-white/20",
+      warning: "from-orange-400 to-red-500",
+      info: "from-blue-400 to-sky-500",
+      success: "from-green-400 to-emerald-500",
+      urgent: "from-red-500 to-pink-600",
     };
-    return colors[type] || "from-gray-400 to-slate-500 dark:bg-[#272727] dark:border-white/20";
+    return colors[type] || "from-gray-400 to-slate-500";
   };
 
   const getAlertBg = (type) => {
     const bgs = {
-      warning: "bg-orange-50 border-orange-200 dark:bg-[#272727] dark:border-white/20",
-      info: "bg-blue-50 border-blue-200 dark:bg-[#272727] dark:border-white/20",
-      success: "bg-green-50 border-green-200 dark:bg-[#272727] dark:border-white/20",
-      urgent: "bg-red-50 border-red-200 dark:bg-[#272727] dark:border-white/20",
+      warning: "bg-orange-50 border-orange-200 dark:bg-[#2C2C2C] dark:border-orange-500/20",
+      info: "bg-blue-50 border-blue-200 dark:bg-[#2C2C2C] dark:border-sky-500/20",
+      success: "bg-green-50 border-green-200 dark:bg-[#2C2C2C] dark:border-emerald-500/20",
+      urgent: "bg-red-50 border-red-200 dark:bg-[#2C2C2C] dark:border-red-500/20",
     };
-    return bgs[type] || "bg-gray-50 border-gray-200";
+    return bgs[type] || "bg-gray-50 border-gray-200 dark:bg-[#2C2C2C] dark:border-[#444]";
   };
 
   if (!selectedCrop) {
@@ -243,11 +243,11 @@ const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
         animate={{ opacity: 1, y: 0 }}
         className="text-center py-12"
       >
-        <div className="w-24 h-24 bg-farm-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <FaSeedling className="w-12 h-12 text-farm-600" />
+        <div className="w-24 h-24 bg-farm-100 dark:bg-emerald-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+          <FaSeedling className="w-12 h-12 text-farm-600 dark:text-emerald-400" />
         </div>
-        <h3 className="text-xl font-bold text-farm-900 mb-2">{t('select_crop_title')}</h3>
-        <p className="text-farm-700">
+        <h3 className="text-xl font-bold text-farm-900 dark:text-white mb-2">{t('select_crop_title')}</h3>
+        <p className="text-farm-700 dark:text-gray-400">
           {t('select_crop_desc')}
         </p>
       </motion.div>
@@ -268,15 +268,15 @@ const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white/30 backdrop-blur-lg rounded-2xl p-6 border border-white/20 shadow-lg dark:bg-[#272727]"
+        className="bg-white/30 backdrop-blur-lg rounded-2xl p-6 border border-white/20 shadow-lg dark:bg-[#1E1E1E] dark:border-[#333]"
       >
         <div className="flex items-center gap-4">
           <div className="text-4xl">{selectedCrop?.crop_info?.icon}</div>
           <div>
-            <h2 className="text-2xl font-bold text-farm-900">
+            <h2 className="text-2xl font-bold text-farm-900 dark:text-white">
               {selectedCrop?.crop_info?.name} {t('weather_guidance_title')}
             </h2>
-            <p className="text-farm-700">
+            <p className="text-farm-700 dark:text-gray-400">
               {selectedCrop.variety} • {selectedCrop.growthStage} • {selectedCrop.location}
             </p>
           </div>
@@ -288,7 +288,7 @@ const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className={`${getAlertBg(irrigationAdvice.type)} rounded-2xl p-6 border-2 shadow-lg`}
+          className={`${getAlertBg(irrigationAdvice.type)} rounded-2xl p-6 border shadow-lg`}
         >
           <div className="flex items-start gap-4">
             <div
@@ -299,15 +299,15 @@ const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
               <irrigationAdvice.icon className="w-6 h-6 text-white" />
             </div>
             <div className="flex-1">
-              <h3 className="text-lg font-bold text-farm-900 mb-2">
+              <h3 className="text-lg font-bold text-farm-900 dark:text-white mb-2">
                 💧 {irrigationAdvice.title}
               </h3>
-              <p className="text-farm-800 mb-3">{irrigationAdvice.message}</p>
+              <p className="text-farm-800 dark:text-gray-200 mb-3">{irrigationAdvice.message}</p>
               <div className="flex items-center gap-4">
-                <span className="text-sm font-semibold text-farm-700">
+                <span className="text-sm font-bold text-farm-700 dark:text-gray-300">
                   {t('action_label')}: {irrigationAdvice.action}
                 </span>
-                <span className="text-sm font-semibold text-farm-600">
+                <span className="text-sm font-bold text-farm-600 dark:text-emerald-400">
                   {t('amount_label')}: {irrigationAdvice.amount}
                 </span>
               </div>
@@ -323,7 +323,7 @@ const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-4"
         >
-          <h3 className="text-xl font-bold text-farm-900 flex items-center gap-2">
+          <h3 className="text-xl font-bold text-farm-900 dark:text-white flex items-center gap-2">
             <FaExclamationTriangle className="w-6 h-6 text-orange-500" />
             {t('weather_alerts_title')}
           </h3>
@@ -334,7 +334,7 @@ const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className={`${getAlertBg(alert.type)} rounded-2xl p-4 border-2 shadow-lg`}
+                className={`${getAlertBg(alert.type)} rounded-2xl p-4 border shadow-lg`}
               >
                 <div className="flex items-start gap-3">
                   <div
@@ -345,9 +345,9 @@ const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
                     <alert.icon className="w-5 h-5 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h4 className="font-bold text-farm-900 mb-1">{alert.title}</h4>
-                    <p className="text-sm text-farm-800 mb-2">{alert.message}</p>
-                    <p className="text-xs font-semibold text-farm-700">{alert.action}</p>
+                    <h4 className="font-bold text-farm-900 dark:text-gray-100 mb-1">{alert.title}</h4>
+                    <p className="text-sm text-farm-800 dark:text-gray-300 mb-2">{alert.message}</p>
+                    <p className="text-xs font-bold text-farm-700 dark:text-gray-400">{alert.action}</p>
                   </div>
                 </div>
               </motion.div>
@@ -363,7 +363,7 @@ const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-4"
         >
-          <h3 className="text-xl font-bold text-farm-900 flex items-center gap-2">
+          <h3 className="text-xl font-bold text-farm-900 dark:text-white flex items-center gap-2">
             <FaInfoCircle className="w-6 h-6 text-blue-500" />
             {t('general_guidance_title')}
           </h3>
@@ -374,7 +374,7 @@ const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className={`${getAlertBg(item.type)} rounded-2xl p-4 border-2 shadow-lg`}
+                className={`${getAlertBg(item.type)} rounded-2xl p-4 border shadow-lg`}
               >
                 <div className="flex items-start gap-3">
                   <div
@@ -385,9 +385,9 @@ const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
                     <item.icon className="w-5 h-5 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h4 className="font-bold text-farm-900 mb-1">{item.title}</h4>
-                    <p className="text-sm text-farm-800 mb-2">{item.message}</p>
-                    <p className="text-xs font-semibold text-farm-700">{item.action}</p>
+                    <h4 className="font-bold text-farm-900 dark:text-gray-100 mb-1">{item.title}</h4>
+                    <p className="text-sm text-farm-800 dark:text-gray-300 mb-2">{item.message}</p>
+                    <p className="text-xs font-bold text-farm-700 dark:text-gray-400">{item.action}</p>
                   </div>
                 </div>
               </motion.div>
@@ -400,24 +400,24 @@ const PersonalizedWeatherGuide = ({ selectedCrop, weatherData }) => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white/30 backdrop-blur-lg rounded-2xl p-6 border border-white/20 shadow-lg dark:bg-[#272727]"
+        className="bg-white/30 backdrop-blur-lg rounded-2xl p-6 border border-white/20 shadow-lg dark:bg-[#1E1E1E] dark:border-[#333]"
       >
-        <h3 className="text-xl font-bold text-farm-900 mb-4 flex items-center gap-2">
+        <h3 className="text-xl font-bold text-farm-900 dark:text-white mb-4 flex items-center gap-2">
           <FaLeaf className="w-6 h-6 text-green-500" />
           {cropInfo.name} {t('care_tips_title')}
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <h4 className="font-semibold text-farm-800 mb-2">{t('optimal_conditions')}</h4>
-            <ul className="text-sm text-farm-700 space-y-1">
+            <h4 className="font-bold text-farm-800 dark:text-gray-200 mb-2">{t('optimal_conditions')}</h4>
+            <ul className="text-sm text-farm-700 dark:text-gray-400 space-y-1">
               <li>• {t('temp_label')}: {tempRange.min}°C - {tempRange.max}°C</li>
               <li>• {t('humidity_label')}: {humidityRange.min}% - {humidityRange.max}%</li>
               <li>• {t('water_label')}: {waterRange.min}mm - {waterRange.max}mm per season</li>
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold text-farm-800 mb-2">{t('common_pests')}</h4>
-            <ul className="text-sm text-farm-700 space-y-1">
+            <h4 className="font-bold text-farm-800 dark:text-gray-200 mb-2">{t('common_pests')}</h4>
+            <ul className="text-sm text-farm-700 dark:text-gray-400 space-y-1">
               {pests.slice(0, 3).map((pest, index) => (
                 <li key={index}>• {pest}</li>
               ))}

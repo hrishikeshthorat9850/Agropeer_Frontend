@@ -489,18 +489,18 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
   return (
     <div className="w-full max-w-6xl mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h2 className="text-3xl font-bold text-farm-900 mb-2">{t("my_crop_profiles")}</h2>
-          <p className="text-farm-700">{t("crop_profiles_desc")}</p>
-        </div>
+      {/* Header - Minimalist App Style */}
+      <div className="flex items-center justify-between mb-4 px-1">
+        <h2 className="text-lg font-extrabold text-gray-900 dark:text-white tracking-tight">
+          {t("my_crop_profiles")}
+        </h2>
+
         <motion.button
-          whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setShowAddForm(true)}
-          className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-farm-500 to-farm-700 text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 rounded-lg text-xs font-bold border border-emerald-100 dark:border-emerald-800/30 transition-colors active:bg-emerald-100"
         >
-          <FaPlus className="w-5 h-5" />
+          <FaPlus className="text-[10px]" />
           {t("add_crop_btn")}
         </motion.button>
       </div>
@@ -514,31 +514,31 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
             exit={{ opacity: 0, y: -20 }}
             className="mb-8"
           >
-            <div className="bg-white/30 backdrop-blur-lg rounded-2xl p-6 border border-white/20 shadow-lg dark:bg-[#272727]">
+            <div className="bg-white/30 backdrop-blur-lg rounded-2xl p-6 border border-white/20 shadow-lg dark:bg-[#1E1E1E] dark:border-white/10">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-farm-900">
+                <h3 className="text-xl font-bold text-farm-900 dark:text-white">
                   {editingCrop ? t("edit_crop_title") : t("add_crop_title")}
                 </h3>
                 <button
                   onClick={resetFormState}
-                  className="p-2 rounded-full hover:bg-farm-100 transition-colors"
+                  className="p-2 rounded-full hover:bg-farm-100 dark:hover:bg-white/10 transition-colors"
                 >
-                  <FaTimes className="w-5 h-5 text-farm-600" />
+                  <FaTimes className="w-5 h-5 text-farm-600 dark:text-gray-400" />
                 </button>
               </div>
 
               <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2 pt-2">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-farm-500">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-farm-500 dark:text-emerald-400">
                     {t("essential_details")}
                   </p>
-                  <p className="text-sm text-farm-600">
+                  <p className="text-sm text-farm-600 dark:text-gray-400">
                     {t("essential_details_desc")}
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-farm-700 mb-2">
+                  <label className="block text-sm font-semibold text-farm-700 dark:text-gray-300 mb-2">
                     {t("field_name_label")}
                   </label>
                   <input
@@ -548,12 +548,12 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                     onChange={handleInputChange}
                     placeholder={t("field_name_placeholder")}
                     required
-                    className="w-full p-3 rounded-xl border text-farm-500 border-farm-200 focus:outline-none focus:ring-2 focus:ring-farm-400"
+                    className="w-full p-3 rounded-xl border text-farm-500 dark:text-gray-100 border-farm-200 dark:border-gray-700 bg-white dark:bg-[#2C2C2C] focus:outline-none focus:ring-2 focus:ring-farm-400 dark:focus:ring-emerald-500/50"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-farm-700 mb-2">
+                  <label className="block text-sm font-semibold text-farm-700 dark:text-gray-300 mb-2">
                     {t("field_location_label")}
                   </label>
                   <input
@@ -562,12 +562,12 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                     value={formData.location}
                     onChange={handleInputChange}
                     placeholder={t("field_location_placeholder")}
-                    className="w-full p-3 rounded-xl border text-farm-500 border-farm-200 focus:outline-none focus:ring-2 focus:ring-farm-400"
+                    className="w-full p-3 rounded-xl border text-farm-500 dark:text-gray-100 border-farm-200 dark:border-gray-700 bg-white dark:bg-[#2C2C2C] focus:outline-none focus:ring-2 focus:ring-farm-400 dark:focus:ring-emerald-500/50"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-farm-700 mb-2">
+                  <label className="block text-sm font-semibold text-farm-700 dark:text-gray-300 mb-2">
                     {t("soil_type_label")}
                   </label>
                   <select
@@ -575,7 +575,7 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                     value={formData.soilType}
                     onChange={handleInputChange}
                     required
-                    className="w-full p-3 rounded-xl border text-farm-500 border-farm-200 focus:outline-none focus:ring-2 focus:ring-farm-400"
+                    className="w-full p-3 rounded-xl border text-farm-500 dark:text-gray-100 border-farm-200 dark:border-gray-700 bg-white dark:bg-[#2C2C2C] focus:outline-none focus:ring-2 focus:ring-farm-400 dark:focus:ring-emerald-500/50"
                   >
                     <option value="">{t("select_soil_placeholder")}</option>
                     <option value="Well-drained loamy soil">{t("soil_well_drained")}</option>
@@ -621,7 +621,7 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                 </div> */}
 
                 <div>
-                  <label className="block text-sm font-semibold text-farm-700 mb-2">
+                  <label className="block text-sm font-semibold text-farm-700 dark:text-gray-300 mb-2">
                     {t("field_area_label")}
                   </label>
                   <input
@@ -633,12 +633,12 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                     min="0.1"
                     step="0.1"
                     required
-                    className="w-full p-3 rounded-xl border text-farm-500 border-farm-200 focus:outline-none focus:ring-2 focus:ring-farm-400"
+                    className="w-full p-3 rounded-xl border text-farm-500 dark:text-gray-100 border-farm-200 dark:border-gray-700 bg-white dark:bg-[#2C2C2C] focus:outline-none focus:ring-2 focus:ring-farm-400 dark:focus:ring-emerald-500/50"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-farm-700 mb-2">
+                  <label className="block text-sm font-semibold text-farm-700 dark:text-gray-300 mb-2">
                     {t("variety_label")}
                   </label>
                   <input
@@ -647,12 +647,12 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                     value={formData.variety}
                     onChange={handleInputChange}
                     placeholder={t("variety_placeholder")}
-                    className="w-full p-3 rounded-xl border text-farm-500 border-farm-200 focus:outline-none focus:ring-2 focus:ring-farm-400"
+                    className="w-full p-3 rounded-xl border text-farm-500 dark:text-gray-100 border-farm-200 dark:border-gray-700 bg-white dark:bg-[#2C2C2C] focus:outline-none focus:ring-2 focus:ring-farm-400 dark:focus:ring-emerald-500/50"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-farm-700 mb-2">
+                  <label className="block text-sm font-semibold text-farm-700 dark:text-gray-300 mb-2">
                     {t("crop_name_label")}
                   </label>
                   <Select
@@ -737,7 +737,7 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-farm-700 mb-2">
+                  <label className="block text-sm font-semibold text-farm-700 dark:text-gray-300 mb-2">
                     {t("planting_date_label")}
                   </label>
                   <input
@@ -746,12 +746,12 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                     value={formData.plantingDate}
                     onChange={handleInputChange}
                     required
-                    className="w-full p-3 rounded-xl border text-farm-500 border-farm-200 focus:outline-none focus:ring-2 focus:ring-farm-400"
+                    className="w-full p-3 rounded-xl border text-farm-500 dark:text-gray-100 border-farm-200 dark:border-gray-700 bg-white dark:bg-[#2C2C2C] focus:outline-none focus:ring-2 focus:ring-farm-400 dark:focus:ring-emerald-500/50"
                   />
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-farm-700 mb-2">
+                  <label className="block text-sm font-semibold text-farm-700 dark:text-gray-300 mb-2">
                     {t("notes_label")}
                   </label>
                   <textarea
@@ -760,17 +760,17 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                     onChange={handleInputChange}
                     placeholder={t("notes_placeholder")}
                     rows={3}
-                    className="w-full p-3 rounded-xl border text-gray-500 border-farm-200 focus:outline-none focus:ring-2 focus:ring-farm-400 resize-none"
+                    className="w-full p-3 rounded-xl border text-gray-500 dark:text-gray-100 border-farm-200 dark:border-gray-700 bg-white dark:bg-[#2C2C2C] focus:outline-none focus:ring-2 focus:ring-farm-400 dark:focus:ring-emerald-500/50 resize-none"
                   />
                 </div>
 
                 <div className="md:col-span-2 pt-4">
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
                     <div>
-                      <p className="text-xs font-semibold uppercase tracking-wide text-farm-500">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-farm-500 dark:text-emerald-400">
                         {t("auto_generated_blueprint")}
                       </p>
-                      <p className="text-sm text-farm-600">
+                      <p className="text-sm text-farm-600 dark:text-gray-400">
                         {t("blueprint_desc")}
                       </p>
                     </div>
@@ -779,7 +779,7 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
 
                 {calculating && (
                   <div className="md:col-span-2 text-center py-4">
-                    <p className="text-farm-600">{t("calculating_data")}</p>
+                    <p className="text-farm-600 dark:text-gray-400">{t("calculating_data")}</p>
                   </div>
                 )}
 
@@ -809,14 +809,14 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                     ].map(({ label, value, icon: Icon }) => (
                       <div
                         key={label}
-                        className="bg-white/60 dark:bg-[#1a1a1a] rounded-xl p-4 border border-white/20 shadow-sm flex items-start gap-3"
+                        className="bg-white/60 dark:bg-[#2C2C2C] rounded-xl p-4 border border-white/20 dark:border-[#444] shadow-sm flex items-start gap-3"
                       >
-                        <div className="p-2 rounded-lg bg-farm-100">
-                          <Icon className="w-4 h-4 text-farm-600" />
+                        <div className="p-2 rounded-lg bg-farm-100 dark:bg-emerald-900/30">
+                          <Icon className="w-4 h-4 text-farm-600 dark:text-emerald-400" />
                         </div>
                         <div>
-                          <p className="text-xs uppercase tracking-wider text-farm-500">{label}</p>
-                          <p className="text-base font-semibold text-farm-900">
+                          <p className="text-xs uppercase tracking-wider text-farm-500 dark:text-gray-400">{label}</p>
+                          <p className="text-base font-semibold text-farm-900 dark:text-white">
                             {formatDisplayValue(value)}
                           </p>
                         </div>
@@ -910,7 +910,7 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                   <button
                     type="button"
                     onClick={resetFormState}
-                    className="flex-1 sm:flex-none px-4 py-2 rounded-xl text-black bg-gray-50 hover:bg-gray-100 border border-gray-200"
+                    className="flex-1 sm:flex-none px-4 py-2 rounded-xl text-black bg-gray-50 hover:bg-gray-100 border border-gray-200 dark:text-gray-200 dark:bg-[#333] dark:hover:bg-[#444] dark:border-[#555]"
                   >
                     {t("cancel_btn")}
                   </button>
@@ -953,16 +953,16 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: index * 0.1, duration: 0.5 }}
               whileHover={{ scale: 1.02, y: -5 }}
-              className="bg-white/30 backdrop-blur-lg rounded-2xl p-6 border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300 dark:bg-[#272727]"
+              className="bg-white dark:bg-[#1E1E1E] rounded-2xl p-5 border border-gray-100 dark:border-[#333] shadow-md hover:shadow-lg transition-all duration-300"
             >
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className="text-3xl">{getCropIcon(cropTypeValue)}</div>
                   <div>
-                    <h3 className="text-lg font-bold text-farm-900">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
                       {fieldName}
                     </h3>
-                    <p className="text-sm text-farm-600">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
                       {getCropName(cropTypeValue)}
                       {crop.variety ? ` • ${crop.variety}` : ""}
                     </p>
@@ -971,52 +971,52 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleEdit(crop)}
-                    className="p-2 rounded-lg bg-farm-100 hover:bg-farm-200 transition-colors"
+                    className="p-2 rounded-lg bg-gray-50 dark:bg-[#333] hover:bg-gray-100 dark:hover:bg-[#444] transition-colors border border-gray-100 dark:border-[#444]"
                   >
-                    <FaEdit className="w-4 h-4 text-farm-600" />
+                    <FaEdit className="w-4 h-4 text-gray-600 dark:text-gray-300" />
                   </button>
                   <button
                     onClick={() => handleDelete(crop?.id)}
-                    className="p-2 rounded-lg bg-red-100 hover:bg-red-200 transition-colors"
+                    className="p-2 rounded-lg bg-red-50 dark:bg-red-900/10 hover:bg-red-100 dark:hover:bg-red-900/20 transition-colors border border-red-50 dark:border-red-900/20"
                   >
-                    <FaTrash className="w-4 h-4 text-red-600" />
+                    <FaTrash className="w-4 h-4 text-red-500 dark:text-red-400" />
                   </button>
                 </div>
               </div>
 
-              <div className="space-y-3 text-sm text-farm-700">
+              <div className="space-y-3 text-sm text-gray-600 dark:text-gray-300">
                 <div className="flex items-center gap-2">
-                  <FaCalendarAlt className="w-4 h-4 text-farm-500" />
+                  <FaCalendarAlt className="w-4 h-4 text-gray-400 dark:text-gray-500" />
                   <span>
                     {t("planted_label")}{" "}
                     {plantingDate ? new Date(plantingDate).toLocaleDateString() : "—"}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <FaMapMarkerAlt className="w-4 h-4 text-farm-500" />
+                  <FaMapMarkerAlt className="w-4 h-4 text-gray-400 dark:text-gray-500" />
                   <span>{formatDisplayValue(locationDisplay)}</span>
                 </div>
                 {areaDisplay && (
                   <div className="flex items-center gap-2">
-                    <FaSun className="w-4 h-4 text-farm-500" />
+                    <FaSun className="w-4 h-4 text-gray-400 dark:text-gray-500" />
                     <span>{t("area_label")} {formatDisplayValue(areaDisplay)} acres</span>
                   </div>
                 )}
                 {soilType && (
                   <div className="flex items-center gap-2">
-                    <FaSeedling className="w-4 h-4 text-farm-500" />
+                    <FaSeedling className="w-4 h-4 text-gray-400 dark:text-gray-500" />
                     <span>{t("soil_label")} {soilType}</span>
                   </div>
                 )}
                 {irrigationMethod && (
                   <div className="flex items-center gap-2">
-                    <FaTint className="w-4 h-4 text-farm-500" />
+                    <FaTint className="w-4 h-4 text-gray-400 dark:text-gray-500" />
                     <span>{t("irrigation_label")} {irrigationMethod}</span>
                   </div>
                 )}
                 {(moistureMin || moistureMax) && (
                   <div className="flex items-center gap-2">
-                    <FaWater className="w-4 h-4 text-farm-500" />
+                    <FaWater className="w-4 h-4 text-gray-400 dark:text-gray-500" />
                     <span>
                       {t("moisture_range_label_short")} {formatDisplayValue(moistureMin)}% - {formatDisplayValue(moistureMax)}%
                     </span>
@@ -1024,13 +1024,13 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                 )}
                 {expectedYield && (
                   <div className="flex items-center gap-2">
-                    <FaChartLine className="w-4 h-4 text-farm-500" />
+                    <FaChartLine className="w-4 h-4 text-gray-400 dark:text-gray-500" />
                     <span>{t("expected_yield_label_short")} {formatDisplayValue(expectedYield)} kg</span>
                   </div>
                 )}
                 {nextFertilization && (
                   <div className="flex items-center gap-2">
-                    <FaClock className="w-4 h-4 text-farm-500" />
+                    <FaClock className="w-4 h-4 text-gray-400 dark:text-gray-500" />
                     <span>
                       {t("next_fertilization_label")}{" "}
                       {new Date(nextFertilization).toLocaleDateString()}
@@ -1039,7 +1039,7 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                 )}
                 {pestRisk && (
                   <div className="flex items-center gap-2">
-                    <FaBug className="w-4 h-4 text-farm-500" />
+                    <FaBug className="w-4 h-4 text-gray-400 dark:text-gray-500" />
                     <span>{t("pest_risk_label_short")} {pestRisk}</span>
                   </div>
                 )}
@@ -1077,8 +1077,8 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
           <div className="w-24 h-24 bg-farm-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <FaSeedling className="w-12 h-12 text-farm-600" />
           </div>
-          <h3 className="text-xl font-bold text-farm-900 mb-2">{t("no_crops_added_title")}</h3>
-          <p className="text-farm-700 mb-6">
+          <h3 className="text-xl font-bold text-farm-900 dark:text-white mb-2">{t("no_crops_added_title")}</h3>
+          <p className="text-farm-700 dark:text-gray-400 mb-6">
             {t("add_first_crop_desc")}
           </p>
           <motion.button

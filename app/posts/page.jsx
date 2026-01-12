@@ -184,7 +184,7 @@ export default function PostsPage() {
             animate={{ opacity: 1, y: 0 }}
             className="mb-6"
           >
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4 px-4">
               <div>
                 <h1 className="text-2xl md:text-3xl font-display font-bold text-farm-900 dark:text-white mb-2">
                   {t("all_posts_title")}
@@ -203,22 +203,24 @@ export default function PostsPage() {
               </div>
             </div>
 
-            {/* Add / Close Button */}
-            <div className="mt-4 w-full">
+            {/* Add / Close Button - Premium Mobile Style */}
+            <div className="mt-4 w-full px-4 md:px-0">
               {!isCreating ? (
-                <button
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
                   onClick={() => setIsCreating(true)}
-                  className="w-full md:w-auto bg-farm-700 text-white px-6 py-3 rounded-full shadow-lg hover:bg-farm-800 transition flex items-center justify-center gap-2 font-semibold active:scale-95"
+                  className="w-full md:w-auto bg-gradient-to-r from-farm-600 to-farm-500 text-white px-6 py-3.5 rounded-xl shadow-lg shadow-farm-500/20 hover:shadow-xl hover:from-farm-700 hover:to-farm-600 transition-all duration-300 flex items-center justify-center gap-2.5 font-bold tracking-wide"
                 >
                   <FaPlus className="w-4 h-4" /> {t("add_post_btn")}
-                </button>
+                </motion.button>
               ) : (
-                <button
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
                   onClick={() => setIsCreating(false)}
-                  className="w-full md:w-auto bg-red-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-red-700 transition flex items-center justify-center gap-2 font-semibold active:scale-95"
+                  className="w-full md:w-auto bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-100 dark:border-red-900/30 px-6 py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-300 active:bg-red-100 dark:active:bg-red-900/40"
                 >
                   {t("close_btn")}
-                </button>
+                </motion.button>
               )}
             </div>
 

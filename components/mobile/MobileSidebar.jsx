@@ -95,7 +95,7 @@ export default function MobileSidebar() {
     { href: "/help", label: "Help Center", icon: <FaQuestionCircle /> },
     { href: "/farming-tips", label: "Farming Tips", icon: <FaLeaf /> },
     { href: "/expert-advice", label: "Expert Advice", icon: <FaComments /> },
-    { href: "/reviews", label: "Reviews", icon: <FaStar /> },
+    // { href: "/reviews", label: "Reviews", icon: <FaStar /> },
   ];
 
   return (

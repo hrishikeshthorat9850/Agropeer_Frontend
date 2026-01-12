@@ -59,8 +59,7 @@ export default function MarketList({ data = [], filters = {} }) {
           }
           className="flex"
         >
-          <MarketCard data={item} /> // Ensure MarketCard handles translation
-          internally now
+          <MarketCard data={item} />
         </div>
       ))}
     </div>

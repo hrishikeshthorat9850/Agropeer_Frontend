@@ -23,11 +23,11 @@ export default function SchemeSearch({ onSearch, placeholder }) {
 
   return (
     <form onSubmit={handleSubmit} className="w-full">
-      <div className="relative mb-4">
-        <div className="flex items-center gap-2 bg-gray-50 dark:bg-neutral-800 rounded-lg px-3 py-2 border border-gray-200 dark:border-neutral-700">
+      <div className="relative">
+        <div className="flex items-center gap-3 bg-gray-100 dark:bg-white/10 rounded-full px-4 py-2.5 transition-all focus-within:ring-2 focus-within:ring-green-500/50">
 
           {/* Search Icon */}
-          <FaSearch className="text-gray-400 dark:text-gray-500" />
+          <FaSearch className="text-gray-400 dark:text-gray-500 text-sm" />
 
           {/* Input */}
           <input
@@ -35,9 +35,8 @@ export default function SchemeSearch({ onSearch, placeholder }) {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-
             placeholder={searchPlaceholder}
-            className="bg-transparent outline-none flex-1 text-sm text-gray-700 dark:text-gray-200"
+            className="bg-transparent outline-none flex-1 text-sm text-gray-900 dark:text-white placeholder:text-gray-500"
           />
 
           {/* Clear Button */}
@@ -48,9 +47,9 @@ export default function SchemeSearch({ onSearch, placeholder }) {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
               onClick={clearSearch}
-              className="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-neutral-700 transition-colors"
+              className="p-1 rounded-full bg-gray-200 dark:bg-white/20 hover:bg-gray-300 transition-colors"
             >
-              <FaTimes className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+              <FaTimes className="w-3 h-3 text-gray-500 dark:text-gray-300" />
             </motion.button>
           )}
         </div>

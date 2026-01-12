@@ -23,17 +23,8 @@ export default function SavedPosts({ posts, user, removeSaved }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="relative group hover-lift w-full max-w-2xl mx-auto mb-6 overflow-hidden rounded-3xl shadow-2xl"
-            style={{
-              background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 25%, #f1f5f9 50%, #e2e8f0 75%, #cbd5e1 100%)',
-              border: typeof window !== "undefined" &&
-                document.documentElement.classList.contains("dark")
-                ? "2px solid rgb(51 42 42)"
-                : "1px solid rgba(255, 255, 255, 0.2)",
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05)'
-            }}
+            className="relative w-full max-w-lg mx-auto mb-4 bg-white dark:bg-black border-b md:border border-gray-200 dark:border-zinc-800 md:rounded-xl overflow-hidden"
           >
-            <PostBackground />
             <PostHeader
               post={item}
               idx={idx}
@@ -44,13 +35,6 @@ export default function SavedPosts({ posts, user, removeSaved }) {
               onPostUpdated={() => { }}
               onDelete={() => { }}
             />
-            {item.caption && (
-              <div className="px-4 pb-3 dark:bg-[#272727]">
-                <p className="text-farm-700 text-base leading-relaxed font-sans">
-                  {item.caption}
-                </p>
-              </div>
-            )}
             {item.images && item.images.length > 0 && (
               <div className="dark:bg-[#272727]">
                 <PostMedia images={item.images} />
@@ -67,6 +51,18 @@ export default function SavedPosts({ posts, user, removeSaved }) {
               onCommentClick={() => { }}
               onShareClick={() => { }}
             />
+            {item.caption && (
+              <div className="px-3 pb-2 pt-1 dark:bg-black">
+                <div className="text-sm">
+                  <span className="font-bold text-gray-900 dark:text-white mr-2">
+                    {item.userinfo?.display_name || "User"}
+                  </span>
+                  <span className="text-gray-800 dark:text-gray-200">
+                    {item.caption}
+                  </span>
+                </div>
+              </div>
+            )}
           </motion.article>
         ))}
       </div>

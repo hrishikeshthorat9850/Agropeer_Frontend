@@ -15,6 +15,7 @@ import { usePagination } from "@/hooks/usePagination";
 import { apiRequest } from "@/utils/apiHelpers";
 import { Capacitor } from "@capacitor/core";
 import { shareContent } from "@/utils/shareHandler";
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function GovernmentSchemesPage() {
   const { t } = useLanguage();
@@ -126,12 +127,12 @@ export default function GovernmentSchemesPage() {
   }, [selectedSchemeId]);
 
   const handleShare = (scheme) => {
-    if(Capacitor.isNativePlatform()){
+    if (Capacitor.isNativePlatform()) {
       const result = shareContent({
-        title : scheme?.title,
-        text : scheme?.tagline,
-        id : scheme?.id,
-        route : "government-schemes"
+        title: scheme?.title,
+        text: scheme?.tagline,
+        id: scheme?.id,
+        route: "government-schemes"
       });
       if (result.platform === "native") {
         console.log("✔ Shared via native bottom sheet");
@@ -228,16 +229,21 @@ export default function GovernmentSchemesPage() {
 
     return (
       <ErrorBoundary>
-        <div className="min-h-[calc(100vh-122px)] pt-8 pb-12">
-          <div className="w-full max-w-5xl mx-auto px-4">
-            {/* Back Button */}
+        <div className="min-h-screen bg-gray-50 dark:bg-black pb-12">
+          {/* Mobile App Detail Header */}
+          <header className="sticky top-0 z-40 bg-white dark:bg-black border-b border-gray-100 dark:border-white/10 px-4 py-3 flex items-center gap-4 shadow-sm">
             <button
               onClick={() => router.push("/government-schemes")}
-              className="flex items-center gap-2 text-farm-700 hover:text-farm-800 mb-6 transition-colors"
+              className="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center text-gray-700 dark:text-white active:scale-95 transition-transform"
             >
-              <FaArrowLeft className="w-4 h-4" />
-              <span className="font-medium">{t("back_to_schemes")}</span>
+              <FaArrowLeft />
             </button>
+            <h1 className="text-lg font-bold text-gray-900 dark:text-white truncate flex-1">
+              {detailScheme.title}
+            </h1>
+          </header>
+
+          <div className="w-full max-w-3xl mx-auto px-2 pt-6">
 
             {/* Hero Section */}
             <motion.div
@@ -483,129 +489,50 @@ export default function GovernmentSchemesPage() {
   // List view
   return (
     <ErrorBoundary>
-      <div className="min-h-[calc(100vh-122px)] pt-8 pb-12">
+      <div className="min-h-screen bg-gray-50 dark:bg-black pb-12">
+        {/* Mobile App Header */}
+        <header className="sticky top-0 z-40 bg-white dark:bg-black border-b border-gray-100 dark:border-white/10 px-4 py-3 flex items-center justify-between shadow-sm">
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+            {t("govt_schemes_title")}
+          </h1>
+        </header>
 
-        <div className="w-full max-w-7xl mx-auto px-4">
-
-          {/* ======================================================= */}
-          {/*            MOBILE HEADER (Premium Card Layout)           */}
-          {/* ======================================================= */}
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="
-              md:hidden 
-              bg-gradient-to-br from-[#d7ffe8] to-[#f4fff8] dark:from-[#0b2718] dark:to-[#0e3821]
-              shadow-[0_4px_20px_rgba(0,0,0,0.08)]
-              dark:shadow-[0_4px_20px_rgba(0,0,0,0.45)]
-              rounded-3xl p-5 mb-8 border border-gray-100 dark:border-gray-700
-            "
-          >
-            <div className="flex items-center gap-4">
-              <div className="
-                w-14 h-14 rounded-2xl 
-                bg-green-100 dark:bg-green-900/40
-                flex items-center justify-center
-              ">
-                <FaBullhorn className="text-green-700 dark:text-green-300 text-3xl" />
-              </div>
-
-              <div>
-                <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-                  {t("govt_schemes_title")}
-                </h1>
-                <p className="text-[13px] mt-1 text-gray-600 dark:text-gray-300 leading-snug">
-                  {t("mobile_header_subtitle")}
-                </p>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* DESKTOP NORMAL HEADER (Untouched) */}
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-8 text-center hidden md:block"
-          >
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <FaBullhorn className="text-4xl text-farm-600" />
-              <h1 className="text-3xl md:text-5xl font-display font-bold text-farm-900">
-                {t("govt_schemes_title")}
-              </h1>
-            </div>
-            <p className="text-lg text-farm-600 max-w-2xl mx-auto">
-              {t("govt_schemes_subtitle")}
-            </p>
-          </motion.div>
-
-          {/* MOBILE SEARCH BOX (Premium rounded card) */}
-          <div className="md:hidden mb-6">
-            <div className="
-              bg-white dark:bg-[#1e1e1e]
-              rounded-2xl p-3 shadow-[0_4px_12px_rgba(0,0,0,0.08)]
-              dark:shadow-[0_4px_12px_rgba(0,0,0,0.45)]
-              border border-gray-100 dark:border-gray-700
-            ">
-              <SchemeSearch onSearch={handleSearch} />
-            </div>
-          </div>
-
-          {/* DESKTOP SEARCH (Untouched) */}
-          <motion.div
-            className="hidden md:block mb-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
+        <div className="w-full max-w-lg mx-auto md:max-w-5xl">
+          {/* Search Area */}
+          <div className="px-4 py-3 bg-white dark:bg-black/50">
             <SchemeSearch onSearch={handleSearch} />
-          </motion.div>
-
-          {/* MOBILE FILTER BAR (Premium card) */}
-          <div className="md:hidden mb-6">
-            <div className="
-              bg-white dark:bg-[#1e1e1e]
-              rounded-2xl p-3 shadow-md
-              border border-gray-100 dark:border-gray-700
-            ">
-              <SchemeFilterBar
-                onCategoryChange={handleCategoryChange}
-                onStateChange={handleStateChange}
-                selectedCategory={selectedCategory}
-                selectedState={selectedState}
-              />
-            </div>
           </div>
 
-          {/* DESKTOP FILTER BAR (Untouched) */}
-          <motion.div
-            className="hidden md:block mb-8"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
+          {/* Horizontal Scrollable Filters */}
+          <div className="sticky z-30 bg-gray-50/95 dark:bg-black/95 backdrop-blur-sm py-2 px-4 border-b border-gray-100 dark:border-white/5">
             <SchemeFilterBar
               onCategoryChange={handleCategoryChange}
               onStateChange={handleStateChange}
               selectedCategory={selectedCategory}
               selectedState={selectedState}
             />
-          </motion.div>
+          </div>
 
-          {/* MOBILE RESULTS COUNT */}
+          {/* Stats Row */}
           {!loading && !error && (
-            <div className="text-sm text-gray-600 dark:text-gray-300 md:hidden mb-4 px-1">
-              {t("showing_schemes_prefix")} {schemes.length} {t("of_text")} {pagination.total} {t("showing_schemes_suffix")}
+            <div className="px-4 py-3 flex items-center justify-between">
+              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                {t("schemes") || "Schemes"}
+              </span>
+              <span className="text-xs text-gray-400 font-medium bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded-full">
+                {schemes.length}
+              </span>
             </div>
           )}
 
-          {/* Main Schemes List (Untouched) */}
-          <SchemeList schemes={schemes} loading={loading} error={error} />
+          {/* Scheme List */}
+          <div className="px-2 md:px-4 pb-4 min-h-[50vh]">
+            <SchemeList schemes={schemes} loading={loading} error={error} />
+          </div>
 
-          {/* Pagination Desktop & Mobile (Untouched) */}
+          {/* Pagination */}
           {!loading && !error && pagination.totalPages > 1 && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="mt-8"
-            >
+            <div className="px-4 pb-8 flex justify-center">
               <Pagination
                 currentPage={pagination.page}
                 totalPages={pagination.totalPages}
@@ -613,7 +540,7 @@ export default function GovernmentSchemesPage() {
                 hasPreviousPage={pagination.hasPreviousPage}
                 onPageChange={handlePageChange}
               />
-            </motion.div>
+            </div>
           )}
         </div>
       </div>

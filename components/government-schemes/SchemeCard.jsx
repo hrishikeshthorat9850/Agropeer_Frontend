@@ -10,78 +10,66 @@ export default function SchemeCard({ scheme, index = 0 }) {
   const benefits = scheme.benefits ? (Array.isArray(scheme.benefits) ? scheme.benefits : JSON.parse(scheme.benefits || "[]")) : [];
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05, duration: 0.4 }}
-      whileHover={{ y: -4 }}
-      className="farm-card p-6 hover-lift group"
-    >
-      {/* Header */}
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-2">
-            {scheme.icon && (
-              <span className="text-2xl">{scheme.icon}</span>
-            )}
-            <h3 className="text-xl font-display font-bold text-farm-900 group-hover:text-farm-700 transition-colors">
-              {scheme.title}
-            </h3>
+    <Link href={`/government-schemes?id=${scheme.id}`} className="block">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: index * 0.05 }}
+        className="bg-white dark:bg-black py-4 border-b border-gray-100 dark:border-white/5 active:bg-gray-50 dark:active:bg-white/5 transition-colors"
+      >
+        {/* Card Content Container */}
+        <div className="flex gap-4">
+          {/* Leading Icon (Avatar style) */}
+          <div className="flex-shrink-0">
+            <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center text-2xl">
+              {scheme.icon || "📜"}
+            </div>
           </div>
 
-          {/* Category Badge */}
-          {scheme.category && (
-            <div className="inline-flex items-center gap-1 px-3 py-1 bg-farm-100 text-farm-700 rounded-full text-xs font-semibold mb-3">
-              <FaTag className="w-3 h-3" />
-              {t(`scheme_cat_${scheme.category.replace(/\s+/g, "_")}`) || scheme.category}
+          <div className="flex-1 min-w-0">
+            {/* Header / Title */}
+            <div className="flex items-start justify-between gap-2 mb-1">
+              <h3 className="text-base font-bold text-gray-900 dark:text-white leading-snug line-clamp-2">
+                {scheme.title}
+              </h3>
+              {/* Optional: Category Badge if crucial, or put it below */}
             </div>
-          )}
+
+            {/* Metadata Row */}
+            <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-2">
+              {scheme.category && (
+                <span className="font-medium text-green-600 dark:text-green-400">
+                  {t(`scheme_cat_${scheme.category.replace(/\s+/g, "_")}`) || scheme.category}
+                </span>
+              )}
+              <span>•</span>
+              {scheme.state && (
+                <span>{t(`state_${scheme.state.replace(/\s+/g, "_")}`) || scheme.state}</span>
+              )}
+            </div>
+
+            {/* Description Snippet */}
+            <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 mb-3">
+              {scheme.description}
+            </p>
+
+            {/* Action / Benefits Hint */}
+            <div className="flex items-center gap-4">
+              {benefits.length > 0 && (
+                <div className="flex -space-x-2">
+                  {benefits.slice(0, 3).map((_, i) => (
+                    <div key={i} className="w-5 h-5 rounded-full bg-green-100 dark:bg-green-900 border-2 border-white dark:border-black flex items-center justify-center text-[8px] text-green-700 font-bold">✓</div>
+                  ))}
+                </div>
+              )}
+              <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">
+                {t("view_details") || "View Details"}
+              </span>
+            </div>
+          </div>
         </div>
-      </div>
-
-      {/* Description */}
-      <p className="text-farm-700 text-sm mb-4 line-clamp-2">
-        {scheme.description}
-      </p>
-
-      {/* Key Benefits Preview */}
-      {benefits.length > 0 && (
-        <div className="mb-4">
-          <ul className="space-y-2">
-            {benefits.slice(0, 2).map((benefit, idx) => (
-              <li key={idx} className="flex items-start gap-2 text-sm text-farm-600">
-                <span className="text-farm-500 mt-1">✓</span>
-                <span className="line-clamp-1">{typeof benefit === 'string' ? benefit : benefit.text || benefit}</span>
-              </li>
-            ))}
-            {benefits.length > 2 && (
-              <li className="text-xs text-farm-500 italic">
-                +{benefits.length - 2} more benefits
-              </li>
-            )}
-          </ul>
-        </div>
-      )}
-
-      {/* State Badge */}
-      {scheme.state && (
-        <div className="flex items-center gap-1 text-xs text-farm-600 mb-4">
-          <FaMapMarkerAlt className="w-3 h-3" />
-          <span>{t(`state_${scheme.state.replace(/\s+/g, "_")}`) || scheme.state}</span>
-        </div>
-      )}
-
-      {/* Action Button */}
-      <Link
-        href={`/government-schemes?id=${scheme.id}`}
-        className="inline-flex items-center gap-2 px-4 py-2 bg-farm-500 text-white rounded-xl hover:bg-farm-600 transition-all duration-300 font-semibold text-sm group-hover:gap-3"
-      >
-
-
-        <span>{t("view_details")}</span>
-        <FaArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-      </Link>
-    </motion.div>
+      </motion.div>
+    </Link>
   );
 }
 

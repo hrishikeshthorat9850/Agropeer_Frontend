@@ -211,8 +211,8 @@ export default function PostCreation({ onSuccess }) {
       showToast(
         "error",
         t("post_create_error_toast") +
-          " " +
-          (err.message || "Please try again.")
+        " " +
+        (err.message || "Please try again.")
       );
     } finally {
       setUploading(false);
@@ -375,14 +375,7 @@ export default function PostCreation({ onSuccess }) {
         {/* Main Post Card */}
         <motion.div
           layout
-          className="farm-card p-4 sm:p-6 relative overflow-hidden rounded-2xl"
-          style={{
-            background:
-              "linear-gradient(135deg, #ffffff 0%, #f8fafc 25%, #f1f5f9 50%, #e2e8f0 75%, #cbd5e1 100%)",
-            border: "1px solid rgba(255,255,255,0.2)",
-            boxShadow:
-              "0 25px 50px -12px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.05)",
-          }}
+          className="farm-card p-4 sm:p-6 relative overflow-hidden rounded-2xl bg-white dark:bg-[#1E1E1E] border border-gray-100 dark:border-[#333]"
         >
           {/* Background Animation */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -403,10 +396,10 @@ export default function PostCreation({ onSuccess }) {
                 <div className="absolute -bottom-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-green-500 rounded-full border-2 border-white"></div>
               </div>
               <div className="flex-1 min-w-[60%]">
-                <h3 className="text-base sm:text-lg font-bold text-farm-900 leading-tight">
+                <h3 className="text-base sm:text-lg font-bold text-farm-900 dark:text-white leading-tight">
                   {t("share_story_title")}
                 </h3>
-                <p className="text-xs sm:text-sm text-farm-600">
+                <p className="text-xs sm:text-sm text-farm-600 dark:text-gray-400">
                   {t("happening_on_farm_subtitle")}
                 </p>
               </div>
@@ -417,9 +410,9 @@ export default function PostCreation({ onSuccess }) {
                 className="p-1.5 sm:p-2 rounded-full bg-farm-100 hover:bg-farm-200 transition-colors"
               >
                 {isExpanded ? (
-                  <FaTimes className="w-4 h-4 text-farm-600" />
+                  <FaTimes className="w-4 h-4 text-farm-600 dark:text-gray-300" />
                 ) : (
-                  <FaPlus className="w-4 h-4 text-farm-600" />
+                  <FaPlus className="w-4 h-4 text-farm-600 dark:text-gray-300" />
                 )}
               </motion.button>
             </div>
@@ -436,15 +429,7 @@ export default function PostCreation({ onSuccess }) {
                   value={postText}
                   onChange={(e) => setPostText(e.target.value)}
                   placeholder={t("post_placeholder")}
-                  className="w-full p-3 sm:p-4 pr-10 rounded-2xl border-0 resize-none focus:outline-none text-farm-800 placeholder-farm-500 transition-all duration-300 text-sm sm:text-base"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.8) 100%)",
-                    backdropFilter: "blur(20px)",
-                    boxShadow:
-                      "inset 0 2px 8px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.1)",
-                    border: "1px solid rgba(255,255,255,0.3)",
-                  }}
+                  className="w-full p-3 sm:p-4 pr-10 rounded-2xl border-0 resize-none focus:outline-none text-farm-800 dark:text-white placeholder-farm-500 dark:placeholder-gray-500 transition-all duration-300 text-sm sm:text-base bg-gray-50 dark:bg-[#2C2C2C] dark:border-[#444]"
                   rows={isExpanded ? 4 : 1}
                   onFocus={() => setIsExpanded(true)}
                 />
@@ -468,23 +453,23 @@ export default function PostCreation({ onSuccess }) {
                       <div className="flex items-center gap-2 sm:gap-3">
                         <motion.button
                           whileHover={{ scale: 1.05 }}
-                          className="p-2 sm:p-3 rounded-xl bg-sky-100 hover:bg-sky-200"
+                          className="p-2 sm:p-3 rounded-xl bg-sky-100 dark:bg-sky-900/30 hover:bg-sky-200 dark:hover:bg-sky-900/50"
                           onClick={() => photoinputRef.current?.click()}
                         >
-                          <FaImage className="w-4 h-4 sm:w-5 sm:h-5 text-sky-600" />
+                          <FaImage className="w-4 h-4 sm:w-5 sm:h-5 text-sky-600 dark:text-sky-400" />
                         </motion.button>
                         <motion.button
                           whileHover={{ scale: 1.05 }}
-                          className="p-2 sm:p-3 rounded-xl bg-sunset-100 hover:bg-sunset-200"
+                          className="p-2 sm:p-3 rounded-xl bg-sunset-100 dark:bg-orange-900/30 hover:bg-sunset-200 dark:hover:bg-orange-900/50"
                           onClick={() => videoinputRef.current?.click()}
                         >
-                          <FaVideo className="w-4 h-4 sm:w-5 sm:h-5 text-sunset-600" />
+                          <FaVideo className="w-4 h-4 sm:w-5 sm:h-5 text-sunset-600 dark:text-orange-400" />
                         </motion.button>
                         <motion.button
                           whileHover={{ scale: 1.05 }}
-                          className="p-2 sm:p-3 rounded-xl bg-farm-100 hover:bg-farm-200"
+                          className="p-2 sm:p-3 rounded-xl bg-farm-100 dark:bg-emerald-900/30 hover:bg-farm-200 dark:hover:bg-emerald-900/50"
                         >
-                          <FaMapMarkerAlt className="w-4 h-4 sm:w-5 sm:h-5 text-farm-600" />
+                          <FaMapMarkerAlt className="w-4 h-4 sm:w-5 sm:h-5 text-farm-600 dark:text-emerald-400" />
                         </motion.button>
                         <input
                           ref={photoinputRef}
@@ -570,7 +555,7 @@ export default function PostCreation({ onSuccess }) {
                 <div className="flex items-center gap-2 sm:gap-4">
                   <motion.button
                     whileHover={{ scale: 1.05 }}
-                    className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-sky-100 hover:bg-sky-200 text-sky-700 text-sm sm:text-base font-medium"
+                    className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-sky-100 dark:bg-sky-900/30 hover:bg-sky-200 dark:hover:bg-sky-900/50 text-sky-700 dark:text-sky-300 text-sm sm:text-base font-medium"
                     onClick={() => photoinputRef.current.click()}
                   >
                     <FaImage className="w-4 h-4" /> {t("photo_btn")}
@@ -585,7 +570,7 @@ export default function PostCreation({ onSuccess }) {
                   />
                   <motion.button
                     whileHover={{ scale: 1.05 }}
-                    className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-sunset-100 hover:bg-sunset-200 text-sunset-700 text-sunset-700 text-sm sm:text-base font-medium"
+                    className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-sunset-100 dark:bg-orange-900/30 hover:bg-sunset-200 dark:hover:bg-orange-900/50 text-sunset-700 dark:text-orange-300 text-sm sm:text-base font-medium"
                     onClick={() => videoinputRef.current.click()}
                   >
                     <FaVideo className="w-4 h-4" /> {t("video_btn")}

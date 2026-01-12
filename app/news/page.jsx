@@ -235,7 +235,7 @@ export default function NewsPage() {
 
     return (
       <ErrorBoundary>
-        <div className="min-h-screen bg-white dark:bg-black pb-24">
+        <div className="min-h-screen bg-white dark:bg-black pb-12">
           {/* Immersive Header */}
           <div className="relative w-full h-[40vh] md:h-[50vh]">
             {selectedArticle.image_url ? (
@@ -342,51 +342,53 @@ export default function NewsPage() {
   // List view
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-gray-50 dark:bg-black pb-24">
-        {/* Sticky Header */}
-        <nav className="sticky top-0 z-40 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-100 dark:border-white/10 px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center text-green-600 dark:text-green-400">
-              <FaNewspaper className="w-4 h-4" />
-            </div>
-            <h1 className="text-lg font-bold text-gray-900 dark:text-white">
-              {t("news_header_title")}
-            </h1>
+      <div className="min-h-screen bg-gray-50 dark:bg-black pb-12">
+        {/* Mobile App Header */}
+        <header className="sticky top-0 z-40 bg-white dark:bg-black border-b border-gray-100 dark:border-white/10 px-4 py-3 flex items-center justify-between shadow-sm">
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+            Agro News
+          </h1>
+          <div className="flex gap-4 text-gray-600 dark:text-gray-300">
+            {/* Placeholder for future actions if needed, currently empty to keep it clean like WhatsApp/Insta */}
           </div>
-        </nav>
+        </header>
 
-        <div className="px-4 pt-4 w-full max-w-5xl mx-auto">
-          {/* Search & Stats Row */}
-          <div className="mb-4">
+        <div className="w-full max-w-lg mx-auto md:max-w-5xl">
+          {/* Search Area */}
+          <div className="px-4 py-3 bg-white dark:bg-black/50">
             <NewsSearch onSearch={handleSearch} />
           </div>
 
-          {/* Horizontal Filters */}
-          <div className="mb-6 -mx-4 px-4">
-            <NewsFilterBar
-              onCategoryChange={handleCategoryChange}
-              selectedCategory={selectedCategory}
-            />
+          {/* Horizontal Scrollable Filters (YouTube/Instagram Style) */}
+          <div className="sticky top-[57px] z-30 bg-gray-50/95 dark:bg-black/95 backdrop-blur-sm py-2 pl-4 border-b border-gray-100 dark:border-white/5">
+            <div className="overflow-x-auto flex gap-2 pr-4 no-scrollbar pb-1">
+              <NewsFilterBar
+                onCategoryChange={handleCategoryChange}
+                selectedCategory={selectedCategory}
+              />
+            </div>
           </div>
 
-          {/* Result Info */}
+          {/* Stats Row (Subtle) */}
           {!loading && !error && (
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                {t("top_stories")}
-              </p>
-              <span className="text-xs text-gray-400">
-                {articles.length} {t("results")}
+            <div className="px-4 py-3 flex items-center justify-between">
+              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                Latest Updates
+              </span>
+              <span className="text-xs text-gray-400 font-medium bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded-full">
+                {articles.length}
               </span>
             </div>
           )}
 
-          {/* News List */}
-          <NewsList articles={articles} loading={loading} error={error} />
+          {/* News Feed */}
+          <div className="md:px-4 pb-4 min-h-[50vh]">
+            <NewsList articles={articles} loading={loading} error={error} />
+          </div>
 
           {/* Pagination */}
           {!loading && !error && pagination.totalPages > 1 && (
-            <div className="mt-12 mb-8">
+            <div className="px-4 pb-8 flex justify-center">
               <Pagination
                 currentPage={pagination.page}
                 totalPages={pagination.totalPages}

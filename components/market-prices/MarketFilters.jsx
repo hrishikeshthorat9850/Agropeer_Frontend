@@ -29,19 +29,19 @@ export default function MarketFilters({
     allStates.length > 0
       ? allStates
       : data && Array.isArray(data)
-      ? [
+        ? [
           ...new Set(
             data.filter((item) => item && item.state).map((item) => item.state)
           ),
         ].sort()
-      : [];
+        : [];
 
   // Fetch districts from database when state is selected
   const { data: districtsData } = useSWR(
     selectedState
       ? `${BASE_URL}/api/get-districts?state=${encodeURIComponent(
-          selectedState
-        )}`
+        selectedState
+      )}`
       : null,
     fetcher,
     { revalidateOnFocus: false }
@@ -53,12 +53,11 @@ export default function MarketFilters({
   const { data: marketsData } = useSWR(
     selectedState
       ? `${BASE_URL}/api/get-markets?state=${encodeURIComponent(
-          selectedState
-        )}${
-          selectedDistrict
-            ? `&district=${encodeURIComponent(selectedDistrict)}`
-            : ""
-        }`
+        selectedState
+      )}${selectedDistrict
+        ? `&district=${encodeURIComponent(selectedDistrict)}`
+        : ""
+      }`
       : null,
     fetcher,
     { revalidateOnFocus: false }
@@ -153,41 +152,39 @@ export default function MarketFilters({
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 border border-gray-200 dark:bg-[#1E1E1E] dark:border-none">
-      {/* Header */}
-      <div className="flex items-center gap-2 mb-4">
-        <FaFilter className="text-green-600 text-xl" />
-        <h2 className="text-xl font-bold text-gray-800 dark:text-white">
-          {t("filter_market_prices")}
-        </h2>
-      </div>
-
-      {/* Search Bar (Top Full Width) */}
-      <div className="mb-6">
-        <div className="flex items-center gap-2 bg-gray-50 dark:bg-neutral-800 rounded-lg px-3 py-2 border border-gray-200 dark:border-neutral-700">
-          <FaSearch className="text-gray-400 dark:text-gray-500" />
-          {/* Input Field */}
+    <div className="w-full bg-white dark:bg-[#121212] sticky top-[60px] z-30 pb-2 transition-colors duration-300">
+      {/* Search Bar - Minimalist & Modern */}
+      <div className="px-4 pt-2 pb-3">
+        <div className="relative group">
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+            <FaSearch className="text-gray-400 group-focus-within:text-emerald-500 transition-colors" />
+          </div>
           <input
             type="text"
             placeholder={t("search_placeholder_commodity")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="bg-transparent outline-none flex-1 text-sm text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500"
+            className="block w-full pl-10 pr-4 py-2.5 bg-gray-100 dark:bg-[#1e1e1e] border-none rounded-2xl text-sm font-medium text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-emerald-500/50 transition-all shadow-inner"
           />
         </div>
       </div>
 
-      {/* All Filters Under Search */}
-      <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-4">
-        {/* State Dropdown */}
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-            {t("state_label")}
-          </label>
+      {/* Horizontal Scrollable Chips Filter Row */}
+      <div className="px-4 flex items-center gap-2 overflow-x-auto no-scrollbar pb-2">
+        {/* Filter Icon Label (Static) */}
+        <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10">
+          <FaFilter className="text-gray-400 text-xs" />
+        </div>
+
+        {/* State Chip */}
+        <div className="relative flex-shrink-0">
           <select
             value={selectedState}
             onChange={(e) => setSelectedState(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-[#363636]"
+            className={`appearance-none pl-3 pr-8 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer outline-none ${selectedState
+                ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300"
+                : "bg-white dark:bg-[#1e1e1e] border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300"
+              }`}
           >
             <option value="">{t("all_states")}</option>
             {states.map((state) => (
@@ -196,18 +193,21 @@ export default function MarketFilters({
               </option>
             ))}
           </select>
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-gray-400">
+            <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+          </div>
         </div>
 
-        {/* District Dropdown */}
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-            {t("district_label")}
-          </label>
+        {/* District Chip */}
+        <div className="relative flex-shrink-0">
           <select
             value={selectedDistrict}
             onChange={(e) => setSelectedDistrict(e.target.value)}
             disabled={!selectedState}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white disabled:bg-gray-100 disabled:cursor-not-allowed dark:bg-[#363636]"
+            className={`appearance-none pl-3 pr-8 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer outline-none ${selectedDistrict
+                ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300"
+                : "bg-white dark:bg-[#1e1e1e] border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              }`}
           >
             <option value="">{t("all_districts")}</option>
             {districts.map((district) => (
@@ -216,18 +216,21 @@ export default function MarketFilters({
               </option>
             ))}
           </select>
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-gray-400">
+            <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+          </div>
         </div>
 
-        {/* Market Dropdown */}
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-            {t("market_label")}
-          </label>
+        {/* Market Chip */}
+        <div className="relative flex-shrink-0">
           <select
             value={selectedMarket}
             onChange={(e) => setSelectedMarket(e.target.value)}
             disabled={!selectedState}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white disabled:bg-gray-100 disabled:cursor-not-allowed dark:bg-[#363636]"
+            className={`appearance-none pl-3 pr-8 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer outline-none ${selectedMarket
+                ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300"
+                : "bg-white dark:bg-[#1e1e1e] border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              }`}
           >
             <option value="">{t("all_markets")}</option>
             {markets.map((market) => (
@@ -236,27 +239,20 @@ export default function MarketFilters({
               </option>
             ))}
           </select>
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-gray-400">
+            <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+          </div>
         </div>
 
-        {/* Search + Clear Buttons */}
-        <div className="flex items-end gap-3">
-          {/* Search Button */}
-          <button
-            onClick={handleSearchClick}
-            className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-green-700 text-white px-4 py-2 rounded-xl shadow-lg transform transition-transform hover:scale-105"
-          >
-            <FaSearch className="text-sm" />
-            {t("search_btn")}
-          </button>
-
-          {/* Clear Filters */}
+        {/* Clear Button (Only visible if filters active) */}
+        {(selectedState || searchQuery) && (
           <button
             onClick={handleClearFilters}
-            className="flex-1 sm:flex-none px-4 py-2 rounded-xl text-black bg-gray-50 hover:bg-gray-100 border border-gray-200 dark:text-white dark:bg-[#333] dark:hover:bg-[#444]"
+            className="flex-shrink-0 px-3 py-1.5 rounded-full bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 text-xs font-bold border border-red-100 dark:border-red-800/30 whitespace-nowrap active:scale-95 transition-transform"
           >
             {t("clear_btn")}
           </button>
-        </div>
+        )}
       </div>
     </div>
   );

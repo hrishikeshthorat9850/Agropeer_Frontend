@@ -37,20 +37,16 @@ export default function CommentItem({
       style={{
         background:
           typeof window !== "undefined" &&
-          document.documentElement.classList.contains("dark")
-            ? "rgba(35,35,35,0.9)" // dark gray background
+            document.documentElement.classList.contains("dark")
+            ? "transparent" // transparent in dark mode for cleaner look
             : "linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.45) 100%)",
         backdropFilter: "blur(20px)",
         border:
           typeof window !== "undefined" &&
-          document.documentElement.classList.contains("dark")
-            ? "1px solid rgba(255,255,255,0.08)"
+            document.documentElement.classList.contains("dark")
+            ? "none"
             : "1px solid rgba(255,255,255,0.25)",
-        boxShadow:
-          typeof window !== "undefined" &&
-          document.documentElement.classList.contains("dark")
-            ? "0 2px 10px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05)"
-            : "0 8px 24px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.4)",
+        boxShadow: "none",
       }}
     >
       {/* 🌿 Avatar Icon */}
@@ -80,12 +76,12 @@ export default function CommentItem({
         </div>
 
         {/* 💬 Comment Text */}
-        <p className="text-slate-700 text-[0.9rem] leading-relaxed font-normal">
+        <p className="text-slate-700 dark:text-gray-200 text-[0.9rem] leading-relaxed font-normal">
           {comment.comment}
         </p>
 
         {/* ❤️ Like + Reply */}
-        <div className="flex items-center justify-between text-xs text-farm-500 mt-2 select-none">
+        <div className="flex items-center justify-between text-xs text-farm-500 dark:text-gray-400 mt-2 select-none">
           <div className="flex items-center gap-5">
             {/* Like */}
             <button
@@ -100,9 +96,8 @@ export default function CommentItem({
               )}
               {comment?.comment_likes?.length > 0 && (
                 <span
-                  className={`text-[0.8rem] font-medium transition-all duration-200 ${
-                    isLiked ? "text-red-500" : "text-slate-500"
-                  }`}
+                  className={`text-[0.8rem] font-medium transition-all duration-200 ${isLiked ? "text-red-500" : "text-slate-500"
+                    }`}
                 >
                   {comment.comment_likes.length}
                 </span>
@@ -112,7 +107,7 @@ export default function CommentItem({
             {/* Reply */}
             <button
               onClick={() => onReply(comment.id)}
-              className="flex items-center gap-1 text-[0.8rem] font-semibold text-farm-700 hover:text-farm-800 transition-all duration-200 active:scale-95"
+              className="flex items-center gap-1 text-[0.8rem] font-semibold text-farm-700 hover:text-farm-800 dark:text-gray-300 dark:hover:text-white transition-all duration-200 active:scale-95"
             >
               {t("reply_btn")}
               {comment?.replies?.length > 0 && (

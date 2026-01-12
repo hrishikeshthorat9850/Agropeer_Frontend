@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
+import { useRouter } from "next/navigation"; // Added for Back button
+import { FaArrowLeft } from "react-icons/fa"; // Added for Back button
 import useSWR from "swr";
 import debounce from "lodash.debounce";
 import dynamic from "next/dynamic";
 import MarketFilters from "@/components/market-prices/MarketFilters";
-import MobilePageContainer from "@/components/mobile/MobilePageContainer";
+// MobilePageContainer removed for custom app layout
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { useLanguage } from "@/Context/languagecontext";
 
@@ -20,8 +22,8 @@ const MarketList = dynamic(
       return (
         <div className="flex justify-center items-center py-20">
           <div className="flex flex-col items-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mb-4"></div>
-            <p className="text-gray-600">{t("loading_list")}</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mb-4"></div>
+            <p className="text-gray-500 text-sm">{t("loading_list")}</p>
           </div>
         </div>
       );
@@ -33,6 +35,7 @@ const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function MarketPricesPage() {
   const { t } = useLanguage();
+  const router = useRouter(); // For back navigation
   const [page, setPage] = useState(1);
   const limit = 100;
   const [allStates, setAllStates] = useState([]);
@@ -190,66 +193,67 @@ export default function MarketPricesPage() {
   });
 
   return (
-    <MobilePageContainer>
-      <div className="py-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl md:text-5xl font-bold text-gray-800 mb-3">
-              📊 {t("market_prices_page_title")}
-            </h1>
-            <p className="text-gray-600">
-              {searchTriggered &&
-              (activeFilters.state ||
-                activeFilters.district ||
-                activeFilters.market ||
-                activeFilters.search) ? (
-                <>{t("showing_results")}</>
-              ) : (
-                <>{t("latest_market_rates")}</>
-              )}
-            </p>
-          </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-black font-sans pb-20">
+      {/* 📱 STICKY APP BAR HEADER */}
+      <div className="sticky top-0 z-40 bg-white/95 dark:bg-[#121212]/95 backdrop-blur-md shadow-sm border-b border-gray-100 dark:border-white/5 px-4 h-[60px] flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => router.back()}
+            className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-white/10 active:scale-90 transition-all text-gray-700 dark:text-white"
+          >
+            <FaArrowLeft className="text-lg" />
+          </button>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+            {t("market_prices_page_title")}
+          </h1>
+        </div>
+      </div>
 
-          {/* Filters */}
-          <div className="mb-6 bg-white rounded-2xl shadow p-4 border border-gray-200 dark:bg-[#272727] dark:border-white/20">
-            {statesLoading && allStates.length === 0 && (
-              <div className="mb-4 text-sm text-blue-600 flex items-center gap-2">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                <span>{t("loading_states")}</span>
-              </div>
-            )}
-            <MarketFilters
-              data={displayRecords}
-              onFilterChange={handleFilterChange}
-              allStates={allStates}
-              onSearch={handleSearch}
-              onClear={handleClearFilters}
-              filters={filters}
-            />
-          </div>
+      {/* 🟢 Main Content Area */}
+      <div className="max-w-lg mx-auto w-full">
 
-          {/* Error */}
+        {/* Sticky Filters Block (Just below header) */}
+        <div className="sticky top-[60px] z-30">
+          <MarketFilters
+            data={displayRecords}
+            onFilterChange={handleFilterChange}
+            allStates={allStates}
+            onSearch={handleSearch}
+            onClear={handleClearFilters}
+            filters={filters}
+          />
+        </div>
+
+        {/* Content Padding */}
+        <div className="px-4 py-2">
+          {/* Loading State for States */}
+          {statesLoading && allStates.length === 0 && (
+            <div className="mb-4 text-xs text-emerald-600 flex items-center justify-center gap-2 bg-emerald-50 py-2 rounded-lg">
+              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-emerald-600"></div>
+              <span>{t("loading_states")}</span>
+            </div>
+          )}
+
+          {/* Error State */}
           {error && (
-            <div className="bg-red-50 border border-red-200 rounded-2xl p-6 mb-6 text-center">
-              <p className="text-red-700 font-semibold">
+            <div className="bg-red-50 border border-red-100 rounded-2xl p-6 mb-6 text-center">
+              <p className="text-red-600 font-medium text-sm">
                 {t("generic_error")} {error.message}
               </p>
             </div>
           )}
 
-          {/* Loading - only show full screen loader if we have no previous data */}
+          {/* Full Screen Loading */}
           {isLoading && displayRecords.length === 0 && (
-            <div className="flex justify-center items-center py-20">
-              <div className="flex flex-col items-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mb-4"></div>
-                <p className="text-gray-600">{t("loading_market_data")}</p>
-              </div>
+            <div className="flex flex-col items-center justify-center py-32 opacity-60">
+              <div className="animate-spin rounded-full h-10 w-10 border-4 border-emerald-500 border-t-transparent mb-4"></div>
+              <p className="text-gray-500 font-medium text-sm animate-pulse">{t("loading_market_data")}</p>
             </div>
           )}
 
-          {/* Market List - always show if we have data */}
+          {/* 📄 Market List Feed */}
           {displayRecords.length > 0 && (
-            <>
+            <div className="animate-fade-in-up">
               {!error && filteredRecords.length > 0 && (
                 <MarketList data={filteredRecords} />
               )}
@@ -257,26 +261,23 @@ export default function MarketPricesPage() {
               {/* Infinite Scroll Sentinel */}
               <div
                 ref={loadMoreRef}
-                className="h-24 flex justify-center items-center mt-4"
+                className="h-24 flex justify-center items-center mt-6 mb-12"
               >
                 {isLoading && (
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
-                    <span className="text-sm text-gray-500">
-                      {t("loading_more_prices")}
-                    </span>
+                  <div className="scale-75">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
                   </div>
                 )}
                 {!hasMore && (
-                  <p className="text-gray-400 text-sm">
+                  <p className="text-gray-300 dark:text-gray-600 text-[10px] uppercase font-bold tracking-widest">
                     {t("no_more_records")}
                   </p>
                 )}
               </div>
-            </>
+            </div>
           )}
         </div>
       </div>
-    </MobilePageContainer>
+    </div>
   );
 }

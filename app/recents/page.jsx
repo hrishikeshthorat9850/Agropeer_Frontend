@@ -65,7 +65,7 @@ export default function RecentsPage() {
   return (
     <MobilePageContainer>
       <div className="py-4">
-        <div className="w-full max-w-2xl mx-auto mb-6 text-center">
+        <div className="w-full max-w-2xl mx-auto mb-2 text-center">
           <h1 className="text-2xl md:text-3xl font-extrabold text-farm-900 dark:text-white">
             {t("recent_activity_title")}
           </h1>
@@ -77,7 +77,7 @@ export default function RecentsPage() {
         <main className="flex flex-col justify-center w-full max-w-4xl mx-auto">
           <div className="flex flex-col items-center w-full max-w-2xl mx-auto">
             {/* Post Create */}
-            {user && (
+            {/* {user && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -90,7 +90,7 @@ export default function RecentsPage() {
                   }
                 />
               </motion.div>
-            )}
+            )} */}
 
             {/* Loading */}
             {loading && (
@@ -112,13 +112,13 @@ export default function RecentsPage() {
             {!loading && !error && (
               <div className="w-full max-w-2xl space-y-6 md:p-4">
                 <div className="flex items-center justify-between mb-4 p-4">
-                  <h2 className="text-2xl font-display font-bold text-farm-900">
+                  <h2 className="text-2xl font-display font-bold text-farm-900 dark:text-white">
                     {t("your_recent_posts")}
                   </h2>
 
-                  <div className="flex items-center gap-2 text-sm font-semibold text-farm-700">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-farm-700 dark:text-white">
                     <FaUsers className="w-4 h-4" />
-                    <span>
+                    <span className="">
                       {allpost.length} {t("posts_count_suffix")}
                     </span>
                   </div>

@@ -56,97 +56,67 @@ export default function SchemeFilterBar({
   selectedState,
 }) {
   const { t } = useLanguage();
-  const [showFilters, setShowFilters] = useState(false);
 
   return (
     <div className="w-full">
-
-      {/* MOBILE FILTER BUTTON */}
-      <div className="md:hidden mb-4">
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          onClick={() => setShowFilters(!showFilters)}
-          className="w-full flex items-center justify-between px-4 py-3 bg-farm-100 text-farm-700 rounded-xl font-semibold"
+      <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide pb-2 px-1">
+        {/* All Chip */}
+        <button
+          onClick={() => onCategoryChange(null)}
+          className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 border ${!selectedCategory
+              ? "bg-farm-600 text-white border-farm-600 shadow-lg shadow-farm-500/30"
+              : "bg-white dark:bg-[#1E1E1E] text-gray-600 dark:text-gray-300 border-gray-200 dark:border-white/10 hover:border-farm-300"
+            }`}
         >
-          <span className="flex items-center gap-2">
-            <FaFilter className="w-4 h-4" />
-            {t("filter_by_title")}
-          </span>
-          <span className="text-sm">
-            {selectedCategory || selectedState ? "•" : ""}
-          </span>
-        </motion.button>
-      </div>
+          {t("all") || "All"}
+        </button>
 
-      {/* FILTER PANEL */}
-      <div className={`${showFilters ? "block" : "hidden"} md:block w-full`}>
-        <div className="flex flex-col md:flex-row gap-4">
-
-          {/* CATEGORY FILTER */}
-          <div className="flex-1">
-            <label className="block text-sm font-semibold text-farm-700 mb-2">
-              {t("category_label")}
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {CATEGORIES.map((category) => (
-                <motion.button
-                  key={category}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() =>
-                    onCategoryChange(category === "All" ? null : category)
-                  }
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${selectedCategory === category ||
-                    (category === "All" && !selectedCategory)
-                    ? "bg-farm-500 text-white shadow-farm"
-                    : "bg-farm-100 text-farm-700 hover:bg-farm-200"
-                    }`}
-                >
-                  {t(`scheme_cat_${category.replace(/\s+/g, "_")}`)}
-                </motion.button>
-              ))}
-            </div>
-          </div>
-
-          {/* STATE FILTER */}
-          <div className="flex-1">
-            <label className="block text-sm font-semibold text-farm-700 mb-2">
-              {t("state_label")}
-            </label>
-            <select
-              value={selectedState || "All States"}
-              onChange={(e) =>
-                onStateChange(
-                  e.target.value === "All States" ? null : e.target.value
-                )
-              }
-              className="w-full px-4 py-2 rounded-xl border-2 border-farm-200 focus:border-farm-500 focus:ring-4 focus:ring-farm-100 transition-all duration-300 bg-white text-farm-900 font-medium"
+        {/* Category Chips */}
+        {CATEGORIES.filter((c) => c !== "All").map((category) => {
+          const isSelected = selectedCategory === category;
+          return (
+            <button
+              key={category}
+              onClick={() => onCategoryChange(category)}
+              className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 border ${isSelected
+                  ? "bg-farm-600 text-white border-farm-600 shadow-lg shadow-farm-500/30"
+                  : "bg-white dark:bg-[#1E1E1E] text-gray-600 dark:text-gray-300 border-gray-200 dark:border-white/10 hover:border-farm-300"
+                }`}
             >
-              {INDIAN_STATES.map((state) => (
-                <option key={state} value={state}>
-                  {t(`state_${state.replace(/\s+/g, "_")}`)}
-                </option>
-              ))}
-            </select>
+              {t(`scheme_cat_${category.replace(/\s+/g, "_")}`) || category}
+            </button>
+          );
+        })}
+
+        {/* Separator */}
+        <div className="w-px h-6 bg-gray-300 dark:bg-white/20 mx-1 flex-shrink-0" />
+
+        {/* State Dropdown as Chip */}
+        <div className="relative flex-shrink-0">
+          <select
+            value={selectedState || "All States"}
+            onChange={(e) =>
+              onStateChange(
+                e.target.value === "All States" ? null : e.target.value
+              )
+            }
+            className={`appearance-none pl-4 pr-8 py-2 rounded-full text-sm font-bold transition-all duration-300 border cursor-pointer focus:outline-none ${selectedState
+                ? "bg-farm-600 text-white border-farm-600 shadow-lg shadow-farm-500/30"
+                : "bg-white dark:bg-[#1E1E1E] text-gray-600 dark:text-gray-300 border-gray-200 dark:border-white/10 hover:border-farm-300"
+              }`}
+          >
+            {INDIAN_STATES.map((state) => (
+              <option key={state} value={state} className="bg-white text-gray-900 dark:bg-[#1E1E1E] dark:text-gray-200">
+                {t(`state_${state.replace(/\s+/g, "_")}`) || state}
+              </option>
+            ))}
+          </select>
+          <div className={`absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none ${selectedState ? 'text-white' : 'text-gray-500'}`}>
+            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
           </div>
         </div>
-
-        {/* CLEAR FILTERS BUTTON */}
-        {(selectedCategory || selectedState) && (
-          <motion.button
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => {
-              onCategoryChange(null);
-              onStateChange(null);
-            }}
-            className="mt-4 flex items-center gap-2 px-4 py-2 text-sm text-farm-600 hover:text-farm-700 font-medium"
-          >
-            <FaTimes className="w-4 h-4" />
-            {t("clear_filters")}
-          </motion.button>
-        )}
       </div>
     </div>
   );

@@ -23,20 +23,16 @@ export default function CommentInput({
       style={{
         background:
           typeof window !== "undefined" &&
-          document.documentElement.classList.contains("dark")
-            ? "#272727"
+            document.documentElement.classList.contains("dark")
+            ? "transparent"
             : "linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.8) 100%)",
         backdropFilter: "blur(20px)",
         borderTop:
           typeof window !== "undefined" &&
-          document.documentElement.classList.contains("dark")
-            ? "none"
+            document.documentElement.classList.contains("dark")
+            ? "1px solid #333"
             : "1px solid rgba(255,255,255,0.2)",
-        boxShadow:
-          typeof window !== "undefined" &&
-          document.documentElement.classList.contains("dark")
-            ? "inset 0 1px 0 rgba(255,255,255,0.06)"
-            : "inset 0 1px 0 rgba(255,255,255,0.5)",
+        boxShadow: "none",
       }}
     >
       <div className="flex items-center gap-4">
@@ -56,14 +52,16 @@ export default function CommentInput({
             <input
               type="text"
               placeholder={inputPlaceholder}
-              className="w-full px-5 py-3 rounded-2xl border-0 text-slate-800 placeholder-slate-500 text-sm transition-all duration-300 focus:outline-none"
+              className="w-full px-5 py-3 rounded-2xl border-0 text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-gray-500 text-sm transition-all duration-300 focus:outline-none"
               style={{
                 background:
-                  "linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.7) 100%)",
+                  typeof window !== "undefined" &&
+                    document.documentElement.classList.contains("dark")
+                    ? "#1E1E1E"
+                    : "linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.7) 100%)",
                 backdropFilter: "blur(20px)",
-                boxShadow:
-                  "inset 0 2px 8px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.1)",
-                border: "1px solid rgba(255,255,255,0.3)",
+                boxShadow: "none",
+                border: "1px solid rgba(255,255,255,0.1)",
               }}
               value={value}
               onChange={onChange}
@@ -77,11 +75,10 @@ export default function CommentInput({
             whileTap={{ scale: 0.95 }}
             onClick={onSubmit}
             disabled={!value.trim() || isSubmitting}
-            className={`p-3 rounded-2xl transition-all duration-300 ${
-              value.trim() && !isSubmitting
+            className={`p-3 rounded-2xl transition-all duration-300 ${value.trim() && !isSubmitting
                 ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700"
                 : "bg-slate-200 text-slate-400 cursor-not-allowed"
-            }`}
+              }`}
             style={{
               boxShadow:
                 value.trim() && !isSubmitting

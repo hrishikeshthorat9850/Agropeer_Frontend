@@ -168,7 +168,7 @@ export default function MobileHome() {
       {/* ================================================================= */}
 
       <div className="relative mt-6 px-4 mb-4">
-        <div className="text-left space-y-2">
+        <div className="text-center flex flex-col items-center space-y-2">
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white leading-tight">
             Welcome to{" "}
             <span className="text-green-600 dark:text-green-400">AgroPeer</span>

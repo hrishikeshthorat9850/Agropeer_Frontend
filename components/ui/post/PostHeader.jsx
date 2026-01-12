@@ -8,20 +8,20 @@ import { useLogin } from "@/Context/logincontext";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import OptionsPopup from "@/components/ui/menu/OptionsPopup";
 
-export default function PostHeader({ 
-  post, 
-  idx, 
-  isBookmarked, 
+export default function PostHeader({
+  post,
+  idx,
+  isBookmarked,
   showOptions,
-  onBookmarkClick, 
+  onBookmarkClick,
   onOptionsClick,
   showToast,
   onPostUpdated,
   onDelete
 }) {
   const agriculturalIcons = [FaSeedling, FaLeaf, FaTractor, FaCloudSun];
-  const RandomIcon = agriculturalIcons[idx % agriculturalIcons.length]; 
-  const {user} = useLogin();
+  const RandomIcon = agriculturalIcons[idx % agriculturalIcons.length];
+  const { user } = useLogin();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -31,13 +31,13 @@ export default function PostHeader({
     const currentParams = new URLSearchParams(searchParams.toString());
     currentParams.set('id', post?.id);
     currentParams.set('edit', 'true');
-    
+
     router.push(`/posts?${currentParams.toString()}`);
     onOptionsClick();
   };
 
   return (
-    <div className="relative p-4 pb-3 dark:bg-[#272727]">
+    <div className="relative p-3 pb-2 bg-transparent dark:bg-transparent">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="relative cursor-pointer">
@@ -57,50 +57,49 @@ export default function PostHeader({
             </div>
           </div>
           <div>
-            <h3 className="font-display font-semibold text-farm-800 text-lg cursor-pointer"
+            <h3 className="font-display font-bold text-gray-900 dark:text-gray-100 text-[0.95rem] cursor-pointer hover:underline"
               onClick={() => router.push("/profile")}
             >
-              {post?.userinfo?.display_name ?  (post?.userinfo?.display_name) : formatName(post?.userinfo) }
+              {post?.userinfo?.display_name ? (post?.userinfo?.display_name) : formatName(post?.userinfo)}
             </h3>
-            <p className="text-farm-600 text-sm">{timeAgo(post?.created_at)}</p>
+            <p className="text-gray-500 dark:text-gray-400 text-xs">{timeAgo(post?.created_at)}</p>
           </div>
         </div>
         {user &&
-        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2">
 
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={onBookmarkClick}
-            className={`p-2 rounded-full transition-colors ${
-              isBookmarked 
-                ? 'bg-sunset-100 text-sunset-600' 
-                : 'text-farm-400 hover:bg-farm-50'
-            }`}
-          >
-            <FaBookmark className="w-4 h-4" />
-          </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={onBookmarkClick}
+              className={`p-2 rounded-full transition-colors ${isBookmarked
+                  ? 'bg-sunset-100 text-sunset-600'
+                  : 'text-farm-400 hover:bg-farm-50'
+                }`}
+            >
+              <FaBookmark className="w-4 h-4" />
+            </motion.button>
 
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={onOptionsClick}
-            className="p-2 text-farm-400 hover:bg-farm-50 rounded-full transition-colors"
-          >
-            <FaEllipsisH className="w-4 h-4" />
-          </motion.button>
-          {showOptions ?   
-            <OptionsPopup
-              post={post}
-              open={showOptions}
-              onClose={onOptionsClick}
-              onEdit={onEdit}
-              onDelete={onDelete}
-              onReport={() => {
-                onOptionsClick();
-              }}
-            /> : null}
-        </div>
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={onOptionsClick}
+              className="p-2 text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors"
+            >
+              <FaEllipsisH className="w-4 h-4 dark:text-gray-300" />
+            </motion.button>
+            {showOptions ?
+              <OptionsPopup
+                post={post}
+                open={showOptions}
+                onClose={onOptionsClick}
+                onEdit={onEdit}
+                onDelete={onDelete}
+                onReport={() => {
+                  onOptionsClick();
+                }}
+              /> : null}
+          </div>
         }
       </div>
     </div>

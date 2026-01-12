@@ -29,7 +29,7 @@ export default function NewsCard({ article, index = 0 }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.4 }}
-      className="bg-white dark:bg-[#1E1E1E] rounded-3xl overflow-hidden shadow-sm border border-gray-100 dark:border-white/5"
+      className="bg-white dark:bg-[#1E1E1E] rounded-2xl overflow-hidden shadow-sm border border-gray-100 dark:border-[#333]"
     >
       <Link href={`/news?id=${article.id}`} className="block">
         {/* Header / Meta */}
@@ -62,7 +62,7 @@ export default function NewsCard({ article, index = 0 }) {
 
         {/* Image - Full Width */}
         {article.image_url && (
-          <div className="relative w-full aspect-video bg-gray-100 dark:bg-zinc-800">
+          <div className="relative w-full aspect-video bg-gray-100 dark:bg-[#2C2C2C]">
             <Image
               src={article.image_url}
               alt={article.title}
@@ -81,8 +81,8 @@ export default function NewsCard({ article, index = 0 }) {
             </p>
           )}
 
-          <div className="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-white/5">
-            <button className="text-xs font-bold text-gray-500 uppercase tracking-wide hover:text-green-600 transition-colors">
+          <div className="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-[#333]">
+            <button className="text-xs font-bold text-gray-500 hover:text-green-600 transition-colors dark:text-gray-400">
               {t("read_more")}
             </button>
             <div className="flex items-center gap-3">

@@ -277,7 +277,7 @@ export default function WeatherForecast() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setShowAdvanced(!showAdvanced)}
-          className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-farm-500 to-farm-600 text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+          className="flex items-center gap-3 px-6 py-3 bg-farm-600 dark:bg-farm-700 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 border border-transparent dark:border-farm-600"
         >
           {showAdvanced ? (
             <FaEyeSlash className="w-5 h-5" />
@@ -299,21 +299,21 @@ export default function WeatherForecast() {
             transition={{ duration: 0.5 }}
           >
             <div
-              className="relative overflow-hidden rounded-2xl shadow-2xl 
-                bg-[linear-gradient(135deg,#dcfce7_0%,#bbf7d0_25%,#86efac_50%,#4ade80_75%,#22c55e_100%)]
-                dark:bg-none dark:bg-[#272727]"
+              className="relative overflow-hidden rounded-3xl shadow-sm border border-gray-100 dark:border-[#333]
+                bg-white
+                dark:bg-[#1E1E1E]"
             >
               <div className="relative z-10 p-6">
                 {/* Crop Info */}
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-12 h-12 bg-white/30 backdrop-blur-lg rounded-2xl flex items-center justify-center shadow-lg dark:bg-[#0a0a0a]">
-                    <Wheat className="w-6 h-6 text-farm-700" />
+                  <div className="w-12 h-12 bg-farm-100 dark:bg-farm-900/20 rounded-2xl flex items-center justify-center shadow-sm dark:shadow-none">
+                    <Wheat className="w-6 h-6 text-farm-600 dark:text-farm-400" />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold text-farm-900">
+                    <h2 className="text-2xl font-bold text-farm-900 dark:text-white">
                       {t('crop_label')}: {cropName}
                     </h2>
-                    <p className="text-farm-700 font-medium">{cropStage}</p>
+                    <p className="text-farm-600 dark:text-gray-400 font-medium">{cropStage}</p>
                   </div>
                 </div>
 
@@ -346,8 +346,8 @@ export default function WeatherForecast() {
                 {/* ------------------ SUGGESTIONS ------------------ */}
                 <div className="mt-8">
                   <div className="flex items-center gap-3 mb-6">
-                    <Lightbulb className="w-6 h-6 text-farm-700" />
-                    <h3 className="text-xl font-bold text-farm-900">
+                    <Lightbulb className="w-6 h-6 text-farm-600 dark:text-farm-400" />
+                    <h3 className="text-xl font-bold text-farm-900 dark:text-white">
                       {t('smart_suggestions')}
                     </h3>
                   </div>
@@ -361,17 +361,17 @@ export default function WeatherForecast() {
                           whileHover={{ scale: 1.05 }}
                           className={`${getSuggestionBg(
                             s.type
-                          )} rounded-2xl p-4 border-2 shadow-lg hover:shadow-xl`}
+                          )} rounded-2xl p-4 border border-gray-100 dark:border-[#333] shadow-sm hover:shadow-md dark:bg-[#2C2C2C]`}
                         >
-                          <div className="flex items-start gap-3">
+                          <div className="flex items-start gap-3 my-auto">
                             <div
-                              className={`w-10 h-10 bg-gradient-to-r ${getSuggestionColor(
+                              className={`w-10 h-10 ${getSuggestionColor(
                                 s.type
-                              )} rounded-xl flex items-center justify-center shadow-lg`}
+                              )} rounded-xl flex items-center justify-center shadow-sm`}
                             >
-                              <IconComponent className="w-5 h-5 text-white" />
+                              <IconComponent className="w-5 h-5 text-farm-700 dark:text-white" />
                             </div>
-                            <p className="text-sm font-semibold text-farm-800 leading-relaxed">
+                            <p className="text-sm font-semibold text-farm-800 leading-relaxed dark:text-white">
                               {s.text}
                             </p>
                           </div>
@@ -384,8 +384,8 @@ export default function WeatherForecast() {
                 {/* ------------------ 7 DAY FORECAST (ADVANCED) ------------------ */}
                 <div className="mt-8">
                   <div className="flex items-center gap-3 mb-6">
-                    <Calendar className="w-6 h-6 text-farm-700" />
-                    <h3 className="text-xl font-bold text-farm-900">
+                    <Calendar className="w-6 h-6 text-farm-600 dark:text-farm-400" />
+                    <h3 className="text-xl font-bold text-farm-900 dark:text-white">
                       {t('seven_day_forecast')}
                     </h3>
                   </div>
@@ -407,27 +407,27 @@ export default function WeatherForecast() {
                         <motion.div
                           key={i}
                           whileHover={{ scale: 1.05 }}
-                          className={`flex flex-col items-center rounded-xl p-4 shadow-lg transition-all border-2 ${parseInt(f.rain) >= 70
-                            ? "bg-blue-100 border-blue-300 dark:bg-[#0a0a0a] dark:border-none"
+                          className={`flex flex-col items-center rounded-2xl p-4 shadow-sm transition-all border relative overflow-hidden ${parseInt(f.rain) >= 70
+                            ? "bg-blue-50 border-blue-100 dark:bg-blue-950/30 dark:border-blue-900/50"
                             : parseInt(f.rain) >= 40
-                              ? "bg-gray-100 border-gray-300 dark:bg-[#0a0a0a] dark:border-none"
-                              : "bg-yellow-100 border-yellow-300 dark:bg-[#0a0a0a] dark:border-none"
+                              ? "bg-slate-50 border-slate-100 dark:bg-slate-800/50 dark:border-slate-700/50"
+                              : "bg-amber-50 border-amber-100 dark:bg-amber-950/30 dark:border-amber-900/50"
                             }`}
                         >
                           <div className="font-semibold text-farm-700 mb-2 text-sm dark:text-gray-200">
                             {dayLabel}
                           </div>
                           <div className="mb-2">{icon}</div>
-                          <div className="text-farm-900 font-bold text-lg dark:text-gray-200">
+                          <div className="text-farm-900 font-bold text-lg dark:text-white">
                             {f.temp}
                           </div>
-                          <div className="text-gray-600 text-xs mb-1">
+                          <div className="text-gray-500 text-xs mb-1 dark:text-gray-400">
                             {f.minTemp}
                           </div>
-                          <div className="text-blue-600 text-xs font-medium mb-2">
+                          <div className="text-blue-600 text-xs font-medium mb-2 dark:text-blue-400">
                             {t('weather_rain')}: {f.rain}
                           </div>
-                          <div className="text-xs text-farm-700 text-center leading-tight">
+                          <div className="text-xs text-farm-600 text-center leading-tight dark:text-gray-300">
                             {t(f.tipKey)}
                           </div>
                         </motion.div>
@@ -447,14 +447,14 @@ export default function WeatherForecast() {
             transition={{ duration: 0.5 }}
             className="max-w-md mx-auto"
           >
-            <div className="bg-gradient-to-br from-blue-100 to-green-100 rounded-xl shadow border border-green-100 p-4 mb-6 flex flex-col gap-3 dark:bg-none dark:bg-[#272727] dark:border-none">
+            <div className="bg-white dark:bg-[#1E1E1E] rounded-3xl shadow-sm border border-gray-100 dark:border-[#333] p-6 mb-6 flex flex-col gap-4">
               <div className="flex items-center gap-4 mb-2">
-                <FaCloudSun className="text-5xl text-yellow-400" />
+                <FaCloudSun className="text-5xl text-yellow-500" />
                 <div>
-                  <div className="text-4xl font-bold text-green-900 flex items-center gap-2 dark:text-gray-200">
+                  <div className="text-4xl font-bold text-farm-900 dark:text-white flex items-center gap-2">
                     {weather.temp}
                   </div>
-                  <div className="text-green-700 text-lg font-semibold dark:text-gray-200">
+                  <div className="text-farm-600 dark:text-gray-400 text-lg font-semibold">
                     {t(weather.conditionKey)}
                   </div>
                 </div>
@@ -532,27 +532,27 @@ export default function WeatherForecast() {
                         <motion.div
                           key={`s-top-${i}`}
                           whileHover={{ scale: 1.05 }}
-                          className={`flex flex-col items-center rounded-lg p-3 shadow transition-all ${parseInt(f.rain) >= 70
-                            ? "bg-blue-100 border-2 border-blue-300 dark:bg-[#272727] dark:border-none"
+                          className={`flex flex-col items-center rounded-2xl p-3 shadow-sm transition-all border ${parseInt(f.rain) >= 70
+                            ? "bg-blue-50 border-blue-100 dark:bg-blue-950/30 dark:border-blue-900/50"
                             : parseInt(f.rain) >= 40
-                              ? "bg-gray-100 border-2 border-gray-300 dark:bg-[#272727] dark:border-none"
-                              : "bg-yellow-100 border-2 border-yellow-300 dark:bg-[#272727] dark:border-none"
+                              ? "bg-slate-50 border-slate-100 dark:bg-slate-800/50 dark:border-slate-700/50"
+                              : "bg-amber-50 border-amber-100 dark:bg-amber-950/30 dark:border-amber-900/50"
                             }`}
                         >
-                          <div className="font-semibold text-green-700 mb-1 text-sm dark:text-gray-200">
+                          <div className="font-semibold text-farm-700 mb-1 text-sm dark:text-gray-200">
                             {dayLabel}
                           </div>
                           <div className="text-3xl mb-1">{icon}</div>
-                          <div className="text-green-900 font-bold mt-1 text-base dark:text-gray-200">
+                          <div className="text-farm-900 font-bold mt-1 text-base dark:text-white">
                             {f.temp}
                           </div>
-                          <div className="text-gray-600 text-xs">
+                          <div className="text-gray-500 text-xs dark:text-gray-400">
                             {f.minTemp}
                           </div>
-                          <div className="text-blue-600 text-xs font-medium mt-1">
+                          <div className="text-blue-600 text-xs font-medium mt-1 dark:text-blue-400">
                             {t('weather_rain')}: {f.rain}
                           </div>
-                          <div className="text-xs text-green-700 mt-1 text-center leading-tight">
+                          <div className="text-xs text-farm-600 mt-1 text-center leading-tight dark:text-gray-300">
                             {t(f.tipKey)}
                           </div>
                         </motion.div>
@@ -578,27 +578,27 @@ export default function WeatherForecast() {
                         <motion.div
                           key={`s-bottom-${i}`}
                           whileHover={{ scale: 1.05 }}
-                          className={`flex flex-col items-center rounded-lg p-3 shadow transition-all w-full sm:w-auto ${parseInt(f.rain) >= 70
-                            ? "bg-blue-100 border-2 border-blue-300 dark:bg-[#272727] dark:border-none"
+                          className={`flex flex-col items-center rounded-2xl p-3 shadow-sm transition-all border w-full sm:w-auto ${parseInt(f.rain) >= 70
+                            ? "bg-blue-50 border-blue-100 dark:bg-blue-950/30 dark:border-blue-900/50"
                             : parseInt(f.rain) >= 40
-                              ? "bg-gray-100 border-2 border-gray-300 dark:bg-[#272727] dark:border-none"
-                              : "bg-yellow-100 border-2 border-yellow-300 dark:bg-[#272727] dark:border-none"
+                              ? "bg-slate-50 border-slate-100 dark:bg-slate-800/50 dark:border-slate-700/50"
+                              : "bg-amber-50 border-amber-100 dark:bg-amber-950/30 dark:border-amber-900/50"
                             }`}
                         >
-                          <div className="font-semibold text-green-700 mb-1 text-sm dark:text-gray-200">
+                          <div className="font-semibold text-farm-700 mb-1 text-sm dark:text-gray-200">
                             {dayLabel}
                           </div>
                           <div className="text-3xl mb-1">{icon}</div>
-                          <div className="text-green-900 font-bold mt-1 text-base dark:text-gray-200">
+                          <div className="text-farm-900 font-bold mt-1 text-base dark:text-white">
                             {f.temp}
                           </div>
-                          <div className="text-gray-600 text-xs">
+                          <div className="text-gray-500 text-xs dark:text-gray-400">
                             {f.minTemp}
                           </div>
-                          <div className="text-blue-600 text-xs font-medium mt-1">
+                          <div className="text-blue-600 text-xs font-medium mt-1 dark:text-blue-400">
                             {t('weather_rain')}: {f.rain}
                           </div>
-                          <div className="text-xs text-green-700 mt-1 text-center leading-tight">
+                          <div className="text-xs text-farm-600 mt-1 text-center leading-tight dark:text-gray-300">
                             {t(f.tipKey)}
                           </div>
                         </motion.div>
@@ -620,15 +620,15 @@ function WeatherCard({ label, value, icon }) {
   return (
     <motion.div
       whileHover={{ scale: 1.05 }}
-      className="bg-white/30 backdrop-blur-lg rounded-2xl p-4 border border-white/20 shadow-lg flex flex-col items-center justify-center text-center dark:bg-[#0a0a0a]"
+      className="bg-gray-50 dark:bg-[#2C2C2C] rounded-2xl p-4 border border-gray-100 dark:border-[#333] shadow-sm flex flex-col items-center justify-center text-center"
     >
       <div className="flex items-center justify-center gap-2 mb-2">
         {icon}
-        <span className="text-sm font-semibold text-farm-700 dark:text-gray-200">
+        <span className="text-sm font-semibold text-farm-600 dark:text-gray-400">
           {label}
         </span>
       </div>
-      <div className="text-2xl font-bold text-farm-900 dark:text-gray-200">{value}</div>
+      <div className="text-2xl font-bold text-farm-900 dark:text-white">{value}</div>
     </motion.div>
   );
 }

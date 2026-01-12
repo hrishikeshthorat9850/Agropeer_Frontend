@@ -43,9 +43,8 @@ export default function ReplyItem({
 
   return (
     <div
-      className={`mt-3 ${
-        level > 0 ? "ml-4 pl-3 border-l-2 border-farm-200/50" : "ml-2"
-      }`}
+      className={`mt-3 ${level > 0 ? "ml-4 pl-3 border-l-2 border-farm-200/50" : "ml-2"
+        }`}
     >
       <motion.div
         initial={{ opacity: 0, x: -5 }}
@@ -86,9 +85,8 @@ export default function ReplyItem({
           <div className="flex items-center gap-4 mt-1 ml-1">
             <button
               onClick={() => onLike(reply.id)}
-              className={`flex items-center gap-1 text-[10px] font-semibold transition-colors ${
-                isLiked ? "text-red-500" : "text-farm-500 hover:text-red-500"
-              }`}
+              className={`flex items-center gap-1 text-[10px] font-semibold transition-colors ${isLiked ? "text-red-500" : "text-farm-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400"
+                }`}
             >
               {isLiked ? (
                 <FaHeart className="w-3 h-3" />
@@ -101,7 +99,7 @@ export default function ReplyItem({
             {level < 2 && (
               <button
                 onClick={() => onReplyClick(reply.id)}
-                className="text-[10px] font-semibold text-farm-500 hover:text-farm-700 transition-colors"
+                className="text-[10px] font-semibold text-farm-500 hover:text-farm-700 transition-colors dark:text-gray-400 dark:hover:text-gray-200"
               >
                 {t("reply_btn")}
               </button>

@@ -55,9 +55,9 @@ export default function MobileBottomNav({ onAI }) {
               flex flex-col items-center gap-2
               active:scale-95
             "
-            style={{ bottom: `calc(${safeBottom} + 90px)` }}
+            style={{ bottom: `calc(${safeBottom} + 75px)` }}
           >
-            <div className="w-14 h-14 rounded-full bg-earth-500 text-white shadow-elevation-3 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-earth-500 text-white shadow-elevation-3 flex items-center justify-center">
               <FaTractor size={20} />
             </div>
             <span className="text-xs font-semibold text-white bg-black/50 px-2 py-1 rounded-md backdrop-blur-md">
@@ -84,9 +84,9 @@ export default function MobileBottomNav({ onAI }) {
               flex flex-col items-center gap-2
               active:scale-95
             "
-            style={{ bottom: `calc(${safeBottom} + 90px)` }}
+            style={{ bottom: `calc(${safeBottom} + 75px)` }}
           >
-            <div className="w-14 h-14 rounded-full bg-farm-500 text-white shadow-elevation-3 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-farm-500 text-white shadow-elevation-3 flex items-center justify-center">
               <FaImages size={20} />
             </div>
             <span className="text-xs font-semibold text-white bg-black/50 px-2 py-1 rounded-md backdrop-blur-md">
@@ -114,10 +114,10 @@ export default function MobileBottomNav({ onAI }) {
         className="fixed bottom-0 left-0 right-0 md:hidden z-[999] bg-white dark:bg-black"
         style={{
           paddingBottom: "env(safe-area-inset-bottom)",
-          height: "calc(80px + env(safe-area-inset-bottom))",
+          height: "calc(65px + env(safe-area-inset-bottom))",
         }}
       >
-        <div className="flex items-center justify-between px-4 h-[80px]">
+        <div className="flex items-center justify-between px-4 h-[65px]">
           {/* HOME */}
           <button
             onClick={() => router.push("/")}
@@ -126,11 +126,10 @@ export default function MobileBottomNav({ onAI }) {
             <div
               className={`
               px-5 py-1.5 rounded-full transition-all duration-300
-              ${
-                pathname === "/"
+              ${pathname === "/"
                   ? "bg-farm-200 dark:bg-farm-800 text-farm-900 dark:text-farm-100"
                   : "text-surface-600 dark:text-surface-400 group-hover:bg-surface-100 dark:group-hover:bg-surface-800"
-              }
+                }
             `}
             >
               <FaHome
@@ -139,11 +138,10 @@ export default function MobileBottomNav({ onAI }) {
               />
             </div>
             <span
-              className={`text-xs font-medium ${
-                pathname === "/"
-                  ? "text-farm-900 dark:text-farm-100"
-                  : "text-surface-600 dark:text-surface-400"
-              }`}
+              className={`text-xs font-medium ${pathname === "/"
+                ? "text-farm-900 dark:text-farm-100"
+                : "text-surface-600 dark:text-surface-400"
+                }`}
             >
               Home
             </span>

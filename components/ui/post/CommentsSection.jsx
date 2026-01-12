@@ -36,19 +36,18 @@ export default function CommentsSection({
       {/* Comments Toggle Button */}
       <button
         onClick={onToggleComments}
-        className="w-full px-4 py-3 border-t border-farm-100 hover:bg-farm-50/50 transition-colors dark:bg-[#272727] dark:border-none"
+        className="w-full px-4 py-3 border-t border-gray-100 dark:border-zinc-800 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors bg-transparent dark:bg-transparent"
       >
         <div className="flex items-center justify-between">
-          <span className="text-farm-900 font-medium text-sm dark:text-farm-600">
+          <span className="text-farm-900 font-medium text-sm dark:text-gray-300">
             {comments.length}{" "}
             {comments.length === 1
               ? t("comment_singular")
               : t("comment_plural")}
           </span>
           <FaRegComment
-            className={`text-farm-900 transition-transform duration-300 ${
-              showCommentsSection ? "rotate-180" : ""
-            }`}
+            className={`text-farm-900 dark:text-gray-300 transition-transform duration-300 ${showCommentsSection ? "rotate-180" : ""
+              }`}
           />
         </div>
       </button>
@@ -61,9 +60,9 @@ export default function CommentsSection({
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="border-t border-farm-100 bg-white/50"
+            className="border-t border-gray-100 dark:border-gray-800/50 bg-white dark:bg-transparent"
           >
-            <div className="px-4 py-3 space-y-3 max-h-[500px] overflow-y-auto custom-scrollbar bg-slate-200 dark:bg-[#272727]">
+            <div className="px-4 py-3 space-y-3 max-h-[500px] overflow-y-auto custom-scrollbar bg-gray-50 dark:bg-transparent">
               {loading ? (
                 <div className="flex items-center justify-center py-8">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-farm-500"></div>
@@ -107,7 +106,7 @@ export default function CommentsSection({
               {!loading && totalCommentCount > 2 && (
                 <button
                   onClick={onToggleShowAll}
-                  className="text-farm-500 text-xs font-medium hover:text-farm-700 transition-colors ml-6"
+                  className="text-farm-500 text-xs font-medium hover:text-farm-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors ml-6"
                 >
                   {showAllComments
                     ? t("show_less")

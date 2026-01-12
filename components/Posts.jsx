@@ -698,20 +698,8 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: idx * 0.1 }}
-      className="relative group hover-lift w-full max-w-2xl mx-auto mb-6 overflow-hidden rounded-3xl shadow-2xl"
-      style={{
-        background:
-          "linear-gradient(135deg, #ffffff 0%, #f8fafc 25%, #f1f5f9 50%, #e2e8f0 75%, #cbd5e1 100%)",
-        border:
-          typeof window !== "undefined" &&
-          document.documentElement.classList.contains("dark")
-            ? "none"
-            : "1px solid rgba(255, 255, 255, 0.2)",
-        boxShadow:
-          "0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05)",
-      }}
+      className="relative w-full max-w-lg mx-auto mb-4 bg-white dark:bg-black border-b md:border border-gray-200 dark:border-zinc-800 md:rounded-xl overflow-hidden"
     >
-      <PostBackground />
 
       <PostHeader
         post={post}
@@ -725,12 +713,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
       />
 
       {/* Post Content */}
-      <div className="px-4 pb-3 dark:bg-[#272727]">
-        <p
-          className="text-farm-700 text-base leading-relaxed font-sans"
-          dangerouslySetInnerHTML={{ __html: sanitizeCaption(postCaption) }}
-        />
-      </div>
+
 
       {/* Post Media */}
       {post.images && post.images.length > 0 && (
@@ -748,6 +731,23 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
         onCommentClick={handleCommentClick}
         onShareClick={handleShareClick}
       />
+
+      {/* Post Content (Caption) - Instagram Style */}
+      <div className="px-3 pb-2 pt-1 dark:bg-black">
+        <div className="flex flex-col gap-1">
+          {/* Like Count Text if needed, usually inside Actions or here */}
+
+          <div className="text-sm">
+            <span className="font-bold text-gray-900 dark:text-white mr-2">
+              {post?.userinfo?.display_name || "User"}
+            </span>
+            <span
+              className="text-gray-800 dark:text-gray-200 text-sm leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: sanitizeCaption(postCaption) }}
+            />
+          </div>
+        </div>
+      </div>
 
       {/* Comments Section */}
       <CommentsSection

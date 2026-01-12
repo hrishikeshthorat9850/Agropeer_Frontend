@@ -13,6 +13,7 @@ import {
   ShieldAlert,
   Settings,
 } from "lucide-react";
+import { FaShieldAlt, FaFileContract, FaCookie } from "react-icons/fa";
 import { useTheme } from "@/Context/themecontext";
 import { useLanguage } from "@/Context/languagecontext";
 import { useLogin } from "@/Context/logincontext";
@@ -197,8 +198,7 @@ export default function SettingsPage() {
                         setLocale(e.target.value);
                         showToast(
                           "success",
-                          `Language changed to ${
-                            LOCALE_NAMES[e.target.value] || e.target.value
+                          `Language changed to ${LOCALE_NAMES[e.target.value] || e.target.value
                           } 🌐`
                         );
                       }}
@@ -252,6 +252,68 @@ export default function SettingsPage() {
                 <div className="flex-shrink-0">
                   <ChevronRight size={20} className="text-gray-400" />
                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Legal & Policies */}
+          <h3 className="px-4 py-2 mt-6 text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
+            {t("legal") || "Legal & Policies"}
+          </h3>
+          <div className="overflow-hidden bg-white dark:bg-[#1C1C1E] sm:rounded-xl shadow-sm">
+            <div className="flex flex-col bg-white dark:bg-[#1C1C1E]">
+              {/* Privacy Policy */}
+              <div
+                onClick={() => router.push("/privacy-policy")}
+                className="flex items-center justify-between gap-3 p-4 active:bg-gray-50 dark:active:bg-[#2C2C2E] transition-colors cursor-pointer border-b border-gray-100 dark:border-[#2C2C2E]"
+              >
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="p-2 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400">
+                    <FaShieldAlt size={20} />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-base font-medium text-gray-900 dark:text-white truncate">
+                      Privacy Policy
+                    </span>
+                  </div>
+                </div>
+                <ChevronRight size={20} className="text-gray-400" />
+              </div>
+
+              {/* Terms of Service */}
+              <div
+                onClick={() => router.push("/terms-of-service")}
+                className="flex items-center justify-between gap-3 p-4 active:bg-gray-50 dark:active:bg-[#2C2C2E] transition-colors cursor-pointer border-b border-gray-100 dark:border-[#2C2C2E]"
+              >
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="p-2 rounded-full bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400">
+                    <FaFileContract size={20} />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-base font-medium text-gray-900 dark:text-white truncate">
+                      Terms of Service
+                    </span>
+                  </div>
+                </div>
+                <ChevronRight size={20} className="text-gray-400" />
+              </div>
+
+              {/* Cookie Policy */}
+              <div
+                onClick={() => router.push("/cookie-policy")}
+                className="flex items-center justify-between gap-3 p-4 active:bg-gray-50 dark:active:bg-[#2C2C2E] transition-colors cursor-pointer"
+              >
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="p-2 rounded-full bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400">
+                    <FaCookie size={20} />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-base font-medium text-gray-900 dark:text-white truncate">
+                      Cookie Policy
+                    </span>
+                  </div>
+                </div>
+                <ChevronRight size={20} className="text-gray-400" />
               </div>
             </div>
           </div>

@@ -296,3 +296,16 @@ html.dark,
     padding: clamp(0.55rem, 2vw, 0.75rem) clamp(0.8rem, 3vw, 1rem);
   }
 }
+
+/* ------------------------------------------------------ */
+/* 🛠 UTILITIES                                           */
+/* ------------------------------------------------------ */
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}

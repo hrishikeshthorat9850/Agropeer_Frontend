@@ -42,10 +42,10 @@ const FeaturedPosts = ({ posts, loading, error, refreshPosts }) => {
         className="mb-12"
       >
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-8 h-8 bg-farm-100 rounded-lg flex items-center justify-center">
-            <FaCrown className="w-5 h-5 text-farm-600" />
+          <div className="w-8 h-8 bg-farm-100 dark:bg-farm-900/30 rounded-lg flex items-center justify-center">
+            <FaCrown className="w-5 h-5 text-farm-600 dark:text-farm-400" />
           </div>
-          <h2 className="text-2xl font-display font-bold text-farm-800">
+          <h2 className="text-2xl font-display font-bold text-farm-800 dark:text-white">
             {t("most_liked_posts")}
           </h2>
           <span className="bg-gradient-to-r from-farm-500 to-orange-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
@@ -54,10 +54,10 @@ const FeaturedPosts = ({ posts, loading, error, refreshPosts }) => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[1, 2].map((i) => (
-            <div key={i} className="farm-card p-6 animate-pulse">
-              <div className="h-4 bg-farm-200 rounded mb-4"></div>
-              <div className="h-3 bg-farm-200 rounded mb-2"></div>
-              <div className="h-3 bg-farm-200 rounded w-3/4"></div>
+            <div key={i} className="farm-card p-6 animate-pulse bg-white dark:bg-[#1E1E1E] border border-gray-100 dark:border-[#333]">
+              <div className="h-4 bg-farm-200 dark:bg-gray-700 rounded mb-4"></div>
+              <div className="h-3 bg-farm-200 dark:bg-gray-700 rounded mb-2"></div>
+              <div className="h-3 bg-farm-200 dark:bg-gray-700 rounded w-3/4"></div>
             </div>
           ))}
         </div>
@@ -73,8 +73,8 @@ const FeaturedPosts = ({ posts, loading, error, refreshPosts }) => {
         transition={{ delay: 1.2, duration: 0.6 }}
         className="mb-12"
       >
-        <div className="farm-card p-6 text-center">
-          <p className="text-farm-600">{t("error_loading_featured")}</p>
+        <div className="farm-card p-6 text-center bg-white dark:bg-[#1E1E1E] border border-gray-100 dark:border-[#333]">
+          <p className="text-farm-600 dark:text-gray-400">{t("error_loading_featured")}</p>
         </div>
       </motion.div>
     );
@@ -88,10 +88,10 @@ const FeaturedPosts = ({ posts, loading, error, refreshPosts }) => {
       className="mb-12"
     >
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-8 h-8 bg-farm-100 rounded-lg flex items-center justify-center">
-          <FaCrown className="w-5 h-5 text-farm-600" />
+        <div className="w-8 h-8 bg-farm-100 dark:bg-farm-900/30 rounded-lg flex items-center justify-center">
+          <FaCrown className="w-5 h-5 text-farm-600 dark:text-farm-400" />
         </div>
-        <h2 className="text-2xl font-display font-bold text-farm-800">
+        <h2 className="text-2xl font-display font-bold text-farm-800 dark:text-white">
           {t("most_liked_posts")}
         </h2>
         <span className="bg-gradient-to-r from-farm-500 to-orange-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
@@ -107,7 +107,7 @@ const FeaturedPosts = ({ posts, loading, error, refreshPosts }) => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 1.4 + index * 0.1, duration: 0.5 }}
-              className="farm-card p-4 hover-lift"
+              className="farm-card p-4 hover-lift bg-white dark:bg-[#1E1E1E] border border-gray-100 dark:border-[#333]"
             >
               {/* User Info */}
               <div className="flex items-center gap-3 mb-4">
@@ -128,10 +128,10 @@ const FeaturedPosts = ({ posts, loading, error, refreshPosts }) => {
                   ></Avatar>
                 </div>
                 <div>
-                  <h4 className="font-bold text-farm-900 text-lg">
+                  <h4 className="font-bold text-farm-900 dark:text-white text-lg">
                     {post?.userinfo?.display_name || formatName(post?.userinfo)}
                   </h4>
-                  <div className="flex items-center gap-2 text-farm-700 text-sm font-medium">
+                  <div className="flex items-center gap-2 text-farm-700 dark:text-gray-400 text-sm font-medium">
                     <FaClock className="w-3 h-3" />
                     <span>{timeAgo(post.created_at)}</span>
                   </div>
@@ -140,7 +140,7 @@ const FeaturedPosts = ({ posts, loading, error, refreshPosts }) => {
 
               {/* Post Content */}
               <div className="mb-4">
-                <p className="text-farm-900 text-base leading-relaxed font-medium">
+                <p className="text-farm-900 dark:text-gray-100 text-base leading-relaxed font-medium">
                   {post.caption || t("no_content_available")}
                 </p>
                 <div className="text-xs text-gray-500 mt-2">
@@ -158,7 +158,7 @@ const FeaturedPosts = ({ posts, loading, error, refreshPosts }) => {
                             setCurrentIndex(
                               post.id,
                               (getCurrentIndex(post.id) + 1) %
-                                post?.images.length
+                              post?.images.length
                             );
                           } else if (info.offset.x > threshold) {
                             // swipe right → previous
@@ -167,14 +167,14 @@ const FeaturedPosts = ({ posts, loading, error, refreshPosts }) => {
                               (getCurrentIndex(post.id) -
                                 1 +
                                 post?.images.length) %
-                                post?.images.length
+                              post?.images.length
                             );
                           }
                         }}
                       >
                         {/* IMAGE / VIDEO */}
                         {post?.images[getCurrentIndex(post.id)].type ===
-                        "video" ? (
+                          "video" ? (
                           <video
                             src={post?.images[getCurrentIndex(post.id)].url}
                             className="object-contain w-full h-full p-1 rounded-lg pointer-events-auto"
@@ -205,7 +205,7 @@ const FeaturedPosts = ({ posts, loading, error, refreshPosts }) => {
                                   (getCurrentIndex(post.id) -
                                     1 +
                                     post?.images.length) %
-                                    post?.images.length
+                                  post?.images.length
                                 )
                               }
                               className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/30 text-white p-2 rounded-full hover:bg-black/50"
@@ -218,7 +218,7 @@ const FeaturedPosts = ({ posts, loading, error, refreshPosts }) => {
                                 setCurrentIndex(
                                   post.id,
                                   (getCurrentIndex(post.id) + 1) %
-                                    post?.images.length
+                                  post?.images.length
                                 )
                               }
                               className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/30 text-white p-2 rounded-full hover:bg-black/50"
@@ -239,17 +239,17 @@ const FeaturedPosts = ({ posts, loading, error, refreshPosts }) => {
               </div>
 
               {/* Stats */}
-              <div className="flex items-center justify-between text-farm-700 text-sm font-semibold">
+              <div className="flex items-center justify-between text-farm-700 dark:text-gray-300 text-sm font-semibold">
                 <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-1 bg-red-50 px-2 py-1 rounded-full">
+                  <div className="flex items-center gap-1 bg-red-50 dark:bg-red-900/20 px-2 py-1 rounded-full border border-red-100 dark:border-red-900/30">
                     <FaThumbsUp className="w-4 h-4 text-red-500" />
-                    <span className="text-red-600 font-bold">
+                    <span className="text-red-600 dark:text-red-400 font-bold">
                       {post.post_likes?.length || 0}
                     </span>
                   </div>
-                  <div className="flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-full">
+                  <div className="flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded-full border border-blue-100 dark:border-blue-900/30">
                     <FaComments className="w-4 h-4 text-blue-500" />
-                    <span className="text-blue-600 font-bold">
+                    <span className="text-blue-600 dark:text-blue-400 font-bold">
                       {post.post_comments?.length || 0}
                     </span>
                   </div>

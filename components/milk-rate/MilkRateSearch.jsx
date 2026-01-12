@@ -24,11 +24,10 @@ export default function MilkRateSearch({ onSearch, placeholder }) {
 
   return (
     <form onSubmit={handleSubmit} className="w-full">
-      <div className="mb-4">
-        <div className="flex items-center gap-3 bg-white/80 dark:bg-neutral-800 backdrop-blur-sm rounded-xl px-4 py-3 border-2 border-farm-200 
-                      focus-within:border-farm-500 focus-within:ring-4 focus-within:ring-farm-100 transition-all duration-300">
+      <div className="relative">
+        <div className="flex items-center gap-3 bg-gray-100 dark:bg-white/10 rounded-full px-4 py-2.5 transition-all focus-within:ring-2 focus-within:ring-green-500/50">
           {/* Search Icon */}
-          <FaSearch className="w-5 h-5 text-farm-500" />
+          <FaSearch className="text-gray-400 dark:text-gray-500 text-sm" />
           {/* Input */}
           <input
             ref={inputRef}
@@ -36,8 +35,7 @@ export default function MilkRateSearch({ onSearch, placeholder }) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={displayPlaceholder}
-            className="flex-1 bg-transparent outline-none text-farm-900 dark:text-white
-                    placeholder-farm-400 text-sm"
+            className="bg-transparent outline-none flex-1 text-sm text-gray-900 dark:text-white placeholder:text-gray-500"
           />
 
           {/* Clear Button */}
@@ -48,9 +46,9 @@ export default function MilkRateSearch({ onSearch, placeholder }) {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
               onClick={clearSearch}
-              className="p-1 rounded-full hover:bg-farm-100 dark:hover:bg-neutral-700 transition-colors"
+              className="p-1 rounded-full bg-gray-200 dark:bg-white/20 hover:bg-gray-300 transition-colors"
             >
-              <FaTimes className="w-4 h-4 text-farm-500" />
+              <FaTimes className="w-3 h-3 text-gray-500 dark:text-gray-300" />
             </motion.button>
           )}
         </div>

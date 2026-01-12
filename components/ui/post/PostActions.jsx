@@ -13,18 +13,17 @@ export default function PostActions({
   onCompareClick,
 }) {
   return (
-    <div className="md:px-4 border-t border-farm-100 dark:bg-[#272727] dark:border-none">
+    <div className="md:px-3 px-2 border-t md:border-none border-gray-100 dark:border-zinc-800 bg-transparent dark:bg-transparent">
       <div className="flex items-center justify-between">
         <div className="flex items-center md:gap-2">
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={onLikeClick}
-            className={`flex items-center gap-2 px-3 py-2 rounded-full transition-all duration-200 ${
-              isLike 
-                ? 'bg-red-50 text-red-600 shadow-red-100 dark:bg-[#272727]' 
-                : 'text-farm-600 hover:bg-farm-50 dark:bg-none'
-            }`}
+            className={`flex items-center gap-2 px-3 py-2 rounded-full transition-all duration-200 ${isLike
+                ? 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-500'
+                : 'text-gray-700 hover:bg-gray-100 dark:text-white dark:hover:bg-white/10'
+              }`}
           >
             <motion.div
               animate={{ scale: isLike ? 1.2 : 1 }}
@@ -43,9 +42,9 @@ export default function PostActions({
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={onCommentClick}
-            className="flex items-center gap-2 px-3 py-2 rounded-full text-farm-600 hover:bg-farm-50 transition-all duration-200"
+            className="flex items-center gap-2 px-3 py-2 rounded-full text-gray-700 hover:bg-gray-100 dark:text-white dark:hover:bg-white/10 transition-all duration-200"
           >
-            <FaRegComment className="text-lg" />
+            <FaRegComment className="text-xl" />
             <span className="font-medium">{commentCount}</span>
           </motion.button>
 
@@ -53,9 +52,9 @@ export default function PostActions({
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={onShareClick}
-            className="flex items-center gap-2 px-3 py-2 rounded-full text-farm-600 hover:bg-farm-50 transition-all duration-200"
+            className="flex items-center gap-2 px-3 py-2 rounded-full text-gray-700 hover:bg-gray-100 dark:text-white dark:hover:bg-white/10 transition-all duration-200"
           >
-            <FaShare className="text-lg" />
+            <FaShare className="text-xl" />
             {/* <span className="font-medium">Share</span> */}
           </motion.button>
         </div>
