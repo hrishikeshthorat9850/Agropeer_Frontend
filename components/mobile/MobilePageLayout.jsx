@@ -5,7 +5,7 @@ import { Capacitor } from "@capacitor/core";
 
 /**
  * MobilePageLayout - Clean layout wrapper for all Android app pages
- * 
+ *
  * Features:
  * - Consistent padding for navbar and bottom nav
  * - Safe area insets support
@@ -40,7 +40,8 @@ export default function MobilePageLayout({ children, className = "" }) {
 
   const hasNoPadding = noPaddingRoutes.includes(pathname);
   const hasNoUI = noUIRoutes.includes(pathname);
-  const isAdminRoute = pathname.startsWith("/admin") && pathname !== "/admin/login";
+  const isAdminRoute =
+    pathname.startsWith("/admin") && pathname !== "/admin/login";
 
   // Calculate padding based on whether UI elements are shown
   const getPaddingClasses = () => {
@@ -76,10 +77,7 @@ export default function MobilePageLayout({ children, className = "" }) {
         ${className}
       `}
     >
-      <div className="w-full h-full">
-        {children}
-      </div>
+      <div className="w-full h-full mt-2">{children}</div>
     </div>
   );
 }
-

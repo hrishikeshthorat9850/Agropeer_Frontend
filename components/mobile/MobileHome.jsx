@@ -68,111 +68,98 @@ export default function MobileHome() {
       : "--";
 
   return (
-    <div className="md:hidden min-h-screen bg-white dark:bg-black relative">
+    <div className="md:hidden min-h-screen bg-neutral-50 dark:bg-black font-sans pb-12">
       {/* ================================================================= */}
       {/*                        TOP HEADER SECTION                         */}
       {/* ================================================================= */}
 
       {/* ================= TOP HEADER + FLOATING CARD ================= */}
-      {/* ================= TOP HEADER ================= */}
       <div className="relative w-full z-10 px-0 pb-0">
         <HomeBanner />
       </div>
-
-      {/* 🔑 SPACER — REQUIRED */}
-      {/* Spacer and HomeBanner removed (integrated above) */}
 
       {/* =============================================================== */}
       {/*                        PREMIUM WEATHER CARD                     */}
       {/* =============================================================== */}
 
-      <div className="mt-4 px-4">
+      <div className="mt-2 px-4">
         <div
           className="
           relative overflow-hidden 
-          rounded-[32px]
-          p-5
-          bg-mesh-sky dark:bg-sky-900
-          border border-sky-200 dark:border-sky-800
-          shadow-elevation-1
+          rounded-[30px]
+          p-6
+          bg-gradient-to-br from-blue-500 to-indigo-600
+          dark:from-blue-900 dark:to-indigo-900
+          shadow-lg shadow-blue-200/50 dark:shadow-none
+          text-white
         "
         >
-          {/* Blur circle removed */}
+          {/* Decorative shapes */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full blur-2xl -ml-6 -mb-6 pointer-events-none" />
 
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-slate-800 dark:text-white">
-              Today’s Weather
-            </h2>
-            {status === LOCATION.LOADING && <p>Detecting location…</p>}
-
-            {status === LOCATION.DENIED && (
-              <button
-                onClick={retry}
-                className="px-4 py-2 bg-red-600 text-white rounded-full"
-              >
-                Allow Location
-              </button>
-            )}
-
-            {status === LOCATION.GPS_OFF && (
-              <button
-                onClick={openAppSettings}
-                className="px-4 py-2 bg-orange-600 text-white rounded-full"
-              >
-                Turn on Location
-              </button>
-            )}
-            <div className="relative w-12 h-12">
-              <div className="absolute inset-0 animate-pulse">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="orange"
-                  strokeWidth="1.4"
-                >
-                  <circle cx="12" cy="12" r="5" fill="orange" stroke="orange" />
-                  <path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" />
-                </svg>
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-base font-medium text-blue-50 dark:text-gray-300 tracking-wide opacity-90">
+                Today’s Weather
+              </h2>
+              <div className="flex items-center gap-2">
+                {status === LOCATION.LOADING && (
+                  <span className="text-xs bg-white/20 px-2 py-1 rounded-full animate-pulse">
+                    Locating...
+                  </span>
+                )}
+                {status === LOCATION.DENIED && (
+                  <button
+                    onClick={retry}
+                    className="text-xs bg-red-500/90 hover:bg-red-500 px-3 py-1 rounded-full text-white font-medium transition-colors"
+                  >
+                    Enable Location
+                  </button>
+                )}
+                {status === LOCATION.GPS_OFF && (
+                  <button
+                    onClick={openAppSettings}
+                    className="text-xs bg-orange-500/90 hover:bg-orange-500 px-3 py-1 rounded-full text-white font-medium transition-colors"
+                  >
+                    Turn On GPS
+                  </button>
+                )}
+                {!weatherLoading && !weatherError && (
+                  <div className="w-2 h-2 rounded-full bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.6)]"></div>
+                )}
               </div>
             </div>
-          </div>
 
-          {/* MAIN WEATHER INFO */}
-          <div className="mt-4 flex items-center justify-between">
-            <div>
-              <h3 className="text-4xl font-extrabold text-slate-900 dark:text-white">
-                {cleanTemp}°C
-              </h3>
+            <div className="flex items-end justify-between mt-1">
+              <div className="flex flex-col">
+                <h3 className="text-5xl font-light tracking-tighter text-white">
+                  {cleanTemp}°
+                </h3>
+                <span className="text-sm text-blue-100 font-medium mt-1">
+                  Mostly Sunny
+                </span>
+              </div>
+
+              <div className="flex flex-col items-end space-y-1.5 min-w-[100px]">
+                <WeatherDetailRow label="Humidity" value={`${humidity}%`} />
+                <WeatherDetailRow label="Rain" value={rainChance} />
+                <WeatherDetailRow label="Wind" value={`${windSpeed} km/h`} />
+              </div>
             </div>
 
-            <div className="text-right">
-              <p className="text-[13px] text-slate-600 dark:text-slate-300">
-                Humidity: {humidity}%
-              </p>
-              <p className="text-[13px] text-slate-600 dark:text-slate-300">
-                Rain Chance:
-                {rainChance}
-              </p>
-              <p className="text-[13px] text-slate-600 dark:text-slate-300">
-                WindSpeed: {windSpeed} km/h
-              </p>
+            <div className="mt-5 pt-4 border-t border-white/10 flex justify-center">
+              <Link
+                href="/weather"
+                className="
+                  text-sm font-semibold text-white/90 hover:text-white
+                  flex items-center gap-2 transition-colors
+                "
+              >
+                See 7-Day Forecast <span className="opacity-70">→</span>
+              </Link>
             </div>
           </div>
-
-          <Link
-            href="/weather"
-            className="
-              inline-block mt-5 mx-auto
-              bg-gradient-to-r from-blue-600 to-blue-500 
-              text-white 
-              px-5 py-2 rounded-full 
-              shadow-lg 
-              active:scale-95 
-              font-semibold
-            "
-          >
-            View 7-Day Forecast →
-          </Link>
         </div>
       </div>
 
@@ -180,52 +167,15 @@ export default function MobileHome() {
       {/*                    MODERN WELCOME HERO SECTION                    */}
       {/* ================================================================= */}
 
-      <div className="relative mt-8 px-4 sm:px-6 lg:px-8">
-        {/* BACKGROUND DECORATIVE ELEMENTS */}
-        {/* BACKGROUND DECORATIVE ELEMENTS */}
-        <div className="absolute inset-0 overflow-hidden rounded-[32px] bg-mesh-farm dark:bg-none opacity-60" />
-
-        {/* MAIN WELCOME CONTENT */}
-        <div className="relative z-10 text-center py-8 sm:py-12 lg:py-16">
-          {/* ANIMATED ICON */}
-          <div className="flex justify-center mb-4">
-            <div className="relative">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-2xl animate-bounce">
-                <span className="text-2xl sm:text-3xl lg:text-4xl">🌱</span>
-              </div>
-              <div className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full animate-ping" />
-              <div className="absolute -bottom-1 -left-1 w-4 h-4 bg-blue-400 rounded-full animate-pulse" />
-            </div>
-          </div>
-
-          {/* GRADIENT TITLE */}
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold mb-4 sm:mb-6 lg:mb-8 animate-fadeInUp">
-            <span className="text-3xl bg-gradient-to-r from-green-600 via-green-500 to-blue-600 bg-clip-text text-transparent dark:from-green-400 dark:via-green-300 dark:to-blue-400">
-              Welcome to
-            </span>&nbsp;
-            <span className="text-3xl bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent dark:from-blue-400 dark:via-purple-400 dark:to-green-400 animate-pulse">
-              AgroPeer
-            </span>
-            {/* <span className="text-2xl sm:text-3xl lg:text-4xl ml-2 animate-bounce">🚀</span> */}
+      <div className="relative mt-6 px-4 mb-4">
+        <div className="text-left space-y-2">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white leading-tight">
+            Welcome to{" "}
+            <span className="text-green-600 dark:text-green-400">AgroPeer</span>
           </h1>
-
-          {/* ENHANCED DESCRIPTION */}
-          <div className="max-w-2xl mx-auto">
-            <p className="text-base sm:text-lg lg:text-xl text-gray-700 dark:text-gray-300 leading-relaxed mb-6 sm:mb-8 lg:mb-10 animate-fadeInUp animation-delay-200">
-              🌾 <strong>Connect, share and grow</strong> with fellow farmers worldwide
-              <br className="hidden sm:block" />
-              — explore <span className="text-green-600 dark:text-green-400 font-semibold">AI-powered tools</span> and insights
-            </p>
-          </div>
-
-          {/* DECORATIVE LINE */}
-          <div className="flex justify-center items-center gap-4 animate-fadeInUp animation-delay-600">
-            <div className="w-8 sm:w-12 lg:w-16 h-0.5 bg-gradient-to-r from-transparent via-green-500 to-transparent" />
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            <div className="w-4 sm:w-6 lg:w-8 h-0.5 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
-            <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-ping" />
-            <div className="w-6 sm:w-8 lg:w-12 h-0.5 bg-gradient-to-r from-transparent via-purple-500 to-transparent" />
-          </div>
+          <p className="text-sm text-slate-500 dark:text-gray-400 max-w-[90%] leading-relaxed">
+            Your smart farming companion. Connect, grow, and explore.
+          </p>
         </div>
       </div>
 
@@ -233,111 +183,83 @@ export default function MobileHome() {
       {/*                        FEATURE GRID (10)                         */}
       {/* ================================================================= */}
 
-      <div className="mt-4 px-4 space-y-4">
+      <div className="px-4">
         <FeatureGrid />
       </div>
 
       {/* ================================================================= */}
-      {/*                        RECENT POSTS (PREMIUM)                    */}
+      {/*                        RECENT POSTS CARD                         */}
       {/* ================================================================= */}
 
-      <div className="mt-6 px-4">
-        <div
-          className="
-          bg-white dark:bg-neutral-900
-          rounded-[24px] p-5
-          border border-gray-100 dark:border-neutral-800
-          shadow-sm
-        "
-        >
-          <div className="flex items-center gap-3 mb-3">
-            <div
-              className="w-10 h-10 rounded-xl 
-                bg-farm-100 dark:bg-farm-900
-                flex items-center justify-center"
-            >
-              <FaUserClock
-                size={20}
-                className="text-farm-700 dark:text-farm-400"
-              />
-            </div>
-            <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-              Recent Posts
-            </h2>
-          </div>
-
-          <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-4">
-            See what farmers around you are posting right now.
-          </p>
-
-          <Link
+      <div className="mt-8 px-4">
+        <SectionHeader title="Community" subtitle="What's happening now" />
+        <div className="mt-3 grid grid-cols-2 gap-3">
+          <ActionCard
             href="/recents"
-            className="
-              flex items-center justify-center w-full
-              bg-farm-600 text-white px-5 py-3 rounded-xl shadow-elevation-1 
-              active:scale-95 font-semibold text-sm
-            "
-          >
-            View Latest Posts
-          </Link>
-        </div>
-      </div>
-
-      {/* ================================================================= */}
-      {/*                        MOST LIKED (PREMIUM)                      */}
-      {/* ================================================================= */}
-
-      <div className="mt-4 px-4 pb-2">
-        <div
-          className="
-          bg-white dark:bg-neutral-900
-          rounded-[24px] p-5
-          border border-gray-100 dark:border-neutral-800
-          shadow-sm
-        "
-        >
-          <div className="flex items-center gap-3 mb-3">
-            <div
-              className="
-              w-10 h-10 rounded-xl 
-              bg-earth-100 dark:bg-earth-900 
-              flex items-center justify-center
-            "
-            >
-              <svg width="20" height="20" fill="#e65100" viewBox="0 0 24 24">
-                <path
-                  d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 
-                        2 6 4 4 6.5 4c1.74 0 3.41 1 4.13 2.44h.74C13.09 
-                        5 14.76 4 16.5 4 19 4 21 6 21 8.5c0 
-                        3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                />
-              </svg>
-            </div>
-
-            <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-              Most Liked
-            </h2>
-          </div>
-
-          <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-4">
-            Trending among farmers — most liked and shared.
-          </p>
-
-          <Link
+            title="Recent Posts"
+            subtitle="Live updates"
+            icon={<FaUserClock className="text-white text-lg" />}
+            gradient="bg-gradient-to-br from-indigo-500 to-purple-600"
+          />
+          <ActionCard
             href="/trending"
-            className="
-              flex items-center justify-center w-full
-              bg-earth-500 text-white px-5 py-3 rounded-xl shadow-elevation-1 
-              active:scale-95 font-semibold text-sm
-            "
-          >
-            View Trending
-          </Link>
+            title="Trending"
+            subtitle="Most liked"
+            icon={
+              <svg width="18" height="18" fill="white" viewBox="0 0 24 24">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 6 4 4 6.5 4c1.74 0 3.41 1 4.13 2.44h.74C13.09 5 14.76 4 16.5 4 19 4 21 6 21 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+              </svg>
+            }
+            gradient="bg-gradient-to-br from-orange-500 to-pink-600"
+          />
         </div>
       </div>
     </div>
   );
 }
+
+const WeatherDetailRow = ({ label, value }) => (
+  <div className="flex items-center justify-between w-full text-xs text-blue-50">
+    <span className="opacity-80">{label}</span>
+    <span className="font-semibold">{value}</span>
+  </div>
+);
+
+const SectionHeader = ({ title, subtitle }) => (
+  <div className="flex flex-col">
+    <h3 className="text-lg font-bold text-slate-800 dark:text-white">
+      {title}
+    </h3>
+    <p className="text-xs text-slate-500 dark:text-slate-400">{subtitle}</p>
+  </div>
+);
+
+const ActionCard = ({ href, title, subtitle, icon, gradient }) => (
+  <Link
+    href={href}
+    className={`
+        group relative overflow-hidden rounded-[24px] p-4 h-32
+        flex flex-col justify-between
+        ${gradient}
+        shadow-lg shadow-gray-200/50 dark:shadow-none
+        active:scale-95 transition-transform duration-200
+    `}
+  >
+    <div className="absolute top-0 right-0 p-3 opacity-20 transform group-hover:scale-110 transition-transform">
+      {/* Decorative big icon */}
+      <div className="scale-150">{icon}</div>
+    </div>
+
+    <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+      {icon}
+    </div>
+
+    <div>
+      <h4 className="text-white font-bold text-lg leading-tight">{title}</h4>
+      <p className="text-white/80 text-xs font-medium">{subtitle}</p>
+    </div>
+  </Link>
+);
 
 /* ================================================================= */
 /*                        FEATURE CARDS GRID                         */
@@ -347,121 +269,102 @@ function FeatureGrid() {
   const cards = [
     {
       href: "/farmer-dashboard",
-      icon: <FaLeaf className="text-green-700 text-xl" />,
-      bg: "bg-green-100",
-      label: "Farmer Dashboard",
+      icon: <FaLeaf className="text-white text-xl" />,
+      bg: "bg-green-500",
+      label: "Dashboard",
     },
     {
       href: "/market",
-      icon: <FaTractor className="text-orange-600 text-xl" />,
-      bg: "bg-orange-100",
+      icon: <FaTractor className="text-white text-xl" />,
+      bg: "bg-orange-500",
       label: "Market",
     },
     {
       href: "/market-prices",
-      icon: <FaIndianRupeeSign className="text-orange-600 text-xl" />,
-      bg: "bg-orange-100",
-      label: "Market Prices",
+      icon: <FaIndianRupeeSign className="text-white text-xl" />,
+      bg: "bg-emerald-500",
+      label: "Prices",
     },
     {
       href: "/posts",
-      icon: <FaImages className="text-blue-600 text-xl" />,
-      bg: "bg-blue-100",
+      icon: <FaImages className="text-white text-xl" />,
+      bg: "bg-blue-500",
       label: "Posts",
     },
     {
       href: "/weather",
-      icon: <FaCloudSun className="text-yellow-600 text-xl" />,
-      bg: "bg-yellow-100",
+      icon: <FaCloudSun className="text-white text-xl" />,
+      bg: "bg-yellow-500",
       label: "Weather",
     },
     {
       href: "/explore",
-      icon: <FaLeaf className="text-pink-600 text-xl" />,
-      bg: "bg-pink-100",
+      icon: <FaLeaf className="text-white text-xl" />,
+      bg: "bg-pink-500",
       label: "Explore",
     },
     {
       href: "/government-schemes",
-      icon: <FaBullhorn className="text-purple-600 text-xl" />,
-      bg: "bg-purple-100",
+      icon: <FaBullhorn className="text-white text-xl" />,
+      bg: "bg-purple-500",
       label: "Schemes",
     },
     {
       href: "/news",
-      icon: <FaNewspaper className="text-red-600 text-xl" />,
-      bg: "bg-red-100",
+      icon: <FaNewspaper className="text-white text-xl" />,
+      bg: "bg-red-500",
       label: "News",
     },
     {
       href: "/milk-rate-calculator",
-      icon: <FaGlobe className="text-teal-600 text-xl" />,
-      bg: "bg-teal-100",
+      icon: <FaGlobe className="text-white text-xl" />,
+      bg: "bg-teal-500",
       label: "Milk Rate",
     },
     {
       href: "/reels",
-      icon: <FaVideo className="text-indigo-600 text-xl" />,
-      bg: "bg-indigo-100",
+      icon: <FaVideo className="text-white text-xl" />,
+      bg: "bg-indigo-500",
       label: "Reels",
     },
   ];
 
   return (
-    <div className="grid grid-cols-3 gap-3 px-1">
+    <div className="grid grid-cols-4 gap-4 sm:gap-6 mt-2">
       {cards.map((c, i) => (
-        <div
-          key={i}
-          className={
-            i === cards.length - 1
-              ? "col-span-3 flex justify-center"
-              : "col-span-1"
-          }
-        >
-          <FeatureCard {...c} isLast={i === cards.length - 1} />
-        </div>
+        <FeatureItem key={i} {...c} />
       ))}
     </div>
   );
 }
 
 /* ================================================================= */
-/*                           FEATURE CARD                            */
+/*                           FEATURE ITEM                            */
 /* ================================================================= */
 
-const FeatureCard = ({ href, icon, bg, label, isLast }) => {
+const FeatureItem = ({ href, icon, bg, label }) => {
   return (
     <Link
       href={href}
-      className={`
-        relative overflow-hidden
-        rounded-[24px]
-        bg-white dark:bg-[#1a1a1a]
-        border border-gray-100 dark:border-white/5
-        shadow-sm hover:shadow-md
-        flex flex-col items-center justify-center gap-3
-        active:scale-95 transition-all duration-300
-        group
-        ${
-          isLast
-            ? "w-full max-w-[200px] aspect-[2/1] flex-row px-6"
-            : "w-full aspect-square p-3"
-        }
-      `}
+      className="
+        flex flex-col items-center gap-2
+        group cursor-pointer
+      "
     >
       <div
         className={`
-        relative z-10 
-        ${isLast ? "w-10 h-10" : "w-12 h-12"} 
-        rounded-2xl flex items-center justify-center 
-        ${bg} bg-opacity-80 dark:bg-opacity-20
-        shadow-sm group-hover:scale-110 transition-transform duration-200
+        w-[60px] h-[60px] sm:w-[70px] sm:h-[70px]
+        rounded-[22px] 
+        ${bg}
+        shadow-sm group-active:scale-90 transition-transform duration-200
+        flex items-center justify-center
+        text-white
       `}
       >
         {icon}
       </div>
 
-      <span className="relative z-10 font-medium text-gray-700 dark:text-gray-300 text-[11px] text-center leading-tight px-1">
+      <span className="text-[11px] sm:text-xs font-medium text-slate-600 dark:text-slate-300 text-center leading-tight line-clamp-1 w-full">
         {label}
       </span>
     </Link>

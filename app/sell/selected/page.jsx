@@ -39,17 +39,17 @@ export default function SelectedCategoryPage() {
   const pretty = LABELS[category] || t("selected_category_fallback");
 
   return (
-    <div className="min-h-[calc(100vh-122px)] flex justify-center py-10 px-2 font-sans">
-      <div className="w-full max-w-3xl bg-white rounded-2xl shadow-2xl p-4 flex flex-col gap-6 border border-green-400 dark:bg-[#272727] dark:border-white/20">
+    <div className="min-h-screen flex justify-center font-sans">
+      <div className="w-full max-w-3xl bg-white shadow-2xl p-4 flex flex-col gap-6 dark:bg-[#272727]">
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
           <div>
             <p className="text-sm text-green-600 font-medium">{t("sell_selected_title")}</p>
-            <h2 className="text-3xl font-bold text-green-800">{pretty}</h2>
+            <h2 className="text-xl font-bold text-green-800">{pretty}</h2>
           </div>
           <button
             onClick={() => router.push("/sell/choose")}
-            className="px-4 py-2 border-2 border-green-600 rounded-lg text-green-700 font-semibold hover:bg-green-100 transition"
+            className="px-4 py-2 border-2 border-green-600 rounded-md text-green-700 font-semibold hover:bg-green-100 transition"
           >
             {t("change_button")}
           </button>

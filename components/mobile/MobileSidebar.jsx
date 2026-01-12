@@ -13,13 +13,23 @@ import {
   FaComments,
   FaStar,
   FaSeedling,
+  FaHeart,
+  FaCog,
+  FaUser,
+  FaChevronRight,
 } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
 
 export default function MobileSidebar() {
   const [open, setOpen] = useState(false);
-  StatusBar.setOverlaysWebView({ overlay: true });
+
+  // Logic preserved: Overlay styling for capacitor
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.Capacitor) {
+      StatusBar.setOverlaysWebView({ overlay: true });
+    }
+  }, []);
 
   // Listen for open event
   useEffect(() => {
@@ -94,260 +104,148 @@ export default function MobileSidebar() {
         <>
           {/* BACKDROP */}
           <motion.div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9998]"
+            className="fixed inset-0 bg-black/60 backdrop-blur-[2px] z-[9998]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setOpen(false)}
           />
 
-          {/* LEFT SIDEBAR */}
+          {/* LEFT SIDEBAR - PREMIUM GLASS DESIGN */}
           <motion.div
-            className="fixed left-0 top-0 w-3/4 max-w-[300px]
-              bg-gradient-to-b from-[#111827] via-[#0f172a] to-black
-              text-white p-6 pb-10 z-[9999] rounded-r-3xl shadow-2xl
-              flex flex-col h-[100dvh] border-r border-white/5 backdrop-blur-xl
+            className="fixed left-0 top-0 w-[85%] max-w-[320px] h-[100dvh]
+              bg-[#0a0a0a]/90 backdrop-blur-3xl
+              text-white z-[9999] 
+              rounded-r-[40px] 
+              shadow-[10px_0_40px_rgba(0,0,0,0.5)]
+              border-r border-white/10
+              flex flex-col 
+              overflow-hidden
             "
             initial={{ x: "-100%" }}
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
-            transition={{ type: "spring", stiffness: 250, damping: 28 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
-            {/* Fixed Header */}
-            <div className="flex items-center justify-between mb-8 flex-shrink-0">
-              <div className="relative">
-                <h3 className="text-xl mt-6 font-bold text-white px-4 tracking-wide">
-                  Menu
-                </h3>
-                <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-0.5 bg-gradient-to-r from-transparent via-purple-400 to-transparent rounded-full"></div>
+            {/* Gradient Orb Effects */}
+            <div className="absolute top-[-10%] left-[-20%] w-[300px] h-[300px] bg-green-500/20 rounded-full blur-[80px] pointer-events-none" />
+            <div className="absolute bottom-[-10%] right-[-20%] w-[250px] h-[250px] bg-blue-500/10 rounded-full blur-[60px] pointer-events-none" />
+
+            {/* HEADER */}
+            <div className="relative px-8 pt-12 pb-8 flex justify-between items-center z-10">
+              <div>
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
+                  AgroPeer
+                </h2>
+                <p className="text-xs text-white/50 tracking-wider uppercase mt-1">
+                  Farming Companion
+                </p>
               </div>
+              <button
+                onClick={() => setOpen(false)}
+                className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white/70 active:scale-90 transition-transform"
+              >
+                <FaTimes size={14} />
+              </button>
             </div>
 
-            {/* Scrollable Content */}
-            <div className="flex-1 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
-              {/* Menu Items */}
-              <nav className="flex flex-col gap-2">
-                {MENU_ITEMS.map((it) => (
+            {/* SCROLLABLE CONTENT */}
+            <div className="flex-1 overflow-y-auto px-6 py-2 space-y-8 scrollbar-hide z-10">
+              {/* Main Menu */}
+              <nav className="space-y-2">
+                {MENU_ITEMS.map((it, i) => (
                   <Link
                     key={it.href}
                     href={it.href}
                     onClick={() => setOpen(false)}
-                    className="flex items-center gap-3 py-3 px-2 rounded-lg hover:bg-white/5 transition-all duration-300 group"
+                    className="flex items-center gap-4 py-3.5 px-4 rounded-2xl group hover:bg-white/5 active:bg-white/10 transition-colors"
                   >
-                    <span className="text-lg text-white/70 group-hover:text-white group-hover:scale-110 transition-all">
+                    <span
+                      className="
+                      w-10 h-10 rounded-xl bg-white/5 
+                      flex items-center justify-center 
+                      text-white/70 group-hover:text-white group-hover:bg-white/10
+                      group-hover:scale-110 transition-all duration-300
+                      shadow-sm
+                    "
+                    >
                       {it.icon}
                     </span>
-                    <span>{it.label}</span>
+                    <span className="text-[15px] font-medium text-white/90 group-hover:text-white tracking-wide">
+                      {it.label}
+                    </span>
                   </Link>
                 ))}
               </nav>
 
-              {/* Creative Access Hub */}
-              <div className="mt-8 pt-6 border-t border-white/10">
-                <div className="relative">
-                  {/* Floating Background Elements */}
-                  <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute top-2 right-4 w-16 h-16 bg-gradient-to-br from-purple-400/10 to-pink-400/10 rounded-full blur-xl animate-pulse"></div>
-                    <div className="absolute bottom-4 left-2 w-12 h-12 bg-gradient-to-br from-blue-400/10 to-cyan-400/10 rounded-full blur-lg animate-pulse delay-1000"></div>
-                  </div>
+              {/* Access Hub Items */}
+              <div className="space-y-4">
+                <div className="px-2">
+                  <h4 className="text-xs font-bold text-white/40 uppercase tracking-widest mb-4">
+                    Quick Access
+                  </h4>
+                </div>
 
-                  {/* Section Title */}
-                  <div className="relative mb-6">
-                    <h4 className="text-sm font-bold text-white/90 uppercase tracking-wider">
-                      Access Hub
-                    </h4>
-                    <div className="w-8 h-0.5 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full mt-1"></div>
-                  </div>
-
-                  {/* Creative Floating Cards */}
-                  <div className="relative space-y-4">
-                    {/* Favorites - Floating Bubble */}
-                    <Link
-                      href="/favorites"
-                      onClick={() => setOpen(false)}
-                      className="group relative block"
-                    >
-                      <div
-                        className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-rose-500/20 via-pink-500/15 to-orange-500/20 backdrop-blur-md border border-white/20 p-5 hover:bg-gradient-to-br hover:from-rose-500/30 hover:via-pink-500/25 hover:to-orange-500/30 transition-all duration-500 hover:scale-105 hover:-translate-y-1 hover:shadow-2xl hover:shadow-rose-500/25"
-                        style={{
-                          clipPath:
-                            "polygon(0% 15%, 15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%)",
-                        }}
-                      >
-                        {/* Animated Background Pattern */}
-                        <div className="absolute inset-0 opacity-20">
-                          <div className="absolute top-2 right-2 w-3 h-3 bg-rose-400 rounded-full animate-bounce delay-100"></div>
-                          <div className="absolute bottom-3 left-3 w-2 h-2 bg-pink-400 rounded-full animate-bounce delay-300"></div>
-                          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1 h-1 bg-orange-400 rounded-full animate-ping delay-500"></div>
-                        </div>
-
-                        <div className="relative flex items-center justify-between">
-                          <div className="flex items-center gap-4">
-                            <div className="relative">
-                              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-400 via-pink-400 to-orange-400 flex items-center justify-center group-hover:rotate-12 transition-transform duration-300 shadow-lg">
-                                <span className="text-white text-lg">💖</span>
-                              </div>
-                              <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-yellow-400 to-orange-400 rounded-full animate-pulse"></div>
-                            </div>
-                            <div>
-                              <span className="text-white font-bold text-base">
-                                Favorites
-                              </span>
-                              <p className="text-white/70 text-xs mt-0.5">
-                                Your saved treasures
-                              </p>
-                            </div>
-                          </div>
-                          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
-                              <span className="text-white text-xs">→</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
-
-                    {/* Settings - Floating Bubble */}
-                    <Link
-                      href="/settings"
-                      onClick={() => setOpen(false)}
-                      className="group relative block"
-                    >
-                      <div
-                        className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-500/20 via-purple-500/15 to-blue-500/20 backdrop-blur-md border border-white/20 p-5 hover:bg-gradient-to-br hover:from-indigo-500/30 hover:via-purple-500/25 hover:to-blue-500/30 transition-all duration-500 hover:scale-105 hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-500/25"
-                        style={{
-                          clipPath:
-                            "polygon(0% 15%, 15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%)",
-                        }}
-                      >
-                        {/* Animated Background Pattern */}
-                        <div className="absolute inset-0 opacity-20">
-                          <div className="absolute top-2 right-2 w-3 h-3 bg-indigo-50 rounded-full animate-bounce delay-100"></div>
-                          <div className="absolute bottom-3 left-3 w-2 h-2 bg-purple-50 rounded-full animate-bounce delay-300"></div>
-                          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1 h-1 bg-blue-50 rounded-full animate-ping delay-500"></div>
-                        </div>
-
-                        <div className="relative flex items-center justify-between">
-                          <div className="flex items-center gap-4">
-                            <div className="relative">
-                              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-400 via-purple-400 to-blue-400 flex items-center justify-center group-hover:rotate-12 transition-transform duration-300 shadow-lg">
-                                <span className="text-white text-lg">⚡</span>
-                              </div>
-                              <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-cyan-400 to-blue-400 rounded-full animate-pulse"></div>
-                            </div>
-                            <div>
-                              <span className="text-white font-bold text-base">
-                                Settings
-                              </span>
-                              <p className="text-white/70 text-xs mt-0.5">
-                                Customize your experience
-                              </p>
-                            </div>
-                          </div>
-                          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
-                              <span className="text-white text-xs">→</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
-
-                    {/* Profile - Floating Bubble */}
-                    <Link
-                      href="/profile"
-                      onClick={() => setOpen(false)}
-                      className="group relative block"
-                    >
-                      <div
-                        className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500/20 via-teal-500/15 to-green-500/20 backdrop-blur-md border border-white/20 p-5 hover:bg-gradient-to-br hover:from-emerald-500/30 hover:via-teal-500/25 hover:to-green-500/30 transition-all duration-500 hover:scale-105 hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-500/25"
-                        style={{
-                          clipPath:
-                            "polygon(0% 15%, 15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%)",
-                        }}
-                      >
-                        {/* Animated Background Pattern */}
-                        <div className="absolute inset-0 opacity-20">
-                          <div className="absolute top-2 right-2 w-3 h-3 bg-emerald-400 rounded-full animate-bounce delay-100"></div>
-                          <div className="absolute bottom-3 left-3 w-2 h-2 bg-teal-400 rounded-full animate-bounce delay-300"></div>
-                          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1 h-1 bg-green-400 rounded-full animate-ping delay-500"></div>
-                        </div>
-
-                        <div className="relative flex items-center justify-between">
-                          <div className="flex items-center gap-4">
-                            <div className="relative">
-                              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-400 via-teal-400 to-green-400 flex items-center justify-center group-hover:rotate-12 transition-transform duration-300 shadow-lg">
-                                <span className="text-white text-lg">🌟</span>
-                              </div>
-                              <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-lime-400 to-green-400 rounded-full animate-pulse"></div>
-                            </div>
-                            <div>
-                              <span className="text-white font-bold text-base">
-                                Profile
-                              </span>
-                              <p className="text-white/70 text-xs mt-0.5">
-                                Your digital identity
-                              </p>
-                            </div>
-                          </div>
-                          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
-                              <span className="text-white text-xs">→</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
-                  </div>
+                <div className="grid gap-3">
+                  <SidebarCard
+                    href="/favorites"
+                    icon={<FaHeart />}
+                    label="Favorites"
+                    sub="Saved Items"
+                    color="from-rose-500/20 to-pink-500/20"
+                    iconColor="text-rose-400"
+                    setOpen={setOpen}
+                  />
+                  <SidebarCard
+                    href="/settings"
+                    icon={<FaCog />}
+                    label="Settings"
+                    sub="App Preferences"
+                    color="from-indigo-500/20 to-violet-500/20"
+                    iconColor="text-indigo-400"
+                    setOpen={setOpen}
+                  />
+                  <SidebarCard
+                    href="/profile"
+                    icon={<FaUser />}
+                    label="Profile"
+                    sub="My Account"
+                    color="from-emerald-500/20 to-teal-500/20"
+                    iconColor="text-emerald-400"
+                    setOpen={setOpen}
+                  />
                 </div>
               </div>
+            </div>
 
-              {/* Social icons */}
-              <div className="mt-6 border-t border-white/10 pt-5">
-                <h4 className="text-sm font-semibold mb-3 text-white/80">
-                  Connect With Us
-                </h4>
-                <div className="flex gap-3">
-                  <a
-                    href="https://www.facebook.com/profile.php?id=61584709015575"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setOpen(false)}
-                    className="w-10 h-10 rounded-full bg-[#1877F2] flex items-center justify-center"
-                  >
-                    <FaFacebookF />
-                  </a>
-
-                  <a
-                    href="https://chat.whatsapp.com/HRVHJXmrX6Q6gv07wnw1e3?mode=wwt"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setOpen(false)}
-                    className="w-10 h-10 rounded-full bg-[#25D366] flex items-center justify-center"
-                  >
-                    <FaWhatsapp />
-                  </a>
-
-                  <a
-                    href="https://www.instagram.com/agro_peer/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setOpen(false)}
-                    className="w-10 h-10 rounded-full bg-gradient-to-br from-[#feda75] via-[#d62976] to-[#962fbf] flex items-center justify-center"
-                  >
-                    <FaInstagram />
-                  </a>
-
-                  <a
-                    href="https://youtube.com/@agropeer"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setOpen(false)}
-                    className="w-10 h-10 rounded-full bg-[#FF0000] flex items-center justify-center"
-                  >
-                    <FaYoutube />
-                  </a>
-                </div>
+            {/* FOOTER SOCIALS */}
+            <div className="p-8 border-t border-white/5 bg-black/20 backdrop-blur-md z-10">
+              <div className="flex justify-between items-center gap-4 px-2">
+                <SocialIcon
+                  href="https://www.facebook.com/profile.php?id=61584709015575"
+                  icon={<FaFacebookF />}
+                  hover="hover:text-[#1877F2]"
+                />
+                <SocialIcon
+                  href="https://chat.whatsapp.com/HRVHJXmrX6Q6gv07wnw1e3?mode=wwt"
+                  icon={<FaWhatsapp />}
+                  hover="hover:text-[#25D366]"
+                />
+                <SocialIcon
+                  href="https://www.instagram.com/agro_peer/"
+                  icon={<FaInstagram />}
+                  hover="hover:text-[#d62976]"
+                />
+                <SocialIcon
+                  href="https://youtube.com/@agropeer"
+                  icon={<FaYoutube />}
+                  hover="hover:text-[#FF0000]"
+                />
+              </div>
+              <div className="text-center mt-6">
+                <p className="text-[10px] text-white/20 font-medium">
+                  Made with ❤️ for Farmers
+                </p>
               </div>
             </div>
           </motion.div>
@@ -356,3 +254,61 @@ export default function MobileSidebar() {
     </AnimatePresence>
   );
 }
+
+// Sub-components for cleaner code
+const SidebarCard = ({ href, icon, label, sub, color, iconColor, setOpen }) => (
+  <Link
+    href={href}
+    onClick={() => setOpen(false)}
+    className={`
+        relative overflow-hidden group
+        flex items-center justify-between
+        p-4 rounded-3xl
+        bg-gradient-to-br ${color}
+        border border-white/5 hover:border-white/10
+        transition-all duration-300
+        active:scale-[0.98]
+      `}
+  >
+    <div className="flex items-center gap-4 z-10">
+      <div
+        className={`
+             w-10 h-10 rounded-full 
+             bg-white/10 backdrop-blur-md 
+             flex items-center justify-center 
+             ${iconColor} text-lg
+             shadow-inner
+          `}
+      >
+        {icon}
+      </div>
+      <div>
+        <h4 className="text-sm font-bold text-white leading-tight">{label}</h4>
+        <p className="text-[11px] text-white/50">{sub}</p>
+      </div>
+    </div>
+
+    <FaChevronRight className="text-white/20 group-hover:text-white/60 group-hover:translate-x-1 transition-all text-xs z-10" />
+
+    {/* Hover Glow */}
+    <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+  </Link>
+);
+
+const SocialIcon = ({ href, icon, hover }) => (
+  <a
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    className={`
+       w-10 h-10 rounded-2xl 
+       bg-white/5 border border-white/5
+       flex items-center justify-center 
+       text-white/40 transition-all duration-300
+       hover:bg-white/10 hover:scale-110 hover:shadow-lg hover:shadow-white/5
+       ${hover}
+    `}
+  >
+    {icon}
+  </a>
+);

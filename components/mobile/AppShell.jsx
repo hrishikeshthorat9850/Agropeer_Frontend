@@ -10,50 +10,45 @@ import useToast from "@/hooks/useToast";
 const DOUBLE_BACK_TIMEOUT = 2000;
 
 export default function AppShell({ children }) {
- const backPressedOnce = useRef(false);
- const backButtonTimer = useRef(null);
+  const backPressedOnce = useRef(false);
+  const backButtonTimer = useRef(null);
 
- const { showToast } = useToast();
+  const { showToast } = useToast();
 
- useEffect(() => {
-  if (!Capacitor.isNativePlatform()) return;
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
 
- const listener = App.addListener("backButton", ({ canGoBack }) => {
- if (canGoBack) {
- window.history.back();
- return;
-}
+    const listener = App.addListener("backButton", ({ canGoBack }) => {
+      if (canGoBack) {
+        window.history.back();
+        return;
+      }
 
+      if (backPressedOnce.current) {
+        App.exitApp();
+        return;
+      }
 
- if (backPressedOnce.current) {
- App.exitApp();
-return;
- }
+      backPressedOnce.current = true;
+      // Clear any existing timer and set a new one
+      if (backButtonTimer.current) {
+        clearTimeout(backButtonTimer.current);
+      }
 
-      backPressedOnce.current = true;   
-      // Clear any existing timer and set a new one
-      if (backButtonTimer.current) {
-        clearTimeout(backButtonTimer.current);
-      }
+      backButtonTimer.current = setTimeout(() => {
+        backPressedOnce.current = false;
+        backButtonTimer.current = null;
+      }, DOUBLE_BACK_TIMEOUT);
+    });
 
-      backButtonTimer.current = setTimeout(() => {
-        backPressedOnce.current = false;
-        backButtonTimer.current = null;
-      }, DOUBLE_BACK_TIMEOUT);
-    });
+    return () => {
+      listener.remove();
+      // Clean up the timer when the component unmounts
+      if (backButtonTimer.current) {
+        clearTimeout(backButtonTimer.current);
+      }
+    };
+  }, [showToast]);
 
-    return () => {
-      listener.remove();
-      // Clean up the timer when the component unmounts
-      if (backButtonTimer.current) {
-        clearTimeout(backButtonTimer.current);
-      }
-    };
-  }, [showToast]);
-
-  return (
-    <>
-      {children}
-    </>
-  );
+  return <>{children}</>;
 }
