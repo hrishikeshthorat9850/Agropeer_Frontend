@@ -370,7 +370,12 @@ export default function ToolsSection({
                               }`}
                               placeholder="0.00"
                               value={marketPrice}
-                              onChange={(e) => setMarketPrice(e.target.value)}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                if (/^\d*\.?\d*$/.test(val)) {
+                                  setMarketPrice(val);
+                                }
+                              }}
                             />
                           </div>
                         </div>

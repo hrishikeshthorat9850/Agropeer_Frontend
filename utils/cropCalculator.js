@@ -1,9 +1,9 @@
 /**
  * Centralized Crop Calculation Engine
- * 
+ *
  * This module calculates all derived crop data from minimal user inputs:
  * - crop_type, variety, planting_date, area_acres, soil_type, coordinates, field_name
- * 
+ *
  * All other fields are auto-calculated using CROP_DATABASE and business logic.
  */
 
@@ -23,7 +23,9 @@ const priceLookup = {
  */
 export function findCropInfo(cropName) {
   if (!cropName) return null;
-  const db = Array.isArray(CROP_DATABASE) ? CROP_DATABASE : Object.values(CROP_DATABASE);
+  const db = Array.isArray(CROP_DATABASE)
+    ? CROP_DATABASE
+    : Object.values(CROP_DATABASE);
   return db.find((crop) => crop.name === cropName) || null;
 }
 
@@ -62,7 +64,13 @@ export function calculateGrowthStage(plantingDate, cropInfo) {
   }
 
   const totalDays = cropInfo.growthDays || 100;
-  const stages = cropInfo.stages || ["Sowing", "Germination", "Vegetative", "Flowering", "Harvest"];
+  const stages = cropInfo.stages || [
+    "Sowing",
+    "Germination",
+    "Vegetative",
+    "Flowering",
+    "Harvest",
+  ];
 
   const progress = Math.min(daysSincePlanting / totalDays, 1);
   const stageIndex = Math.floor(progress * stages.length);
@@ -80,7 +88,12 @@ export function calculateGrowthStage(plantingDate, cropInfo) {
  * Calculate irrigation requirements
  * Enhanced with weather-based adjustments
  */
-function calculateIrrigation(cropInfo, areaAcres, soilType, weatherData = null) {
+export function calculateIrrigation(
+  cropInfo,
+  areaAcres,
+  soilType,
+  weatherData = null
+) {
   const wateringMin = cropInfo?.watering?.min ?? 350;
   const wateringMax = cropInfo?.watering?.max ?? 600;
 
@@ -93,7 +106,10 @@ function calculateIrrigation(cropInfo, areaAcres, soilType, weatherData = null) 
   );
 
   // Weather-based adjustments
-  let irrigationFrequencyDays = Math.max(2, Math.round((wateringMax - wateringMin) / 120) + 2);
+  let irrigationFrequencyDays = Math.max(
+    2,
+    Math.round((wateringMax - wateringMin) / 120) + 2
+  );
   let defaultWaterAmountLiters = Math.round(areaAcres * wateringMin * 8);
   let weatherAdjustments = {
     rainfallReduction: 0,
@@ -103,11 +119,15 @@ function calculateIrrigation(cropInfo, areaAcres, soilType, weatherData = null) 
 
   if (weatherData) {
     const { temperature, humidity, forecast } = weatherData;
-    
+
     // Calculate average rain chance for next 7 days
-    const avgRainChance = forecast && forecast.length > 0
-      ? forecast.slice(0, 7).reduce((sum, day) => sum + (day.rainChance || 0), 0) / Math.min(forecast.length, 7)
-      : 0;
+    const avgRainChance =
+      forecast && forecast.length > 0
+        ? forecast
+            .slice(0, 7)
+            .reduce((sum, day) => sum + (day.rainChance || 0), 0) /
+          Math.min(forecast.length, 7)
+        : 0;
 
     // Adjust irrigation frequency based on rainfall forecast
     if (avgRainChance > 60) {
@@ -196,17 +216,25 @@ function calculateIrrigation(cropInfo, areaAcres, soilType, weatherData = null) 
  * Calculate pest control schedule
  * Enhanced with weather-based risk assessment
  */
-function calculatePestControl(cropInfo, plantingDate, expectedYieldKg, weatherData = null) {
+export function calculatePestControl(
+  cropInfo,
+  plantingDate,
+  expectedYieldKg,
+  weatherData = null
+) {
   // Pest risk based on number of pests in database
-  const pestList = cropInfo?.pests ? cropInfo.pests.split(",").map((p) => p.trim()) : [];
-  let pestRiskLevel = pestList.length > 2 ? "high" : pestList.length > 1 ? "medium" : "low";
+  const pestList = cropInfo?.pests
+    ? cropInfo.pests.split(",").map((p) => p.trim())
+    : [];
+  let pestRiskLevel =
+    pestList.length > 2 ? "high" : pestList.length > 1 ? "medium" : "low";
 
   // Weather-based pest risk adjustments
   let weatherRiskFactors = [];
-  
+
   if (weatherData) {
     const { temperature, humidity, forecast } = weatherData;
-    
+
     // High humidity increases fungal disease risk
     if (humidity > 75) {
       if (pestRiskLevel === "low") pestRiskLevel = "medium";
@@ -222,15 +250,21 @@ function calculatePestControl(cropInfo, plantingDate, expectedYieldKg, weatherDa
 
     // Check forecast for extended wet periods
     if (forecast && forecast.length > 0) {
-      const highRainDays = forecast.slice(0, 7).filter(day => (day.rainChance || 0) > 60).length;
+      const highRainDays = forecast
+        .slice(0, 7)
+        .filter((day) => (day.rainChance || 0) > 60).length;
       if (highRainDays >= 3) {
-        weatherRiskFactors.push(`${highRainDays} days of high rain forecast - monitor for water-related diseases`);
+        weatherRiskFactors.push(
+          `${highRainDays} days of high rain forecast - monitor for water-related diseases`
+        );
       }
     }
 
     // Cool and wet conditions favor certain diseases
     if (temperature < 22 && humidity > 70) {
-      weatherRiskFactors.push("Cool and wet conditions - watch for fungal diseases");
+      weatherRiskFactors.push(
+        "Cool and wet conditions - watch for fungal diseases"
+      );
     }
   }
 
@@ -257,7 +291,7 @@ function calculatePestControl(cropInfo, plantingDate, expectedYieldKg, weatherDa
 /**
  * Calculate fertilization schedule
  */
-function calculateFertilization(cropInfo, plantingDate) {
+export function calculateFertilization(cropInfo, plantingDate) {
   // First fertilization typically 25 days after planting
   const nextFertilizationDate = addDays(plantingDate, 25);
 
@@ -278,8 +312,10 @@ function calculateFertilization(cropInfo, plantingDate) {
 /**
  * Calculate yield and pricing
  */
-function calculateYieldAndPricing(cropInfo, areaAcres) {
-  const expectedYieldKg = Math.round(areaAcres * (cropInfo?.avg_yield_kg_per_acre ?? 1350));
+export function calculateYieldAndPricing(cropInfo, areaAcres) {
+  const expectedYieldKg = Math.round(
+    areaAcres * (cropInfo?.avg_yield_kg_per_acre ?? 1350)
+  );
   const expectedPricePerKg = priceLookup[cropInfo?.category] ?? 24;
   const estimatedCostPerAcre = Math.round(9000 + areaAcres * 350);
 
@@ -288,17 +324,21 @@ function calculateYieldAndPricing(cropInfo, areaAcres) {
     expectedPricePerKg,
     estimatedCostPerAcre,
     estimatedRevenue: Math.round(expectedYieldKg * expectedPricePerKg),
-    estimatedProfit: Math.round(expectedYieldKg * expectedPricePerKg - estimatedCostPerAcre * areaAcres),
+    estimatedProfit: Math.round(
+      expectedYieldKg * expectedPricePerKg - estimatedCostPerAcre * areaAcres
+    ),
   };
 }
 
 /**
  * Calculate harvest window
  */
-function calculateHarvestWindow(plantingDate, cropInfo) {
+export function calculateHarvestWindow(plantingDate, cropInfo) {
   const growthDays = cropInfo?.growthDays ?? 110;
   const expectedHarvest = addDays(plantingDate, growthDays);
-  const harvestWindowStart = expectedHarvest ? addDays(expectedHarvest, -5) : null;
+  const harvestWindowStart = expectedHarvest
+    ? addDays(expectedHarvest, -5)
+    : null;
   const harvestWindowEnd = expectedHarvest ? addDays(expectedHarvest, 5) : null;
 
   return {
@@ -311,7 +351,7 @@ function calculateHarvestWindow(plantingDate, cropInfo) {
 /**
  * Main calculation function - computes all derived fields from minimal input
  * Enhanced with optional weather data for smarter calculations
- * 
+ *
  * @param {Object} input - Minimal user input
  * @param {string} input.crop_type - Crop name
  * @param {string} [input.variety] - Optional variety
@@ -322,7 +362,7 @@ function calculateHarvestWindow(plantingDate, cropInfo) {
  * @param {string} input.field_name - Field name
  * @param {string} [input.location] - Optional location text
  * @param {Object} [input.weatherData] - Optional weather data from API
- * 
+ *
  * @returns {Object} Complete crop data with all calculated fields
  */
 export function calculateCropData(input) {
@@ -340,7 +380,9 @@ export function calculateCropData(input) {
 
   // Validate required fields
   if (!crop_type || !planting_date || !area_acres || !field_name) {
-    throw new Error("Missing required fields: crop_type, planting_date, area_acres, field_name");
+    throw new Error(
+      "Missing required fields: crop_type, planting_date, area_acres, field_name"
+    );
   }
 
   // Find crop info from database
@@ -351,14 +393,25 @@ export function calculateCropData(input) {
 
   // Calculate all derived data (with weather enhancements if available)
   const growthStage = calculateGrowthStage(planting_date, cropInfo);
-  const irrigation = calculateIrrigation(cropInfo, area_acres, soil_type, weatherData);
+  const irrigation = calculateIrrigation(
+    cropInfo,
+    area_acres,
+    soil_type,
+    weatherData
+  );
   const yieldData = calculateYieldAndPricing(cropInfo, area_acres);
   const harvestWindow = calculateHarvestWindow(planting_date, cropInfo);
-  const pestControl = calculatePestControl(cropInfo, planting_date, yieldData.expectedYieldKg, weatherData);
+  const pestControl = calculatePestControl(
+    cropInfo,
+    planting_date,
+    yieldData.expectedYieldKg,
+    weatherData
+  );
   const fertilization = calculateFertilization(cropInfo, planting_date);
 
   // Default soil type if not provided
-  const finalSoilType = soil_type || cropInfo.soilType || "Well-drained loamy soil";
+  const finalSoilType =
+    soil_type || cropInfo.soilType || "Well-drained loamy soil";
 
   // Build complete crop data object
   return {
@@ -389,7 +442,13 @@ export function calculateCropData(input) {
       description: cropInfo.description,
       sunlight: cropInfo.sunlight,
       pests: cropInfo.pests,
-      stages: cropInfo.stages || ["Sowing", "Germination", "Vegetative", "Flowering", "Harvest"],
+      stages: cropInfo.stages || [
+        "Sowing",
+        "Germination",
+        "Vegetative",
+        "Flowering",
+        "Harvest",
+      ],
     },
 
     // Irrigation (all calculated)
@@ -434,4 +493,3 @@ export function recalculateGrowthStage(crop) {
   const cropInfo = crop.crop_info;
   return calculateGrowthStage(crop.planting_date, cropInfo);
 }
-

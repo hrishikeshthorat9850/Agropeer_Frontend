@@ -260,7 +260,7 @@ export default function NotificationsPage() {
             </p>
           </div>
         ) : (
-          <div className="px-1 py-4 space-y-4">
+          <div className="px-1 py-2 space-y-2">
             {localNotifications.map((notification, index) => (
               <motion.div
                 key={notification.id}
@@ -273,7 +273,7 @@ export default function NotificationsPage() {
                   damping: 20,
                 }}
                 onClick={() => handleNotificationClick(notification)}
-                className={`group relative overflow-hidden rounded-2xl p-5 cursor-pointer transition-all duration-300
+                className={`group relative overflow-hidden rounded-2xl px-4 py-2 cursor-pointer transition-all duration-300
                             ${
                               !notification.seen
                                 ? "bg-white dark:bg-[#1E1E1E] shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-farm-100 dark:border-farm-900/50"
