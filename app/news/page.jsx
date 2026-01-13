@@ -342,7 +342,7 @@ export default function NewsPage() {
   // List view
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-gray-50 dark:bg-black pb-12">
+      <div className="min-h-screen bg-gray-50 dark:bg-black pb-6">
         {/* Mobile App Header */}
         <header className="sticky top-0 z-40 bg-white dark:bg-black border-b border-gray-100 dark:border-white/10 px-4 py-3 flex items-center justify-between shadow-sm">
           <h1 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">

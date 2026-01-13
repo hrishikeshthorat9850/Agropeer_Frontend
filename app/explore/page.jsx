@@ -117,7 +117,7 @@ export default function ExplorePage() {
 
   return (
     <MobilePageContainer>
-      <div className="pb-24 pt-2">
+      <div className="pb-6 pt-2">
         <div className="w-full max-w-7xl mx-auto px-4">
           {/* 🔍 App-Like Header */}
           <div className="sticky top-0 z-10 bg-white/80 dark:bg-black/80 backdrop-blur-md py-4 -mx-4 px-4 mb-6 border-b border-gray-100 dark:border-gray-800">
