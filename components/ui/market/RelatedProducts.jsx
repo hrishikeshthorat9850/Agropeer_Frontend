@@ -161,7 +161,7 @@ export default function RelatedProducts({
   if (loading) {
     return (
       <div className="w-full mt-12">
-        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 text-center">
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 text-center dark:text-white">
           {t("related_products")}
         </h2>
         <ProductSkeleton count={Math.min(limit, 4)} />
@@ -173,11 +173,11 @@ export default function RelatedProducts({
   if (error) {
     return (
       <div className="w-full mt-12">
-        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 text-center">
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 text-center dark:text-white">
           {t("related_products")}
         </h2>
         <div className="text-center py-8">
-          <p className="text-gray-600">{t(error)}</p>
+          <p className="text-gray-600 dark:text-gray-400">{t(error)}</p>
         </div>
       </div>
     );
@@ -187,11 +187,11 @@ export default function RelatedProducts({
   if (relatedProducts.length === 0) {
     return (
       <div className="w-full mt-12">
-        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 text-center">
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 text-center dark:text-white">
           {t("related_products")}
         </h2>
         <div className="text-center py-8">
-          <p className="text-gray-600">{t("no_related_products")}</p>
+          <p className="text-gray-600 dark:text-gray-400">{t("no_related_products")}</p>
         </div>
       </div>
     );
@@ -203,7 +203,7 @@ export default function RelatedProducts({
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 text-center"
+        className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 text-center dark:text-white"
       >
         {t("related_products")}
       </motion.h2>

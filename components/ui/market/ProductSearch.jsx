@@ -128,11 +128,10 @@ export default function ProductSearch({ products = [], onSelect }) {
     <div className="relative w-full max-w-2xl mx-auto">
       {/* Search Input */}
       <div
-        className={`relative flex items-center bg-white rounded-xl shadow-md border-2 transition-all duration-200 ${
-          focused
-            ? "border-green-500 shadow-lg ring-2 ring-green-500/20"
-            : "border-gray-200 hover:border-gray-300"
-        }`}
+        className={`relative flex items-center bg-white rounded-xl shadow-md border-2 transition-all duration-200 ${focused
+          ? "border-green-500 shadow-lg ring-2 ring-green-500/20 dark:bg-[#1E1E1E]"
+          : "border-gray-200 hover:border-gray-300 dark:bg-[#1E1E1E] dark:border-[#333]"
+          }`}
       >
         {/* <div className="absolute left-4 flex items-center pointer-events-none">
           <Search className="text-gray-400 w-5 h-5" />
@@ -147,7 +146,7 @@ export default function ProductSearch({ products = [], onSelect }) {
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
           placeholder={t("product_search_placeholder")}
-          className="w-full pl-12 pr-4 py-4 text-gray-900 placeholder-gray-400 bg-transparent border-0 rounded-xl focus:outline-none text-base md:text-lg"
+          className="w-full pl-12 pr-4 py-4 text-gray-900 dark:text-white placeholder-gray-400 bg-transparent border-0 rounded-xl focus:outline-none text-base md:text-lg"
           aria-label="Search products"
           aria-expanded={showDropdown}
           aria-haspopup="listbox"
@@ -178,7 +177,8 @@ export default function ProductSearch({ products = [], onSelect }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="absolute z-50 w-full mt-2 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden"
+
+            className="absolute z-50 w-full mt-2 bg-white dark:bg-[#1E1E1E] rounded-xl shadow-2xl border border-gray-200 dark:border-[#333] overflow-hidden"
             ref={dropdownRef}
             role="listbox"
           >
@@ -199,16 +199,15 @@ export default function ProductSearch({ products = [], onSelect }) {
                       whileHover={{ backgroundColor: "#f0fdf4" }}
                       whileTap={{ backgroundColor: "#dcfce7" }}
                       onClick={() => handleSelect(product)}
-                      className={`w-full px-4 py-3 flex items-center gap-3 text-left transition-colors border-b border-gray-100 last:border-b-0 ${
-                        isSelected
-                          ? "bg-green-50 border-green-200"
-                          : "hover:bg-gray-50"
-                      }`}
+                      className={`w-full px-4 py-3 flex items-center gap-3 text-left transition-colors border-b border-gray-100 last:border-b-0 ${isSelected
+                        ? "bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-900/30"
+                        : "hover:bg-gray-50 dark:hover:bg-[#2C2C2C]"
+                        }`}
                       role="option"
                       aria-selected={isSelected}
                     >
                       {/* Product Image */}
-                      <div className="flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
+                      <div className="flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden bg-gray-100 border border-gray-200 dark:bg-[#333] dark:border-[#444]">
                         <Image
                           src={productImage}
                           alt={productName}
@@ -220,7 +219,7 @@ export default function ProductSearch({ products = [], onSelect }) {
 
                       {/* Product Info */}
                       <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-gray-900 truncate">
+                        <p className="font-semibold text-gray-900 dark:text-white truncate">
                           {productName}
                         </p>
                         <div className="flex items-center gap-2 mt-0.5">
@@ -236,7 +235,7 @@ export default function ProductSearch({ products = [], onSelect }) {
                           )}
                         </div>
                         {product.description && (
-                          <p className="text-xs text-gray-500 mt-1 line-clamp-1">
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-1">
                             {product.description}
                           </p>
                         )}
@@ -247,10 +246,10 @@ export default function ProductSearch({ products = [], onSelect }) {
               </div>
             ) : (
               <div className="px-6 py-8 text-center">
-                <div className="w-16 h-16 mx-auto mb-3 bg-gray-100 rounded-full flex items-center justify-center">
+                <div className="w-16 h-16 mx-auto mb-3 bg-gray-100 dark:bg-[#333] rounded-full flex items-center justify-center">
                   <Search className="text-gray-400 w-6 h-6" />
                 </div>
-                <p className="text-gray-600 font-medium">
+                <p className="text-gray-600 dark:text-gray-300 font-medium">
                   {t("product_no_results")}
                 </p>
                 <p className="text-sm text-gray-400 mt-1">

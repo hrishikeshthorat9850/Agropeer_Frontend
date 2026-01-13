@@ -588,7 +588,8 @@ export default function AgriMarket() {
   if (productId) {
     if (productLoading) {
       return (
-        <div className="fixed inset-0 flex items-center justify-center w-full h-full bg-white/80 backdrop-blur-sm z-50">
+
+        <div className="fixed inset-0 flex items-center justify-center w-full h-full bg-white/80 dark:bg-black/80 backdrop-blur-sm z-50">
           <PlantLoader
             size="lg"
             text={t("loading_product")}
@@ -601,7 +602,7 @@ export default function AgriMarket() {
     if (!selectedProduct) {
       return (
         <div className="flex items-center justify-center min-h-[calc(100vh-122px)]">
-          <p className="text-center text-gray-600 text-lg">
+          <p className="text-center text-gray-600 dark:text-gray-400 text-lg">
             {t("product_not_found")}
           </p>
         </div>
@@ -631,12 +632,12 @@ export default function AgriMarket() {
 
     return (
       <MobilePageContainer noPadding>
-        <div className="w-full min-h-screen flex flex-col items-center justify-start bg-[linear-gradient(145deg,_#e8f5e9cc_0%,_#c8e6c9cc_100%)] dark:bg-[#0a0a0a] py-6">
-          <div className="w-full px-4">
+        <div className="w-full min-h-screen flex flex-col items-center justify-start dark:bg-[#0a0a0a] py-6">
+          <div className="w-full px-1">
             <div className="flex items-center justify-center gap-3 mb-6">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-8 h-8 text-farm-600 dark:text-green-400"
+                className="w-8 h-8 text-farm-600 dark:text-white"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth={2}
@@ -648,7 +649,7 @@ export default function AgriMarket() {
                   d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 7M7 13l-2 8m2-8l2 8m10-8l2 8M9 21h6"
                 />
               </svg>
-              <h1 className="text-3xl md:text-4xl font-bold text-farm-900">
+              <h1 className="text-2xl md:text-4xl font-bold text-farm-900 dark:text-white">
                 {t("product_details_insights")}
               </h1>
             </div>
@@ -725,7 +726,7 @@ export default function AgriMarket() {
               <Suspense
                 fallback={
                   <div className="w-full mt-12">
-                    <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 text-center">
+                    <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-6 text-center">
                       {t("related_products")}
                     </h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
@@ -754,8 +755,8 @@ export default function AgriMarket() {
 
   // List view
   return (
-    <MobilePageContainer>
-      <div className="py-4">
+    <MobilePageContainer noPadding>
+      <div className="w-full min-h-screen flex flex-col items-center justify-start dark:bg-[#0a0a0a] py-6">
         <div className="w-full max-w-7xl mx-auto flex flex-col gap-6 md:gap-8">
           <motion.div
             className="relative w-full flex flex-col items-center justify-center text-center px-4 py-2"
@@ -764,10 +765,10 @@ export default function AgriMarket() {
           >
             {/* Center Text */}
             <div className="flex flex-col items-center gap-3">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white tracking-tight leading-tight">
                 🌾 {t("market_page_title")}
               </h1>
-              <p className="text-gray-600 text-base sm:text-lg md:text-lg font-medium max-w-md sm:max-w-lg md:max-w-xl">
+              <p className="text-gray-600 dark:text-gray-300 text-base sm:text-lg md:text-lg font-medium max-w-md sm:max-w-lg md:max-w-xl">
                 {t("market_page_subtitle")}
               </p>
             </div>

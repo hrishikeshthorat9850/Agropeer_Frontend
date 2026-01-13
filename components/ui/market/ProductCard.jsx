@@ -46,7 +46,7 @@ export default function ProductCard({
         boxShadow: "0 14px 32px rgba(0,0,0,0.10)",
       }}
       transition={{ duration: 0.35, ease: "easeOut" }}
-      className="group relative flex flex-col bg-white rounded-3xl border border-gray-100 shadow-[0_4px_16px_rgba(0,0,0,0.05)] hover:shadow-[0_12px_30px_rgba(0,0,0,0.1)] transition-all duration-300 overflow-hidden dark:border-gray-600"
+      className="group relative flex flex-col bg-white dark:bg-[#1E1E1E] rounded-3xl border border-gray-100 dark:border-[#333] shadow-[0_4px_16px_rgba(0,0,0,0.05)] hover:shadow-[0_12px_30px_rgba(0,0,0,0.1)] transition-all duration-300 overflow-hidden"
     >
       {/* IMAGE SECTION */}
       <div className="relative w-full h-56 overflow-hidden rounded-t-3xl">
@@ -68,11 +68,10 @@ export default function ProductCard({
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => onFavoriteClick?.(product)}
-            className={`w-9 h-9 flex items-center justify-center rounded-full shadow-md backdrop-blur-md transition ${
-              isFavorite
+            className={`w-9 h-9 flex items-center justify-center rounded-full shadow-md backdrop-blur-md transition ${isFavorite
                 ? "bg-gradient-to-br from-rose-500 via-pink-500 to-red-500 text-white shadow-[0_4px_12px_rgba(244,63,94,0.4)] hover:shadow-[0_6px_20px_rgba(244,63,94,0.5)]"
                 : "bg-white/90 text-gray-700 hover:bg-white"
-            }`}
+              }`}
           >
             <FaHeart className="w-4 h-4" />
           </motion.button>
@@ -131,7 +130,7 @@ export default function ProductCard({
       </div>
 
       {/* CONTENT SECTION */}
-      <div className="p-4 flex flex-col flex-1 dark:bg-[#272727]">
+      <div className="p-4 flex flex-col flex-1 dark:bg-[#1E1E1E]">
         {/* Title */}
         <h3 className="text-[1.05rem] font-semibold text-gray-900 mb-3 leading-snug transition-colors dark:text-white">
           {product.title}
@@ -147,11 +146,11 @@ export default function ProductCard({
 
         {/* Seller Info */}
         {product.userinfo && (
-          <div className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors dark:bg-[#0a0a0a]">
+          <div className="flex items-center gap-2 p-2 bg-gray-50 dark:bg-[#2C2C2C] rounded-lg hover:bg-gray-100 dark:hover:bg-[#333] transition-colors">
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center text-white text-sm font-bold shadow-md flex-shrink-0">
               {formatName(product.userinfo).charAt(0)}
             </div>
-            <span className="text-sm text-gray-700 font-medium truncate flex-1">
+            <span className="text-sm text-gray-700 dark:text-gray-300 font-medium truncate flex-1">
               {formatName(product.userinfo)}
             </span>
           </div>
@@ -169,13 +168,13 @@ export default function ProductCard({
           (product.location.district ||
             product.location.taluka ||
             product.location.village) && (
-            <div className="mt-3 flex items-start gap-2 p-2.5 bg-blue-50 rounded-lg border border-blue-100 dark:bg-[#0a0a0a] dark:border-none">
+            <div className="mt-3 flex items-start gap-2 p-2.5 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-100 dark:border-blue-900/30">
               <FaMapMarkerAlt className="text-blue-600 text-sm mt-0.5 flex-shrink-0" />
               <div className="flex-1 min-w-0">
                 {/* <p className="text-xs text-blue-600 font-semibold mb-0.5">
                   Location
                 </p> */}
-                <p className="text-xs text-gray-700 truncate">
+                <p className="text-xs text-gray-700 dark:text-gray-300 truncate">
                   {[
                     product.location.village,
                     product.location.taluka,
@@ -189,7 +188,7 @@ export default function ProductCard({
           )}
 
         {/* ACTION BUTTONS */}
-        <div className="flex gap-2 mt-auto pt-3 border-t border-gray-100 dark:border-none">
+        <div className="flex gap-2 mt-auto pt-3 border-t border-gray-100 dark:border-[#333]">
           <Link
             href={`/market?id=${product.id}`}
             className="flex-1 text-center px-5 py-2.5 

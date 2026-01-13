@@ -202,16 +202,16 @@ export default function GovernmentSchemesPage() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="farm-card p-12 text-center max-w-md"
+              className="farm-card p-12 text-center max-w-md bg-white dark:bg-[#1E1E1E] rounded-3xl border border-gray-100 dark:border-[#333]"
             >
               <div className="text-6xl mb-4">⚠️</div>
-              <h3 className="text-xl font-semibold text-farm-700 mb-2">
+              <h3 className="text-xl font-semibold text-farm-700 dark:text-white mb-2">
                 {detailError || t("scheme_not_found")}
               </h3>
-              <p className="text-farm-600 mb-4">
+              <p className="text-farm-600 dark:text-gray-400 mb-4">
                 {t("scheme_not_found_desc")}
               </p>
-              <button onClick={() => router.push("/government-schemes")} className="farm-button">
+              <button onClick={() => router.push("/government-schemes")} className="farm-button bg-farm-600 hover:bg-farm-700 text-white dark:bg-farm-600 dark:hover:bg-farm-500">
                 {t("back_to_schemes")}
               </button>
             </motion.div>
@@ -249,7 +249,7 @@ export default function GovernmentSchemesPage() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="farm-card p-8 mb-8"
+              className="farm-card p-8 mb-8 bg-white dark:bg-[#1E1E1E] rounded-3xl shadow-sm border border-gray-100 dark:border-[#333]"
             >
               <div className="flex items-start gap-4 mb-6">
                 {detailScheme.icon && (
@@ -258,33 +258,33 @@ export default function GovernmentSchemesPage() {
                 <div className="flex-1">
                   <div className="flex flex-wrap items-center gap-3 mb-4">
                     {detailScheme.category && (
-                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-farm-100 text-farm-700 rounded-full text-sm font-semibold">
+                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-farm-100 dark:bg-farm-900/30 text-farm-700 dark:text-farm-300 rounded-full text-sm font-semibold border border-farm-200 dark:border-farm-800">
                         <FaTag className="w-4 h-4" />
                         {detailScheme.category}
                       </div>
                     )}
                     {detailScheme.state && (
-                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-farm-100 text-farm-700 rounded-full text-sm font-semibold">
+                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm font-semibold border border-blue-200 dark:border-blue-800">
                         <FaMapMarkerAlt className="w-4 h-4" />
                         {detailScheme.state}
                       </div>
                     )}
                   </div>
-                  <h1 className="text-3xl md:text-4xl font-display font-bold text-farm-900 mb-2">
+                  <h1 className="text-3xl md:text-4xl font-display font-bold text-farm-900 dark:text-white mb-2">
                     {detailScheme.title}
                   </h1>
                   {detailScheme.tagline && (
-                    <p className="text-lg text-farm-600">{detailScheme.tagline}</p>
+                    <p className="text-lg text-farm-600 dark:text-gray-400">{detailScheme.tagline}</p>
                   )}
                 </div>
               </div>
 
               {/* Share Buttons */}
-              <div className="flex items-center gap-3 pt-4 border-t border-farm-200">
-                <span className="text-sm text-farm-600 font-medium">{t("share_label")}</span>
+              <div className="flex items-center gap-3 pt-4 border-t border-farm-200 dark:border-[#333]">
+                <span className="text-sm text-farm-600 dark:text-gray-400 font-medium">{t("share_label")}</span>
                 <button
                   onClick={() => handleShare(detailScheme)}
-                  className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                  className="p-2 text-green-600 hover:bg-green-50 dark:text-green-400 dark:hover:bg-green-900/20 rounded-lg transition-colors"
                   title={t("share_whatsapp")}
                 >
                   <FaWhatsapp className="w-5 h-5" />
@@ -298,10 +298,10 @@ export default function GovernmentSchemesPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="farm-card p-8 mb-8"
+                className="farm-card p-8 mb-8 bg-white dark:bg-[#1E1E1E] rounded-3xl shadow-sm border border-gray-100 dark:border-[#333]"
               >
-                <h2 className="text-2xl font-display font-bold text-farm-900 mb-4">{t("overview_title")}</h2>
-                <p className="text-farm-700 leading-relaxed whitespace-pre-line">
+                <h2 className="text-2xl font-display font-bold text-farm-900 dark:text-white mb-4">{t("overview_title")}</h2>
+                <p className="text-farm-700 dark:text-gray-300 leading-relaxed whitespace-pre-line">
                   {detailScheme.description}
                 </p>
               </motion.div>
@@ -313,17 +313,17 @@ export default function GovernmentSchemesPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="farm-card p-8 mb-8"
+                className="farm-card p-8 mb-8 bg-white dark:bg-[#1E1E1E] rounded-3xl shadow-sm border border-gray-100 dark:border-[#333]"
               >
-                <h2 className="text-2xl font-display font-bold text-farm-900 mb-4 flex items-center gap-2">
-                  <FaCheckCircle className="text-farm-500" />
+                <h2 className="text-2xl font-display font-bold text-farm-900 dark:text-white mb-4 flex items-center gap-2">
+                  <FaCheckCircle className="text-farm-500 dark:text-farm-400" />
                   {t("key_benefits")}
                 </h2>
                 <ul className="space-y-3">
                   {benefits.map((benefit, idx) => (
                     <li key={idx} className="flex items-start gap-3">
-                      <span className="text-farm-500 mt-1">✓</span>
-                      <span className="text-farm-700 flex-1">
+                      <span className="text-farm-500 dark:text-farm-400 mt-1">✓</span>
+                      <span className="text-farm-700 dark:text-gray-300 flex-1">
                         {typeof benefit === 'string' ? benefit : benefit.text || benefit}
                       </span>
                     </li>
@@ -338,14 +338,14 @@ export default function GovernmentSchemesPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="farm-card p-8 mb-8"
+                className="farm-card p-8 mb-8 bg-white dark:bg-[#1E1E1E] rounded-3xl shadow-sm border border-gray-100 dark:border-[#333]"
               >
-                <h2 className="text-2xl font-display font-bold text-farm-900 mb-4">{t("eligibility_criteria")}</h2>
+                <h2 className="text-2xl font-display font-bold text-farm-900 dark:text-white mb-4">{t("eligibility_criteria")}</h2>
                 <ul className="space-y-3">
                   {eligibility.map((item, idx) => (
                     <li key={idx} className="flex items-start gap-3">
-                      <span className="text-farm-500 mt-1">•</span>
-                      <span className="text-farm-700 flex-1">
+                      <span className="text-farm-500 dark:text-farm-400 mt-1">•</span>
+                      <span className="text-farm-700 dark:text-gray-300 flex-1">
                         {typeof item === 'string' ? item : item.text || item}
                       </span>
                     </li>
@@ -360,17 +360,17 @@ export default function GovernmentSchemesPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="farm-card p-8 mb-8"
+                className="farm-card p-8 mb-8 bg-white dark:bg-[#1E1E1E] rounded-3xl shadow-sm border border-gray-100 dark:border-[#333]"
               >
-                <h2 className="text-2xl font-display font-bold text-farm-900 mb-4 flex items-center gap-2">
-                  <FaFileAlt className="text-farm-500" />
+                <h2 className="text-2xl font-display font-bold text-farm-900 dark:text-white mb-4 flex items-center gap-2">
+                  <FaFileAlt className="text-farm-500 dark:text-farm-400" />
                   {t("required_documents")}
                 </h2>
                 <ul className="space-y-3">
                   {documents.map((doc, idx) => (
                     <li key={idx} className="flex items-start gap-3">
-                      <span className="text-farm-500 mt-1">•</span>
-                      <span className="text-farm-700 flex-1">
+                      <span className="text-farm-500 dark:text-farm-400 mt-1">•</span>
+                      <span className="text-farm-700 dark:text-gray-300 flex-1">
                         {typeof doc === 'string' ? doc : doc.text || doc}
                       </span>
                     </li>
@@ -385,15 +385,15 @@ export default function GovernmentSchemesPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className="farm-card p-8 mb-8"
+                className="farm-card p-8 mb-8 bg-white dark:bg-[#1E1E1E] rounded-3xl shadow-sm border border-gray-100 dark:border-[#333]"
               >
-                <h2 className="text-2xl font-display font-bold text-farm-900 mb-4 flex items-center gap-2">
-                  <FaClipboardList className="text-farm-500" />
+                <h2 className="text-2xl font-display font-bold text-farm-900 dark:text-white mb-4 flex items-center gap-2">
+                  <FaClipboardList className="text-farm-500 dark:text-farm-400" />
                   {t("how_to_apply")}
                 </h2>
                 <ol className="space-y-3 list-decimal list-inside">
                   {applicationSteps.map((step, idx) => (
-                    <li key={idx} className="text-farm-700">
+                    <li key={idx} className="text-farm-700 dark:text-gray-300">
                       {typeof step === 'string' ? step : step.text || step}
                     </li>
                   ))}
@@ -407,9 +407,9 @@ export default function GovernmentSchemesPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className="farm-card p-8 mb-8"
+                className="farm-card p-8 mb-8 bg-white dark:bg-[#1E1E1E] rounded-3xl shadow-sm border border-gray-100 dark:border-[#333]"
               >
-                <h2 className="text-2xl font-display font-bold text-farm-900 mb-4">{t("official_links")}</h2>
+                <h2 className="text-2xl font-display font-bold text-farm-900 dark:text-white mb-4">{t("official_links")}</h2>
                 <div className="space-y-3">
                   {officialLinks.map((link, idx) => {
                     const linkObj = typeof link === 'string' ? { url: link, text: link } : link;
@@ -419,7 +419,7 @@ export default function GovernmentSchemesPage() {
                         href={linkObj.url || linkObj}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-farm-500 text-white rounded-lg hover:bg-farm-600 transition-colors"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-farm-500 hover:bg-farm-600 text-white rounded-lg transition-colors dark:bg-farm-600 dark:hover:bg-farm-500"
                       >
                         <span>{linkObj.text || linkObj.url || link}</span>
                         <FaExternalLinkAlt className="w-4 h-4" />
@@ -436,19 +436,19 @@ export default function GovernmentSchemesPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.7 }}
-                className="farm-card p-8 mb-8"
+                className="farm-card p-8 mb-8 bg-white dark:bg-[#1E1E1E] rounded-3xl shadow-sm border border-gray-100 dark:border-[#333]"
               >
-                <h2 className="text-2xl font-display font-bold text-farm-900 mb-4">{t("faq_title")}</h2>
+                <h2 className="text-2xl font-display font-bold text-farm-900 dark:text-white mb-4">{t("faq_title")}</h2>
                 <div className="space-y-4">
                   {faqs.map((faq, idx) => {
                     const faqObj = typeof faq === 'string'
                       ? { question: faq, answer: '' }
                       : { question: faq.question || faq.q || '', answer: faq.answer || faq.a || '' };
                     return (
-                      <div key={idx} className="border-b border-farm-200 pb-4 last:border-0">
-                        <h3 className="font-semibold text-farm-900 mb-2">{faqObj.question}</h3>
+                      <div key={idx} className="border-b border-farm-200 dark:border-white/10 pb-4 last:border-0">
+                        <h3 className="font-semibold text-farm-900 dark:text-white mb-2">{faqObj.question}</h3>
                         {faqObj.answer && (
-                          <p className="text-farm-700">{faqObj.answer}</p>
+                          <p className="text-farm-700 dark:text-gray-300">{faqObj.answer}</p>
                         )}
                       </div>
                     );
@@ -465,7 +465,7 @@ export default function GovernmentSchemesPage() {
                 transition={{ delay: 0.8 }}
                 className="mb-8"
               >
-                <h2 className="text-2xl font-display font-bold text-farm-900 mb-6">{t("related_schemes")}</h2>
+                <h2 className="text-2xl font-display font-bold text-farm-900 dark:text-white mb-6">{t("related_schemes")}</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {relatedSchemes.map((scheme, index) => (
                     <SchemeCard key={scheme.id} scheme={scheme} index={index} />
@@ -476,7 +476,7 @@ export default function GovernmentSchemesPage() {
 
             {/* Back Button */}
             <div className="text-center">
-              <button onClick={() => router.push("/government-schemes")} className="farm-button">
+              <button onClick={() => router.push("/government-schemes")} className="farm-button bg-farm-600 hover:bg-farm-700 text-white dark:bg-farm-600 dark:hover:bg-farm-500 px-8 py-3 rounded-full font-bold shadow-lg transition-all active:scale-95">
                 {t("back_to_all_schemes")}
               </button>
             </div>
@@ -516,10 +516,10 @@ export default function GovernmentSchemesPage() {
           {/* Stats Row */}
           {!loading && !error && (
             <div className="px-4 py-3 flex items-center justify-between">
-              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 {t("schemes") || "Schemes"}
               </span>
-              <span className="text-xs text-gray-400 font-medium bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded-full">
+              <span className="text-xs text-gray-400 dark:text-gray-300 font-medium bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded-full">
                 {schemes.length}
               </span>
             </div>

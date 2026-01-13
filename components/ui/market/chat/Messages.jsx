@@ -21,7 +21,7 @@ export default function Messages({
         </div>
       ) : messages.length === 0 ? (
         <div className="flex justify-center items-center h-full">
-          <p className="text-blue-500 text-sm">{t("no_messages_start_conv")}</p>
+          <p className="text-blue-500 text-sm dark:text-blue-400">{t("no_messages_start_conv")}</p>
         </div>
       ) : (
         messages.map((message) => {
@@ -36,22 +36,19 @@ export default function Messages({
               key={message.id}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className={`flex ${
-                isMyMessage ? "justify-end" : "justify-start"
-              }`}
+              className={`flex ${isMyMessage ? "justify-end" : "justify-start"
+                }`}
             >
               <div
-                className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${
-                  isMyMessage
+                className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${isMyMessage
                     ? "bg-green-500 text-white"
-                    : "bg-blue-500 text-gray-900"
-                }`}
+                    : "bg-blue-500 text-white dark:bg-blue-600"
+                  }`}
               >
                 <p className="text-sm">{messageText}</p>
                 <div
-                  className={`flex items-center justify-end gap-1 mt-1 ${
-                    isMyMessage ? "text-green-100" : "text-gray-500"
-                  }`}
+                  className={`flex items-center justify-end gap-1 mt-1 ${isMyMessage ? "text-green-100" : "text-blue-100"
+                    }`}
                 >
                   <span className="text-xs">{timeAgo(messageTime)}</span>
                   {getMessageStatus && getMessageStatus(message)}
@@ -65,7 +62,7 @@ export default function Messages({
       {/* Typing indicator */}
       {isTyping && (
         <div className="flex justify-start">
-          <div className="bg-gray-100 px-4 py-2 rounded-2xl">
+          <div className="bg-gray-100 px-4 py-2 rounded-2xl dark:bg-[#333]">
             <div className="flex space-x-1">
               <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
               <div

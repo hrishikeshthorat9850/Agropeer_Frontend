@@ -2,28 +2,28 @@
 import { motion } from "framer-motion";
 import { FaSeedling } from "react-icons/fa";
 
-export default function PlantLoader({ 
-  size = "md", 
+export default function PlantLoader({
+  size = "md",
   text = "Loading...",
   variant = "default" // "default" | "blinking" | "pulsing"
 }) {
   const sizeClasses = {
-    sm: { 
+    sm: {
       container: "h-8 w-8",
       icon: "text-xs",
       border: "border-2"
     },
-    md: { 
+    md: {
       container: "h-12 w-12",
       icon: "text-sm",
       border: "border-[3px]"
     },
-    lg: { 
+    lg: {
       container: "h-20 w-20",
       icon: "text-lg",
       border: "border-4"
     },
-    xl: { 
+    xl: {
       container: "h-28 w-28",
       icon: "text-2xl",
       border: "border-4"
@@ -96,21 +96,21 @@ export default function PlantLoader({
           transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
           className={`absolute inset-0 rounded-full ${currentSize.border} border-farm-200/40 ${currentSize.container}`}
         />
-        
+
         {/* Middle rotating circle - progress indicator */}
         <motion.div
           animate={{ rotate: -360 }}
           transition={{ duration: 1.8, repeat: Infinity, ease: "linear" }}
           className={`absolute inset-0 rounded-full ${currentSize.border} border-transparent border-t-farm-400 border-r-farm-300 ${currentSize.container}`}
         />
-        
+
         {/* Inner rotating circle - accent */}
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
           className={`absolute inset-0 rounded-full ${currentSize.border} border-transparent border-t-farm-500 border-l-farm-400 ${currentSize.container}`}
         />
-        
+
         {/* Plant icon with animation */}
         <motion.div
           {...animationProps}
@@ -122,27 +122,27 @@ export default function PlantLoader({
         {/* Glowing effect for blinking variant */}
         {variant === "blinking" && (
           <motion.div
-            animate={{ 
+            animate={{
               opacity: [0.15, 0.4, 0.15],
               scale: [1, 1.15, 1]
             }}
-            transition={{ 
-              duration: 1.2, 
-              repeat: Infinity, 
-              ease: "easeInOut" 
+            transition={{
+              duration: 1.2,
+              repeat: Infinity,
+              ease: "easeInOut"
             }}
             className="absolute inset-0 rounded-full bg-farm-400/30 blur-lg -z-10"
           />
         )}
       </div>
-      
+
       {/* Loading text */}
       {text && (
         <motion.span
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.3 }}
-          className="mt-5 text-farm-600 text-sm font-medium"
+          className="mt-5 text-farm-600 dark:text-farm-400 text-sm font-medium"
         >
           {text}
         </motion.span>

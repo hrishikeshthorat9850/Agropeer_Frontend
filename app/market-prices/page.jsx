@@ -193,7 +193,7 @@ export default function MarketPricesPage() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black font-sans pb-20">
+    <div className="min-h-screen bg-gray-50 dark:bg-black font-sans">
       {/* 📱 STICKY APP BAR HEADER */}
       <div className="sticky top-0 z-40 bg-white/95 dark:bg-[#121212]/95 backdrop-blur-md shadow-sm border-b border-gray-100 dark:border-white/5 px-4 h-[60px] flex items-center justify-between">
         <div className="flex items-center gap-3">

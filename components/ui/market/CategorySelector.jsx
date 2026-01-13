@@ -55,11 +55,10 @@ export default function CategorySelector({
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => onCategoryChange(cat.key)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm md:text-base transition-all duration-200 shadow-sm ${
-                isSelected
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm md:text-base transition-all duration-200 shadow-sm ${isSelected
                   ? "bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg shadow-green-500/30"
-                  : "bg-white text-gray-700 hover:bg-green-50 hover:text-green-700 border border-gray-200 dark:bg-[#272727] dark:border-gray-600 dark:text-gray-300 dark:hover:bg-[#0a0a0a]"
-              }`}
+                  : "bg-white text-gray-700 hover:bg-green-50 hover:text-green-700 border border-gray-200 dark:bg-[#1E1E1E] dark:border-[#333] dark:text-gray-300 dark:hover:bg-[#2C2C2C]"
+                }`}
             >
               <Icon className="w-4 h-4" />
               <span>{cat.label}</span>

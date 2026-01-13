@@ -498,9 +498,9 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={() => setShowAddForm(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 rounded-lg text-xs font-bold border border-emerald-100 dark:border-emerald-800/30 transition-colors active:bg-emerald-100"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-200 dark:bg-emerald-200 text-emerald-700 dark:text-emerald-700 rounded-lg text-lg font-bold border border-emerald-100 dark:border-emerald-800/30 transition-colors active:bg-emerald-100"
         >
-          <FaPlus className="text-[10px]" />
+          <FaPlus className="text-[14px]" />
           {t("add_crop_btn")}
         </motion.button>
       </div>

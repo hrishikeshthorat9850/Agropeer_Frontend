@@ -363,15 +363,15 @@ export default function WeatherForecast() {
                             s.type
                           )} rounded-2xl p-4 border border-gray-100 dark:border-[#333] shadow-sm hover:shadow-md dark:bg-[#2C2C2C]`}
                         >
-                          <div className="flex items-start gap-3 my-auto">
+                          <div className="flex items-center gap-3 h-full">
                             <div
-                              className={`w-10 h-10 ${getSuggestionColor(
+                              className={`w-10 h-10 flex-shrink-0 ${getSuggestionColor(
                                 s.type
                               )} rounded-xl flex items-center justify-center shadow-sm`}
                             >
                               <IconComponent className="w-5 h-5 text-farm-700 dark:text-white" />
                             </div>
-                            <p className="text-sm font-semibold text-farm-800 leading-relaxed dark:text-white">
+                            <p className="text-sm font-semibold text-farm-800 leading-tight dark:text-white">
                               {s.text}
                             </p>
                           </div>
@@ -391,14 +391,18 @@ export default function WeatherForecast() {
                   </div>
 
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3">
+
                     {weather.forecast.map((f, i) => {
+                      const isRainy = parseInt(f.rain) >= 40;
+                      const isSunny = !isRainy && (f.iconType === "sunny" || f.iconType === "partly-sunny");
+
                       // Recreate icon from type
                       const icon = f.iconType === "rain" ? (
-                        <FaCloudRain className="text-blue-400 text-2xl" />
+                        <FaCloudRain className="text-blue-500 text-3xl drop-shadow-sm" />
                       ) : f.iconType === "cloud" ? (
-                        <FaCloud className="text-gray-400 text-2xl" />
+                        <FaCloud className="text-slate-400 text-3xl drop-shadow-sm" />
                       ) : (
-                        <FaSun className="text-yellow-400 text-2xl" />
+                        <FaSun className="text-amber-400 text-3xl drop-shadow-md" />
                       );
 
                       const dayLabel = f.labelKey ? t(f.labelKey) : formatDate(f.dateString);
@@ -406,29 +410,48 @@ export default function WeatherForecast() {
                       return (
                         <motion.div
                           key={i}
-                          whileHover={{ scale: 1.05 }}
-                          className={`flex flex-col items-center rounded-2xl p-4 shadow-sm transition-all border relative overflow-hidden ${parseInt(f.rain) >= 70
-                            ? "bg-blue-50 border-blue-100 dark:bg-blue-950/30 dark:border-blue-900/50"
-                            : parseInt(f.rain) >= 40
-                              ? "bg-slate-50 border-slate-100 dark:bg-slate-800/50 dark:border-slate-700/50"
-                              : "bg-amber-50 border-amber-100 dark:bg-amber-950/30 dark:border-amber-900/50"
-                            }`}
+                          whileHover={{ y: -5 }}
+                          className={`
+                            relative overflow-hidden rounded-3xl p-4 flex flex-col items-center justify-between
+                            transition-all duration-300 backdrop-blur-md border
+                            ${isRainy
+                              ? "bg-gradient-to-br from-blue-50/80 to-cyan-50/50 dark:from-blue-950/40 dark:to-cyan-900/20 border-blue-200/50 dark:border-blue-700/30"
+                              : isSunny
+                                ? "bg-gradient-to-br from-amber-50/80 to-orange-50/50 dark:from-amber-950/40 dark:to-orange-900/20 border-amber-200/50 dark:border-amber-700/30"
+                                : "bg-gradient-to-br from-slate-50/80 to-gray-50/50 dark:from-slate-900/40 dark:to-gray-800/20 border-slate-200/50 dark:border-slate-700/30"
+                            }
+                          `}
                         >
-                          <div className="font-semibold text-farm-700 mb-2 text-sm dark:text-gray-200">
-                            {dayLabel}
-                          </div>
-                          <div className="mb-2">{icon}</div>
-                          <div className="text-farm-900 font-bold text-lg dark:text-white">
-                            {f.temp}
-                          </div>
-                          <div className="text-gray-500 text-xs mb-1 dark:text-gray-400">
-                            {f.minTemp}
-                          </div>
-                          <div className="text-blue-600 text-xs font-medium mb-2 dark:text-blue-400">
-                            {t('weather_rain')}: {f.rain}
-                          </div>
-                          <div className="text-xs text-farm-600 text-center leading-tight dark:text-gray-300">
-                            {t(f.tipKey)}
+                          {/* Top Highlight Gloss */}
+                          <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-white/40 to-transparent pointer-events-none" />
+
+                          <div className="z-10 flex flex-col items-center gap-3 w-full">
+                            <span className="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">
+                              {dayLabel}
+                            </span>
+
+                            <div className="py-2 transform transition-transform group-hover:scale-110">
+                              {icon}
+                            </div>
+
+                            <div className="flex flex-col items-center">
+                              <span className="text-2xl font-black text-gray-900 dark:text-white leading-none">
+                                {f.temp}
+                              </span>
+                              <span className="text-[11px] font-medium text-gray-400 dark:text-gray-500">
+                                {f.minTemp}
+                              </span>
+                            </div>
+
+                            {/* Rain / Tip Pill */}
+                            <div className={`
+                              mt-1 px-3 py-1.5 rounded-full text-[10px] font-bold w-full text-center truncate
+                              ${isRainy
+                                ? "bg-blue-100/50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+                                : "bg-black/5 text-gray-600 dark:bg-white/5 dark:text-gray-400"}
+                            `}>
+                              {isRainy ? `${f.rain}` : t(f.tipKey)}
+                            </div>
                           </div>
                         </motion.div>
                       );
@@ -508,103 +531,145 @@ export default function WeatherForecast() {
               </div>
 
               {/* ============ FORECAST (SIMPLE VIEW) ============ */}
-              <div className="bg-white rounded-xl shadow border border-green-100 p-4 flex flex-col gap-2 mt-4 dark:bg-[#0a0a0a] dark:border-none">
-                <div className="text-green-800 font-semibold mb-3 text-lg">
+              <div className="bg-white/40 dark:bg-white/5 backdrop-blur-xl rounded-3xl border border-white/20 dark:border-white/10 p-5 flex flex-col gap-3 mt-6">
+                <div className="text-gray-800 dark:text-gray-200 font-bold mb-2 text-xl ml-1">
                   {t('seven_day_forecast')}
                 </div>
 
                 {/* TOP 4 */}
-                <div className="space-y-3">
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                    {weather.forecast.slice(0, 4).map((f, i) => {
-                      // Recreate icon from type
-                      const icon = f.iconType === "rain" ? (
-                        <FaCloudRain className="text-blue-400 text-2xl" />
-                      ) : f.iconType === "cloud" ? (
-                        <FaCloud className="text-gray-400 text-2xl" />
-                      ) : (
-                        <FaSun className="text-yellow-400 text-2xl" />
-                      );
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                  {weather.forecast.slice(0, 4).map((f, i) => {
+                    const isRainy = parseInt(f.rain) >= 40;
+                    const isSunny = !isRainy && (f.iconType === "sunny" || f.iconType === "partly-sunny");
 
-                      const dayLabel = f.labelKey ? t(f.labelKey) : formatDate(f.dateString);
+                    // Recreate icon from type
+                    const icon = f.iconType === "rain" ? (
+                      <FaCloudRain className="text-blue-500 text-3xl drop-shadow-sm" />
+                    ) : f.iconType === "cloud" ? (
+                      <FaCloud className="text-slate-400 text-3xl drop-shadow-sm" />
+                    ) : (
+                      <FaSun className="text-amber-400 text-3xl drop-shadow-md" />
+                    );
 
-                      return (
-                        <motion.div
-                          key={`s-top-${i}`}
-                          whileHover={{ scale: 1.05 }}
-                          className={`flex flex-col items-center rounded-2xl p-3 shadow-sm transition-all border ${parseInt(f.rain) >= 70
-                            ? "bg-blue-50 border-blue-100 dark:bg-blue-950/30 dark:border-blue-900/50"
-                            : parseInt(f.rain) >= 40
-                              ? "bg-slate-50 border-slate-100 dark:bg-slate-800/50 dark:border-slate-700/50"
-                              : "bg-amber-50 border-amber-100 dark:bg-amber-950/30 dark:border-amber-900/50"
-                            }`}
-                        >
-                          <div className="font-semibold text-farm-700 mb-1 text-sm dark:text-gray-200">
+                    const dayLabel = f.labelKey ? t(f.labelKey) : formatDate(f.dateString);
+
+                    return (
+                      <motion.div
+                        key={`s-top-${i}`}
+                        whileHover={{ y: -5 }}
+                        className={`
+                            relative overflow-hidden rounded-3xl p-3 flex flex-col items-center justify-between
+                            transition-all duration-300 backdrop-blur-md border
+                            ${isRainy
+                            ? "bg-gradient-to-br from-blue-50/80 to-cyan-50/50 dark:from-blue-950/40 dark:to-cyan-900/20 border-blue-200/50 dark:border-blue-700/30"
+                            : isSunny
+                              ? "bg-gradient-to-br from-amber-50/80 to-orange-50/50 dark:from-amber-950/40 dark:to-orange-900/20 border-amber-200/50 dark:border-amber-700/30"
+                              : "bg-gradient-to-br from-slate-50/80 to-gray-50/50 dark:from-slate-900/40 dark:to-gray-800/20 border-slate-200/50 dark:border-slate-700/30"
+                          }
+                          `}
+                      >
+                        {/* Top Highlight Gloss */}
+                        <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-white/40 to-transparent pointer-events-none" />
+
+                        <div className="z-10 flex flex-col items-center gap-2 w-full">
+                          <span className="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">
                             {dayLabel}
-                          </div>
-                          <div className="text-3xl mb-1">{icon}</div>
-                          <div className="text-farm-900 font-bold mt-1 text-base dark:text-white">
-                            {f.temp}
-                          </div>
-                          <div className="text-gray-500 text-xs dark:text-gray-400">
-                            {f.minTemp}
-                          </div>
-                          <div className="text-blue-600 text-xs font-medium mt-1 dark:text-blue-400">
-                            {t('weather_rain')}: {f.rain}
-                          </div>
-                          <div className="text-xs text-farm-600 mt-1 text-center leading-tight dark:text-gray-300">
-                            {t(f.tipKey)}
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
+                          </span>
 
-                  {/* BOTTOM 3 */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 justify-items-center md:justify-items-start">
-                    {weather.forecast.slice(4).map((f, i) => {
-                      // Recreate icon from type
-                      const icon = f.iconType === "rain" ? (
-                        <FaCloudRain className="text-blue-400 text-2xl" />
-                      ) : f.iconType === "cloud" ? (
-                        <FaCloud className="text-gray-400 text-2xl" />
-                      ) : (
-                        <FaSun className="text-yellow-400 text-2xl" />
-                      );
+                          <div className="py-1 transform transition-transform group-hover:scale-110">
+                            {icon}
+                          </div>
 
-                      const dayLabel = f.labelKey ? t(f.labelKey) : formatDate(f.dateString);
+                          <div className="flex flex-col items-center">
+                            <span className="text-xl font-black text-gray-900 dark:text-white leading-none">
+                              {f.temp}
+                            </span>
+                            <span className="text-[10px] font-medium text-gray-400 dark:text-gray-500">
+                              {f.minTemp}
+                            </span>
+                          </div>
 
-                      return (
-                        <motion.div
-                          key={`s-bottom-${i}`}
-                          whileHover={{ scale: 1.05 }}
-                          className={`flex flex-col items-center rounded-2xl p-3 shadow-sm transition-all border w-full sm:w-auto ${parseInt(f.rain) >= 70
-                            ? "bg-blue-50 border-blue-100 dark:bg-blue-950/30 dark:border-blue-900/50"
-                            : parseInt(f.rain) >= 40
-                              ? "bg-slate-50 border-slate-100 dark:bg-slate-800/50 dark:border-slate-700/50"
-                              : "bg-amber-50 border-amber-100 dark:bg-amber-950/30 dark:border-amber-900/50"
-                            }`}
-                        >
-                          <div className="font-semibold text-farm-700 mb-1 text-sm dark:text-gray-200">
+                          {/* Rain / Tip Pill */}
+                          <div className={`
+                              mt-1 px-2 py-1 rounded-full text-[9px] font-bold w-full text-center truncate
+                              ${isRainy
+                              ? "bg-blue-100/50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+                              : "bg-black/5 text-gray-600 dark:bg-white/5 dark:text-gray-400"}
+                            `}>
+                            {isRainy ? `${f.rain}` : t(f.tipKey)}
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+
+                {/* BOTTOM 3 */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 justify-items-center md:justify-items-start">
+                  {weather.forecast.slice(4).map((f, i) => {
+                    const isRainy = parseInt(f.rain) >= 40;
+                    const isSunny = !isRainy && (f.iconType === "sunny" || f.iconType === "partly-sunny");
+
+                    // Recreate icon from type
+                    const icon = f.iconType === "rain" ? (
+                      <FaCloudRain className="text-blue-500 text-3xl drop-shadow-sm" />
+                    ) : f.iconType === "cloud" ? (
+                      <FaCloud className="text-slate-400 text-3xl drop-shadow-sm" />
+                    ) : (
+                      <FaSun className="text-amber-400 text-3xl drop-shadow-md" />
+                    );
+
+                    const dayLabel = f.labelKey ? t(f.labelKey) : formatDate(f.dateString);
+
+                    return (
+                      <motion.div
+                        key={`s-bottom-${i}`}
+                        whileHover={{ y: -5 }}
+                        className={`
+                            relative overflow-hidden rounded-3xl p-3 flex flex-col items-center justify-between
+                            transition-all duration-300 backdrop-blur-md border w-full sm:w-auto
+                            ${isRainy
+                            ? "bg-gradient-to-br from-blue-50/80 to-cyan-50/50 dark:from-blue-950/40 dark:to-cyan-900/20 border-blue-200/50 dark:border-blue-700/30"
+                            : isSunny
+                              ? "bg-gradient-to-br from-amber-50/80 to-orange-50/50 dark:from-amber-950/40 dark:to-orange-900/20 border-amber-200/50 dark:border-amber-700/30"
+                              : "bg-gradient-to-br from-slate-50/80 to-gray-50/50 dark:from-slate-900/40 dark:to-gray-800/20 border-slate-200/50 dark:border-slate-700/30"
+                          }
+                          `}
+                      >
+                        {/* Top Highlight Gloss */}
+                        <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-white/40 to-transparent pointer-events-none" />
+
+                        <div className="z-10 flex flex-col items-center gap-2 w-full">
+                          <span className="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">
                             {dayLabel}
+                          </span>
+
+                          <div className="py-1 transform transition-transform group-hover:scale-110">
+                            {icon}
                           </div>
-                          <div className="text-3xl mb-1">{icon}</div>
-                          <div className="text-farm-900 font-bold mt-1 text-base dark:text-white">
-                            {f.temp}
+
+                          <div className="flex flex-col items-center">
+                            <span className="text-xl font-black text-gray-900 dark:text-white leading-none">
+                              {f.temp}
+                            </span>
+                            <span className="text-[10px] font-medium text-gray-400 dark:text-gray-500">
+                              {f.minTemp}
+                            </span>
                           </div>
-                          <div className="text-gray-500 text-xs dark:text-gray-400">
-                            {f.minTemp}
+
+                          {/* Rain / Tip Pill */}
+                          <div className={`
+                              mt-1 px-2 py-1 rounded-full text-[9px] font-bold w-full text-center truncate
+                              ${isRainy
+                              ? "bg-blue-100/50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+                              : "bg-black/5 text-gray-600 dark:bg-white/5 dark:text-gray-400"}
+                            `}>
+                            {isRainy ? `${f.rain}` : t(f.tipKey)}
                           </div>
-                          <div className="text-blue-600 text-xs font-medium mt-1 dark:text-blue-400">
-                            {t('weather_rain')}: {f.rain}
-                          </div>
-                          <div className="text-xs text-farm-600 mt-1 text-center leading-tight dark:text-gray-300">
-                            {t(f.tipKey)}
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
                 </div>
               </div>
             </div>

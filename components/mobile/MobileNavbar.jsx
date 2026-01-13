@@ -265,15 +265,17 @@ export default function MobileNavbar() {
             <AnimatePresence>
               {langOpen && (
                 <motion.div
-                  initial={{ opacity: 0, y: -6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
+                  initial={{ opacity: 0, y: -8, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -8, scale: 0.96 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
                   className="
-                    absolute right-0 mt-2 w-44 p-2 
-                    rounded-xl shadow-xl border 
-                    bg-green-700 dark:bg-[#1a1a1a]/90 
-                    backdrop-blur-xl 
-                    border-gray-200 dark:border-white/10
+                    absolute right-0 mt-3 w-48 p-2 
+                    rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border 
+                    bg-white/90 dark:bg-[#1a1a1a]/95 
+                    backdrop-blur-2xl 
+                    border-gray-100 dark:border-neutral-800
+                    overflow-hidden origin-top-right z-50
                   "
                 >
                   {locales.map((l) => (
@@ -284,17 +286,21 @@ export default function MobileNavbar() {
                         setLangOpen(false);
                       }}
                       className={`
-                        w-full px-4 py-2 text-left rounded-lg
-                        transition active:scale-95
-                        hover:bg-green-100 dark:hover:bg-white/10
-                        ${
-                          l === locale
-                            ? "bg-green-200 dark:bg-white/20 font-semibold"
-                            : ""
+                        flex items-center justify-between w-full px-4 py-3 text-left rounded-xl text-sm font-medium mb-1 last:mb-0
+                        transition-all duration-200
+                        ${l === locale
+                          ? "bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400 ring-1 ring-green-100 dark:ring-green-500/20"
+                          : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white"
                         }
                       `}
                     >
-                      {LOCALE_NAMES[l] || l}
+                      <span>{LOCALE_NAMES[l] || l}</span>
+                      {l === locale && (
+                        <motion.div
+                          layoutId="active-dot"
+                          className="w-1.5 h-1.5 rounded-full bg-green-500"
+                        />
+                      )}
                     </button>
                   ))}
                 </motion.div>

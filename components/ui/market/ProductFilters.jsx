@@ -54,7 +54,7 @@ export default function ProductFilters({
       <div className="flex items-center justify-between mb-4">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors dark:bg-[#272727] dark:border-gray-600 dark:hover:bg-[#0a0a0a]"
+          className="w-full flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors dark:bg-[#1E1E1E] dark:border-[#333] dark:hover:bg-[#2C2C2C]"
         >
           <FaFilter className="w-4 h-4 text-gray-600 dark:text-gray-400" />
           <span className="font-medium text-gray-700 dark:text-gray-300">
@@ -85,7 +85,8 @@ export default function ProductFilters({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="bg-white border border-gray-200 rounded-xl p-4 mb-6 dark:bg-[#272727] dark:border-gray-600"
+
+            className="bg-white border border-gray-200 rounded-xl p-4 mb-6 dark:bg-[#1E1E1E] dark:border-[#333]"
           >
             <div className="space-y-6">
               {/* Price Range */}
@@ -101,7 +102,7 @@ export default function ProductFilters({
                       placeholder={t("product_price_min")}
                       value={filters.priceMin || ""}
                       onChange={(e) => handlePriceChange("min", e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none dark:bg-[#0a0a0a] dark:border-gray-600 dark:text-gray-200"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none dark:bg-[#0a0a0a] dark:border-[#333] dark:text-gray-200"
                     />
                   </div>
                   <div>
@@ -110,7 +111,7 @@ export default function ProductFilters({
                       placeholder={t("product_price_max")}
                       value={filters.priceMax || ""}
                       onChange={(e) => handlePriceChange("max", e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none dark:bg-[#0a0a0a] dark:border-gray-600 dark:text-gray-200"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none dark:bg-[#0a0a0a] dark:border-[#333] dark:text-gray-200"
                     />
                   </div>
                 </div>
@@ -128,11 +129,10 @@ export default function ProductFilters({
                       <button
                         key={district}
                         onClick={() => handleDistrictChange(district)}
-                        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                          filters.district === district
-                            ? "bg-green-600 text-white"
-                            : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-[#0a0a0a] dark:text-gray-300 dark:hover:bg-[#1E1E1E]"
-                        }`}
+                        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${filters.district === district
+                          ? "bg-green-600 text-white"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-[#0a0a0a] dark:text-gray-300 dark:hover:bg-[#2C2C2C]"
+                          }`}
                       >
                         {district}
                       </button>

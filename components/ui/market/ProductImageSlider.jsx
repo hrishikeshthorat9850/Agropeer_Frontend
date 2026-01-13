@@ -46,8 +46,8 @@ export default function ProductImageSlider({ photos, onImageLoad }) {
   if (!photos || photos.length === 0) return null;
 
   return (
-    <div className="relative w-full bg-white rounded-2xl shadow-xl p-4 md:p-6 dark:bg-[#272727]">
-      <div className="relative w-full max-w-3xl mx-auto aspect-[4/3] bg-gray-100 rounded-xl overflow-hidden">
+    <div className="relative w-full bg-white shadow-xl p-2 md:p-6 dark:bg-[#1E1E1E]">
+      <div className="relative w-full max-w-3xl mx-auto aspect-[4/3] bg-gray-100 overflow-hidden dark:bg-[#2C2C2C]">
         {imagesLoading ? (
           <div className="flex items-center justify-center h-full">
             <div className="w-14 h-14 relative">
@@ -101,11 +101,10 @@ export default function ProductImageSlider({ photos, onImageLoad }) {
             <button
               key={i}
               onClick={() => setCurrentIndex(i)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                i === currentIndex
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${i === currentIndex
                   ? "bg-green-600 scale-125 shadow-lg"
                   : "bg-gray-300 hover:bg-gray-400"
-              }`}
+                }`}
               aria-label={`Go to image ${i + 1}`}
             />
           ))}

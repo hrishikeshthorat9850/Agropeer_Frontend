@@ -186,7 +186,7 @@ const FarmerDashboard = () => {
                 <h1 className="text-lg font-extrabold text-gray-900 dark:text-white leading-tight">
                   {t("dashboard_title")}
                 </h1>
-                <p className="text-[11px] font-medium text-gray-500 dark:text-gray-400 leading-none">
+                <p className="text-[14px] font-medium text-gray-500 dark:text-gray-400 leading-none">
                   {t("dashboard_subtitle")}
                 </p>
               </div>
@@ -221,9 +221,9 @@ const FarmerDashboard = () => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex-shrink-0 flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap border ${isActive
-                      ? "bg-gray-900 dark:bg-white text-white dark:text-black border-transparent shadow-sm"
-                      : "bg-gray-100 dark:bg-[#1e1e1e] text-gray-600 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-[#333]"
+                  className={`flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all whitespace-nowrap border ${isActive
+                    ? "bg-gray-900 dark:bg-white text-white dark:text-black border-transparent shadow-sm"
+                    : "bg-gray-100 dark:bg-[#1e1e1e] text-gray-600 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-[#333]"
                     }`}
                 >
                   <tab.icon className={isActive ? "text-white dark:text-black" : "text-gray-500 dark:text-gray-500"} />

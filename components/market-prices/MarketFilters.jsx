@@ -181,7 +181,7 @@ export default function MarketFilters({
           <select
             value={selectedState}
             onChange={(e) => setSelectedState(e.target.value)}
-            className={`appearance-none pl-3 pr-8 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer outline-none ${selectedState
+            className={`appearance-none pl-3 pr-8 py-1.5 rounded-full text-md font-semibold border transition-all cursor-pointer outline-none ${selectedState
                 ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300"
                 : "bg-white dark:bg-[#1e1e1e] border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300"
               }`}
@@ -204,7 +204,7 @@ export default function MarketFilters({
             value={selectedDistrict}
             onChange={(e) => setSelectedDistrict(e.target.value)}
             disabled={!selectedState}
-            className={`appearance-none pl-3 pr-8 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer outline-none ${selectedDistrict
+            className={`appearance-none pl-3 pr-8 py-1.5 rounded-full text-md font-semibold border transition-all cursor-pointer outline-none ${selectedDistrict
                 ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300"
                 : "bg-white dark:bg-[#1e1e1e] border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
               }`}
@@ -227,7 +227,7 @@ export default function MarketFilters({
             value={selectedMarket}
             onChange={(e) => setSelectedMarket(e.target.value)}
             disabled={!selectedState}
-            className={`appearance-none pl-3 pr-8 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer outline-none ${selectedMarket
+            className={`appearance-none pl-3 pr-8 py-1.5 rounded-full text-md font-semibold border transition-all cursor-pointer outline-none ${selectedMarket
                 ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300"
                 : "bg-white dark:bg-[#1e1e1e] border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
               }`}
@@ -248,7 +248,7 @@ export default function MarketFilters({
         {(selectedState || searchQuery) && (
           <button
             onClick={handleClearFilters}
-            className="flex-shrink-0 px-3 py-1.5 rounded-full bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 text-xs font-bold border border-red-100 dark:border-red-800/30 whitespace-nowrap active:scale-95 transition-transform"
+            className="flex-shrink-0 px-3 py-1.5 rounded-full bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 text-md font-bold border border-red-100 dark:border-red-800/30 whitespace-nowrap active:scale-95 transition-transform"
           >
             {t("clear_btn")}
           </button>

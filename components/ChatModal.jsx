@@ -454,7 +454,7 @@ export default function ChatModal({
           transition={{ duration: 0.25, ease: "easeOut" }}
           className="w-full sm:w-[420px] h-full flex flex-col overflow-hidden 
                      bg-white rounded-3xl shadow-[0_12px_45px_rgba(0,0,0,0.2)] 
-                     border border-emerald-100 self-end"
+                     border border-emerald-100 self-end dark:bg-[#1E1E1E] dark:border-[#333]"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
@@ -464,13 +464,13 @@ export default function ChatModal({
 
           {/* Product Info */}
           {product && (
-            <div className="p-4 bg-gradient-to-r from-sky-100 to-blue-200 border-b border-emerald-100 shadow-sm">
+            <div className="p-4 bg-gradient-to-r from-sky-100 to-blue-200 border-b border-emerald-100 shadow-sm dark:from-[#2C2C2C] dark:to-[#222] dark:border-[#333]">
               <ProductInfo product={product} />
             </div>
           )}
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto px-6 py-6 bg-gradient-to-b from-white to-gray-50 space-y-5">
+          <div className="flex-1 overflow-y-auto px-6 py-6 bg-gradient-to-b from-white to-gray-50 space-y-5 dark:from-[#1E1E1E] dark:to-[#0a0a0a]">
             <Messages
               loading={loading}
               user={user}
@@ -482,7 +482,7 @@ export default function ChatModal({
           </div>
 
           {/* Input */}
-          <div className="py-1 bg-blue-100 border-t border-gray-200 shadow-inner">
+          <div className="py-1 bg-blue-100 border-t border-gray-200 shadow-inner dark:bg-[#2C2C2C] dark:border-[#333]">
             <MessageInput
               newMessage={newMessage}
               handleTyping={handleTyping}
