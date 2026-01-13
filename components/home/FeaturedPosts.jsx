@@ -41,7 +41,7 @@ const FeaturedPosts = ({ posts, loading, error, refreshPosts }) => {
         transition={{ delay: 1.2, duration: 0.6 }}
         className="mb-12"
       >
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center justify-center text-center gap-3 mb-6">
           <div className="w-8 h-8 bg-farm-100 dark:bg-farm-900/30 rounded-lg flex items-center justify-center">
             <FaCrown className="w-5 h-5 text-farm-600 dark:text-farm-400" />
           </div>
@@ -87,7 +87,7 @@ const FeaturedPosts = ({ posts, loading, error, refreshPosts }) => {
       transition={{ delay: 1.2, duration: 0.6 }}
       className="mb-12"
     >
-      <div className="flex items-center gap-3 mb-6">
+      <div className="flex items-center justify-center gap-3 mb-6">
         <div className="w-8 h-8 bg-farm-100 dark:bg-farm-900/30 rounded-lg flex items-center justify-center">
           <FaCrown className="w-5 h-5 text-farm-600 dark:text-farm-400" />
         </div>

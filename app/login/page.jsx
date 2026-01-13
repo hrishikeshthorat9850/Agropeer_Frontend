@@ -68,7 +68,7 @@ export default function LoginPage() {
   }, []);
 
   return (
-    <div className="h-[100dvh] w-full overflow-hidden relative flex flex-col bg-white dark:bg-black font-sans">
+    <div className="fixed inset-0 w-full overflow-hidden overscroll-none touch-none relative flex flex-col bg-white dark:bg-black font-sans">
       {/* Background Decor */}
       <div className="absolute top-[-20%] left-[-20%] w-[140%] h-[80%] bg-gradient-to-br from-green-600/10 to-transparent dark:from-green-900/20 rounded-b-[100%] pointer-events-none" />
 
@@ -86,8 +86,8 @@ export default function LoginPage() {
       </div>
 
       {/* Main Card Section (Bottom Sheet Style) */}
-      <div className="flex-1 w-full relative z-20 flex flex-col justify-end">
-        <div className="w-full h-auto bg-transparent px-6 pb-6 sm:max-w-md sm:mx-auto">
+      <div className="flex-1 w-full relative z-20 flex flex-col">
+        <div className="w-full h-auto bg-transparent px-6 sm:max-w-md sm:mx-auto">
           {/* OAUTH ERROR ALERT */}
           <AnimatePresence>
             {oauthError && (

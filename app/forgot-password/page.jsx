@@ -56,28 +56,31 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-120px)] flex items-center justify-center farm-pattern p-4">
+    <div className="fixed inset-0 w-full overflow-hidden overscroll-none touch-none flex items-center justify-center bg-white dark:bg-black p-2 z-50">
+      {/* Background Decor */}
+      <div className="absolute top-[-20%] left-[-20%] w-[140%] h-[80%] bg-gradient-to-br from-green-600/10 to-transparent dark:from-green-900/20 rounded-b-[100%] pointer-events-none" />
+
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.6 }}
-        className="w-full max-w-md farm-card p-8 mx-4 border-farm-500 shadow-xl bg-white rounded-xl"
+        className="w-full max-w-md p-8 mx-4 z-10 bg-white dark:bg-[#1a1a1a] rounded-2xl shadow-xl border border-gray-100 dark:border-[#333]"
       >
         <div className="text-center mb-6">
-          <div className="bg-farm-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-            <FaEnvelope className="text-2xl text-farm-600" />
+          <div className="bg-green-100 dark:bg-green-900/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+            <FaEnvelope className="text-2xl text-green-600 dark:text-green-400" />
           </div>
-          <h1 className="text-2xl font-bold text-farm-800">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
             {t("forgot_password_title")}
           </h1>
-          <p className="text-farm-600 mt-2 text-sm">
+          <p className="text-gray-600 dark:text-gray-400 mt-2 text-sm">
             {t("forgot_password_desc")}
           </p>
         </div>
 
         <form onSubmit={handleResetPassword} className="space-y-6">
           <div>
-            <label className="block text-sm font-semibold text-farm-700 mb-2">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
               {t("email_label")}
             </label>
             <div className="relative">
@@ -86,7 +89,7 @@ export default function ForgotPasswordPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={t("email_placeholder")}
-                className="farm-input w-full pl-4 text-farm-600"
+                className="w-full h-12 px-4 bg-gray-50 dark:bg-[#0a0a0a] border border-gray-200 dark:border-[#333] rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all text-gray-900 dark:text-white placeholder-gray-400"
                 required
               />
             </div>
@@ -97,8 +100,8 @@ export default function ForgotPasswordPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               className={`text-center rounded-lg p-3 text-sm flex items-center justify-center gap-2 ${status === "success"
-                ? "bg-green-50 border border-green-200 text-green-700"
-                : "bg-red-50 border border-red-200 text-red-600"
+                ? "bg-green-50 border border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-400"
+                : "bg-red-50 border border-red-200 text-red-600 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400"
                 }`}
             >
               {status === "success" && <FaCheckCircle />}
@@ -109,7 +112,7 @@ export default function ForgotPasswordPage() {
           <button
             type="submit"
             disabled={status === "loading"}
-            className={`w-full farm-button py-3 flex items-center justify-center gap-2 ${status === "loading" ? "opacity-70 cursor-wait" : ""
+            className={`w-full py-3 flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl shadow-lg shadow-green-600/20 active:scale-95 transition-all ${status === "loading" ? "opacity-70 cursor-wait" : ""
               }`}
           >
             {status === "loading" ? t("sending") : t("send_reset_link")}
@@ -120,7 +123,7 @@ export default function ForgotPasswordPage() {
         <div className="text-center mt-8">
           <Link
             href="/login"
-            className="text-sm font-medium text-farm-600 hover:text-farm-700 underline underline-offset-2 hover:decoration-farm-500 transition-all"
+            className="text-sm font-medium text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 underline underline-offset-2 transition-all"
           >
             {t("back_to_login")}
           </Link>

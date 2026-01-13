@@ -107,7 +107,7 @@ export default function SignupForm() {
 
   /* ================= UI ================= */
   return (
-    <div className="w-full pb-10">
+    <div className="w-full">
       <div className="text-center mb-6">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
           {t("create_account")}
