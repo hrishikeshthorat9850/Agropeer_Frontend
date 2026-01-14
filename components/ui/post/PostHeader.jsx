@@ -73,8 +73,8 @@ export default function PostHeader({
               whileTap={{ scale: 0.95 }}
               onClick={onBookmarkClick}
               className={`p-2 rounded-full transition-colors ${isBookmarked
-                  ? 'bg-sunset-100 text-sunset-600'
-                  : 'text-farm-400 hover:bg-farm-50'
+                ? 'bg-sunset-100 text-gray-500'
+                : 'text-farm-400 hover:bg-farm-50'
                 }`}
             >
               <FaBookmark className="w-4 h-4" />
@@ -84,7 +84,7 @@ export default function PostHeader({
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               onClick={onOptionsClick}
-              className="p-2 text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors"
+              className="p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors"
             >
               <FaEllipsisH className="w-4 h-4 dark:text-gray-300" />
             </motion.button>

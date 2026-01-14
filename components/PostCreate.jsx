@@ -460,17 +460,17 @@ export default function PostCreation({ onSuccess }) {
                         </motion.button>
                         <motion.button
                           whileHover={{ scale: 1.05 }}
-                          className="p-2 sm:p-3 rounded-xl bg-sunset-100 dark:bg-orange-900/30 hover:bg-sunset-200 dark:hover:bg-orange-900/50"
+                          className="p-2 sm:p-3 rounded-xl bg-orange-100 dark:bg-orange-900/30 hover:bg-orange-200 dark:hover:bg-orange-900/50"
                           onClick={() => videoinputRef.current?.click()}
                         >
-                          <FaVideo className="w-4 h-4 sm:w-5 sm:h-5 text-sunset-600 dark:text-orange-400" />
+                          <FaVideo className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600 dark:text-orange-400" />
                         </motion.button>
-                        <motion.button
+                        {/* <motion.button
                           whileHover={{ scale: 1.05 }}
                           className="p-2 sm:p-3 rounded-xl bg-farm-100 dark:bg-emerald-900/30 hover:bg-farm-200 dark:hover:bg-emerald-900/50"
                         >
                           <FaMapMarkerAlt className="w-4 h-4 sm:w-5 sm:h-5 text-farm-600 dark:text-emerald-400" />
-                        </motion.button>
+                        </motion.button> */}
                         <input
                           ref={photoinputRef}
                           type="file"
@@ -570,10 +570,10 @@ export default function PostCreation({ onSuccess }) {
                   />
                   <motion.button
                     whileHover={{ scale: 1.05 }}
-                    className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-sunset-100 dark:bg-orange-900/30 hover:bg-sunset-200 dark:hover:bg-orange-900/50 text-sunset-700 dark:text-orange-300 text-sm sm:text-base font-medium"
+                    className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-orange-100 dark:bg-orange-900/30 hover:bg-orange-200 dark:hover:bg-orange-900/50 text-orange-700 dark:text-orange-300 text-sm sm:text-base font-medium"
                     onClick={() => videoinputRef.current.click()}
                   >
-                    <FaVideo className="w-4 h-4" /> {t("video_btn")}
+                    <FaVideo className="w-4 h-4 text-orange-600 dark:text-orange-400" /> {t("video_btn")}
                   </motion.button>
                   <input
                     ref={videoinputRef}

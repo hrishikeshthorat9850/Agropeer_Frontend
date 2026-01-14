@@ -1,10 +1,13 @@
 "use client";
+import { useState, useRef, useEffect } from "react";
 import {
   FaRegHeart,
   FaHeart,
   FaEllipsisH,
   FaPaperPlane,
   FaLeaf,
+  FaEdit,
+  FaTrash,
 } from "react-icons/fa";
 import { formatName } from "@/utils/formatName";
 import { timeAgo } from "@/utils/timeConverter";
@@ -27,13 +30,30 @@ export default function CommentItem({
   replyMenuOpen,
   replyLikes = {},
   onReplyMenu,
+  onEdit,
+  onDelete,
 }) {
   const { t } = useLanguage();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   return (
     <motion.div
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
-      className="flex items-start gap-3 py-3 px-4 rounded-3xl hover:scale-[1.01] transition-all duration-300 group/comment shadow-lg"
+      className={`flex items-start gap-3 py-3 px-4 rounded-3xl hover:scale-[1.01] transition-all duration-300 group/comment shadow-lg ${menuOpen ? "z-[50] relative" : "relative"}`}
       style={{
         background:
           typeof window !== "undefined" &&
@@ -119,12 +139,44 @@ export default function CommentItem({
           </div>
 
           {/* ⋯ Menu */}
-          <button
-            onClick={() => onMenuClick && onMenuClick(comment.id)}
-            className="text-slate-400 hover:text-slate-700 transition-all duration-200 p-1 rounded-full hover:bg-slate-100"
-          >
-            <FaEllipsisH className="w-3.5 h-3.5" />
-          </button>
+          <div className="relative" ref={menuRef}>
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="text-slate-400 hover:text-slate-700 transition-all duration-200 p-1 rounded-full hover:bg-slate-100 dark:hover:bg-white/10"
+            >
+              <FaEllipsisH className="w-3.5 h-3.5" />
+            </button>
+
+            {/* Dropdown Menu */}
+            {menuOpen && (
+              <div className="absolute right-0 top-8 w-36 bg-white dark:bg-[#1C1C1E] rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden z-[9999] animate-in fade-in zoom-in-95 duration-200">
+                <button
+                  onClick={() => {
+                    setMenuOpen(false);
+                    if (onEdit) onEdit(comment.id);
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors text-left border-b border-gray-100 dark:border-white/5"
+                >
+                  <div className="p-1.5 rounded-full bg-blue-100 dark:bg-blue-900/30">
+                    <FaEdit className="w-3.5 h-3.5" />
+                  </div>
+                  {t("edit_btn") || "Edit"}
+                </button>
+                <button
+                  onClick={() => {
+                    setMenuOpen(false);
+                    if (onDelete) onDelete(comment.id);
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-left"
+                >
+                  <div className="p-1.5 rounded-full bg-red-100 dark:bg-red-900/30">
+                    <FaTrash className="w-3.5 h-3.5" />
+                  </div>
+                  {t("delete_btn") || "Delete"}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* ✏️ Reply Input (Premium Glass UI) */}

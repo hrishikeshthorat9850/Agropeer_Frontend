@@ -30,6 +30,44 @@ export default function UserSidebar({ onClose } = {}) {
     if (!loading) setInfoLoading(false);
   }, [loading]);
 
+  useEffect(() => {
+    if (open) {
+      // Lock scroll
+      const scrollY = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
+      document.body.style.width = "100%";
+      document.body.style.overflow = "hidden";
+      document.body.dataset.lockScrollY = scrollY;
+    } else {
+      // Unlock scroll
+      const scrollY = document.body.dataset.lockScrollY || 0;
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+      window.scrollTo(0, parseInt(scrollY));
+      delete document.body.dataset.lockScrollY;
+    }
+
+    // Cleanup (when component unmounts)
+    return () => {
+      const scrollY = document.body.dataset.lockScrollY || 0;
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+      window.scrollTo(0, parseInt(scrollY));
+      delete document.body.dataset.lockScrollY;
+    };
+  }, [open]);
+
   const handleLogout = async () => {
     try {
       if (supabase?.auth?.signOut) {
@@ -53,7 +91,7 @@ export default function UserSidebar({ onClose } = {}) {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[9999] overflow-hidden">
+      <div className="fixed inset-0 bottom-[70px] z-[20000] overflow-hidden">
         {/* Backdrop (Blur) */}
         <motion.div
           className="absolute inset-0 bg-black/40 backdrop-blur-sm"
