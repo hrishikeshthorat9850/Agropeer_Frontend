@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/Context/languagecontext";
 import {
@@ -46,6 +46,7 @@ import {
   FaPaw,
   FaCapsules,
   FaShieldVirus,
+  FaBookOpen,
 } from "react-icons/fa";
 import { Capacitor } from "@capacitor/core";
 import { shareContent } from "@/utils/shareHandler";
@@ -56,6 +57,45 @@ export default function FarmingTips() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [savedTips, setSavedTips] = useState(new Set());
   const [selectedTip, setSelectedTip] = useState(null);
+
+
+  useEffect(() => {
+    if (selectedTip) {
+      // Lock scroll
+      const scrollY = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
+      document.body.style.width = "100%";
+      document.body.style.overflow = "hidden";
+      document.body.dataset.lockScrollY = scrollY;
+    } else {
+      // Unlock scroll
+      const scrollY = document.body.dataset.lockScrollY || 0;
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+      window.scrollTo(0, parseInt(scrollY));
+      delete document.body.dataset.lockScrollY;
+    }
+
+    // Cleanup (when component unmounts)
+    return () => {
+      const scrollY = document.body.dataset.lockScrollY || 0;
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+      window.scrollTo(0, parseInt(scrollY));
+      delete document.body.dataset.lockScrollY;
+    };
+  }, [selectedTip]);
 
   const tips = [
     {
@@ -742,7 +782,7 @@ export default function FarmingTips() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black">
+    <div className="min-h-screen bg-gray-50 dark:bg-black pb-6">
       {/* Sticky Mobile Header */}
       <nav className="sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-100 dark:border-white/10 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -777,11 +817,10 @@ export default function FarmingTips() {
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`flex items-center gap-1.5 px-4 py-2.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border ${
-                  selectedCategory === cat.id
-                    ? "bg-farm-600 border-farm-600 text-white shadow-md shadow-farm-500/20"
-                    : "bg-white dark:bg-[#121212] border-gray-100 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5"
-                }`}
+                className={`flex items-center gap-1.5 px-4 py-2.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border ${selectedCategory === cat.id
+                  ? "bg-farm-600 border-farm-600 text-white shadow-md shadow-farm-500/20"
+                  : "bg-white dark:bg-[#121212] border-gray-100 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5"
+                  }`}
               >
                 {cat.icon}
                 {cat.name}
@@ -861,11 +900,10 @@ export default function FarmingTips() {
                           e.stopPropagation();
                           toggleSave(tip.id);
                         }}
-                        className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
-                          savedTips.has(tip.id)
-                            ? "bg-yellow-50 text-yellow-500 dark:bg-yellow-900/20"
-                            : "text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5"
-                        }`}
+                        className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${savedTips.has(tip.id)
+                          ? "bg-yellow-50 text-yellow-500 dark:bg-yellow-900/20"
+                          : "text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5"
+                          }`}
                       >
                         {savedTips.has(tip.id) ? (
                           <FaBookmarkSolid className="w-4 h-4" />
@@ -901,7 +939,7 @@ export default function FarmingTips() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedTip(null)}
-              className="absolute inset-0 bg-black/40 pointer-events-auto"
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm pointer-events-auto"
             />
 
             {/* Modal Content */}
@@ -910,81 +948,86 @@ export default function FarmingTips() {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="bg-white dark:bg-[#1E1E1E] w-full sm:w-[500px] max-h-[90vh] sm:max-h-[85vh] sm:rounded-3xl rounded-t-3xl shadow-2xl overflow-hidden pointer-events-auto flex flex-col"
+              className="w-full sm:w-[500px] max-h-[90vh] sm:max-h-[85vh] sm:rounded-3xl rounded-t-3xl shadow-2xl overflow-hidden pointer-events-auto flex flex-col ring-1 ring-gray-200 dark:ring-white/10 relative z-50 bg-white dark:bg-[#18181b]"
             >
               {/* Modal Header Image/Icon Area */}
               <div
-                className={`h-32 ${selectedTip.bgColor} flex items-center justify-center relative shrink-0`}
+                className={`h-40 ${selectedTip.bgColor} dark:bg-[#27272a] flex items-center justify-center relative shrink-0`}
               >
-                <div className="w-12 h-1 bg-black/10 rounded-full absolute top-3"></div>
+                <div className="w-12 h-1.5 bg-black/20 dark:bg-white/20 rounded-full absolute top-3"></div>
+
+                {/* Decorative background circle */}
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/5 dark:to-black/20" />
+
                 <div
-                  className={`w-20 h-20 bg-white/50 dark:bg-black/20 backdrop-blur-md rounded-full flex items-center justify-center ${selectedTip.iconColor}`}
+                  className={`w-24 h-24 bg-white dark:bg-[#2C2C2E] shadow-xl rounded-full flex items-center justify-center ${selectedTip.iconColor} relative z-10 transform translate-y-2`}
                 >
-                  {selectedTip.icon}
+                  <div className="scale-125">{selectedTip.icon}</div>
                 </div>
+
                 <button
                   onClick={() => setSelectedTip(null)}
-                  className="absolute top-4 right-4 w-8 h-8 bg-black/10 hover:bg-black/20 rounded-full flex items-center justify-center text-gray-700"
+                  className="absolute top-4 right-4 w-9 h-9 bg-white/30 hover:bg-white/50 dark:bg-black/20 dark:hover:bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center text-gray-800 dark:text-white transition-colors border border-white/20"
                 >
                   <span className="text-xl leading-none">&times;</span>
                 </button>
               </div>
 
               {/* Content Scrollable */}
-              <div className="p-6 overflow-y-auto flex-1">
-                <div className="mb-6">
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    <span className="px-3 py-1 rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 text-xs font-bold">
+              <div className="p-6 overflow-y-auto flex-1 bg-white dark:bg-[#18181b]">
+                <div className="mb-6 text-center">
+                  <div className="flex flex-wrap gap-2 mb-4 justify-center">
+                    <span className="px-3 py-1 rounded-full bg-gray-100 dark:bg-[#27272a] text-gray-900 dark:text-white text-xs font-bold border border-gray-200 dark:border-white/10">
                       {
                         categories.find((c) => c.id === selectedTip.category)
                           ?.name
                       }
                     </span>
-                    <span className="px-3 py-1 rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 text-xs font-bold capitalize">
+                    <span className="px-3 py-1 rounded-full bg-gray-100 dark:bg-[#27272a] text-gray-900 dark:text-white text-xs font-bold capitalize border border-gray-200 dark:border-white/10">
                       {t(`difficulty_${selectedTip.difficulty}`)}
                     </span>
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+                  <h2 className="text-2xl font-bold text-black dark:text-white mb-3">
                     {selectedTip.title}
                   </h2>
-                  <p className="text-gray-600 dark:text-gray-300 text-base leading-relaxed">
+                  <p className="text-gray-900 dark:text-gray-200 text-base leading-relaxed font-medium">
                     {selectedTip.description}
                   </p>
                 </div>
 
-                <div className="bg-gray-50 dark:bg-[#121212] rounded-2xl p-5 border border-gray-100 dark:border-white/5">
-                  <h3 className="font-bold text-gray-900 dark:text-white mb-2 text-sm uppercase tracking-wide opacity-70">
+                <div className="bg-gray-50 dark:bg-[#27272a] rounded-2xl p-5 border border-gray-200 dark:border-white/10">
+                  <h3 className="font-bold text-black dark:text-white mb-3 text-sm uppercase tracking-wide flex items-center gap-2">
+                    <FaBookOpen className="w-4 h-4" />
                     {t("detailed_information")}
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                  <p className="text-gray-900 dark:text-gray-200 text-sm leading-relaxed whitespace-pre-wrap font-medium">
                     {selectedTip.details}
                   </p>
                 </div>
               </div>
 
               {/* Bottom Actions Sticky */}
-              <div className="p-4 border-t border-gray-100 dark:border-white/5 bg-white dark:bg-[#1E1E1E] shrink-0">
+              <div className="p-4 border-t border-gray-100 dark:border-white/10 bg-white dark:bg-[#18181b] shrink-0 z-20 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
                 <div className="flex gap-3">
                   <button
                     onClick={() => toggleSave(selectedTip.id)}
-                    className={`flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm transition-all ${
-                      savedTips.has(selectedTip.id)
-                        ? "bg-yellow-50 text-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-500"
-                        : "bg-gray-100 text-gray-700 dark:bg-white/10 dark:text-white hover:bg-gray-200"
-                    }`}
+                    className={`flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm transition-all active:scale-[0.98] ${savedTips.has(selectedTip.id)
+                      ? "bg-yellow-50 text-yellow-800 border border-yellow-200 dark:bg-yellow-900/40 dark:text-yellow-300 dark:border-yellow-700/50"
+                      : "bg-gray-100 text-gray-900 border border-transparent dark:bg-[#27272a] dark:text-white hover:bg-gray-200 dark:hover:bg-[#3f3f46]"
+                      }`}
                   >
                     {savedTips.has(selectedTip.id) ? (
-                      <FaBookmarkSolid />
+                      <FaBookmarkSolid className="w-4 h-4" />
                     ) : (
-                      <FaBookmark />
+                      <FaBookmark className="w-4 h-4" />
                     )}
                     {savedTips.has(selectedTip.id) ? t("saved") : t("save_tip")}
                   </button>
                   <button
                     onClick={() => handleShare(selectedTip)}
-                    className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm bg-farm-600 text-white hover:bg-farm-700 transition-all shadow-lg shadow-farm-500/20"
+                    className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm bg-farm-600 text-white hover:bg-farm-700 active:scale-[0.98] transition-all shadow-lg shadow-farm-500/20"
                   >
-                    <FaShare />
+                    <FaShare className="w-4 h-4" />
                     {t("share")}
                   </button>
                 </div>

@@ -5,7 +5,7 @@ export default function ExpertAdvice() {
   const { t } = useLanguage();
 
   return (
-    <div style={{ minHeight: "calc(100vh - 126px)" }} className="flex flex-col justify-center items-center px-4 text-center">
+    <div className="flex flex-col justify-center items-center px-4 text-center h-[80vh] overflow-hidden">
 
       <h1 className="text-4xl font-bold text-farm-900 dark:text-white">
         {t("expert_title")}

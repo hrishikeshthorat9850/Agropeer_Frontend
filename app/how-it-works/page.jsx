@@ -174,7 +174,7 @@ export default function HowItWorks() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black">
+    <div className="min-h-screen bg-gray-50 dark:bg-black pb-6">
       {/* Sticky Mobile Header */}
       <nav className="sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-100 dark:border-white/10 px-4 py-3 flex items-center justify-between">
         <h1 className="text-lg font-bold text-gray-900 dark:text-white">

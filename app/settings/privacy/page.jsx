@@ -89,7 +89,7 @@ export default function PrivacySettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F2F2F7] dark:bg-black pb-24 font-sans safe-area-inset-bottom">
+    <div className="bg-[#F2F2F7] dark:bg-black pb-6 font-sans safe-area-inset-bottom">
       {/* Premium Header with Blur */}
       <header className="sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50">
         <div className="flex items-center justify-between px-4 h-14">
@@ -395,8 +395,7 @@ export default function PrivacySettingsPage() {
             )}
           </button>
           <p className="text-center text-xs text-gray-400 dark:text-gray-600 mt-4 px-8">
-            {t("privacy_policy_notice") ||
-              "Your privacy is important to us. Review our Privacy Policy for more details."}
+            {t("privacy_policy_notice")}
           </p>
         </div>
       </main>
