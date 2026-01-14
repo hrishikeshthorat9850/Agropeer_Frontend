@@ -69,11 +69,15 @@ export default function AIChatbotButton({ open, setOpen }) {
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       onClick={() => !dragging && setOpen(true)}
-      className={`fixed ${getClassFromPosition()} bg-blue-600 text-white shadow-xl 
-        rounded-full w-14 h-14 flex items-center justify-center hover:bg-blue-700 
-        transition z-[99999] active:scale-95`}
+      className={`fixed ${getClassFromPosition()} 
+        bg-gradient-to-br from-green-500 to-emerald-600 
+        shadow-[0_4px_20px_rgba(34,197,94,0.4)]
+        text-white
+        rounded-2xl w-14 h-14 flex items-center justify-center 
+        hover:scale-110 active:scale-90
+        transition-all duration-300 z-[99999]`}
     >
-      <FaRobot size={26} className="animate-tilt" />
-    </button>
+      <FaRobot size={28} className="drop-shadow-sm" />
+    </button >
   );
 }

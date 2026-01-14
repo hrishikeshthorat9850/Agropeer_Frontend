@@ -128,8 +128,8 @@ export default function MobileSidebar() {
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
             {/* Gradient Orb Effects */}
-            <div className="absolute top-[-10%] left-[-20%] w-[300px] h-[300px] bg-green-500/20 rounded-full blur-[80px] pointer-events-none" />
-            <div className="absolute bottom-[-10%] right-[-20%] w-[250px] h-[250px] bg-blue-500/10 rounded-full blur-[60px] pointer-events-none" />
+            <div className="absolute top-[-10%] left-[-20%] w-[400px] h-[600px] bg-green-500/20 rounded-full blur-[80px] pointer-events-none" />
+            <div className="absolute bottom-[-10%] right-[-20%] w-[250px] h-[200px] bg-blue-500/10 rounded-full blur-[60px] pointer-events-none" />
 
             {/* HEADER */}
             <div className="relative px-8 pt-12 pb-8 flex justify-between items-center z-10">
@@ -219,7 +219,7 @@ export default function MobileSidebar() {
             </div>
 
             {/* FOOTER SOCIALS */}
-            <div className="p-8 border-t border-white/5 bg-black/20 backdrop-blur-md z-10">
+            <div className="px-8 py-4 border-t border-white/5 bg-black/20 backdrop-blur-md z-10">
               <div className="flex justify-between items-center gap-4 px-2">
                 <SocialIcon
                   href="https://www.facebook.com/profile.php?id=61584709015575"

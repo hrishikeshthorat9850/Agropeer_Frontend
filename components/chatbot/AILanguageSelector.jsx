@@ -19,19 +19,40 @@ export default function AILanguageSelector({ languages, handleLanguageChange, de
       {/* Button */}
       <button
         onClick={() => setOpen(!open)}
-        className="bg-white/10 px-2 py-0.5 rounded-lg text-sm flex items-center gap-2"
+        className="
+          flex items-center gap-1.5 px-3 py-1.5 rounded-full
+          bg-gray-100 dark:bg-white/10 
+          hover:bg-gray-200 dark:hover:bg-white/20
+          transition border border-gray-200 dark:border-white/10
+        "
       >
-        <FaLanguage className="text-white/90 h-8 w-8" />
-        {selectedLang ? selectedLang.label : ""}
+        <FaLanguage className="text-gray-600 dark:text-gray-300 text-lg" />
+        <span className="text-xs font-medium text-gray-700 dark:text-gray-200">
+          {selectedLang ? selectedLang.label : ""}
+        </span>
       </button>
 
       {/* Dropdown */}
       {open && (
-        <div className="absolute right-0 mt-2 bg-emerald-600 text-white shadow-lg rounded-lg p-2 w-36 z-[10000]">
+        <div className="
+          absolute right-0 mt-2 w-40 p-1
+          bg-white dark:bg-[#1a1a1a] 
+          border border-gray-100 dark:border-white/10
+          shadow-xl rounded-xl z-[10000]
+          animate-in fade-in zoom-in-95 duration-200
+        ">
           {languages.map((l) => (
             <button
               key={l.code}
-              className="w-full text-left px-2 py-1 hover:bg-white/10 rounded"
+              className={`
+                w-full text-left px-3 py-2 rounded-lg text-sm font-medium
+                flex items-center justify-between
+                transition-colors
+                ${selectedLang?.code === l.code
+                  ? "bg-green-50 dark:bg-green-500/20 text-green-600 dark:text-green-400"
+                  : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5"
+                }
+              `}
               onClick={() => {
                 handleLanguageChange(l.code);
                 setSelectedLang(l);
@@ -39,6 +60,7 @@ export default function AILanguageSelector({ languages, handleLanguageChange, de
               }}
             >
               {l.label}
+              {selectedLang?.code === l.code && <div className="w-1.5 h-1.5 rounded-full bg-green-500" />}
             </button>
           ))}
         </div>
