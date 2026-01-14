@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { createPortal } from "react-dom";
 import { useLogin } from "@/Context/logincontext";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
@@ -25,9 +26,12 @@ export default function UserSidebar({ onClose } = {}) {
   const { user, loading, userinfo } = useLogin();
   const { t } = useLanguage();
   const [infoLoading, setInfoLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     if (!loading) setInfoLoading(false);
+    return () => setMounted(false);
   }, [loading]);
 
   useEffect(() => {

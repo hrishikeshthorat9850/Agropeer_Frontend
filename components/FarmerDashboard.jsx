@@ -172,7 +172,7 @@ const FarmerDashboard = () => {
 
   // UI Render
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black font-sans pb-6">
+    <div className="bg-gray-50 dark:bg-black font-sans">
 
       {/* 📱 STICKY APP BAR (Header + Quick Stats) */}
       <header className="sticky top-0 z-40 bg-white/95 dark:bg-[#121212]/95 backdrop-blur-md border-b border-gray-100 dark:border-white/5 shadow-sm">

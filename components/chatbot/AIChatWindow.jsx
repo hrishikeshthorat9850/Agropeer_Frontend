@@ -122,7 +122,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
           onClick={() => setOpen(false)}
           className="
             fixed inset-0 
-            bg-black/40 
+            bg-black 
             backdrop-blur-sm 
             z-[9998]
           "
@@ -137,10 +137,9 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
           ${open ? "translate-y-0" : "translate-y-[120%]"}
         `}
         style={{
-          background: "#1B1F23",
+          background: "#0000",
           backdropFilter: "blur(18px)",
           WebkitBackdropFilter: "blur(18px)",
-          border: "1px solid gray",
           boxShadow: "0 8px 35px rgba(0,0,0,0.45)",
 
           ...(typeof window !== "undefined" && window.innerWidth < 768
