@@ -46,7 +46,7 @@ export default function ProductCard({
         boxShadow: "0 14px 32px rgba(0,0,0,0.10)",
       }}
       transition={{ duration: 0.35, ease: "easeOut" }}
-      className="group relative flex flex-col bg-white dark:bg-[#1E1E1E] rounded-3xl border border-gray-100 dark:border-[#333] shadow-[0_4px_16px_rgba(0,0,0,0.05)] hover:shadow-[0_12px_30px_rgba(0,0,0,0.1)] transition-all duration-300 overflow-hidden"
+      className="group relative flex flex-col bg-white dark:bg-[#1E1E1E] rounded-3xl border border-gray-100 dark:border-[#333] shadow-xl hover:shadow-[0_12px_30px_rgba(0,0,0,0.1)] transition-all duration-300 overflow-hidden"
     >
       {/* IMAGE SECTION */}
       <div className="relative w-full h-56 overflow-hidden rounded-t-3xl">

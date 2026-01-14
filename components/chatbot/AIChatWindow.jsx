@@ -13,11 +13,11 @@ export default function AIChatWindow({ open, setOpen }) {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [currentLanguage,setCurrentLanguage] = useState();
+  const [currentLanguage, setCurrentLanguage] = useState("en");
   const messagesEndRef = useRef(null);
   const scrollContainerRef = useRef(null);
   const [languageModalOpen, setlanguageModalOpen] = useState(false);
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   const languages = [
     { code: "en", label: "English" },
@@ -25,7 +25,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     { code: "mr", label: "Marathi" },
   ];
 
-  const handleLanguageChange = (l)=>{
+  const handleLanguageChange = (l) => {
     setCurrentLanguage(l);
     setlanguageModalOpen(false);
   }
@@ -78,7 +78,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
       const response = await fetch(`${BASE_URL}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: userMessage, history,currentLanguage })
+        body: JSON.stringify({ message: userMessage, history, currentLanguage })
       });
 
       const data = await response.json();
@@ -122,7 +122,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
           onClick={() => setOpen(false)}
           className="
             fixed inset-0 
-            bg-black 
+            bg-black/20 
             backdrop-blur-sm 
             z-[9998]
           "
@@ -144,27 +144,27 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
           ...(typeof window !== "undefined" && window.innerWidth < 768
             ? {
-                left: "0",
-                right: "0",
-                top: "auto",
-                bottom: "calc(env(safe-area-inset-bottom) + 70px)",
-                height:
-                  "calc(100vh - (env(safe-area-inset-top) + 56px) - (env(safe-area-inset-bottom) + 70px))",
-                borderTopLeftRadius: "20px",
-                borderTopRightRadius: "20px",
-              }
+              left: "0",
+              right: "0",
+              top: "auto",
+              bottom: "calc(env(safe-area-inset-bottom) + 70px)",
+              height:
+                "calc(100vh - (env(safe-area-inset-top) + 56px) - (env(safe-area-inset-bottom) + 70px))",
+              borderTopLeftRadius: "20px",
+              borderTopRightRadius: "20px",
+            }
             : {}),
 
           ...(typeof window !== "undefined" && window.innerWidth >= 768
             ? {
-                top: "122px",
-                right: "1rem",
-                bottom: "1rem",
-                width: "440px",
-                left: "auto",
-                borderRadius: "20px",
-                transform: open ? "translateY(0)" : "translateY(120%)"
-              }
+              top: "122px",
+              right: "1rem",
+              bottom: "1rem",
+              width: "440px",
+              left: "auto",
+              borderRadius: "20px",
+              transform: open ? "translateY(0)" : "translateY(120%)"
+            }
             : {})
         }}
       >
@@ -192,7 +192,12 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
           {/* RIGHT — LANGUAGE + CLOSE */}
           <div className="flex items-center gap-3">
-            <AILanguageSelector languages={languages} handleLanguageChange={handleLanguageChange} languageModalOpen={languageModalOpen}/>
+            <AILanguageSelector
+              languages={languages}
+              handleLanguageChange={handleLanguageChange}
+              defaultLanguage={currentLanguage}
+              languageModalOpen={languageModalOpen}
+            />
 
             <button
               onClick={() => setOpen(false)}
@@ -267,18 +272,16 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
               {messages.map((message) => (
                 <div
                   key={message.id}
-                  className={`flex ${
-                    message.role === "user" ? "justify-end" : "justify-start"
-                  }`}
+                  className={`flex ${message.role === "user" ? "justify-end" : "justify-start"
+                    }`}
                 >
                   <div
-                    className={`max-w-[80%] rounded-2xl px-4 py-2 ${
-                      message.role === "user"
-                        ? "bg-gradient-to-br from-emerald-600 to-emerald-500 text-white shadow-lg"
-                        : message.error
+                    className={`max-w-[80%] rounded-2xl px-4 py-2 ${message.role === "user"
+                      ? "bg-gradient-to-br from-emerald-600 to-emerald-500 text-white shadow-lg"
+                      : message.error
                         ? "bg-red-500/20 border border-red-400/30 text-red-200 backdrop-blur-md"
                         : "bg-white/10 border border-white/10 backdrop-blur-md text-white"
-                    }`}
+                      }`}
                   >
                     <p className="text-sm whitespace-pre-wrap break-words">
                       {message.content}

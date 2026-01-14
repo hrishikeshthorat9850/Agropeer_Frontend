@@ -765,8 +765,8 @@ export default function AgriMarket() {
           >
             {/* Center Text */}
             <div className="flex flex-col items-center gap-3">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white tracking-tight leading-tight">
-                🌾 {t("market_page_title")}
+              <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white tracking-tight leading-tight">
+                {t("market_page_title")}
               </h1>
               <p className="text-gray-600 dark:text-gray-300 text-base sm:text-lg md:text-lg font-medium max-w-md sm:max-w-lg md:max-w-xl">
                 {t("market_page_subtitle")}
