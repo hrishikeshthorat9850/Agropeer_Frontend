@@ -1,70 +1,79 @@
 "use client";
-import { useState, useEffect } from "react";
-import { FaLanguage } from "react-icons/fa";
+import { useState, useEffect, useRef } from "react";
+import { FaRobot } from "react-icons/fa";
 
-export default function AILanguageSelector({ languages, handleLanguageChange, defaultLanguage }) {
-  const [open, setOpen] = useState(false);
-  const [selectedLang, setSelectedLang] = useState(null);
+export default function AIChatbotButton({ open, setOpen }) {
+  const buttonRef = useRef(null);
 
-  // Set default language on mount
+  // 🔥 Important: Hook must ALWAYS run
+  const [isMobile, setIsMobile] = useState(false);
+  const [position, setPosition] = useState("bottom-right");
+  const [dragging, setDragging] = useState(false);
+
+  // Detect mobile using effect (SAFE)
   useEffect(() => {
-    if (defaultLanguage) {
-      const found = languages.find((l) => l.code === defaultLanguage);
-      if (found) setSelectedLang(found);
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  // 🔥 SAFE: Conditional Rendering (UI only)
+  if (isMobile) return null;
+
+  const handleDragStart = () => setDragging(true);
+
+  const handleDragEnd = (e) => {
+    setDragging(false);
+    snapToCorner(e.clientX, e.clientY);
+  };
+
+  const handleTouchStart = () => setDragging(true);
+
+  const handleTouchEnd = (e) => {
+    setDragging(false);
+    const touch = e.changedTouches[0];
+    snapToCorner(touch.clientX, touch.clientY);
+  };
+
+  const snapToCorner = (x, y) => {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+
+    if (x < w / 2 && y < h / 2) setPosition("top-left");
+    else if (x > w / 2 && y < h / 2) setPosition("top-right");
+    else if (x < w / 2 && y > h / 2) setPosition("bottom-left");
+    else setPosition("bottom-right");
+  };
+
+  const getClassFromPosition = () => {
+    switch (position) {
+      case "top-left":
+        return "top-6 left-6";
+      case "top-right":
+        return "top-6 right-6";
+      case "bottom-left":
+        return "bottom-6 left-6";
+      default:
+        return "bottom-6 right-6";
     }
-  }, [defaultLanguage, languages]);
+  };
 
   return (
-    <div className="relative">
-      {/* Button */}
-      <button
-        onClick={() => setOpen(!open)}
-        className="
-          flex items-center gap-1.5 px-3 py-1.5 rounded-full
-          bg-gray-100 dark:bg-white/10 
-          hover:bg-gray-200 dark:hover:bg-white/20
-          transition border border-gray-200 dark:border-white/10
-        "
-      >
-        <FaLanguage className="text-gray-600 dark:text-gray-300 text-lg" />
-        <span className="text-xs font-medium text-gray-700 dark:text-gray-200">
-          {selectedLang ? selectedLang.label : ""}
-        </span>
-      </button>
-
-      {/* Dropdown */}
-      {open && (
-        <div className="
-          absolute right-0 mt-2 w-40 p-1
-          bg-white dark:bg-[#1a1a1a] 
-          border border-gray-100 dark:border-white/10
-          shadow-xl rounded-xl z-[10000]
-          animate-in fade-in zoom-in-95 duration-200
-        ">
-          {languages.map((l) => (
-            <button
-              key={l.code}
-              className={`
-                w-full text-left px-3 py-2 rounded-lg text-sm font-medium
-                flex items-center justify-between
-                transition-colors
-                ${selectedLang?.code === l.code
-                  ? "bg-green-50 dark:bg-green-500/20 text-green-600 dark:text-green-400"
-                  : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5"
-                }
-              `}
-              onClick={() => {
-                handleLanguageChange(l.code);
-                setSelectedLang(l);
-                setOpen(false);
-              }}
-            >
-              {l.label}
-              {selectedLang?.code === l.code && <div className="w-1.5 h-1.5 rounded-full bg-green-500" />}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
+    <button
+      ref={buttonRef}
+      draggable
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onClick={() => !dragging && setOpen(true)}
+      className={`fixed ${getClassFromPosition()} bg-blue-600 text-white shadow-xl 
+        rounded-full w-14 h-14 flex items-center justify-center hover:bg-blue-700 
+        transition z-[99999] active:scale-95`}
+    >
+      <FaRobot size={26} className="animate-tilt" />
+    </button>
   );
 }

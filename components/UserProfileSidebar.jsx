@@ -56,7 +56,8 @@ export default function UserSidebar({ onClose } = {}) {
 
     // Cleanup (when component unmounts)
     return () => {
-      const scrollY = document.body.dataset.lockScrollY || 0;
+      // Unlock scroll
+      const scrollY = document.body.dataset.lockScrollY || "0";
       document.body.style.position = "";
       document.body.style.top = "";
       document.body.style.left = "";
@@ -66,7 +67,7 @@ export default function UserSidebar({ onClose } = {}) {
       window.scrollTo(0, parseInt(scrollY));
       delete document.body.dataset.lockScrollY;
     };
-  }, [open]);
+  }, []); // Empty dependency array means this runs once on mount and once on unmount
 
   const handleLogout = async () => {
     try {
@@ -89,9 +90,11 @@ export default function UserSidebar({ onClose } = {}) {
   const avatarUrl =
     user?.user_metadata?.avatar_url || user?.user_metadata?.avatar || null;
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
-      <div className="fixed inset-0 bottom-[70px] z-[20000] overflow-hidden">
+      <div className="fixed inset-0 z-[99999] overflow-hidden">
         {/* Backdrop (Blur) */}
         <motion.div
           className="absolute inset-0 bg-black/40 backdrop-blur-sm"
@@ -157,7 +160,7 @@ export default function UserSidebar({ onClose } = {}) {
           </div>
 
           {/* Content Area */}
-          <div className="flex-1 overflow-y-auto py-4 px-2 space-y-1">
+          <div className="flex-1 overflow-y-auto py-4 px-2 space-y-1 pb-24">
             {user?.id ? (
               <>
                 <SidebarItem
@@ -217,7 +220,7 @@ export default function UserSidebar({ onClose } = {}) {
 
           {/* Footer / Logout */}
           {user?.id && (
-            <div className="p-4 border-t border-gray-100 dark:border-[#2C2C2E] bg-gray-50/50 dark:bg-black/20">
+            <div className="p-4 border-t border-gray-100 dark:border-[#2C2C2E] bg-gray-50/50 dark:bg-black/20 pb-safe-area-bottom">
               <button
                 onClick={handleLogout}
                 className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 dark:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors group"
@@ -238,7 +241,8 @@ export default function UserSidebar({ onClose } = {}) {
           )}
         </motion.aside>
       </div>
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
 
