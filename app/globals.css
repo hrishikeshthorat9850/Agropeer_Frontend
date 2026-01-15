@@ -79,6 +79,27 @@ body::-webkit-scrollbar {
   display: none !important;
   width: 0 !important;
   height: 0 !important;
+  background: transparent !important;
+}
+
+/* ------------------------------------------------------ */
+/* 🚀 AGGRESSIVE SCROLLBAR RESET (GLOBAL)                 */
+/* ------------------------------------------------------ */
+
+::-webkit-scrollbar {
+  display: none !important;
+  width: 0px !important;
+  height: 0px !important;
+  background: transparent !important;
+  /* Optional: just make scrollbar invisible */
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent !important;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent !important;
 }
 
 /* ------------------------------------------------------ */
@@ -142,6 +163,21 @@ html.capacitor-platform-android input[type="search"] {
 html.capacitor-platform-android input::placeholder {
   color: rgba(0, 0, 0, 0.5);
   opacity: 1;
+}
+
+/* Fix for Android Dark Mode Placeholders */
+html.dark.capacitor-platform-android input::placeholder,
+html.dark.capacitor-platform-android textarea::placeholder {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* General Dark Mode Placeholders */
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #9ca3af !important;
+  /* gray-400 */
+  opacity: 1;
+  /* Firefox fix */
 }
 
 html.capacitor-platform-android .touch-manipulation {

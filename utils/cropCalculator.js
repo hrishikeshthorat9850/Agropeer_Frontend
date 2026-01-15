@@ -8,6 +8,7 @@
  */
 
 import { CROP_DATABASE } from "@/data/CROP_DATABASE";
+import { CROP_DATABASE as CROP_DB_MULTI } from "@/data/CROP_DATABASE.multi";
 
 const priceLookup = {
   Cereal: 22,
@@ -20,13 +21,42 @@ const priceLookup = {
 
 /**
  * Find crop info from CROP_DATABASE
+ * Scans English DB first, then localized DBs to map back to English ID
  */
 export function findCropInfo(cropName) {
   if (!cropName) return null;
-  const db = Array.isArray(CROP_DATABASE)
-    ? CROP_DATABASE
-    : Object.values(CROP_DATABASE);
-  return db.find((crop) => crop.name === cropName) || null;
+  const searchName = cropName.trim().toLowerCase();
+
+  // Helper: search a specific DB array/object
+  const searchInDB = (db) => {
+    const list = Array.isArray(db) ? db : Object.values(db);
+    return list.find((c) => c.name.trim().toLowerCase() === searchName);
+  };
+
+  // 1. Try English DB
+  let foundCrop = searchInDB(CROP_DATABASE);
+
+  // 2. If not found, try localized DBs to find ID
+  if (!foundCrop) {
+    // Check known languages keys
+    const langs = ["hi", "mr"];
+    for (const lang of langs) {
+      if (CROP_DB_MULTI[lang]) {
+        const localCrop = searchInDB(CROP_DB_MULTI[lang]);
+        if (localCrop && localCrop.id) {
+          // Map back to English crop via ID
+          // Use Array.find directly on CROP_DATABASE for ID lookup
+          const englishList = Array.isArray(CROP_DATABASE)
+            ? CROP_DATABASE
+            : Object.values(CROP_DATABASE);
+          foundCrop = englishList.find((c) => c.id === localCrop.id);
+          if (foundCrop) break;
+        }
+      }
+    }
+  }
+
+  return foundCrop || null;
 }
 
 /**
@@ -124,9 +154,9 @@ export function calculateIrrigation(
     const avgRainChance =
       forecast && forecast.length > 0
         ? forecast
-            .slice(0, 7)
-            .reduce((sum, day) => sum + (day.rainChance || 0), 0) /
-          Math.min(forecast.length, 7)
+          .slice(0, 7)
+          .reduce((sum, day) => sum + (day.rainChance || 0), 0) /
+        Math.min(forecast.length, 7)
         : 0;
 
     // Adjust irrigation frequency based on rainfall forecast

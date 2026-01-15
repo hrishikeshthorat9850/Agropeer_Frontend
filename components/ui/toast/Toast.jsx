@@ -23,31 +23,42 @@ export default function Toast({
   const startTimeRef = useRef(Date.now());
 
   // Color scheme based on type
+  // Premium Glassmorphism Color Scheme
   const colorMap = {
     success: {
-      bg: "bg-gradient-to-r from-green-600 to-green-700",
-      border: "border-green-500",
-      text: "text-white",
+      bg: "bg-emerald-950/90",
+      border: "border-emerald-500/20",
+      text: "text-emerald-50",
+      progress: "bg-emerald-500",
+      iconUser: "text-emerald-400"
     },
     error: {
-      bg: "bg-gradient-to-r from-red-600 to-red-700",
-      border: "border-red-500",
-      text: "text-white",
+      bg: "bg-red-950/90",
+      border: "border-red-500/20",
+      text: "text-red-50",
+      progress: "bg-red-500",
+      iconUser: "text-red-400"
     },
     info: {
-      bg: "bg-gradient-to-r from-blue-600 to-blue-700",
-      border: "border-blue-500",
-      text: "text-white",
+      bg: "bg-blue-950/90",
+      border: "border-blue-500/20",
+      text: "text-blue-50",
+      progress: "bg-blue-500",
+      iconUser: "text-blue-400"
     },
     warning: {
-      bg: "bg-gradient-to-r from-amber-600 to-amber-700",
-      border: "border-amber-500",
-      text: "text-white",
+      bg: "bg-amber-950/90",
+      border: "border-amber-500/20",
+      text: "text-amber-50",
+      progress: "bg-amber-500",
+      iconUser: "text-amber-400"
     },
     network: {
-      bg: "bg-gradient-to-r from-purple-600 to-purple-700",
-      border: "border-purple-500",
-      text: "text-white",
+      bg: "bg-purple-950/90",
+      border: "border-purple-500/20",
+      text: "text-purple-50",
+      progress: "bg-purple-500",
+      iconUser: "text-purple-400"
     },
   };
 
@@ -89,7 +100,7 @@ export default function Toast({
     setIsVisible(false);
     setTimeout(() => {
       onDismiss?.(id);
-    }, 300); // Wait for exit animation
+    }, 400); // Slightly longer for smooth exit
   };
 
   const handleActionClick = () => {
@@ -106,59 +117,52 @@ export default function Toast({
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0, y: -20, scale: 0.95 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: -20, scale: 0.95 }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
+        layout
+        initial={{ opacity: 0, y: -15, scale: 0.95, filter: "blur(10px)" }}
+        animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+        exit={{ opacity: 0, scale: 0.9, filter: "blur(10px)", transition: { duration: 0.2 } }}
+        transition={{ type: "spring", stiffness: 400, damping: 25 }}
         className={`
-          relative min-w-[300px] max-w-[400px] w-full
+          relative min-w-[340px] max-w-[420px] w-full
           ${colors.bg} ${colors.border} ${colors.text}
-          rounded-xl shadow-2xl border-2
+          backdrop-blur-xl
+          rounded-2xl border
+          shadow-[0_8px_32px_rgba(0,0,0,0.3)]
           overflow-hidden
-          mb-3
+          mb-3 select-none
         `}
         role="alert"
         aria-live="polite"
-        aria-atomic="true"
       >
-        {/* Progress bar */}
-        {!persistent && (
-          <div className="absolute top-0 left-0 right-0 h-1 bg-black/20">
-            <motion.div
-              className="h-full bg-white/50"
-              initial={{ width: "100%" }}
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.1, ease: "linear" }}
-            />
-          </div>
-        )}
-
-        <div className="px-4 py-3 flex items-start gap-3">
-          {/* Icon */}
+        <div className="flex items-center p-4 gap-3.5">
+          {/* Icon Area */}
           {showIcon && (
-            <div className="flex-shrink-0 pt-0.5">
-              <ToastIcon type={type} />
+            <div className={`
+              flex-shrink-0 w-10 h-10 rounded-full 
+              flex items-center justify-center
+              bg-white/5 backdrop-blur-sm
+              ${colors.border} border
+            `}>
+              <ToastIcon type={type} className="" />
             </div>
           )}
 
-          {/* Message */}
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium leading-relaxed break-words">
+          {/* Text Content */}
+          <div className="flex-1 min-w-0 py-0.5">
+            <p className="text-[15px] font-medium leading-snug tracking-wide text-white/90">
               {message}
             </p>
 
-            {/* Action Button */}
+            {/* Optional Action Button */}
             {action && (
               <button
                 onClick={handleActionClick}
                 className={`
-                  mt-2 px-3 py-1 rounded-lg
-                  bg-white/20 hover:bg-white/30
-                  text-xs font-semibold
-                  transition-colors duration-200
-                  focus:outline-none focus:ring-2 focus:ring-white/50
+                  mt-2 text-xs font-bold px-3 py-1.5 rounded-lg
+                  bg-white/10 hover:bg-white/20 active:scale-95
+                  transition-all duration-200 ease-out
+                  flex items-center gap-1.5
                 `}
-                aria-label={action.label || "Action"}
               >
                 {action.label}
               </button>
@@ -169,18 +173,30 @@ export default function Toast({
           {showCloseButton && (
             <button
               onClick={handleDismiss}
-              className={`
-                flex-shrink-0 p-1 rounded-lg
-                hover:bg-white/20
+              className="
+                flex-shrink-0 p-2 -mr-1
+                text-white/40 hover:text-white 
+                hover:bg-white/10 rounded-full
                 transition-colors duration-200
-                focus:outline-none focus:ring-2 focus:ring-white/50
-              `}
-              aria-label="Close notification"
+              "
+              aria-label="Close"
             >
-              <FaTimes className="w-4 h-4" />
+              <FaTimes className="w-3.5 h-3.5" />
             </button>
           )}
         </div>
+
+        {/* Premium Loading Bar (Bottom Glow) */}
+        {!persistent && (
+          <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-black/40">
+            <motion.div
+              className={`h-full ${colors.progress} shadow-[0_0_10px_currentColor]`}
+              initial={{ width: "100%" }}
+              animate={{ width: `${progress}%` }}
+              transition={{ duration: 0.1, ease: "linear" }}
+            />
+          </div>
+        )}
       </motion.div>
     </AnimatePresence>
   );

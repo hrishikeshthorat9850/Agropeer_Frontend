@@ -8,9 +8,11 @@ import { Capacitor } from "@capacitor/core";
 
 const POSITION_STYLES = {
   "top": "top-12 left-1/2 -translate-x-1/2",
+  "top-center": "top-12 left-1/2 -translate-x-1/2",
   "top-right": "top-12 right-4",
   "top-left": "top-12 left-4",
   "bottom": "bottom-4 left-1/2 -translate-x-1/2",
+  "bottom-center": "bottom-4 left-1/2 -translate-x-1/2",
   "bottom-right": "bottom-4 right-4",
   "bottom-left": "bottom-4 left-4",
 };
@@ -36,14 +38,15 @@ export default function ToastContainer({ position = "top-right", maxToasts = 5 }
         pointer-events-none
         w-full max-w-[calc(100vw-2rem)]
         sm:max-w-md
-        pt-[calc(var(--safe-top)+1rem)]
+        pt-[calc(var(--safe-top)+1.5rem)]
+        px-2
       `}
       role="region"
       aria-label="Notifications"
       aria-live="polite"
       aria-atomic="false"
     >
-      <div className="flex flex-col pointer-events-auto">
+      <div className="flex flex-col pointer-events-auto items-center w-full">
         <AnimatePresence mode="popLayout">
           {visibleToasts.map((toast) => (
             <Toast

@@ -11239,4 +11239,50 @@ export const CROP_DATABASE = [
       note: "Automatically generated entry. Validate agronomic data with local extension.",
     },
   },
-];
+  {
+    id: 201,
+    name: "Asafoetida (Hing)",
+    icon: "🌱",
+    category: "Spice",
+    growthDays: 1500, // Perennial herb, often takes years
+    description:
+      "Asafoetida (Hing) is a dried latex (gum oleoresin) exuded from the rhizome or tap root of several species of Ferula, perennial herbs growing 1 to 1.5 m (3.3 to 4.9 ft) tall. It is a crucial spice crop. It thrives in temperate climates with temperatures between 20-30°C and requires low to moderate rainfall. The crop prefers well-drained loamy to sandy loam soil. Proper irrigation is needed during establishment but it is drought tolerant once established. Farmers should watch for localized pests and root rot diseases. It is typically harvested after 4-5 years of growth.",
+    diseases: ["Root Rot", "Soft Rot"],
+    diseaseManagement: "Ensure good drainage to prevent rot. Use fungicides if necessary.",
+    varieties: ["Local Selection", "Exotic Varieties"],
+    climate: {
+      temperature: "20-30°C",
+      rainfall: "Low to Moderate",
+    },
+    irrigationDetails:
+      "Requires irrigation during initial establishment. Drought tolerant later.",
+    avgPrice: 3500, // High value crop
+    image: "https://placehold.co/400x300?text=Asafoetida+(Hing)",
+    interCrops: [],
+    soilType: "Well-drained loamy to sandy loam soil.",
+    watering: {
+      min: 300,
+      max: 500,
+    },
+    sunlight: "Full sun",
+    fertilizer: "Compost and NPK as per recommendation.",
+    pests: "Aphids, Root borers",
+    harvest: "Harvested after 4-5 years (gum extraction).",
+    market: "High demand in medicinal and spice markets.",
+    plantingSeason: "Spring or Autumn",
+    n_ratio_kg_per_hectare: 0,
+    p_ratio_kg_per_hectare: 0,
+    k_ratio_kg_per_hectare: 0,
+    n_ratio_kg_per_acre: 0,
+    p_ratio_kg_per_acre: 0,
+    k_ratio_kg_per_acre: 0,
+    seed_rate_kg_per_hectare: 0,
+    seed_rate_kg_per_acre: 0,
+    avg_yield_kg_per_hectare: 0,
+    avg_yield_kg_per_acre: 0,
+    planting_density_per_acre: 0,
+    _meta: {
+      updated_fields: [],
+      note: "Manually added entry for Asafoetida (Hing). Verify agronomic data.",
+    },
+  },];

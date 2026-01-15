@@ -148,7 +148,7 @@ export default function ClientLayout({ children }) {
         </>
 
         <AndroidNotificationHandler />
-        <ToastContainer position="top-right mt-10" maxToasts={5} />
+        <ToastContainer position="top-center" maxToasts={5} />
       </AppProviders>
     </>
   );

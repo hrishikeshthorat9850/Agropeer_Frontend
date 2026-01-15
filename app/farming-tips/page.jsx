@@ -782,7 +782,7 @@ export default function FarmingTips() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black pb-6">
+    <div className="bg-gray-50 dark:bg-black pb-6">
       {/* Sticky Mobile Header */}
       <nav className="sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-100 dark:border-white/10 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
