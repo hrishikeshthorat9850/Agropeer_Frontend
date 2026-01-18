@@ -144,7 +144,7 @@ export default function ClientLayout({ children }) {
           </main>
 
           {/* Mobile Bottom Nav */}
-          {showNavbar && !keyboardOpen ? (
+          {showNavbar && !keyboardOpen && !aiOpen ? (
             <MobileBottomNav onAI={() => setAiOpen(true)} />
           ) : null}
 

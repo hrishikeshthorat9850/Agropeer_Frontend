@@ -67,7 +67,7 @@ export default function ChatInputComposer({ sendMessage }) {
             }
           }}
           placeholder={t("type_message_placeholder")}
-          className="flex-1 px-4 py-2 rounded-full border border-gray-500 outline-none 
+          className="flex-1 px-4 py-2.5 rounded-full border border-gray-500 outline-none 
           text-sm bg-white dark:bg-neutral-900 text-gray-900 dark:text-gray-100"
         />
 

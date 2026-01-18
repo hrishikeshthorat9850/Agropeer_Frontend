@@ -137,7 +137,7 @@ export default function AIChatWindow({ open, setOpen }) {
           ${open ? "translate-y-0" : "translate-y-[120%]"}
         `}
         style={{
-          background: "rgba(0, 0, 0, 0.6)",
+          background: "rgba(0, 0, 0, 0.4)",
           backdropFilter: "blur(10px)",
           WebkitBackdropFilter: "blur(20px)",
           boxShadow: "0 8px 35px rgba(0,0,0,0.45)",
@@ -332,7 +332,7 @@ export default function AIChatWindow({ open, setOpen }) {
             onKeyPress={handleKeyPress}
             disabled={loading}
             className="
-              flex-1 px-4 py-2 rounded-full
+              flex-1 px-4 py-2.5 rounded-full
               bg-white/15 border border-white/10
               text-white placeholder-white/50
               shadow-inner outline-none
