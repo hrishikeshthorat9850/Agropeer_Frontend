@@ -154,7 +154,7 @@ export default function ProfilePage() {
 
     return (
       <MobilePageContainer noPadding>
-        <div className="min-h-screen bg-white dark:bg-black pb-6">
+        <div className="bg-white dark:bg-black pb-6">
           {/* Header */}
           <div className="sticky top-0 z-40 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-100 dark:border-[#2C2C2E] px-4 h-14 flex items-center justify-between">
             <button
@@ -358,7 +358,7 @@ export default function ProfilePage() {
 
   return (
     <MobilePageContainer noPadding>
-      <div className="min-h-screen bg-white dark:bg-black pb-6">
+      <div className="bg-white dark:bg-black pb-6">
         {/* Sticky Header */}
         <div className="sticky top-0 z-40 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-100 dark:border-[#2C2C2E] px-4 h-14 flex items-center justify-between">
           <span className="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">

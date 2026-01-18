@@ -16,7 +16,7 @@ export default function TrendingPage() {
 
   return (
     <MobilePageContainer>
-      <div className="py-4">
+      <div className="pt-4">
         <div className="w-full max-w-2xl mx-auto">
           <Suspense fallback={<PostSkeleton count={3} />}>
             <FeaturedPosts

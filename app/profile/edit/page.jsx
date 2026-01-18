@@ -68,7 +68,7 @@ export default function EditProfilePage() {
 
   return (
     <MobilePageContainer noPadding>
-      <div className="min-h-screen bg-white dark:bg-black font-sans">
+      <div className="bg-white dark:bg-black font-sans">
         {/* Sticky Header with Action */}
         <header className="sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-100 dark:border-[#2C2C2E]">
           <div className="flex items-center justify-between px-4 h-14">

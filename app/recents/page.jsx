@@ -64,7 +64,7 @@ export default function RecentsPage() {
 
   return (
     <MobilePageContainer>
-      <div className="py-4">
+      <div className="pt-4">
         <div className="w-full max-w-2xl mx-auto mb-2 text-center">
           <h1 className="text-2xl md:text-3xl font-extrabold text-farm-900 dark:text-white">
             {t("recent_activity_title")}

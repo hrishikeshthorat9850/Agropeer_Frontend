@@ -85,7 +85,7 @@ const FeaturedPosts = ({ posts, loading, error, refreshPosts }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 1.2, duration: 0.6 }}
-      className="mb-12"
+      className="mb-4"
     >
       <div className="flex items-center justify-center gap-3 mb-6">
         <div className="w-8 h-8 bg-farm-100 dark:bg-farm-900/30 rounded-lg flex items-center justify-center">

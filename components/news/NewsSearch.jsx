@@ -27,7 +27,7 @@ export default function NewsSearch({ onSearch, placeholder }) {
       <div className="mb-4">
         <div
           className="flex items-center gap-3 bg-white dark:bg-[#1E1E1E] 
-                    rounded-full px-5 py-3.5 border border-gray-100 dark:border-white/10 shadow-sm focus-within:ring-2 focus-within:ring-farm-500 focus-within:border-transparent transition-all"
+                    rounded-full px-4 py-2.5 border border-gray-100 dark:border-white/10 shadow-sm focus-within:ring-2 focus-within:ring-farm-500 focus-within:border-transparent transition-all"
         >
           {/* Search Icon */}
           <FaSearch className="text-gray-400 dark:text-gray-500" />

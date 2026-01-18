@@ -367,7 +367,7 @@ export default function PostsPage() {
                   {/* Infinite Scroll Sentinel */}
                   <div
                     ref={loadMoreRef}
-                    className="h-20 flex justify-center items-center"
+                    className="h-16 flex justify-center items-center"
                   >
                     {isFetchingMore && hasMore && (
                       <div className="flex flex-col items-center gap-2">
