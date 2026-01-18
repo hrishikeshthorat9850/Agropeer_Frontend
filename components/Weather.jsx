@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import useGeolocation from "@/hooks/useGeolocation";
 import {
@@ -27,6 +27,8 @@ import {
   Wheat,
 } from "lucide-react";
 import { useLanguage } from "@/Context/languagecontext";
+import { useLocation, LOCATION } from "./mobile/hooks/useLocation";
+import { openAppSettings } from "./mobile/utils/openAppSettings";
 
 export default function WeatherForecast() {
   const { t, currentLanguage } = useLanguage();
@@ -38,6 +40,15 @@ export default function WeatherForecast() {
   const [isFetching, setIsFetching] = useState(false);
   const fetchedRef = useRef(false);
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
+  const onLocationSuccess = useCallback(
+    (lat, lng) => {
+      fetchWeatherApi(lat, lng);
+    },
+    []
+  );
+
+  const { status, retry } = useLocation(onLocationSuccess);
 
   // Cache key based on location
   const getCacheKey = (lat, lng) =>
@@ -238,14 +249,54 @@ export default function WeatherForecast() {
     });
   };
 
-  if (loading)
-    return <p className="text-center mt-10">{t("loading_location")}</p>;
-  if (error)
-    return <p className="text-center text-red-600 mt-10">⚠️ {error.message}</p>;
-  if (!weather)
+  // Render loading/error states or the main UI
+  if (!weather) {
     return (
-      <p className="text-center text-green-500 mt-10">{t("loading_weather")}</p>
+      <div className="w-full max-w-6xl mx-auto mt-8 px-4 text-center">
+        {/* Location Status Controls for missing weather/location */}
+        <div className="flex flex-col items-center justify-center gap-4 p-8 bg-white dark:bg-[#1E1E1E] rounded-3xl shadow-sm border border-gray-100 dark:border-[#333]">
+          {status === LOCATION.LOADING && (
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-8 h-8 border-4 border-farm-500 border-t-transparent rounded-full animate-spin"></div>
+              <p className="text-gray-500">{t('loading_location') || "Locating..."}</p>
+            </div>
+          )}
+
+          {status === LOCATION.DENIED && (
+            <div className="flex flex-col items-center gap-3">
+              <p className="text-red-500 font-medium">Location access is required for local weather.</p>
+              <button
+                onClick={retry}
+                className="px-6 py-2 bg-red-500 hover:bg-red-600 text-white rounded-full font-medium transition-colors shadow-lg shadow-red-200"
+              >
+                Enable Location
+              </button>
+            </div>
+          )}
+
+          {status === LOCATION.GPS_OFF && (
+            <div className="flex flex-col items-center gap-3">
+              <p className="text-orange-500 font-medium">Please turn on your GPS.</p>
+              <button
+                onClick={openAppSettings}
+                className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-full font-medium transition-colors shadow-lg shadow-orange-200"
+              >
+                Turn On GPS
+              </button>
+            </div>
+          )}
+
+          {!loading && !error && !weather && status !== LOCATION.LOADING && status !== LOCATION.DENIED && status !== LOCATION.GPS_OFF && (
+            <p className="text-gray-400">{t('loading_weather')}</p>
+          )}
+
+          {error && status !== LOCATION.DENIED && status !== LOCATION.GPS_OFF && (
+            <p className="text-red-500">{error.message}</p>
+          )}
+        </div>
+      </div>
     );
+  }
 
   const suggestions = [
     {
@@ -523,33 +574,32 @@ export default function WeatherForecast() {
                       </span>
                     </div>
                   </div>
-
-                  {/* Divider */}
-                  <div className="w-1/2 mx-auto h-px bg-gray-100 dark:bg-white/10 mb-6" />
-
-                  {/* 3 Stats in a clean row */}
-                  <div className="flex justify-between items-center px-2 mb-6 max-w-xs mx-auto w-full">
-                    <div className="flex flex-col items-center gap-1">
-                      <FaTint className="text-blue-500 dark:text-blue-400 text-lg" />
-                      <span className="text-[10px] text-gray-400 dark:text-gray-500 uppercase font-bold tracking-wider">
-                        {t("weather_rain")}
+                  {/* Integrated Location Controls in Simple View */}
+                  <div className="flex items-center gap-2 mt-2">
+                    {status === LOCATION.LOADING && (
+                      <span className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full animate-pulse text-gray-500">
+                        Included Locating...
                       </span>
-                      <span className="text-base font-bold text-gray-700 dark:text-gray-200">
-                        {weather.rain}
-                      </span>
-                    </div>
-
-                    <div className="w-px h-8 bg-gray-100 dark:bg-white/10" />
-
-                    <div className="flex flex-col items-center gap-1">
-                      <FaWind className="text-slate-500 dark:text-slate-400 text-lg" />
-                      <span className="text-[10px] text-gray-400 dark:text-gray-500 uppercase font-bold tracking-wider">
-                        {t("weather_wind")}
-                      </span>
-                      <span className="text-base font-bold text-gray-700 dark:text-gray-200">
-                        {weather.wind}
-                      </span>
-                    </div>
+                    )}
+                    {status === LOCATION.DENIED && (
+                      <button
+                        onClick={retry}
+                        className="text-xs bg-red-100 text-red-600 hover:bg-red-200 px-3 py-1 rounded-full font-medium transition-colors"
+                      >
+                        Enable Location
+                      </button>
+                    )}
+                    {status === LOCATION.GPS_OFF && (
+                      <button
+                        onClick={openAppSettings}
+                        className="text-xs bg-orange-100 text-orange-600 hover:bg-orange-200 px-3 py-1 rounded-full font-medium transition-colors"
+                      >
+                        Turn On GPS
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
 
                     <div className="w-px h-8 bg-gray-100 dark:bg-white/10" />
 

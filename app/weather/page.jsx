@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect ,useCallback} from "react";
 import WeatherForecast from "@/components/Weather";
 import PersonalizedWeatherGuide from "@/components/PersonalizedWeatherGuide";
 import { motion, AnimatePresence } from "framer-motion";
@@ -8,6 +8,7 @@ import MobilePageContainer from "@/components/mobile/MobilePageContainer";
 import { useWeather } from "@/Context/WeatherContext";
 import useGeolocation from "@/hooks/useGeolocation";
 import { useLanguage } from "@/Context/languagecontext";
+import { useLocation,LOCATION } from "@/components/mobile/hooks/useLocation";
 
 export default function WeatherPage() {
   const { weather, loading: weatherLoading, getWeather, error: weatherError } = useWeather();
@@ -15,7 +16,41 @@ export default function WeatherPage() {
   const { t } = useLanguage();
   const [showPersonalized, setShowPersonalized] = useState(false);
   const [selectedCrop, setSelectedCrop] = useState(null);
+  useEffect(() => {
+    if (!position?.latitude || !position?.longitude) return;
+    // Only fetch if we don't have weather data yet
+    if (!weather && !weatherLoading) {
+      getWeather(position.latitude, position.longitude);
+    }
+  }, [position, weather, weatherLoading, getWeather]);
 
+  // ✅ memoized success handler
+  const onLocationSuccess = useCallback(
+    (lat, lng) => {
+      getWeather(lat, lng);
+    },
+    [getWeather]
+  );
+
+  const { status, retry } = useLocation(onLocationSuccess);
+
+  const cleanTemp =
+    typeof weather?.temperature === "number"
+      ? weather.temperature.toFixed(1)
+      : "--";
+
+  const rainChance =
+    typeof weather?.forecast?.[0]?.rainChance === "number"
+      ? weather.forecast[0].rainChance
+      : "--";
+
+  const humidity =
+    typeof weather?.humidity === "number" ? weather?.humidity : "--";
+
+  const windSpeed =
+    typeof weather?.windspeed === "number"
+      ? weather?.windspeed?.toFixed(1)
+      : "--";
   // Load selected crop from localStorage
   useEffect(() => {
     const savedCrop = localStorage.getItem("selectedCrop");
@@ -24,13 +59,6 @@ export default function WeatherPage() {
     }
   }, []);
 
-  // useEffect(() => {
-  //   if (!position?.latitude || !position?.longitude) return;
-  //   // Only fetch if we don't have weather data yet
-  //   if (!weather && !weatherLoading) {
-  //     getWeather(position.latitude, position.longitude);
-  //   }
-  // }, [position, weather, weatherLoading, getWeather]);
 
   return (
     <MobilePageContainer>
@@ -43,7 +71,32 @@ export default function WeatherPage() {
           <p className="text-base md:text-lg text-farm-700 dark:text-gray-300 mb-6">
             {t('weather_page_subtitle')}
           </p>
-
+              <div className="flex items-center gap-2">
+                {status === LOCATION.LOADING && (
+                  <span className="text-xs bg-white/20 px-2 py-1 rounded-full animate-pulse">
+                    Locating...
+                  </span>
+                )}
+                {status === LOCATION.DENIED && (
+                  <button
+                    onClick={retry}
+                    className="text-xs bg-red-500/90 hover:bg-red-500 px-3 py-1 rounded-full text-white font-medium transition-colors"
+                  >
+                    Enable Location
+                  </button>
+                )}
+                {status === LOCATION.GPS_OFF && (
+                  <button
+                    onClick={openAppSettings}
+                    className="text-xs bg-orange-500/90 hover:bg-orange-500 px-3 py-1 rounded-full text-white font-medium transition-colors"
+                  >
+                    Turn On GPS
+                  </button>
+                )}
+                {!weatherLoading && !weatherError && (
+                  <div className="w-2 h-2 rounded-full bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.6)]"></div>
+                )}
+              </div>
           {/* Toggle Button */}
           <motion.button
             whileHover={{ scale: 1.05 }}
