@@ -68,12 +68,12 @@ export default function LoginPage() {
   }, []);
 
   return (
-    <div className="fixed inset-0 w-full overflow-hidden overscroll-none touch-none relative flex flex-col bg-[#FAF7F2] dark:bg-[#0d0d0d] font-sans">
+    <div className="w-full min-h-screen flex flex-col justify-center bg-[#FAF7F2] dark:bg-[#0d0d0d] font-sans relative overflow-hidden overscroll-none touch-none">
       {/* Background Decor */}
-      <div className="absolute top-[-20%] left-[-20%] w-[140%] h-[80%] bg-gradient-to-br from-green-600/10 to-transparent dark:from-green-900/20 rounded-b-[100%] pointer-events-none" />
+      <div className="absolute top-[-20%] left-[-20%] w-[140%] h-[80%] bg-gradient-to-br from-green-200 to-transparent dark:from-green-950 rounded-b-[100%] pointer-events-none" />
 
       {/* Top Section: Logo & Brand */}
-      <div className="flex-none pt-12 pb-6 flex flex-col items-center justify-center relative z-10">
+      <div className="flex-none pb-6 flex flex-col items-center justify-center relative z-10">
         <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl shadow-lg shadow-green-500/30 flex items-center justify-center text-white mb-4">
           <Sprout size={36} fill="currentColor" />
         </div>
@@ -86,7 +86,7 @@ export default function LoginPage() {
       </div>
 
       {/* Main Card Section (Bottom Sheet Style) */}
-      <div className="flex-1 w-full relative z-20 flex flex-col">
+      <div className="w-full relative z-20 flex flex-col">
         <div className="w-full h-auto bg-transparent px-6 sm:max-w-md sm:mx-auto">
           {/* OAUTH ERROR ALERT */}
           <AnimatePresence>

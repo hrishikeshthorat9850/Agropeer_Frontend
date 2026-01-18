@@ -71,8 +71,8 @@ export default function ChatArea({ messages = [], selected, sendMessage }) {
     <main
       className="fixed left-0 right-0 bg-white dark:bg-black z-0"
       style={{
-        top: isNative ? "calc(56px + env(safe-area-inset-top))" : "56px",
-        bottom: isNative ? "calc(80px + env(safe-area-inset-bottom))" : "80px",
+        top: isNative ? "env(safe-area-inset-top)" : "0px",
+        bottom: isNative ? "env(safe-area-inset-bottom)" : "0px",
       }}
     >
       <div className="flex flex-col w-full h-full overflow-hidden">

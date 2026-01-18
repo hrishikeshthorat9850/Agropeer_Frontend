@@ -137,8 +137,8 @@ export default function AIChatWindow({ open, setOpen }) {
           ${open ? "translate-y-0" : "translate-y-[120%]"}
         `}
         style={{
-          background: "#000000",
-          backdropFilter: "blur(20px)",
+          background: "rgba(0, 0, 0, 0.6)",
+          backdropFilter: "blur(10px)",
           WebkitBackdropFilter: "blur(20px)",
           boxShadow: "0 8px 35px rgba(0,0,0,0.45)",
 
@@ -223,7 +223,7 @@ export default function AIChatWindow({ open, setOpen }) {
             <>
               {/* ASK AI */}
               <div className="
-                bg-gradient-to-br from-emerald-900 to-emerald-800 
+                bg-gradient-to-br from-emerald-900 to-emerald-950 
                 border border-white/10 backdrop-blur-xl 
                 p-5 rounded-2xl shadow-[0_4px_25px_rgba(0,0,0,0.3)]
                 flex flex-col items-center text-center mb-5

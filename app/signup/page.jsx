@@ -45,7 +45,7 @@ export default function SignupPage() {
   return (
     <div className="fixed inset-0 w-full overflow-hidden overscroll-none relative flex flex-col bg-[#FAF7F2] dark:bg-[#0d0d0d] font-sans">
       {/* Background Decor */}
-      <div className="absolute top-[-20%] left-[-20%] w-[140%] h-[80%] bg-gradient-to-br from-green-600/10 to-transparent dark:from-green-900/20 rounded-b-[100%] pointer-events-none" />
+      <div className="absolute top-[-20%] left-[-20%] w-[140%] h-[80%] bg-gradient-to-br from-green-200 to-transparent dark:from-green-950 rounded-b-[100%] pointer-events-none" />
 
       {/* Top Section: Logo & Brand */}
       <div className="flex-none pt-8 pb-4 flex flex-col items-center justify-center relative z-10">

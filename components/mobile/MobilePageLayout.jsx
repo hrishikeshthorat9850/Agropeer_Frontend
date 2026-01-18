@@ -26,6 +26,7 @@ export default function MobilePageLayout({ children, className = "" }) {
     "/forgot-password",
     "/reset-password",
     "/auth/callback",
+    "/selected-chat",
   ];
 
   // Routes that should hide navbar/bottom nav
@@ -36,10 +37,16 @@ export default function MobilePageLayout({ children, className = "" }) {
     "/admin/login",
     "/forgot-password",
     "/reset-password",
+    "/selected-chat",
   ];
 
-  const hasNoPadding = noPaddingRoutes.includes(pathname);
-  const hasNoUI = noUIRoutes.includes(pathname);
+  const normalizePath = (path) => {
+    if (!path) return "";
+    return path.endsWith("/") && path.length > 1 ? path.slice(0, -1) : path;
+  };
+
+  const hasNoPadding = noPaddingRoutes.includes(normalizePath(pathname));
+  const hasNoUI = noUIRoutes.includes(normalizePath(pathname));
   const isAdminRoute =
     pathname.startsWith("/admin") && pathname !== "/admin/login";
 
@@ -71,13 +78,12 @@ export default function MobilePageLayout({ children, className = "" }) {
   return (
     <div
       className={`
-        w-full min-h-screen
         ${getBackgroundColor()}
         ${getPaddingClasses()}
         ${className}
       `}
     >
-      <div className="w-full h-full mt-2">{children}</div>
+      <div className="w-full h-full">{children}</div>
     </div>
   );
 }

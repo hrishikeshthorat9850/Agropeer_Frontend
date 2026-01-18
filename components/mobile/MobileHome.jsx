@@ -68,7 +68,7 @@ export default function MobileHome() {
       : "--";
 
   return (
-    <div className="md:hidden min-h-screen bg-neutral-50 dark:bg-black font-sans pb-12">
+    <div className="md:hidden min-h-screen bg-neutral-50 dark:bg-black font-sans pb-6">
       {/* ================================================================= */}
       {/*                        TOP HEADER SECTION                         */}
       {/* ================================================================= */}

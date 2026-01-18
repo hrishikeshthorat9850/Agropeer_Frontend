@@ -1,4 +1,3 @@
-
 "use client";
 import { usePathname } from "next/navigation";
 import AppProviders from "./AppProviders";
@@ -17,7 +16,7 @@ import MobilePageLayout from "@/components/mobile/MobilePageLayout";
 import { useState, useEffect } from "react";
 import { Capacitor } from "@capacitor/core";
 import { useKeyboardOpen } from "@/Mobile/hooks/useKeyboardOpen";
-import PopupModal from "@/components/popup/PopupModal";
+// import PopupModal from "@/components/popup/PopupModal";
 import { setupAndroidNotificationChannel } from "@/utils/capacitorNotifications";
 import DeepLinkManager from "@/components/Deeplink/DeeplinkManager";
 
@@ -30,12 +29,24 @@ export default function ClientLayout({ children }) {
   // 🔥 Popup State → Always show on fresh load
   const [showPopup, setShowPopup] = useState(true);
 
-  const noUIRoutes = ["/login", "/signup", "/register", "/admin/login", "/forgot-password"];
-  const showNavbar = !noUIRoutes.includes(pathname);
+  const noUIRoutes = [
+    "/login",
+    "/signup",
+    "/register",
+    "/admin/login",
+    "/forgot-password",
+    "/selected-chat",
+  ];
+  const normalizePath = (path) => {
+    if (!path) return "";
+    return path.endsWith("/") && path.length > 1 ? path.slice(0, -1) : path;
+  };
+
+  const showNavbar = !noUIRoutes.includes(normalizePath(pathname));
 
   useEffect(() => {
     if (Capacitor.isNativePlatform()) {
-      setupAndroidNotificationChannel();  // 📢 Create channel when app loads
+      setupAndroidNotificationChannel(); // 📢 Create channel when app loads
     }
   }, []);
 
@@ -46,7 +57,9 @@ export default function ClientLayout({ children }) {
       document.documentElement.classList.add(`capacitor-platform-${platform}`);
       document.body.classList.add(`capacitor-platform-${platform}`);
       return () => {
-        document.documentElement.classList.remove(`capacitor-platform-${platform}`);
+        document.documentElement.classList.remove(
+          `capacitor-platform-${platform}`
+        );
         document.body.classList.remove(`capacitor-platform-${platform}`);
       };
     }
@@ -56,7 +69,10 @@ export default function ClientLayout({ children }) {
   useEffect(() => {
     async function applyStatusBar() {
       try {
-        if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android') {
+        if (
+          Capacitor.isNativePlatform() &&
+          Capacitor.getPlatform() === "android"
+        ) {
           // Set status bar to overlay the webview so navbar shows through
           await StatusBar.setOverlaysWebView({ overlay: true });
 
@@ -67,7 +83,7 @@ export default function ClientLayout({ children }) {
           await StatusBar.setStyle({ style: Style.Light });
         }
       } catch (e) {
-        console.error('StatusBar error:', e);
+        console.error("StatusBar error:", e);
       }
     }
 
@@ -76,9 +92,16 @@ export default function ClientLayout({ children }) {
 
   // Body padding adjustments for mobile no-padding routes
   useEffect(() => {
-    const noMobilePaddingRoutes = ["/login", "/signup", "/register", "/admin/login", "/forgot-password"];
+    const noMobilePaddingRoutes = [
+      "/login",
+      "/signup",
+      "/register",
+      "/admin/login",
+      "/forgot-password",
+      "/selected-chat",
+    ];
 
-    if (noMobilePaddingRoutes.includes(pathname)) {
+    if (noMobilePaddingRoutes.includes(normalizePath(pathname))) {
       document.body.classList.add("no-mobile-padding");
       document.documentElement.classList.add("no-mobile-padding");
     } else {
@@ -86,7 +109,6 @@ export default function ClientLayout({ children }) {
       document.documentElement.classList.remove("no-mobile-padding");
     }
   }, [pathname]);
-
 
   return (
     <>
@@ -97,51 +119,41 @@ export default function ClientLayout({ children }) {
         }}
       />
       <AppProviders>
-
         <TopLoader />
         <OfflineBanner />
 
         {/* 🔥 Popup Only on First Layout Mount */}
-        {showPopup && !noUIRoutes.includes(pathname) && (
+        {/* {showPopup && !noUIRoutes.includes(pathname) && (
           <PopupModal onClose={() => setShowPopup(false)} />
-        )}
+        )} */}
 
         {/* Main Layout Structure (Mobile Only) */}
 
         <>
           {/* Mobile Navbar */}
-          {showNavbar && (
-            <MobileNavbar onOpenAI={() => setAiOpen(true)} />
-          )}
+          {showNavbar && <MobileNavbar onOpenAI={() => setAiOpen(true)} />}
 
           {/* Main Content Area */}
-          <main
-            className={`w-full min-h-screen ${showNavbar ? "" : ""}`}
-          >
+          <main className={`w-full min-h-screen ${showNavbar ? "" : ""}`}>
             <div className="flex flex-col w-full">
               <PageTransition>
                 {/* Always use MobilePageLayout if not explicitly native-only, but here we assume mobile behaviour */}
-                <MobilePageLayout>
-                  {children}
-                </MobilePageLayout>
+                <MobilePageLayout>{children}</MobilePageLayout>
               </PageTransition>
             </div>
           </main>
 
           {/* Mobile Bottom Nav */}
-          {showNavbar && !keyboardOpen ?
-            (
-              <MobileBottomNav onAI={() => setAiOpen(true)} />
-            ) : null}
+          {showNavbar && !keyboardOpen ? (
+            <MobileBottomNav onAI={() => setAiOpen(true)} />
+          ) : null}
 
           <MobileSidebar />
 
           {/* Chatbot */}
           {!noUIRoutes.includes(pathname) && (
             <>
-              {!aiOpen && (
-                <AIChatbotButton open={aiOpen} setOpen={setAiOpen} />
-              )}
+              {!aiOpen && <AIChatbotButton open={aiOpen} setOpen={setAiOpen} />}
               <AIChatWindow open={aiOpen} setOpen={setAiOpen} />
             </>
           )}
