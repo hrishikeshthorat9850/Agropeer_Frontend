@@ -598,21 +598,44 @@ export default function WeatherForecast() {
                       </button>
                     )}
                   </div>
-                </div>
-              </div>
-
-                    <div className="w-px h-8 bg-gray-100 dark:bg-white/10" />
-
-                    <div className="flex flex-col items-center gap-1">
-                      <FaRegSun className="text-orange-500 dark:text-orange-400 text-lg" />
-                      <span className="text-[10px] text-gray-400 dark:text-gray-500 uppercase font-bold tracking-wider">
-                        {t("weather_humidity")}
+                  {/* Integrated Location Controls in Simple View */}
+                  <div className="flex items-center gap-2 mt-2">
+                    {status === LOCATION.LOADING && (
+                      <span className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full animate-pulse text-gray-500">
+                        Included Locating...
                       </span>
-                      <span className="text-base font-bold text-gray-700 dark:text-gray-200">
-                        {weather.humidity}
-                      </span>
-                    </div>
+                    )}
+                    {status === LOCATION.DENIED && (
+                      <button
+                        onClick={retry}
+                        className="text-xs bg-red-100 text-red-600 hover:bg-red-200 px-3 py-1 rounded-full font-medium transition-colors"
+                      >
+                        Enable Location
+                      </button>
+                    )}
+                    {status === LOCATION.GPS_OFF && (
+                      <button
+                        onClick={openAppSettings}
+                        className="text-xs bg-orange-100 text-orange-600 hover:bg-orange-200 px-3 py-1 rounded-full font-medium transition-colors"
+                      >
+                        Turn On GPS
+                      </button>
+                    )}
                   </div>
+                </div>
+            </div>
+            <div>
+              <div className="w-px h-8 bg-gray-100 dark:bg-white/10" />
+              <div className="flex flex-col items-center gap-1">
+                <FaRegSun className="text-orange-500 dark:text-orange-400 text-lg" />
+                <span className="text-[10px] text-gray-400 dark:text-gray-500 uppercase font-bold tracking-wider">
+                  {t("weather_humidity")}
+                </span>
+                <span className="text-base font-bold text-gray-700 dark:text-gray-200">
+                  {weather.humidity}
+                </span>
+              </div>
+            </div>
 
                   {/* Sunrise / Sunset Pill - Explicit Labels */}
                   <div className="bg-gray-50 dark:bg-white/5 rounded-2xl p-3 flex justify-around items-center max-w-xs mx-auto border border-gray-100 dark:border-white/5">
@@ -642,9 +665,7 @@ export default function WeatherForecast() {
                       </span>
                     </div>
                   </div>
-                </div>
-              </div>
-
+                </div>                  
               {/* Tip Box */}
               <div
                 className={`flex items-center gap-2 mt-3 px-3 py-2 rounded font-medium ${
@@ -829,7 +850,6 @@ export default function WeatherForecast() {
                   })}
                 </div>
               </div>
-            </div>
           </motion.div>
         )}
       </AnimatePresence>
