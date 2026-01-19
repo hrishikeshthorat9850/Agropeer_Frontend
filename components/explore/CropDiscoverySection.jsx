@@ -21,42 +21,46 @@ export default function CropDiscoverySection({
       : filteredCrops.filter(
           (crop) =>
             crop.category?.trim()?.toLowerCase() ===
-            categoryFilter.trim().toLowerCase()
+            categoryFilter.trim().toLowerCase(),
         );
 
   return (
     <section className="mb-8">
-      <div className="flex items-center gap-2 mb-4">
-        <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-full text-green-600 dark:text-green-400">
-          <FaSeedling className="w-5 h-5" />
+      {/* 📌 Sticky Header Wrapper */}
+      <div className="sticky top-0 z-30 bg-white/95 dark:bg-[#0a0a0a]/95 backdrop-blur-sm -mx-4 px-4 pt-4 pb-2 mb-4 border-b border-transparent transition-all">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-full text-green-600 dark:text-green-400">
+            <FaSeedling className="w-5 h-5" />
+          </div>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+            {t("crop_discovery_title")}
+          </h2>
         </div>
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-          {t("crop_discovery_title")}
-        </h2>
-      </div>
 
-      {/* 🌾 Category Chips (Horizontal Scroll) */}
-      <div className="flex overflow-x-auto pb-4 gap-2 -mx-4 px-4 scrollbar-hide snap-x">
-        {categories.map((cat) => (
-          <motion.button
-            key={cat}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => {
-              setCategoryFilter(cat);
-              setShowAllCrops(false);
-            }}
-            className={`
-              snap-start flex-none px-5 py-2.5 rounded-full text-sm font-semibold transition-all border
-              ${
-                categoryFilter === cat
-                  ? "bg-green-600 border-green-600 text-white shadow-md shadow-green-200 dark:shadow-none"
-                  : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-              }
-            `}
-          >
-            {cat}
-          </motion.button>
-        ))}
+        {/* 🌾 Category Chips (Horizontal Scroll) */}
+        <div className="flex overflow-x-auto pb-2 gap-2 scrollbar-hide snap-x">
+          {categories.map((cat) => (
+            <motion.button
+              key={cat}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                setCategoryFilter(cat);
+                setShowAllCrops(false);
+                window.scrollTo({ top: 0, behavior: "smooth" }); // Optional: Scroll to top of list
+              }}
+              className={`
+                snap-start flex-none px-5 py-2.5 rounded-full text-sm font-semibold transition-all border
+                ${
+                  categoryFilter === cat
+                    ? "bg-green-600 border-green-600 text-white shadow-md shadow-green-200 dark:shadow-none"
+                    : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                }
+              `}
+            >
+              {cat}
+            </motion.button>
+          ))}
+        </div>
       </div>
 
       {/* 🌱 Crop Cards Grid */}
@@ -96,7 +100,7 @@ export default function CropDiscoverySection({
                 </p>
               </div>
             </motion.div>
-          )
+          ),
         )}
 
         {/* 🌾 More Crops Button */}

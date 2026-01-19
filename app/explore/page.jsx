@@ -89,7 +89,7 @@ export default function ExplorePage() {
   const sortedCrops = useMemo(
     () =>
       localizedCrops.sort((a, b) => (a.name || "").localeCompare(b.name || "")),
-    [localizedCrops]
+    [localizedCrops],
   );
 
   // ✅ Correct filtering logic (localized category values)
@@ -120,7 +120,7 @@ export default function ExplorePage() {
       <div className="pb-6 pt-2">
         <div className="w-full max-w-7xl mx-auto px-4">
           {/* 🔍 App-Like Header */}
-          <div className="sticky top-0 z-10 bg-white/80 dark:bg-black/80 backdrop-blur-md py-4 -mx-4 px-4 mb-6 border-b border-gray-100 dark:border-gray-800">
+          <div className="bg-white/80 dark:bg-black/80 backdrop-blur-md py-4 -mx-4 px-4 mb-6 border-b border-gray-100 dark:border-gray-800">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
