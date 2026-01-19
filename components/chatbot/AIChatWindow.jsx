@@ -147,9 +147,9 @@ export default function AIChatWindow({ open, setOpen }) {
               left: "0",
               right: "0",
               top: "auto",
-              bottom: "calc(env(safe-area-inset-bottom) + 70px)",
+              bottom: "0",
               height:
-                "calc(100vh - (env(safe-area-inset-top) + 56px) - (env(safe-area-inset-bottom) + 70px))",
+                "calc(100vh - (env(safe-area-inset-top) + 56px)",
               borderTopLeftRadius: "20px",
               borderTopRightRadius: "20px",
             }

@@ -114,7 +114,7 @@ export default function MobileSidebar() {
           {/* LEFT SIDEBAR - PREMIUM GLASS DESIGN */}
           <motion.div
             className="fixed left-0 top-0 w-[85%] max-w-[320px] h-[100dvh]
-              bg-[#0a0a0a]/90 backdrop-blur-3xl
+              bg-farm-700/90 backdrop-blur-3xl
               text-white z-[9999] 
               rounded-r-[40px] 
               shadow-[10px_0_40px_rgba(0,0,0,0.5)]
@@ -128,8 +128,8 @@ export default function MobileSidebar() {
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
             {/* Gradient Orb Effects */}
-            <div className="absolute top-[-10%] left-[-20%] w-[400px] h-[600px] bg-green-500/20 rounded-full blur-[80px] pointer-events-none" />
-            <div className="absolute bottom-[-10%] right-[-20%] w-[250px] h-[200px] bg-blue-500/10 rounded-full blur-[60px] pointer-events-none" />
+            <div className="absolute top-[-10%] left-[-20%] w-[400px] h-[300px] bg-green-950/60 rounded-full blur-[80px] pointer-events-none" />
+            <div className="absolute bottom-[-10%] right-[-20%] w-[400px] h-[350px] bg-green-950/60 rounded-full blur-[60px] pointer-events-none" />
 
             {/* HEADER */}
             <div className="relative px-8 pt-12 pb-8 flex justify-between items-center z-10">
@@ -141,12 +141,12 @@ export default function MobileSidebar() {
                   Farming Companion
                 </p>
               </div>
-              <button
+              {/* <button
                 onClick={() => setOpen(false)}
                 className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white/70 active:scale-90 transition-transform"
               >
                 <FaTimes size={14} />
-              </button>
+              </button> */}
             </div>
 
             {/* SCROLLABLE CONTENT */}
