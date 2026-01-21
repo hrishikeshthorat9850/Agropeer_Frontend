@@ -7,7 +7,7 @@ export default function useGeolocation(options = {}) {
   const [loading, setLoading] = useState(false);
 
   // Default fallback (New Delhi)
-  const DEFAULT_LOCATION = { latitude: 28.6139, longitude: 77.2090 };
+  const DEFAULT_LOCATION = { latitude: 28.6139, longitude: 77.209 };
 
   useEffect(() => {
     if (!("geolocation" in navigator)) {
@@ -41,7 +41,7 @@ export default function useGeolocation(options = {}) {
       },
       (err) => {
         console.warn("Location error, using fallback:", err.message);
-        setError(err);
+        // setError(err); // Do not block UI on error, use fallback
         setLoading(false);
 
         // 3. On error, if no cache exists, use DEFAULT
@@ -53,7 +53,7 @@ export default function useGeolocation(options = {}) {
         enableHighAccuracy: true,
         timeout: 10000,
         ...options,
-      }
+      },
     );
   }, []);
 
