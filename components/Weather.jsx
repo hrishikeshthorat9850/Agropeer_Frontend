@@ -41,6 +41,8 @@ export default function WeatherForecast() {
   const fetchedRef = useRef(false);
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
+
+
   const onLocationSuccess = useCallback(
     (lat, lng) => {
       fetchWeatherApi(lat, lng);
@@ -100,8 +102,8 @@ export default function WeatherForecast() {
           data.forecast?.[0]?.rainChance > 60
             ? "condition_rainy"
             : data.forecast?.[0]?.rainChance > 30
-            ? "condition_partly_cloudy"
-            : "condition_clear_sky",
+              ? "condition_partly_cloudy"
+              : "condition_clear_sky",
         rain: data.forecast?.[0]?.rainChance
           ? `${data.forecast[0].rainChance}%` // Removed "chance" text, handle in UI or just % is fine
           : "0%",
@@ -166,15 +168,15 @@ export default function WeatherForecast() {
             day.rainChance > 60
               ? "rain"
               : day.rainChance > 30
-              ? "cloud"
-              : "sun";
+                ? "cloud"
+                : "sun";
 
           const tipKey =
             day.rainChance > 60
               ? "tip_heavy_rain"
               : day.rainChance > 30
-              ? "tip_mild_rain"
-              : "tip_field_work";
+                ? "tip_mild_rain"
+                : "tip_field_work";
 
           return {
             labelKey,
@@ -192,8 +194,8 @@ export default function WeatherForecast() {
             data.forecast?.[0]?.rainChance > 60
               ? "tip_chance_rain"
               : data.temperature > 35
-              ? "tip_high_temp"
-              : "tip_favorable",
+                ? "tip_high_temp"
+                : "tip_favorable",
           type: data.forecast?.[0]?.rainChance > 60 ? "warning" : "good",
         },
       };
@@ -240,8 +242,8 @@ export default function WeatherForecast() {
       currentLanguage === "hi"
         ? "hi-IN"
         : currentLanguage === "mr"
-        ? "mr-IN"
-        : "en-US";
+          ? "mr-IN"
+          : "en-US";
     return date.toLocaleDateString(locale, {
       weekday: "short",
       month: "short",
@@ -489,10 +491,9 @@ export default function WeatherForecast() {
                           className={`
                             relative overflow-hidden rounded-3xl p-4 flex flex-col items-center justify-between
                             transition-all duration-300 backdrop-blur-md border
-                            ${
-                              isRainy
-                                ? "bg-gradient-to-br from-blue-50/80 to-cyan-50/50 dark:from-blue-950/40 dark:to-cyan-900/20 border-blue-200/50 dark:border-blue-700/30"
-                                : isSunny
+                            ${isRainy
+                              ? "bg-gradient-to-br from-blue-50/80 to-cyan-50/50 dark:from-blue-950/40 dark:to-cyan-900/20 border-blue-200/50 dark:border-blue-700/30"
+                              : isSunny
                                 ? "bg-gradient-to-br from-amber-50/80 to-orange-50/50 dark:from-amber-950/40 dark:to-orange-900/20 border-amber-200/50 dark:border-amber-700/30"
                                 : "bg-gradient-to-br from-slate-50/80 to-gray-50/50 dark:from-slate-900/40 dark:to-gray-800/20 border-slate-200/50 dark:border-slate-700/30"
                             }
@@ -523,11 +524,10 @@ export default function WeatherForecast() {
                             <div
                               className={`
                               mt-1 px-3 py-1.5 rounded-full text-[10px] font-bold w-full text-center truncate
-                              ${
-                                isRainy
+                              ${isRainy
                                   ? "bg-blue-100/50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
                                   : "bg-black/5 text-gray-600 dark:bg-white/5 dark:text-gray-400"
-                              }
+                                }
                             `}
                             >
                               {isRainy ? `${f.rain}` : t(f.tipKey)}
@@ -623,233 +623,228 @@ export default function WeatherForecast() {
                     )}
                   </div>
                 </div>
-            </div>
-            <div>
-              <div className="w-px h-8 bg-gray-100 dark:bg-white/10" />
-              <div className="flex flex-col items-center gap-1">
-                <FaRegSun className="text-orange-500 dark:text-orange-400 text-lg" />
-                <span className="text-[10px] text-gray-400 dark:text-gray-500 uppercase font-bold tracking-wider">
-                  {t("weather_humidity")}
-                </span>
-                <span className="text-base font-bold text-gray-700 dark:text-gray-200">
-                  {weather.humidity}
-                </span>
+              </div>
+              <div>
+                <div className="w-px h-8 bg-gray-100 dark:bg-white/10" />
+                <div className="flex flex-col items-center gap-1">
+                  <FaRegSun className="text-orange-500 dark:text-orange-400 text-lg" />
+                  <span className="text-[10px] text-gray-400 dark:text-gray-500 uppercase font-bold tracking-wider">
+                    {t("weather_humidity")}
+                  </span>
+                  <span className="text-base font-bold text-gray-700 dark:text-gray-200">
+                    {weather.humidity}
+                  </span>
+                </div>
+              </div>
+
+              {/* Sunrise / Sunset Pill - Explicit Labels */}
+              <div className="bg-gray-50 dark:bg-white/5 rounded-2xl p-3 flex justify-around items-center max-w-xs mx-auto border border-gray-100 dark:border-white/5">
+                <div className="flex flex-col items-center">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <FaSun className="text-yellow-500 text-xs" />
+                    <span className="text-[10px] font-bold text-gray-400 uppercase">
+                      {t("weather_sunrise")}
+                    </span>
+                  </div>
+                  <span className="text-sm font-bold text-gray-700 dark:text-white">
+                    {weather.sunrise}
+                  </span>
+                </div>
+
+                <div className="w-px h-6 bg-gray-200 dark:bg-white/10" />
+
+                <div className="flex flex-col items-center">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <FaSun className="text-orange-500 text-xs" />
+                    <span className="text-[10px] font-bold text-gray-400 uppercase">
+                      {t("weather_sunset")}
+                    </span>
+                  </div>
+                  <span className="text-sm font-bold text-gray-700 dark:text-white">
+                    {weather.sunset}
+                  </span>
+                </div>
               </div>
             </div>
-
-                  {/* Sunrise / Sunset Pill - Explicit Labels */}
-                  <div className="bg-gray-50 dark:bg-white/5 rounded-2xl p-3 flex justify-around items-center max-w-xs mx-auto border border-gray-100 dark:border-white/5">
-                    <div className="flex flex-col items-center">
-                      <div className="flex items-center gap-1.5 mb-1">
-                        <FaSun className="text-yellow-500 text-xs" />
-                        <span className="text-[10px] font-bold text-gray-400 uppercase">
-                          {t("weather_sunrise")}
-                        </span>
-                      </div>
-                      <span className="text-sm font-bold text-gray-700 dark:text-white">
-                        {weather.sunrise}
-                      </span>
-                    </div>
-
-                    <div className="w-px h-6 bg-gray-200 dark:bg-white/10" />
-
-                    <div className="flex flex-col items-center">
-                      <div className="flex items-center gap-1.5 mb-1">
-                        <FaSun className="text-orange-500 text-xs" />
-                        <span className="text-[10px] font-bold text-gray-400 uppercase">
-                          {t("weather_sunset")}
-                        </span>
-                      </div>
-                      <span className="text-sm font-bold text-gray-700 dark:text-white">
-                        {weather.sunset}
-                      </span>
-                    </div>
-                  </div>
-                </div>                  
-              {/* Tip Box */}
-              <div
-                className={`flex items-center gap-2 mt-3 px-3 py-2 rounded font-medium ${
-                  weather.tip.type === "warning"
-                    ? "bg-yellow-100 border-l-4 border-yellow-500 text-yellow-900"
-                    : weather.tip.type === "good"
-                    ? "bg-green-100 border-l-4 border-green-500 text-green-900"
-                    : "bg-blue-50 border-l-4 border-blue-400 text-blue-900"
+            {/* Tip Box */}
+            <div
+              className={`flex items-center gap-2 mt-3 px-3 py-2 rounded font-medium ${weather.tip.type === "warning"
+                ? "bg-yellow-100 border-l-4 border-yellow-500 text-yellow-900"
+                : weather.tip.type === "good"
+                  ? "bg-green-100 border-l-4 border-green-500 text-green-900"
+                  : "bg-blue-50 border-l-4 border-blue-400 text-blue-900"
                 }`}
-              >
-                <FaLightbulb
-                  className={
-                    weather.tip.type === "warning"
-                      ? "text-yellow-400"
-                      : weather.tip.type === "good"
+            >
+              <FaLightbulb
+                className={
+                  weather.tip.type === "warning"
+                    ? "text-yellow-400"
+                    : weather.tip.type === "good"
                       ? "text-green-500"
                       : "text-blue-400"
-                  }
-                />
-                <span>{t(weather.tip.textKey)}</span>
+                }
+              />
+              <span>{t(weather.tip.textKey)}</span>
+            </div>
+
+            {/* ============ FORECAST (SIMPLE VIEW) ============ */}
+            <div className="bg-white/40 dark:bg-white/5 backdrop-blur-xl rounded-3xl border border-white/20 dark:border-white/10 p-5 flex flex-col gap-3 mt-6">
+              <div className="text-gray-800 dark:text-gray-200 font-bold mb-2 text-xl ml-1">
+                {t("seven_day_forecast")}
               </div>
 
-              {/* ============ FORECAST (SIMPLE VIEW) ============ */}
-              <div className="bg-white/40 dark:bg-white/5 backdrop-blur-xl rounded-3xl border border-white/20 dark:border-white/10 p-5 flex flex-col gap-3 mt-6">
-                <div className="text-gray-800 dark:text-gray-200 font-bold mb-2 text-xl ml-1">
-                  {t("seven_day_forecast")}
-                </div>
+              {/* TOP 4 */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                {weather.forecast.slice(0, 4).map((f, i) => {
+                  const isRainy = parseInt(f.rain) >= 40;
+                  const isSunny =
+                    !isRainy &&
+                    (f.iconType === "sunny" || f.iconType === "partly-sunny");
 
-                {/* TOP 4 */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                  {weather.forecast.slice(0, 4).map((f, i) => {
-                    const isRainy = parseInt(f.rain) >= 40;
-                    const isSunny =
-                      !isRainy &&
-                      (f.iconType === "sunny" || f.iconType === "partly-sunny");
+                  // Recreate icon from type
+                  const icon =
+                    f.iconType === "rain" ? (
+                      <FaCloudRain className="text-blue-500 text-3xl drop-shadow-sm" />
+                    ) : f.iconType === "cloud" ? (
+                      <FaCloud className="text-slate-400 text-3xl drop-shadow-sm" />
+                    ) : (
+                      <FaSun className="text-amber-400 text-3xl drop-shadow-md" />
+                    );
 
-                    // Recreate icon from type
-                    const icon =
-                      f.iconType === "rain" ? (
-                        <FaCloudRain className="text-blue-500 text-3xl drop-shadow-sm" />
-                      ) : f.iconType === "cloud" ? (
-                        <FaCloud className="text-slate-400 text-3xl drop-shadow-sm" />
-                      ) : (
-                        <FaSun className="text-amber-400 text-3xl drop-shadow-md" />
-                      );
+                  const dayLabel = f.labelKey
+                    ? t(f.labelKey)
+                    : formatDate(f.dateString);
 
-                    const dayLabel = f.labelKey
-                      ? t(f.labelKey)
-                      : formatDate(f.dateString);
-
-                    return (
-                      <motion.div
-                        key={`s-top-${i}`}
-                        whileHover={{ y: -5 }}
-                        className={`
+                  return (
+                    <motion.div
+                      key={`s-top-${i}`}
+                      whileHover={{ y: -5 }}
+                      className={`
                             relative overflow-hidden rounded-3xl p-3 flex flex-col items-center justify-between
                             transition-all duration-300 backdrop-blur-md border
-                            ${
-                              isRainy
-                                ? "bg-gradient-to-br from-blue-50/80 to-cyan-50/50 dark:from-blue-950/40 dark:to-cyan-900/20 border-blue-200/50 dark:border-blue-700/30"
-                                : isSunny
-                                ? "bg-gradient-to-br from-amber-50/80 to-orange-50/50 dark:from-amber-950/40 dark:to-orange-900/20 border-amber-200/50 dark:border-amber-700/30"
-                                : "bg-gradient-to-br from-slate-50/80 to-gray-50/50 dark:from-slate-900/40 dark:to-gray-800/20 border-slate-200/50 dark:border-slate-700/30"
-                            }
+                            ${isRainy
+                          ? "bg-gradient-to-br from-blue-50/80 to-cyan-50/50 dark:from-blue-950/40 dark:to-cyan-900/20 border-blue-200/50 dark:border-blue-700/30"
+                          : isSunny
+                            ? "bg-gradient-to-br from-amber-50/80 to-orange-50/50 dark:from-amber-950/40 dark:to-orange-900/20 border-amber-200/50 dark:border-amber-700/30"
+                            : "bg-gradient-to-br from-slate-50/80 to-gray-50/50 dark:from-slate-900/40 dark:to-gray-800/20 border-slate-200/50 dark:border-slate-700/30"
+                        }
                           `}
-                      >
-                        {/* Top Highlight Gloss */}
-                        <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-white/40 to-transparent pointer-events-none" />
+                    >
+                      {/* Top Highlight Gloss */}
+                      <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-white/40 to-transparent pointer-events-none" />
 
-                        <div className="z-10 flex flex-col items-center gap-2 w-full">
-                          <span className="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">
-                            {dayLabel}
-                          </span>
+                      <div className="z-10 flex flex-col items-center gap-2 w-full">
+                        <span className="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">
+                          {dayLabel}
+                        </span>
 
-                          <div className="py-1 transform transition-transform group-hover:scale-110">
-                            {icon}
-                          </div>
-
-                          <div className="flex flex-col items-center">
-                            <span className="text-xl font-black text-gray-900 dark:text-white leading-none">
-                              {f.temp}
-                            </span>
-                            <span className="text-[10px] font-medium text-gray-400 dark:text-gray-500">
-                              {f.minTemp}
-                            </span>
-                          </div>
-
-                          {/* Rain / Tip Pill */}
-                          <div
-                            className={`
-                              mt-1 px-2 py-1 rounded-full text-[9px] font-bold w-full text-center truncate
-                              ${
-                                isRainy
-                                  ? "bg-blue-100/50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
-                                  : "bg-black/5 text-gray-600 dark:bg-white/5 dark:text-gray-400"
-                              }
-                            `}
-                          >
-                            {isRainy ? `${f.rain}` : t(f.tipKey)}
-                          </div>
+                        <div className="py-1 transform transition-transform group-hover:scale-110">
+                          {icon}
                         </div>
-                      </motion.div>
+
+                        <div className="flex flex-col items-center">
+                          <span className="text-xl font-black text-gray-900 dark:text-white leading-none">
+                            {f.temp}
+                          </span>
+                          <span className="text-[10px] font-medium text-gray-400 dark:text-gray-500">
+                            {f.minTemp}
+                          </span>
+                        </div>
+
+                        {/* Rain / Tip Pill */}
+                        <div
+                          className={`
+                              mt-1 px-2 py-1 rounded-full text-[9px] font-bold w-full text-center truncate
+                              ${isRainy
+                              ? "bg-blue-100/50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+                              : "bg-black/5 text-gray-600 dark:bg-white/5 dark:text-gray-400"
+                            }
+                            `}
+                        >
+                          {isRainy ? `${f.rain}` : t(f.tipKey)}
+                        </div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+
+              {/* BOTTOM 3 */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 justify-items-center md:justify-items-start">
+                {weather.forecast.slice(4).map((f, i) => {
+                  const isRainy = parseInt(f.rain) >= 40;
+                  const isSunny =
+                    !isRainy &&
+                    (f.iconType === "sunny" || f.iconType === "partly-sunny");
+
+                  // Recreate icon from type
+                  const icon =
+                    f.iconType === "rain" ? (
+                      <FaCloudRain className="text-blue-500 text-3xl drop-shadow-sm" />
+                    ) : f.iconType === "cloud" ? (
+                      <FaCloud className="text-slate-400 text-3xl drop-shadow-sm" />
+                    ) : (
+                      <FaSun className="text-amber-400 text-3xl drop-shadow-md" />
                     );
-                  })}
-                </div>
 
-                {/* BOTTOM 3 */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 justify-items-center md:justify-items-start">
-                  {weather.forecast.slice(4).map((f, i) => {
-                    const isRainy = parseInt(f.rain) >= 40;
-                    const isSunny =
-                      !isRainy &&
-                      (f.iconType === "sunny" || f.iconType === "partly-sunny");
+                  const dayLabel = f.labelKey
+                    ? t(f.labelKey)
+                    : formatDate(f.dateString);
 
-                    // Recreate icon from type
-                    const icon =
-                      f.iconType === "rain" ? (
-                        <FaCloudRain className="text-blue-500 text-3xl drop-shadow-sm" />
-                      ) : f.iconType === "cloud" ? (
-                        <FaCloud className="text-slate-400 text-3xl drop-shadow-sm" />
-                      ) : (
-                        <FaSun className="text-amber-400 text-3xl drop-shadow-md" />
-                      );
-
-                    const dayLabel = f.labelKey
-                      ? t(f.labelKey)
-                      : formatDate(f.dateString);
-
-                    return (
-                      <motion.div
-                        key={`s-bottom-${i}`}
-                        whileHover={{ y: -5 }}
-                        className={`
+                  return (
+                    <motion.div
+                      key={`s-bottom-${i}`}
+                      whileHover={{ y: -5 }}
+                      className={`
                             relative overflow-hidden rounded-3xl p-3 flex flex-col items-center justify-between
                             transition-all duration-300 backdrop-blur-md border w-full sm:w-auto
-                            ${
-                              isRainy
-                                ? "bg-gradient-to-br from-blue-50/80 to-cyan-50/50 dark:from-blue-950/40 dark:to-cyan-900/20 border-blue-200/50 dark:border-blue-700/30"
-                                : isSunny
-                                ? "bg-gradient-to-br from-amber-50/80 to-orange-50/50 dark:from-amber-950/40 dark:to-orange-900/20 border-amber-200/50 dark:border-amber-700/30"
-                                : "bg-gradient-to-br from-slate-50/80 to-gray-50/50 dark:from-slate-900/40 dark:to-gray-800/20 border-slate-200/50 dark:border-slate-700/30"
-                            }
+                            ${isRainy
+                          ? "bg-gradient-to-br from-blue-50/80 to-cyan-50/50 dark:from-blue-950/40 dark:to-cyan-900/20 border-blue-200/50 dark:border-blue-700/30"
+                          : isSunny
+                            ? "bg-gradient-to-br from-amber-50/80 to-orange-50/50 dark:from-amber-950/40 dark:to-orange-900/20 border-amber-200/50 dark:border-amber-700/30"
+                            : "bg-gradient-to-br from-slate-50/80 to-gray-50/50 dark:from-slate-900/40 dark:to-gray-800/20 border-slate-200/50 dark:border-slate-700/30"
+                        }
                           `}
-                      >
-                        {/* Top Highlight Gloss */}
-                        <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-white/40 to-transparent pointer-events-none" />
+                    >
+                      {/* Top Highlight Gloss */}
+                      <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-white/40 to-transparent pointer-events-none" />
 
-                        <div className="z-10 flex flex-col items-center gap-2 w-full">
-                          <span className="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">
-                            {dayLabel}
-                          </span>
+                      <div className="z-10 flex flex-col items-center gap-2 w-full">
+                        <span className="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">
+                          {dayLabel}
+                        </span>
 
-                          <div className="py-1 transform transition-transform group-hover:scale-110">
-                            {icon}
-                          </div>
-
-                          <div className="flex flex-col items-center">
-                            <span className="text-xl font-black text-gray-900 dark:text-white leading-none">
-                              {f.temp}
-                            </span>
-                            <span className="text-[10px] font-medium text-gray-400 dark:text-gray-500">
-                              {f.minTemp}
-                            </span>
-                          </div>
-
-                          {/* Rain / Tip Pill */}
-                          <div
-                            className={`
-                              mt-1 px-2 py-1 rounded-full text-[9px] font-bold w-full text-center truncate
-                              ${
-                                isRainy
-                                  ? "bg-blue-100/50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
-                                  : "bg-black/5 text-gray-600 dark:bg-white/5 dark:text-gray-400"
-                              }
-                            `}
-                          >
-                            {isRainy ? `${f.rain}` : t(f.tipKey)}
-                          </div>
+                        <div className="py-1 transform transition-transform group-hover:scale-110">
+                          {icon}
                         </div>
-                      </motion.div>
-                    );
-                  })}
-                </div>
+
+                        <div className="flex flex-col items-center">
+                          <span className="text-xl font-black text-gray-900 dark:text-white leading-none">
+                            {f.temp}
+                          </span>
+                          <span className="text-[10px] font-medium text-gray-400 dark:text-gray-500">
+                            {f.minTemp}
+                          </span>
+                        </div>
+
+                        {/* Rain / Tip Pill */}
+                        <div
+                          className={`
+                              mt-1 px-2 py-1 rounded-full text-[9px] font-bold w-full text-center truncate
+                              ${isRainy
+                              ? "bg-blue-100/50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+                              : "bg-black/5 text-gray-600 dark:bg-white/5 dark:text-gray-400"
+                            }
+                            `}
+                        >
+                          {isRainy ? `${f.rain}` : t(f.tipKey)}
+                        </div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
               </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

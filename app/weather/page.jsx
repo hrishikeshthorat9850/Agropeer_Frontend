@@ -9,7 +9,7 @@ import { useWeather } from "@/Context/WeatherContext";
 import useGeolocation from "@/hooks/useGeolocation";
 import { useLanguage } from "@/Context/languagecontext";
 import { useLocation,LOCATION } from "@/components/mobile/hooks/useLocation";
-
+import { openAppSettings } from "@/components/mobile/utils/openAppSettings";
 export default function WeatherPage() {
   const { weather, loading: weatherLoading, getWeather, error: weatherError } = useWeather();
   const { position } = useGeolocation();
