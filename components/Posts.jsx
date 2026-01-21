@@ -83,7 +83,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
         showToast("error", t("clipboard_blocked_error"));
       }
     },
-    [showToast, t]
+    [showToast, t],
   );
 
   // Initialize post data - use stable references
@@ -142,7 +142,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
 
     replies.forEach((reply) => {
       const isParentComment = mainComments.some(
-        (c) => c.id === reply.parent_comment_id
+        (c) => c.id === reply.parent_comment_id,
       );
 
       if (isParentComment) {
@@ -179,7 +179,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
           post_id,
           userinfo(id, firstName, lastName, display_name, profile_url, avatar_url),
           comment_likes(id, user_id, comment_id)
-        `
+        `,
         )
         .eq("post_id", post?.id)
         .order("created_at", { ascending: true })
@@ -200,7 +200,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
         const replies = data.filter((comment) => comment.parent_comment_id);
         replies.forEach((reply) => {
           const isLiked = reply.comment_likes?.some(
-            (like) => like.user_id === user.id
+            (like) => like.user_id === user.id,
           );
           likedRepliesMap[reply.id] = isLiked || false;
         });
@@ -226,7 +226,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
   // Calculate top-level comment count
   useEffect(() => {
     const topLevelCommentsCount = commentInfo.filter(
-      (comment) => comment.parent_comment_id === null
+      (comment) => comment.parent_comment_id === null,
     ).length;
     setOriginalCommentCount(topLevelCommentsCount);
   }, [commentInfo]);
@@ -284,7 +284,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
             comment: sanitizedComment,
             user_id: user.id,
           }),
-        }
+        },
       );
 
       if (apiError) {
@@ -355,7 +355,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
             Authorization: `Bearer ${accessToken}`,
           },
           body: JSON.stringify({ user_id: user.id }),
-        }
+        },
       );
 
       if (apiError) {
@@ -412,7 +412,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
             Authorization: `Bearer ${accessToken}`,
           },
           body: JSON.stringify({ user_id: user.id }),
-        }
+        },
       );
 
       if (apiError) {
@@ -426,7 +426,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
         setIsBookmarked(data.bookmarked);
         showToast(
           data.bookmarked ? "success" : "info",
-          data.bookmarked ? t("bookmark_added") : t("bookmark_removed")
+          data.bookmarked ? t("bookmark_added") : t("bookmark_removed"),
         );
       }
     } catch (err) {
@@ -502,7 +502,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
             user_id: user.id,
             parent_comment_id: replyingTo,
           }),
-        }
+        },
       );
 
       if (apiError) {
@@ -548,7 +548,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
               Authorization: `Bearer ${accessToken}`,
             },
             body: JSON.stringify({ user_id: user.id }),
-          }
+          },
         );
 
         if (apiError) {
@@ -563,7 +563,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
         showToast("error", t("network_error") + " Please try again.");
       }
     },
-    [user?.id, refreshComments, accessToken, showToast, t]
+    [user?.id, refreshComments, accessToken, showToast, t],
   );
 
   const handleCommentReply = useCallback(
@@ -575,7 +575,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
       setShowReplyBox((prev) => (prev === parentId ? null : parentId));
       setReplyingTo(parentId);
     },
-    [user?.id, showToast, t]
+    [user?.id, showToast, t],
   );
 
   const handleReplyToReply = useCallback(
@@ -587,7 +587,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
       setShowReplyBox((prev) => (prev === replyId ? null : replyId));
       setReplyingTo(replyId);
     },
-    [user?.id, showToast, t]
+    [user?.id, showToast, t],
   );
 
   const handleReplyLike = useCallback(
@@ -606,7 +606,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
               Authorization: `Bearer ${accessToken}`,
             },
             body: JSON.stringify({ user_id: user.id }),
-          }
+          },
         );
 
         if (apiError) {
@@ -624,7 +624,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
         showToast("error", t("network_error") + " Please try again.");
       }
     },
-    [user?.id, refreshComments, accessToken, showToast, t]
+    [user?.id, refreshComments, accessToken, showToast, t],
   );
 
   const handleCommentMenu = useCallback(() => {
@@ -689,7 +689,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
       handleSendReply,
       handleCommentMenu,
       handleReplyMenu,
-    ]
+    ],
   );
 
   return (
@@ -700,7 +700,6 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
       transition={{ duration: 0.5, delay: idx * 0.1 }}
       className="relative w-full max-w-lg mx-auto mb-4 bg-white dark:bg-black border-b md:border border-gray-200 dark:border-zinc-800 md:rounded-xl overflow-hidden"
     >
-
       <PostHeader
         post={post}
         idx={idx}
@@ -710,10 +709,10 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
         onOptionsClick={onOptionsClick}
         onPostUpdated={onPostUpdated}
         onDelete={onDelete}
+        showToast={showToast}
       />
 
       {/* Post Content */}
-
 
       {/* Post Media */}
       {post.images && post.images.length > 0 && (

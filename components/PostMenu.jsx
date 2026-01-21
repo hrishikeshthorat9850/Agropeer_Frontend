@@ -25,6 +25,9 @@ export default function PostMenu({
   // Close menu when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
+      // If a modal is open, do NOT close the menu (avoids unmounting the modal)
+      if (modal) return;
+
       if (
         menuRef.current &&
         !menuRef.current.contains(event.target) &&
@@ -61,7 +64,7 @@ export default function PostMenu({
       alert(
         `You can only upload up to 12 images. You can add ${
           12 - currentCount
-        } more.`
+        } more.`,
       );
       return;
     }
@@ -310,39 +313,83 @@ export default function PostMenu({
 
         {modal === "report" && (
           <motion.div
-            className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+            className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
             <motion.div
               ref={modalRef}
-              className="bg-white rounded-2xl p-6 w-11/12 max-w-md shadow-xl"
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.8 }}
+              className="bg-white dark:bg-[#1E1E1E] rounded-xl w-full max-w-sm shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
             >
-              <h2 className="text-lg font-semibold mb-4">
-                {t("report_post_modal_title")}
-              </h2>
-              <textarea
-                value={reportReason}
-                onChange={(e) => setReportReason(e.target.value)}
-                placeholder={t("report_reason_placeholder")}
-                className="w-full h-32 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
-              />
-              <div className="flex justify-end gap-3 mt-4">
+              <div className="p-4 border-b border-gray-100 dark:border-gray-800 flex justify-center relative">
+                <h2 className="text-base font-bold text-gray-900 dark:text-white">
+                  {t("report_menu")}
+                </h2>
                 <button
                   onClick={() => setModal(null)}
-                  className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300"
+                  className="absolute right-4 text-gray-500 hover:text-gray-800 dark:text-gray-400"
                 >
-                  {t("cancel_btn")}
+                  ✕
                 </button>
+              </div>
+
+              <div className="p-4 border-b border-gray-100 dark:border-gray-800">
+                <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-sm mb-1">
+                  {t("report_reason_title") ||
+                    "Why are you reporting this post?"}
+                </h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  {t("report_reason_desc") ||
+                    "Your report is anonymous. If someone is in immediate danger, call the local emergency services - don't wait."}
+                </p>
+              </div>
+
+              <div className="overflow-y-auto flex-1 p-2">
+                {[
+                  "It's spam",
+                  "Nudity or sexual activity",
+                  "Hate speech or symbols",
+                  "Violence or dangerous organizations",
+                  "Sale of illegal or regulated goods",
+                  "Bullying or harassment",
+                  "Intellectual property violation",
+                  "Suicide or self-injury",
+                  "Eating disorders",
+                  "Scam or fraud",
+                  "False information",
+                ].map((reason) => (
+                  <button
+                    key={reason}
+                    onClick={() => setReportReason(reason)}
+                    className={`w-full text-left px-4 py-3 rounded-lg text-sm transition-colors flex items-center justify-between ${
+                      reportReason === reason
+                        ? "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 font-semibold"
+                        : "text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-white/5"
+                    }`}
+                  >
+                    {t(reason) || reason}
+                    {reportReason === reason && (
+                      <span className="text-blue-500 text-lg">✓</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+
+              <div className="p-4 border-t border-gray-100 dark:border-gray-800">
                 <button
                   onClick={handleReport}
-                  className="px-4 py-2 rounded-lg bg-yellow-500 text-white hover:bg-yellow-600"
+                  disabled={!reportReason}
+                  className={`w-full py-3 rounded-full font-semibold text-sm transition-all ${
+                    reportReason
+                      ? "bg-blue-500 hover:bg-blue-600 text-white shadow-md shadow-blue-200"
+                      : "bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-600 cursor-not-allowed"
+                  }`}
                 >
-                  {t("report_menu")}
+                  {t("btn_submit_report") || "Submit Report"}
                 </button>
               </div>
             </motion.div>

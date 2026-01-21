@@ -72,7 +72,7 @@ export default function MobilePageLayout({ children, className = "" }) {
     if (isAdminRoute) {
       return "bg-gray-50 dark:bg-gray-900";
     }
-    return "bg-[#FAF7F2] dark:bg-[#0d0d0d]";
+    return "bg-gray-50 dark:bg-dark";
   };
 
   return (

@@ -8,6 +8,8 @@ export default function PostMedia({ images }) {
   const [isZoomed, setIsZoomed] = useState(false);
   const containerRef = useRef(null);
   const [width, setWidth] = useState(0);
+  // Default to 4:5 (0.8) if loading, but will update dynamically
+  const [aspectRatio, setAspectRatio] = useState(4 / 5);
 
   // Determine container width for drag constraints
   useEffect(() => {
@@ -37,12 +39,22 @@ export default function PostMedia({ images }) {
     }
   };
 
+  const handleRatioDetected = (ratio) => {
+    // Instagram limits: 4:5 (0.8) to 1.91:1
+    // We clamp it to avoid layout breaking
+    const clampedRatio = Math.min(Math.max(ratio, 0.8), 1.91);
+    setAspectRatio(clampedRatio);
+  };
+
   if (!images || images.length === 0) return null;
 
   return (
-    <div className="w-full select-none touch-none" ref={containerRef}>
-      {/* Media Window */}
-      <div className="relative w-full h-64 sm:h-72 md:h-80 bg-black overflow-hidden z-10">
+    <div className="w-full select-none touch-pan-y" ref={containerRef}>
+      {/* Media Window - Dynamic Aspect Ratio */}
+      <div
+        className="relative w-full bg-gray-100 dark:bg-zinc-900 overflow-hidden z-10 transition-all duration-300 ease-out"
+        style={{ aspectRatio: aspectRatio }}
+      >
         {/* Slider Track */}
         <motion.div
           className="flex h-full"
@@ -67,6 +79,8 @@ export default function PostMedia({ images }) {
                 media={img}
                 isActive={i === currentIndex}
                 onZoomChange={setIsZoomed}
+                // Only detect ratio from the first image
+                onRatioDetected={i === 0 ? handleRatioDetected : undefined}
               />
             </div>
           ))}
@@ -118,7 +132,7 @@ export default function PostMedia({ images }) {
 }
 
 // Separate Component for Zoom Logic
-function ZoomableMedia({ media, isActive, onZoomChange }) {
+function ZoomableMedia({ media, isActive, onZoomChange, onRatioDetected }) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const scale = useMotionValue(1);
@@ -231,12 +245,20 @@ function ZoomableMedia({ media, isActive, onZoomChange }) {
       {media?.type === "video" ? (
         <video
           src={media.url}
-          className="w-full h-full object-contain"
+          className="w-full h-full object-cover"
           controls
           controlsList="nodownload nofullscreen noremoteplayback"
           disablePictureInPicture
           // disableRemotePlayback // removing to allow better controls
           onClick={(e) => e.stopPropagation()}
+          onLoadedMetadata={(e) => {
+            if (onRatioDetected) {
+              const { videoWidth, videoHeight } = e.target;
+              if (videoWidth && videoHeight) {
+                onRatioDetected(videoWidth / videoHeight);
+              }
+            }
+          }}
         />
       ) : (
         <div className="relative w-full h-full pointer-events-none">
@@ -244,7 +266,19 @@ function ZoomableMedia({ media, isActive, onZoomChange }) {
             src={media.url || "/placeholder.png"}
             alt="Post media"
             fill
-            className="object-contain"
+            className="object-cover"
+            priority={isActive}
+            unoptimized={true} // Bypass Next.js optimization for raw speed
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            onLoadingComplete={(result) => {
+              if (
+                onRatioDetected &&
+                result.naturalWidth &&
+                result.naturalHeight
+              ) {
+                onRatioDetected(result.naturalWidth / result.naturalHeight);
+              }
+            }}
           />
         </div>
       )}

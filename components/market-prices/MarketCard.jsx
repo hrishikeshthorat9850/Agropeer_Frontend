@@ -37,7 +37,7 @@ export default function MarketCard({ data }) {
 
   return (
     <div className="w-full relative active:scale-[0.98] transition-all duration-200 ease-out touch-manipulation">
-      <div className="bg-white dark:bg-[#1E1E1E] rounded-2xl shadow-lg border border-gray-100 dark:border-[#333] overflow-hidden relative group hover:shadow-lg transition-all duration-300">
+      <div className="bg-white dark:bg-[#1E1E1E] rounded-2xl shadow-md border border-gray-100 dark:border-[#333] overflow-hidden relative group hover:shadow-lg transition-all duration-300">
 
         <div className="p-4 relative z-10">
           {/* Header Row: Commodity & Date */}
