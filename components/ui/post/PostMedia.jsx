@@ -8,7 +8,7 @@ export default function PostMedia({ images }) {
   const [isZoomed, setIsZoomed] = useState(false);
   const containerRef = useRef(null);
   const [width, setWidth] = useState(0);
-  // Default to 4:5 (0.8) if loading, but will update dynamically
+  // Default to 4:5 (0.8), will update based on FIRST image only
   const [aspectRatio, setAspectRatio] = useState(4 / 5);
 
   // Determine container width for drag constraints
@@ -39,9 +39,11 @@ export default function PostMedia({ images }) {
     }
   };
 
-  const handleRatioDetected = (ratio) => {
+  const handleRatioDetected = (index, ratio) => {
+    // ONLY set ratio for the first image
+    if (index !== 0) return;
+
     // Instagram limits: 4:5 (0.8) to 1.91:1
-    // We clamp it to avoid layout breaking
     const clampedRatio = Math.min(Math.max(ratio, 0.8), 1.91);
     setAspectRatio(clampedRatio);
   };
@@ -50,7 +52,7 @@ export default function PostMedia({ images }) {
 
   return (
     <div className="w-full select-none touch-pan-y" ref={containerRef}>
-      {/* Media Window - Dynamic Aspect Ratio */}
+      {/* Media Window - Dynamic Aspect Ratio (Locked to First Item) */}
       <div
         className="relative w-full bg-gray-100 dark:bg-zinc-900 overflow-hidden z-10 transition-all duration-300 ease-out"
         style={{ aspectRatio: aspectRatio }}
@@ -79,8 +81,8 @@ export default function PostMedia({ images }) {
                 media={img}
                 isActive={i === currentIndex}
                 onZoomChange={setIsZoomed}
-                // Only detect ratio from the first image
-                onRatioDetected={i === 0 ? handleRatioDetected : undefined}
+                // Detect ratio for first slide (others will be ignored by handler)
+                onRatioDetected={(ratio) => handleRatioDetected(i, ratio)}
               />
             </div>
           ))}

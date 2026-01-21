@@ -82,7 +82,7 @@ export default function MobileNavbar() {
               return newCount;
             });
           }
-        }
+        },
       )
       .on(
         "postgres_changes",
@@ -97,13 +97,13 @@ export default function MobileNavbar() {
           if (payload.new && payload.old) {
             if (payload.new.seen && !payload.old.seen) {
               setNotificationsUnreadCount((prev) =>
-                Math.max(0, (prev || 0) - 1)
+                Math.max(0, (prev || 0) - 1),
               );
             } else if (!payload.new.seen && payload.old.seen) {
               setNotificationsUnreadCount((prev) => (prev || 0) + 1);
             }
           }
-        }
+        },
       )
       .on(
         "postgres_changes",
@@ -128,7 +128,7 @@ export default function MobileNavbar() {
               // Fallback: decrement if we know it was unread
               if (payload.old && !payload.old.seen) {
                 setNotificationsUnreadCount((prev) =>
-                  Math.max(0, (prev || 0) - 1)
+                  Math.max(0, (prev || 0) - 1),
                 );
               }
               return;
@@ -142,11 +142,11 @@ export default function MobileNavbar() {
             // Fallback: decrement if we know it was unread
             if (payload.old && !payload.old.seen) {
               setNotificationsUnreadCount((prev) =>
-                Math.max(0, (prev || 0) - 1)
+                Math.max(0, (prev || 0) - 1),
               );
             }
           }
-        }
+        },
       )
       .subscribe();
 
@@ -198,22 +198,14 @@ export default function MobileNavbar() {
 
   return (
     <div className="pt-safe-top md:hidden fixed top-0 left-0 right-0 z-[100] bg-white dark:bg-black shadow-sm">
-      <div
-        className="
-          flex items-center justify-between 
-          py-1.5 px-3
-          h-[64px]
-          flex-shrink-0
-          gap-3
-        "
-      >
+      <div className="flex items-center justify-between py-1.5 px-3 h-[56px] flex-shrink-0 gap-3">
         {/* MENU / SIDEBAR BUTTON */}
         <button
           onClick={openSidebar}
-          className="p-2 active:scale-95 transition flex-shrink-0 rounded-full hover:bg-surface-200 dark:hover:bg-surface-800"
+          className="p-2 active:scale-95 transition flex-shrink-0 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800"
           aria-label="Open menu"
         >
-          <FaBars className="text-[22px] text-surface-700 dark:text-surface-200 dark:text-white" />
+          <FaBars className="text-[24px] text-zinc-800 dark:text-zinc-100" />
         </button>
 
         {/* SEARCH BAR - Takes available space */}
@@ -227,9 +219,9 @@ export default function MobileNavbar() {
           {user && (
             <Link
               href="/notifications"
-              className="relative p-2 active:scale-95 rounded-full hover:bg-surface-200 dark:hover:bg-surface-800 transition-colors"
+              className="relative p-2 active:scale-95 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
             >
-              <FaBell className="text-[20px] text-surface-700 dark:text-surface-200 dark:text-white" />
+              <FaBell className="text-[24px] text-zinc-800 dark:text-zinc-100" />
               {notificationsUnreadCount > 0 && (
                 <div className="absolute top-0 right-0">
                   <NotificationBadge unreadCount={notificationsUnreadCount} />
@@ -242,9 +234,9 @@ export default function MobileNavbar() {
           {user && (
             <Link
               href="/chats"
-              className="relative p-2 active:scale-95 rounded-full hover:bg-surface-200 dark:hover:bg-surface-800 transition-colors"
+              className="relative p-2 active:scale-95 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
             >
-              <FaComments className="text-[20px] text-surface-700 dark:text-surface-200 dark:text-white" />
+              <FaComments className="text-[24px] text-zinc-800 dark:text-zinc-100" />
               {unreadChats > 0 && (
                 <div className="absolute top-0 right-0">
                   <NotificationBadge unreadCount={unreadChats} />
@@ -257,9 +249,9 @@ export default function MobileNavbar() {
           <div ref={langRef} className="relative">
             <button
               onClick={() => setLangOpen(!langOpen)}
-              className="p-2 active:scale-95 rounded-full hover:bg-surface-200 dark:hover:bg-surface-800 transition-colors"
+              className="p-2 active:scale-95 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
             >
-              <FaLanguage className="text-[27px] text-surface-700 dark:text-surface-200 dark:text-white" />
+              <FaLanguage className="text-[28px] text-zinc-800 dark:text-zinc-100" />
             </button>
 
             <AnimatePresence>
@@ -274,7 +266,7 @@ export default function MobileNavbar() {
                     rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border 
                     bg-white/90 dark:bg-[#1a1a1a]/95 
                     backdrop-blur-2xl 
-                    border-gray-100 dark:border-neutral-800
+                    border-zinc-100 dark:border-zinc-800
                     overflow-hidden origin-top-right z-50
                   "
                 >
@@ -288,9 +280,10 @@ export default function MobileNavbar() {
                       className={`
                         flex items-center justify-between w-full px-4 py-3 text-left rounded-xl text-sm font-medium mb-1 last:mb-0
                         transition-all duration-200
-                        ${l === locale
-                          ? "bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400 ring-1 ring-green-100 dark:ring-green-500/20"
-                          : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white"
+                        ${
+                          l === locale
+                            ? "bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400 ring-1 ring-green-100 dark:ring-green-500/20"
+                            : "text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-white/5 hover:text-zinc-900 dark:hover:text-white"
                         }
                       `}
                     >
@@ -309,7 +302,7 @@ export default function MobileNavbar() {
           </div>
 
           {/* PROFILE MODAL */}
-          <ProfileModal className="text-black dark:text-white" />
+          <ProfileModal className="text-[24px] text-zinc-800 dark:text-zinc-100" />
         </div>
       </div>
     </div>

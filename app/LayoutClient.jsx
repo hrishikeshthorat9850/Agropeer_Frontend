@@ -58,7 +58,7 @@ export default function ClientLayout({ children }) {
       document.body.classList.add(`capacitor-platform-${platform}`);
       return () => {
         document.documentElement.classList.remove(
-          `capacitor-platform-${platform}`
+          `capacitor-platform-${platform}`,
         );
         document.body.classList.remove(`capacitor-platform-${platform}`);
       };
@@ -89,6 +89,19 @@ export default function ClientLayout({ children }) {
 
     applyStatusBar();
   }, []);
+
+  // Force Scroll to Top on Path Change
+  useEffect(() => {
+    // Immediate scroll to top
+    window.scrollTo(0, 0);
+
+    // Also try slightly later in case of transition delays
+    const timer = setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 50);
+
+    return () => clearTimeout(timer);
+  }, [pathname]);
 
   // Body padding adjustments for mobile no-padding routes
   useEffect(() => {

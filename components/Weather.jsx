@@ -41,14 +41,9 @@ export default function WeatherForecast() {
   const fetchedRef = useRef(false);
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
-
-
-  const onLocationSuccess = useCallback(
-    (lat, lng) => {
-      fetchWeatherApi(lat, lng);
-    },
-    []
-  );
+  const onLocationSuccess = useCallback((lat, lng) => {
+    fetchWeatherApi(lat, lng);
+  }, []);
 
   const { status, retry } = useLocation(onLocationSuccess);
 
@@ -102,8 +97,8 @@ export default function WeatherForecast() {
           data.forecast?.[0]?.rainChance > 60
             ? "condition_rainy"
             : data.forecast?.[0]?.rainChance > 30
-              ? "condition_partly_cloudy"
-              : "condition_clear_sky",
+            ? "condition_partly_cloudy"
+            : "condition_clear_sky",
         rain: data.forecast?.[0]?.rainChance
           ? `${data.forecast[0].rainChance}%` // Removed "chance" text, handle in UI or just % is fine
           : "0%",
@@ -144,13 +139,13 @@ export default function WeatherForecast() {
 
           const now = new Date();
           const todayUTC = new Date(
-            Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
+            Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
           );
 
           const forecastDateUTC = new Date(Date.UTC(year, month - 1, dayNum));
 
           const diff = Math.round(
-            (forecastDateUTC - todayUTC) / (1000 * 60 * 60 * 24)
+            (forecastDateUTC - todayUTC) / (1000 * 60 * 60 * 24),
           );
 
           let labelKey = null;
@@ -168,15 +163,15 @@ export default function WeatherForecast() {
             day.rainChance > 60
               ? "rain"
               : day.rainChance > 30
-                ? "cloud"
-                : "sun";
+              ? "cloud"
+              : "sun";
 
           const tipKey =
             day.rainChance > 60
               ? "tip_heavy_rain"
               : day.rainChance > 30
-                ? "tip_mild_rain"
-                : "tip_field_work";
+              ? "tip_mild_rain"
+              : "tip_field_work";
 
           return {
             labelKey,
@@ -194,8 +189,8 @@ export default function WeatherForecast() {
             data.forecast?.[0]?.rainChance > 60
               ? "tip_chance_rain"
               : data.temperature > 35
-                ? "tip_high_temp"
-                : "tip_favorable",
+              ? "tip_high_temp"
+              : "tip_favorable",
           type: data.forecast?.[0]?.rainChance > 60 ? "warning" : "good",
         },
       };
@@ -210,7 +205,7 @@ export default function WeatherForecast() {
           JSON.stringify({
             data: weatherdata,
             timestamp: Date.now(),
-          })
+          }),
         );
       } catch (e) {
         // Ignore cache errors
@@ -242,8 +237,8 @@ export default function WeatherForecast() {
       currentLanguage === "hi"
         ? "hi-IN"
         : currentLanguage === "mr"
-          ? "mr-IN"
-          : "en-US";
+        ? "mr-IN"
+        : "en-US";
     return date.toLocaleDateString(locale, {
       weekday: "short",
       month: "short",
@@ -260,13 +255,17 @@ export default function WeatherForecast() {
           {status === LOCATION.LOADING && (
             <div className="flex flex-col items-center gap-2">
               <div className="w-8 h-8 border-4 border-farm-500 border-t-transparent rounded-full animate-spin"></div>
-              <p className="text-gray-500">{t('loading_location') || "Locating..."}</p>
+              <p className="text-gray-500">
+                {t("loading_location") || "Locating..."}
+              </p>
             </div>
           )}
 
           {status === LOCATION.DENIED && (
             <div className="flex flex-col items-center gap-3">
-              <p className="text-red-500 font-medium">Location access is required for local weather.</p>
+              <p className="text-red-500 font-medium">
+                Location access is required for local weather.
+              </p>
               <button
                 onClick={retry}
                 className="px-6 py-2 bg-red-500 hover:bg-red-600 text-white rounded-full font-medium transition-colors shadow-lg shadow-red-200"
@@ -278,7 +277,9 @@ export default function WeatherForecast() {
 
           {status === LOCATION.GPS_OFF && (
             <div className="flex flex-col items-center gap-3">
-              <p className="text-orange-500 font-medium">Please turn on your GPS.</p>
+              <p className="text-orange-500 font-medium">
+                Please turn on your GPS.
+              </p>
               <button
                 onClick={openAppSettings}
                 className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-full font-medium transition-colors shadow-lg shadow-orange-200"
@@ -288,13 +289,20 @@ export default function WeatherForecast() {
             </div>
           )}
 
-          {!loading && !error && !weather && status !== LOCATION.LOADING && status !== LOCATION.DENIED && status !== LOCATION.GPS_OFF && (
-            <p className="text-gray-400">{t('loading_weather')}</p>
-          )}
+          {!loading &&
+            !error &&
+            !weather &&
+            status !== LOCATION.LOADING &&
+            status !== LOCATION.DENIED &&
+            status !== LOCATION.GPS_OFF && (
+              <p className="text-gray-400">{t("loading_weather")}</p>
+            )}
 
-          {error && status !== LOCATION.DENIED && status !== LOCATION.GPS_OFF && (
-            <p className="text-red-500">{error.message}</p>
-          )}
+          {error &&
+            status !== LOCATION.DENIED &&
+            status !== LOCATION.GPS_OFF && (
+              <p className="text-red-500">{error.message}</p>
+            )}
         </div>
       </div>
     );
@@ -432,13 +440,13 @@ export default function WeatherForecast() {
                           key={i}
                           whileHover={{ scale: 1.05 }}
                           className={`${getSuggestionBg(
-                            s.type
+                            s.type,
                           )} rounded-2xl p-4 border border-gray-100 dark:border-[#333] shadow-sm hover:shadow-md dark:bg-[#2C2C2C]`}
                         >
                           <div className="flex items-center gap-3 h-full">
                             <div
                               className={`w-10 h-10 flex-shrink-0 ${getSuggestionColor(
-                                s.type
+                                s.type,
                               )} rounded-xl flex items-center justify-center shadow-sm`}
                             >
                               <IconComponent className="w-5 h-5 text-farm-700 dark:text-white" />
@@ -491,9 +499,10 @@ export default function WeatherForecast() {
                           className={`
                             relative overflow-hidden rounded-3xl p-4 flex flex-col items-center justify-between
                             transition-all duration-300 backdrop-blur-md border
-                            ${isRainy
-                              ? "bg-gradient-to-br from-blue-50/80 to-cyan-50/50 dark:from-blue-950/40 dark:to-cyan-900/20 border-blue-200/50 dark:border-blue-700/30"
-                              : isSunny
+                            ${
+                              isRainy
+                                ? "bg-gradient-to-br from-blue-50/80 to-cyan-50/50 dark:from-blue-950/40 dark:to-cyan-900/20 border-blue-200/50 dark:border-blue-700/30"
+                                : isSunny
                                 ? "bg-gradient-to-br from-amber-50/80 to-orange-50/50 dark:from-amber-950/40 dark:to-orange-900/20 border-amber-200/50 dark:border-amber-700/30"
                                 : "bg-gradient-to-br from-slate-50/80 to-gray-50/50 dark:from-slate-900/40 dark:to-gray-800/20 border-slate-200/50 dark:border-slate-700/30"
                             }
@@ -524,10 +533,11 @@ export default function WeatherForecast() {
                             <div
                               className={`
                               mt-1 px-3 py-1.5 rounded-full text-[10px] font-bold w-full text-center truncate
-                              ${isRainy
+                              ${
+                                isRainy
                                   ? "bg-blue-100/50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
                                   : "bg-black/5 text-gray-600 dark:bg-white/5 dark:text-gray-400"
-                                }
+                              }
                             `}
                             >
                               {isRainy ? `${f.rain}` : t(f.tipKey)}
@@ -551,145 +561,149 @@ export default function WeatherForecast() {
             className="max-w-md mx-auto"
           >
             <div className="flex flex-col gap-6 mb-6">
-              {/* Premium Weather Card */}
-              <div className="relative overflow-hidden rounded-[2rem] shadow-lg border border-gray-100 dark:border-gray-800 group">
-                <div className="absolute inset-0 bg-white dark:bg-[#1a1a1a]" />
-
-                {/* Decorative circles - subtle for white bg */}
-                <div className="absolute -top-12 -right-12 w-48 h-48 bg-blue-50 dark:bg-blue-900/10 rounded-full blur-3xl pointer-events-none opacity-60" />
-                <div className="absolute bottom-0 left-0 w-40 h-40 bg-yellow-50 dark:bg-yellow-900/10 rounded-full blur-3xl pointer-events-none opacity-60" />
-
-                <div className="relative z-10 px-6 py-6 text-gray-800 dark:text-white text-center">
-                  {/* Main Temp & Icon - Centered */}
-                  <div className="flex flex-col items-center mb-6">
-                    <div className="bg-gray-50 dark:bg-white/5 backdrop-blur-md p-4 rounded-full mb-3 shadow-sm border border-gray-100 dark:border-white/10">
-                      <FaCloudSun className="text-5xl text-yellow-500 dark:text-yellow-400 drop-shadow-sm" />
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <span className="text-6xl font-black tracking-tight text-gray-900 dark:text-white">
-                        {weather.temp}
-                      </span>
-                      <span className="text-lg font-medium text-gray-500 dark:text-emerald-400 tracking-wide mt-1">
-                        {t(weather.conditionKey)}
-                      </span>
-                    </div>
+              {/* Premium Weather Card - MATCHING SCREENSHOT EXACTLY */}
+              <div className="relative overflow-hidden rounded-[30px] shadow-sm border border-gray-100 dark:border-[#333] bg-white dark:bg-[#1E1E1E]">
+                {/* 1. TOP SECTION: Icon, Temp, Condition */}
+                <div className="flex flex-col items-center pt-8 pb-6">
+                  {/* Icon Circle */}
+                  <div className="w-20 h-20 rounded-full bg-yellow-50 dark:bg-yellow-900/10 flex items-center justify-center mb-4">
+                    <FaCloudSun className="text-4xl text-yellow-500" />
                   </div>
-                  {/* Integrated Location Controls in Simple View */}
-                  <div className="flex items-center gap-2 mt-2">
-                    {status === LOCATION.LOADING && (
-                      <span className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full animate-pulse text-gray-500">
-                        Included Locating...
-                      </span>
-                    )}
-                    {status === LOCATION.DENIED && (
-                      <button
-                        onClick={retry}
-                        className="text-xs bg-red-100 text-red-600 hover:bg-red-200 px-3 py-1 rounded-full font-medium transition-colors"
-                      >
-                        Enable Location
-                      </button>
-                    )}
-                    {status === LOCATION.GPS_OFF && (
-                      <button
-                        onClick={openAppSettings}
-                        className="text-xs bg-orange-100 text-orange-600 hover:bg-orange-200 px-3 py-1 rounded-full font-medium transition-colors"
-                      >
-                        Turn On GPS
-                      </button>
-                    )}
+
+                  {/* Temperature */}
+                  <div className="text-4xl font-black text-gray-900 dark:text-white tracking-tight mb-1">
+                    {weather.temp.replace("°C", "")}
+                    <span className="text-4xl align-top">°C</span>
                   </div>
-                  {/* Integrated Location Controls in Simple View */}
-                  <div className="flex items-center gap-2 mt-2">
-                    {status === LOCATION.LOADING && (
-                      <span className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full animate-pulse text-gray-500">
-                        Included Locating...
-                      </span>
-                    )}
-                    {status === LOCATION.DENIED && (
-                      <button
-                        onClick={retry}
-                        className="text-xs bg-red-100 text-red-600 hover:bg-red-200 px-3 py-1 rounded-full font-medium transition-colors"
-                      >
-                        Enable Location
-                      </button>
-                    )}
-                    {status === LOCATION.GPS_OFF && (
-                      <button
-                        onClick={openAppSettings}
-                        className="text-xs bg-orange-100 text-orange-600 hover:bg-orange-200 px-3 py-1 rounded-full font-medium transition-colors"
-                      >
-                        Turn On GPS
-                      </button>
-                    )}
+
+                  {/* Condition Text */}
+                  <div className="text-lg font-medium text-gray-500 dark:text-gray-400">
+                    {t(weather.conditionKey) || "Clear Sky"}
                   </div>
                 </div>
-              </div>
-              <div>
-                <div className="w-px h-8 bg-gray-100 dark:bg-white/10" />
-                <div className="flex flex-col items-center gap-1">
-                  <FaRegSun className="text-orange-500 dark:text-orange-400 text-lg" />
-                  <span className="text-[10px] text-gray-400 dark:text-gray-500 uppercase font-bold tracking-wider">
-                    {t("weather_humidity")}
-                  </span>
-                  <span className="text-base font-bold text-gray-700 dark:text-gray-200">
-                    {weather.humidity}
-                  </span>
-                </div>
-              </div>
 
-              {/* Sunrise / Sunset Pill - Explicit Labels */}
-              <div className="bg-gray-50 dark:bg-white/5 rounded-2xl p-3 flex justify-around items-center max-w-xs mx-auto border border-gray-100 dark:border-white/5">
-                <div className="flex flex-col items-center">
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <FaSun className="text-yellow-500 text-xs" />
-                    <span className="text-[10px] font-bold text-gray-400 uppercase">
-                      {t("weather_sunrise")}
+                {/* 2. MIDDLE SECTION: 3 Metrics Row (Rain, Wind, Humidity) */}
+                <div className="flex items-center justify-between px-8 py-6 border-t border-gray-50 dark:border-white/5">
+                  {/* Rain */}
+                  <div className="flex flex-col items-center gap-1">
+                    <FaTint className="text-blue-500 text-lg mb-1" />
+                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                      {t("weather_rain") || "RAIN"}
+                    </span>
+                    <span className="text-lg font-bold text-gray-800 dark:text-gray-200">
+                      {weather.rain}
                     </span>
                   </div>
-                  <span className="text-sm font-bold text-gray-700 dark:text-white">
-                    {weather.sunrise}
-                  </span>
-                </div>
 
-                <div className="w-px h-6 bg-gray-200 dark:bg-white/10" />
-
-                <div className="flex flex-col items-center">
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <FaSun className="text-orange-500 text-xs" />
-                    <span className="text-[10px] font-bold text-gray-400 uppercase">
-                      {t("weather_sunset")}
+                  {/* Wind */}
+                  <div className="flex flex-col items-center gap-1">
+                    <FaWind className="text-slate-400 text-lg mb-1" />
+                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                      {t("weather_wind") || "WIND"}
+                    </span>
+                    <span className="text-lg font-bold text-gray-800 dark:text-gray-200">
+                      {weather.wind}
                     </span>
                   </div>
-                  <span className="text-sm font-bold text-gray-700 dark:text-white">
-                    {weather.sunset}
-                  </span>
+
+                  {/* Humidity */}
+                  <div className="flex flex-col items-center gap-1">
+                    <FaRegSun className="text-orange-500 text-lg mb-1" />
+                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                      {t("weather_humidity") || "HUMIDITY"}
+                    </span>
+                    <span className="text-lg font-bold text-gray-800 dark:text-gray-200">
+                      {weather.humidity}
+                    </span>
+                  </div>
+                </div>
+
+                {/* 3. BOTTOM SECTION: Sunrise & Sunset Container */}
+                <div className="px-6 pb-6">
+                  <div className="bg-gray-50 dark:bg-white/5 rounded-2xl py-4 px-4 flex items-center justify-between">
+                    {/* Sunrise */}
+                    <div className="flex flex-col items-center flex-1">
+                      <div className="flex items-center gap-1.5 mb-1 opacity-70">
+                        <FaSun className="text-amber-500 text-xs" />
+                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                          {t("weather_sunrise") || "SUNRISE"}
+                        </span>
+                      </div>
+                      <span className="text-sm font-bold text-gray-700 dark:text-white">
+                        {weather.sunrise}
+                      </span>
+                    </div>
+
+                    {/* Divider */}
+                    <div className="w-px h-8 bg-gray-200 dark:bg-white/10 mx-2" />
+
+                    {/* Sunset */}
+                    <div className="flex flex-col items-center flex-1">
+                      <div className="flex items-center gap-1.5 mb-1 opacity-70">
+                        <FaSun className="text-orange-500 text-xs" />
+                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                          {t("weather_sunset") || "SUNSET"}
+                        </span>
+                      </div>
+                      <span className="text-sm font-bold text-gray-700 dark:text-white">
+                        {weather.sunset}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-            {/* Tip Box */}
-            <div
-              className={`flex items-center gap-2 mt-3 px-3 py-2 rounded font-medium ${weather.tip.type === "warning"
-                ? "bg-yellow-100 border-l-4 border-yellow-500 text-yellow-900"
-                : weather.tip.type === "good"
-                  ? "bg-green-100 border-l-4 border-green-500 text-green-900"
-                  : "bg-blue-50 border-l-4 border-blue-400 text-blue-900"
-                }`}
-            >
-              <FaLightbulb
-                className={
+
+              {/* Integrated Location Controls in Simple View - Keep these as fallback below card */}
+              <div className="flex items-center justify-center gap-2 mt-2 opacity-80">
+                {status === LOCATION.LOADING && (
+                  <span className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full animate-pulse text-gray-500">
+                    Locating...
+                  </span>
+                )}
+                {status === LOCATION.DENIED && (
+                  <button
+                    onClick={retry}
+                    className="text-xs bg-red-100 text-red-600 hover:bg-red-200 px-3 py-1 rounded-full font-medium transition-colors"
+                  >
+                    Enable Location
+                  </button>
+                )}
+                {status === LOCATION.GPS_OFF && (
+                  <button
+                    onClick={openAppSettings}
+                    className="text-xs bg-orange-100 text-orange-600 hover:bg-orange-200 px-3 py-1 rounded-full font-medium transition-colors"
+                  >
+                    Turn On GPS
+                  </button>
+                )}
+              </div>
+
+              {/* Tip Box - Restored */}
+              <div
+                className={`flex items-center gap-2 mt-3 px-3 py-2 rounded font-medium ${
                   weather.tip.type === "warning"
-                    ? "text-yellow-400"
+                    ? "bg-yellow-100 border-l-4 border-yellow-500 text-yellow-900"
                     : weather.tip.type === "good"
+                    ? "bg-green-100 border-l-4 border-green-500 text-green-900"
+                    : "bg-blue-50 border-l-4 border-blue-400 text-blue-900"
+                }`}
+              >
+                <FaLightbulb
+                  className={
+                    weather.tip.type === "warning"
+                      ? "text-yellow-400"
+                      : weather.tip.type === "good"
                       ? "text-green-500"
                       : "text-blue-400"
-                }
-              />
-              <span>{t(weather.tip.textKey)}</span>
+                  }
+                />
+                <span>{t(weather.tip.textKey)}</span>
+              </div>
             </div>
 
-            {/* ============ FORECAST (SIMPLE VIEW) ============ */}
-            <div className="bg-white/40 dark:bg-white/5 backdrop-blur-xl rounded-3xl border border-white/20 dark:border-white/10 p-5 flex flex-col gap-3 mt-6">
-              <div className="text-gray-800 dark:text-gray-200 font-bold mb-2 text-xl ml-1">
+            {/* Forecast Row - Keep existing forecast logic */}
+            <div className="bg-white/60 dark:bg-white/5 backdrop-blur-xl rounded-[24px] border border-white/40 dark:border-white/10 p-5 flex flex-col gap-3">
+              <div className="text-gray-800 dark:text-gray-200 font-bold mb-1 text-lg px-1">
                 {t("seven_day_forecast")}
               </div>
 
@@ -722,17 +736,15 @@ export default function WeatherForecast() {
                       className={`
                             relative overflow-hidden rounded-3xl p-3 flex flex-col items-center justify-between
                             transition-all duration-300 backdrop-blur-md border
-                            ${isRainy
-                          ? "bg-gradient-to-br from-blue-50/80 to-cyan-50/50 dark:from-blue-950/40 dark:to-cyan-900/20 border-blue-200/50 dark:border-blue-700/30"
-                          : isSunny
-                            ? "bg-gradient-to-br from-amber-50/80 to-orange-50/50 dark:from-amber-950/40 dark:to-orange-900/20 border-amber-200/50 dark:border-amber-700/30"
-                            : "bg-gradient-to-br from-slate-50/80 to-gray-50/50 dark:from-slate-900/40 dark:to-gray-800/20 border-slate-200/50 dark:border-slate-700/30"
-                        }
+                            ${
+                              isRainy
+                                ? "bg-gradient-to-br from-blue-50/80 to-cyan-50/50 dark:from-blue-950/40 dark:to-cyan-900/20 border-blue-200/50 dark:border-blue-700/30"
+                                : isSunny
+                                ? "bg-gradient-to-br from-amber-50/80 to-orange-50/50 dark:from-amber-950/40 dark:to-orange-900/20 border-amber-200/50 dark:border-amber-700/30"
+                                : "bg-gradient-to-br from-slate-50/80 to-gray-50/50 dark:from-slate-900/40 dark:to-gray-800/20 border-slate-200/50 dark:border-slate-700/30"
+                            }
                           `}
                     >
-                      {/* Top Highlight Gloss */}
-                      <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-white/40 to-transparent pointer-events-none" />
-
                       <div className="z-10 flex flex-col items-center gap-2 w-full">
                         <span className="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">
                           {dayLabel}
@@ -751,14 +763,14 @@ export default function WeatherForecast() {
                           </span>
                         </div>
 
-                        {/* Rain / Tip Pill */}
                         <div
                           className={`
                               mt-1 px-2 py-1 rounded-full text-[9px] font-bold w-full text-center truncate
-                              ${isRainy
-                              ? "bg-blue-100/50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
-                              : "bg-black/5 text-gray-600 dark:bg-white/5 dark:text-gray-400"
-                            }
+                              ${
+                                isRainy
+                                  ? "bg-blue-100/50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+                                  : "bg-black/5 text-gray-600 dark:bg-white/5 dark:text-gray-400"
+                              }
                             `}
                         >
                           {isRainy ? `${f.rain}` : t(f.tipKey)}
@@ -798,17 +810,15 @@ export default function WeatherForecast() {
                       className={`
                             relative overflow-hidden rounded-3xl p-3 flex flex-col items-center justify-between
                             transition-all duration-300 backdrop-blur-md border w-full sm:w-auto
-                            ${isRainy
-                          ? "bg-gradient-to-br from-blue-50/80 to-cyan-50/50 dark:from-blue-950/40 dark:to-cyan-900/20 border-blue-200/50 dark:border-blue-700/30"
-                          : isSunny
-                            ? "bg-gradient-to-br from-amber-50/80 to-orange-50/50 dark:from-amber-950/40 dark:to-orange-900/20 border-amber-200/50 dark:border-amber-700/30"
-                            : "bg-gradient-to-br from-slate-50/80 to-gray-50/50 dark:from-slate-900/40 dark:to-gray-800/20 border-slate-200/50 dark:border-slate-700/30"
-                        }
+                            ${
+                              isRainy
+                                ? "bg-gradient-to-br from-blue-50/80 to-cyan-50/50 dark:from-blue-950/40 dark:to-cyan-900/20 border-blue-200/50 dark:border-blue-700/30"
+                                : isSunny
+                                ? "bg-gradient-to-br from-amber-50/80 to-orange-50/50 dark:from-amber-950/40 dark:to-orange-900/20 border-amber-200/50 dark:border-amber-700/30"
+                                : "bg-gradient-to-br from-slate-50/80 to-gray-50/50 dark:from-slate-900/40 dark:to-gray-800/20 border-slate-200/50 dark:border-slate-700/30"
+                            }
                           `}
                     >
-                      {/* Top Highlight Gloss */}
-                      <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-white/40 to-transparent pointer-events-none" />
-
                       <div className="z-10 flex flex-col items-center gap-2 w-full">
                         <span className="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">
                           {dayLabel}
@@ -827,14 +837,14 @@ export default function WeatherForecast() {
                           </span>
                         </div>
 
-                        {/* Rain / Tip Pill */}
                         <div
                           className={`
                               mt-1 px-2 py-1 rounded-full text-[9px] font-bold w-full text-center truncate
-                              ${isRainy
-                              ? "bg-blue-100/50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
-                              : "bg-black/5 text-gray-600 dark:bg-white/5 dark:text-gray-400"
-                            }
+                              ${
+                                isRainy
+                                  ? "bg-blue-100/50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+                                  : "bg-black/5 text-gray-600 dark:bg-white/5 dark:text-gray-400"
+                              }
                             `}
                         >
                           {isRainy ? `${f.rain}` : t(f.tipKey)}

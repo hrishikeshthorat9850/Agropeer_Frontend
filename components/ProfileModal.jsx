@@ -22,12 +22,10 @@ export default function ProfileModal({ className = "" }) {
       <button
         aria-label="Open profile menu"
         onClick={() => setIsOpen((o) => !o)}
-        className="rounded-full md:p-1 pt-2 hover:bg-green-700/20 transition"
+        className="rounded-full md:p-1 pt-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
       >
         {/* className override applied HERE */}
-        <CgProfile
-          className={`text-2xl sm:text-xl md:text-3xl cursor-pointer ${className}`}
-        />
+        <CgProfile className={`cursor-pointer ${className}`} />
       </button>
 
       {isOpen && (
