@@ -60,7 +60,7 @@ export default function MobilePageLayout({ children, className = "" }) {
     // Top padding for navbar, bottom padding for bottom nav
     return `
       pt-[56px]
-      pb-[70px]
+      pb-[64px]
     `;
   };
 

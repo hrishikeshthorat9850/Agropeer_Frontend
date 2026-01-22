@@ -55,7 +55,7 @@ export default function MobileBottomNav({ onAI }) {
               flex flex-col items-center gap-2
               active:scale-95
             "
-            style={{ bottom: `calc(${safeBottom} + 75px)` }}
+            style={{ bottom: `calc(${safeBottom} + 66px)` }}
           >
             <div className="w-12 h-12 rounded-full bg-earth-500 text-white shadow-elevation-3 flex items-center justify-center">
               <FaTractor size={20} />
@@ -84,7 +84,7 @@ export default function MobileBottomNav({ onAI }) {
               flex flex-col items-center gap-2
               active:scale-95
             "
-            style={{ bottom: `calc(${safeBottom} + 75px)` }}
+            style={{ bottom: `calc(${safeBottom} + 66px)` }}
           >
             <div className="w-12 h-12 rounded-full bg-farm-500 text-white shadow-elevation-3 flex items-center justify-center">
               <FaImages size={20} />
@@ -114,22 +114,23 @@ export default function MobileBottomNav({ onAI }) {
         className="fixed bottom-0 left-0 right-0 md:hidden z-[999] bg-white dark:bg-black"
         style={{
           paddingBottom: "env(safe-area-inset-bottom)",
-          height: "calc(65px + env(safe-area-inset-bottom))",
+          height: "calc(56px + env(safe-area-inset-bottom))",
         }}
       >
-        <div className="flex items-center justify-between px-4 h-[65px]">
+        <div className="flex items-center justify-between px-4 h-[56px]">
           {/* HOME */}
           <button
             onClick={() => router.push("/")}
-            className="flex-1 flex flex-col items-center gap-1 group"
+            className="flex-1 flex flex-col items-center group"
           >
             <div
               className={`
               px-5 py-1.5 rounded-full transition-all duration-300
-              ${pathname === "/"
+              ${
+                pathname === "/"
                   ? "bg-farm-200 dark:bg-farm-800 text-farm-900 dark:text-farm-100"
                   : "text-surface-600 dark:text-surface-400 group-hover:bg-surface-100 dark:group-hover:bg-surface-800"
-                }
+              }
             `}
             >
               <FaHome
@@ -138,10 +139,11 @@ export default function MobileBottomNav({ onAI }) {
               />
             </div>
             <span
-              className={`text-xs font-medium ${pathname === "/"
-                ? "text-farm-900 dark:text-farm-100"
-                : "text-surface-600 dark:text-surface-400"
-                }`}
+              className={`text-xs font-medium ${
+                pathname === "/"
+                  ? "text-farm-900 dark:text-farm-100"
+                  : "text-surface-600 dark:text-surface-400"
+              }`}
             >
               Home
             </span>
@@ -172,7 +174,7 @@ export default function MobileBottomNav({ onAI }) {
           {/* AI */}
           <button
             onClick={openAI}
-            className="flex-1 flex flex-col items-center gap-1 group"
+            className="flex-1 flex flex-col items-center group"
           >
             <div
               className={`

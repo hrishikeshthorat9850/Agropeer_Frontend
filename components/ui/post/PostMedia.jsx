@@ -54,7 +54,9 @@ export default function PostMedia({ images }) {
     <div className="w-full select-none touch-pan-y" ref={containerRef}>
       {/* Media Window - Dynamic Aspect Ratio (Locked to First Item) */}
       <div
-        className="relative w-full bg-gray-100 dark:bg-zinc-900 overflow-hidden z-10 transition-all duration-300 ease-out"
+        className={`relative w-full bg-gray-100 dark:bg-zinc-900 transition-all duration-300 ease-out ${
+          isZoomed ? "overflow-visible z-50" : "overflow-hidden z-10"
+        }`}
         style={{ aspectRatio: aspectRatio }}
       >
         {/* Slider Track */}
@@ -73,13 +75,17 @@ export default function PostMedia({ images }) {
           {images.map((img, i) => (
             <div
               key={i}
-              className="min-w-full h-full relative flex items-center justify-center"
+              className={`min-w-full h-full relative flex items-center justify-center ${
+                isZoomed && i !== currentIndex ? "opacity-0 invisible" : ""
+              }`}
               // Prevent native drag of images interfering with framer
               onDragStart={(e) => e.preventDefault()}
             >
               <ZoomableMedia
                 media={img}
                 isActive={i === currentIndex}
+                // Preload current AND next image for speed
+                preload={i === currentIndex || i === currentIndex + 1}
                 onZoomChange={setIsZoomed}
                 // Detect ratio for first slide (others will be ignored by handler)
                 onRatioDetected={(ratio) => handleRatioDetected(i, ratio)}
@@ -134,10 +140,17 @@ export default function PostMedia({ images }) {
 }
 
 // Separate Component for Zoom Logic
-function ZoomableMedia({ media, isActive, onZoomChange, onRatioDetected }) {
+function ZoomableMedia({
+  media,
+  isActive,
+  preload,
+  onZoomChange,
+  onRatioDetected,
+}) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const scale = useMotionValue(1);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   // Track zooming state locally to enable panning
   const isZooming = useRef(false);
@@ -200,9 +213,7 @@ function ZoomableMedia({ media, isActive, onZoomChange, onRatioDetected }) {
 
       scale.set(newScale);
 
-      // Simple Panning while 2 fingers down (optional, keeping it simple for stability)
-      // For precise panning we need to track midpoint delta.
-      // Adding simplified midpoint tracking:
+      // Simple Panning while 2 fingers down
       const midX = (touch1.clientX + touch2.clientX) / 2;
       const midY = (touch1.clientY + touch2.clientY) / 2;
       const deltaX = midX - initialTouchData.current.midX;
@@ -215,7 +226,6 @@ function ZoomableMedia({ media, isActive, onZoomChange, onRatioDetected }) {
     // Pan Logic (One finger, but only if zoomed)
     else if (e.touches.length === 1 && scale.get() > 1 && isZooming.current) {
       e.stopPropagation(); // Stop slider
-      // Implement 1-finger pan if needed, or rely on 2-finger pan
     }
   };
 
@@ -229,21 +239,25 @@ function ZoomableMedia({ media, isActive, onZoomChange, onRatioDetected }) {
       animate(x, 0, { type: "spring", bounce: 0.2 });
       animate(y, 0, { type: "spring", bounce: 0.2 });
 
-      // Re-enable slider after snap animation (approximated by slight delay or direct call)
-      // For immediate response, we inform parent:
+      // Re-enable slider after snap animation
       onZoomChange(false);
     }
   };
 
   return (
     <motion.div
-      className="w-full h-full flex items-center justify-center"
+      className="w-full h-full flex items-center justify-center relative bg-gray-50 dark:bg-zinc-900"
       style={{ x, y, scale }}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       onTouchCancel={handleTouchEnd}
     >
+      {/* Loading Skeleton / Pulse */}
+      {!isLoaded && media?.type !== "video" && (
+        <div className="absolute inset-0 z-0 bg-gray-200 dark:bg-zinc-800 animate-pulse" />
+      )}
+
       {media?.type === "video" ? (
         <video
           src={media.url}
@@ -251,7 +265,6 @@ function ZoomableMedia({ media, isActive, onZoomChange, onRatioDetected }) {
           controls
           controlsList="nodownload nofullscreen noremoteplayback"
           disablePictureInPicture
-          // disableRemotePlayback // removing to allow better controls
           onClick={(e) => e.stopPropagation()}
           onLoadedMetadata={(e) => {
             if (onRatioDetected) {
@@ -268,10 +281,19 @@ function ZoomableMedia({ media, isActive, onZoomChange, onRatioDetected }) {
             src={media.url || "/placeholder.png"}
             alt="Post media"
             fill
-            className="object-cover"
-            priority={isActive}
-            unoptimized={true} // Bypass Next.js optimization for raw speed
+            className={`object-cover transition-opacity duration-300 ${
+              isLoaded ? "opacity-100" : "opacity-0"
+            }`}
+            priority={preload}
+            unoptimized={true} // Bypass Next.js optimization for raw speed / static export
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            onLoad={(e) => {
+              // Determine ratio immediately on load if possible
+              if (onRatioDetected && e.target.naturalWidth) {
+                onRatioDetected(e.target.naturalWidth / e.target.naturalHeight);
+              }
+              setIsLoaded(true);
+            }}
             onLoadingComplete={(result) => {
               if (
                 onRatioDetected &&
@@ -280,6 +302,7 @@ function ZoomableMedia({ media, isActive, onZoomChange, onRatioDetected }) {
               ) {
                 onRatioDetected(result.naturalWidth / result.naturalHeight);
               }
+              setIsLoaded(true);
             }}
           />
         </div>

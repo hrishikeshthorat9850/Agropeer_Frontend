@@ -114,13 +114,8 @@ export default function MobileSidebar() {
           {/* LEFT SIDEBAR - PREMIUM GLASS DESIGN */}
           <motion.div
             className="fixed left-0 top-0 w-[85%] max-w-[320px] h-[100dvh]
-              bg-farm-700/90 backdrop-blur-3xl
-              text-white z-[9999] 
-              rounded-r-[40px] 
-              shadow-[10px_0_40px_rgba(0,0,0,0.5)]
-              border-r border-white/10
-              flex flex-col 
-              overflow-hidden
+              bg-farm-900/90 backdrop-blur-3xl text-white z-[9999] rounded-r-[40px] 
+              shadow-[10px_0_40px_rgba(0,0,0,0.5)] border-r border-white/10 flex flex-col overflow-hidden
             "
             initial={{ x: "-100%" }}
             animate={{ x: 0 }}
@@ -128,8 +123,8 @@ export default function MobileSidebar() {
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
             {/* Gradient Orb Effects */}
-            <div className="absolute top-[-10%] left-[-20%] w-[400px] h-[300px] bg-green-950/60 rounded-full blur-[80px] pointer-events-none" />
-            <div className="absolute bottom-[-10%] right-[-20%] w-[400px] h-[350px] bg-green-950/60 rounded-full blur-[60px] pointer-events-none" />
+            <div className="absolute top-[-10%] left-[-20%] w-[400px] h-[300px] bg-green-950/90 rounded-full blur-[80px] pointer-events-none" />
+            <div className="absolute bottom-[-10%] right-[-20%] w-[400px] h-[350px] bg-green-950/90 rounded-full blur-[60px] pointer-events-none" />
 
             {/* HEADER */}
             <div className="relative px-8 pt-12 pb-8 flex justify-between items-center z-10">
@@ -219,7 +214,7 @@ export default function MobileSidebar() {
             </div>
 
             {/* FOOTER SOCIALS */}
-            <div className="px-8 py-4 border-t border-white/5 bg-black/20 backdrop-blur-md z-10">
+            <div className="px-8 py-4 border-t border-white/5 bg-black/30 backdrop-blur-md z-10">
               <div className="flex justify-between items-center gap-4 px-2">
                 <SocialIcon
                   href="https://www.facebook.com/profile.php?id=61584709015575"
@@ -300,14 +295,7 @@ const SocialIcon = ({ href, icon, hover }) => (
     href={href}
     target="_blank"
     rel="noopener noreferrer"
-    className={`
-       w-10 h-10 rounded-2xl 
-       bg-white/5 border border-white/5
-       flex items-center justify-center 
-       text-white/40 transition-all duration-300
-       hover:bg-white/10 hover:scale-110 hover:shadow-lg hover:shadow-white/5
-       ${hover}
-    `}
+    className={`w-10 h-10 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center text-white/80 transition-all duration-300 hover:bg-white/10 hover:scale-110 hover:shadow-lg hover:shadow-white/5 ${hover}`}
   >
     {icon}
   </a>

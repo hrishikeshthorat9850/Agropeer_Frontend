@@ -310,13 +310,7 @@ export default function AIChatWindow({ open, setOpen }) {
         {/* ================== INPUT BAR ================== */}
         <form
           onSubmit={handleSendMessage}
-          className="
-            absolute bottom-0 left-0 w-full
-            bg-slate-900/50 backdrop-blur-xl 
-            border-t border-white/10 
-            p-3 shadow-inner
-            flex items-center gap-3
-          "
+          className="absolute bottom-0 left-0 w-full bg-slate-900/50 backdrop-blur-xl border-t border-white/10 p-3 pb-6 shadow-inner flex items-center gap-3"
         >
           {/* <button
             type="button"

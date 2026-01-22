@@ -6,10 +6,6 @@ import { usePathname } from "next/navigation";
 export default function PageTransition({ children }) {
   const path = usePathname();
 
-  React.useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [path]);
-
   return (
     <AnimatePresence mode="sync" initial={false} onExitComplete={() => {}}>
       <motion.div

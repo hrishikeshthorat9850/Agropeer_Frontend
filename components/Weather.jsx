@@ -275,7 +275,7 @@ export default function WeatherForecast() {
             </div>
           )}
 
-          {status === LOCATION.GPS_OFF && (
+          {/* {status === LOCATION.GPS_OFF && (
             <div className="flex flex-col items-center gap-3">
               <p className="text-orange-500 font-medium">
                 Please turn on your GPS.
@@ -287,7 +287,7 @@ export default function WeatherForecast() {
                 Turn On GPS
               </button>
             </div>
-          )}
+          )} */}
 
           {!loading &&
             !error &&
@@ -470,7 +470,7 @@ export default function WeatherForecast() {
                     </h3>
                   </div>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3 justify-items-center">
                     {weather.forecast.map((f, i) => {
                       const isRainy = parseInt(f.rain) >= 40;
                       const isSunny =
@@ -560,7 +560,7 @@ export default function WeatherForecast() {
             transition={{ duration: 0.5 }}
             className="max-w-md mx-auto"
           >
-            <div className="flex flex-col gap-6 mb-6">
+            <div className="flex flex-col gap-2 mb-6">
               {/* Premium Weather Card - MATCHING SCREENSHOT EXACTLY */}
               <div className="relative overflow-hidden rounded-[30px] shadow-sm border border-gray-100 dark:border-[#333] bg-white dark:bg-[#1E1E1E]">
                 {/* 1. TOP SECTION: Icon, Temp, Condition */}
@@ -703,8 +703,11 @@ export default function WeatherForecast() {
 
             {/* Forecast Row - Keep existing forecast logic */}
             <div className="bg-white/60 dark:bg-white/5 backdrop-blur-xl rounded-[24px] border border-white/40 dark:border-white/10 p-5 flex flex-col gap-3">
-              <div className="text-gray-800 dark:text-gray-200 font-bold mb-1 text-lg px-1">
-                {t("seven_day_forecast")}
+              <div className="flex items-center gap-3 mb-6">
+                <Calendar className="w-6 h-6 text-farm-600 dark:text-farm-400" />
+                <h3 className="text-xl font-bold text-farm-900 dark:text-white">
+                  {t("seven_day_forecast")}
+                </h3>
               </div>
 
               {/* TOP 4 */}

@@ -92,15 +92,13 @@ export default function ClientLayout({ children }) {
 
   // Force Scroll to Top on Path Change
   useEffect(() => {
-    // Immediate scroll to top
-    window.scrollTo(0, 0);
+    // Disable native browser scroll restoration to handle it manually
+    if (typeof window !== "undefined" && window.history) {
+      window.history.scrollRestoration = "manual";
+    }
 
-    // Also try slightly later in case of transition delays
-    const timer = setTimeout(() => {
-      window.scrollTo(0, 0);
-    }, 50);
-
-    return () => clearTimeout(timer);
+    // Immediate scroll to top with instant behavior to override CSS smooth scroll
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   }, [pathname]);
 
   // Body padding adjustments for mobile no-padding routes
@@ -147,7 +145,7 @@ export default function ClientLayout({ children }) {
           {showNavbar && <MobileNavbar onOpenAI={() => setAiOpen(true)} />}
 
           {/* Main Content Area */}
-          <main className={`w-full min-h-screen ${showNavbar ? "" : ""}`}>
+          <main className={`w-full ${showNavbar ? "" : ""}`}>
             <div className="flex flex-col w-full">
               <PageTransition>
                 {/* Always use MobilePageLayout if not explicitly native-only, but here we assume mobile behaviour */}

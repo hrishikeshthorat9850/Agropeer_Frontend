@@ -43,40 +43,44 @@ export default function SignupPage() {
   }, []);
 
   return (
-    <div className="fixed inset-0 w-full overflow-hidden overscroll-none relative flex flex-col bg-[#FAF7F2] dark:bg-[#0d0d0d] font-sans">
+    <div className="fixed inset-0 w-full bg-[#FAF7F2] dark:bg-[#0d0d0d] font-sans">
       {/* Background Decor */}
       <div className="absolute top-[-20%] left-[-20%] w-[140%] h-[80%] bg-gradient-to-br from-green-200 to-transparent dark:from-green-950 rounded-b-[100%] pointer-events-none" />
 
-      {/* Top Section: Logo & Brand */}
-      <div className="flex-none pt-8 pb-4 flex flex-col items-center justify-center relative z-10">
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl shadow-lg shadow-green-500/30 flex items-center justify-center text-white mb-3"
-        >
-          <Sprout size={32} fill="currentColor" />
-        </motion.div>
-        <motion.h1
-          initial={{ y: 10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.1 }}
-          className="text-xl font-bold text-gray-900 dark:text-white tracking-tight"
-        >
-          AgroPeer
-        </motion.h1>
-      </div>
+      {/* Scrollable Container */}
+      <div className="absolute inset-0 w-full h-full overflow-y-auto overscroll-none">
+        <div className="min-h-full flex flex-col items-center justify-center p-6">
+          {/* Top Section: Logo & Brand */}
+          <div className="flex-none flex flex-col items-center justify-center relative z-10 mb-6">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl shadow-lg shadow-green-500/30 flex items-center justify-center text-white mb-3"
+            >
+              <Sprout size={32} fill="currentColor" />
+            </motion.div>
+            <motion.h1
+              initial={{ y: 10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.1 }}
+              className="text-xl font-bold text-gray-900 dark:text-white tracking-tight"
+            >
+              AgroPeer
+            </motion.h1>
+          </div>
 
-      {/* Main Card Section (Bottom Sheet Style) */}
-      <div className="flex-1 w-full relative z-20 flex flex-col justify-end overflow-hidden">
-        <motion.div
-          initial={{ y: "100%" }}
-          animate={{ y: 0 }}
-          transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          className="w-full h-full bg-transparent px-6 pb-6 sm:max-w-md sm:mx-auto overflow-y-auto"
-          style={{ maxHeight: "calc(100vh - 120px)" }} // Ensure scrollable area fits below header
-        >
-          <Signup />
-        </motion.div>
+          {/* Main Card Section */}
+          <div className="w-full relative z-20 flex flex-col items-center justify-center">
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="w-full sm:max-w-md"
+            >
+              <Signup />
+            </motion.div>
+          </div>
+        </div>
       </div>
     </div>
   );

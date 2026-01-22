@@ -1,12 +1,14 @@
 "use client";
 import { useLogin } from "@/Context/logincontext";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { ArrowLeft, UserCog, Save, Check } from "lucide-react";
 import { useLanguage } from "@/Context/languagecontext";
 import useToast from "@/hooks/useToast";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
+import imageCompression from "browser-image-compression";
+import Image from "next/image";
 
 export default function EditProfilePage() {
   const { user } = useLogin();
@@ -15,6 +17,7 @@ export default function EditProfilePage() {
   const { showToast } = useToast();
 
   const BIO_LIMIT = 500;
+  const fileInputRef = useRef(null);
 
   const [formData, setFormData] = useState({
     full_name: "",
@@ -24,6 +27,8 @@ export default function EditProfilePage() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
 
   // Load user data in form
   useEffect(() => {
@@ -34,8 +39,38 @@ export default function EditProfilePage() {
         location: user?.user_metadata?.location || "",
         bio: user?.user_metadata?.bio || "",
       });
+      // Set initial preview
+      setPreviewUrl(
+        user?.user_metadata?.avatar_url || user?.user_metadata?.avatar || null,
+      );
     }
   }, [user]);
+
+  const handleImageSelect = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const options = {
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 500,
+        useWebWorker: true,
+      };
+      const compressedFile = await imageCompression(file, options);
+      setAvatarFile(compressedFile);
+
+      const reader = new FileReader();
+      reader.onload = (ev) => setPreviewUrl(ev.target.result);
+      reader.readAsDataURL(compressedFile);
+    } catch (error) {
+      console.error("Image error:", error);
+      showToast("error", t("image_error") || "Failed to process image");
+    }
+  };
+
+  const handlePhotoClick = () => {
+    fileInputRef.current?.click();
+  };
 
   // Handle profile update
   const handleSubmit = async (e) => {
@@ -43,12 +78,33 @@ export default function EditProfilePage() {
     setLoading(true);
 
     try {
+      let avatarUrl = previewUrl;
+
+      // Upload new avatar if selected
+      if (avatarFile) {
+        const fileExt = avatarFile.name.split(".").pop();
+        const fileName = `avatars/${user.id}-${Date.now()}.${fileExt}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from("agri-photos")
+          .upload(fileName, avatarFile, { upsert: true });
+
+        if (uploadError) throw uploadError;
+
+        const { data } = supabase.storage
+          .from("agri-photos")
+          .getPublicUrl(fileName);
+
+        avatarUrl = data.publicUrl;
+      }
+
       const { error } = await supabase.auth.updateUser({
         data: {
           full_name: formData.full_name,
           phone: formData.phone,
           location: formData.location,
-          bio: formData.bio.slice(0, BIO_LIMIT), // Safety
+          bio: formData.bio.slice(0, BIO_LIMIT),
+          avatar_url: avatarUrl,
         },
       });
 
@@ -101,16 +157,41 @@ export default function EditProfilePage() {
         {/* Form Content */}
         <div className="p-4 sm:p-6 max-w-lg mx-auto">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Photo Placeholder (Optional purely visual) */}
+            {/* Photo Picker */}
             <div className="flex flex-col items-center justify-center mb-8">
-              <div className="w-20 h-20 bg-gray-100 dark:bg-[#1C1C1E] rounded-full flex items-center justify-center mb-3">
-                <UserCog size={32} className="text-gray-400" />
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleImageSelect}
+                accept="image/*"
+                className="hidden"
+              />
+              <div
+                onClick={handlePhotoClick}
+                className="w-24 h-24 bg-gray-100 dark:bg-[#1C1C1E] rounded-full flex items-center justify-center mb-3 relative overflow-hidden ring-4 ring-white dark:ring-black shadow-lg cursor-pointer group"
+              >
+                {previewUrl ? (
+                  <Image
+                    src={previewUrl}
+                    alt="Profile"
+                    fill
+                    className="object-cover group-hover:opacity-80 transition-opacity"
+                  />
+                ) : (
+                  <UserCog size={36} className="text-gray-400" />
+                )}
+
+                {/* Overlay Hint */}
+                <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <UserCog size={24} className="text-white" />
+                </div>
               </div>
               <button
                 type="button"
-                className="text-green-600 dark:text-green-500 font-semibold text-sm"
+                onClick={handlePhotoClick}
+                className="text-green-600 dark:text-green-500 font-semibold text-sm hover:underline"
               >
-                Change Profile Photo
+                {t("change_photo") || "Change Profile Photo"}
               </button>
             </div>
 
