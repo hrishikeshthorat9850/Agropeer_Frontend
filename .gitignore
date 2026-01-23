@@ -66,3 +66,6 @@ service-account-key.json
 
 git restore .
 git clean -fd
+
+#backend
+agropeer-backend/

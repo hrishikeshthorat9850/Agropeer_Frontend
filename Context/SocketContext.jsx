@@ -70,7 +70,7 @@ export function SocketProvider({ loggedInUser, children }) {
     const handleReceive = (msg) => {
       // Safety checks: ensure loggedInUser and message are valid
       if (!loggedInUser?.id || !msg || !msg.conversation_id) return;
-      
+
       const convId = msg.conversation_id;
 
       // Add message to store
@@ -105,7 +105,7 @@ export function SocketProvider({ loggedInUser, children }) {
     try {
       const { isAndroidPlatform } = await import('@/utils/capacitorNotifications');
       const isAndroid = await isAndroidPlatform();
-      
+
       if (isAndroid) {
         // Use Android local notifications
         const { sendAndroidLocalNotification } = await import('@/lib/androidNotificationService');
@@ -142,7 +142,7 @@ export function SocketProvider({ loggedInUser, children }) {
       try {
         const { isAndroidPlatform, requestAndroidNotificationPermission } = await import('@/utils/capacitorNotifications');
         const isAndroid = await isAndroidPlatform();
-        
+
         if (isAndroid) {
           // Request Android notification permission
           await requestAndroidNotificationPermission();
@@ -265,7 +265,12 @@ export function SocketProvider({ loggedInUser, children }) {
         return;
       }
 
+      const timeout = setTimeout(() => {
+        reject(new Error("Request timed out"));
+      }, 5000);
+
       socket.emit("findOrCreateConversation", payload, (response) => {
+        clearTimeout(timeout);
         if (!response) {
           reject(new Error("No response from server"));
           return;

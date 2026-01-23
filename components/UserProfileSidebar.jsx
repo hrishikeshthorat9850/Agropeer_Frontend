@@ -28,6 +28,12 @@ export default function UserSidebar({ onClose } = {}) {
   const [infoLoading, setInfoLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
 
+  useEffect(()=>{
+    console.log("User is :",user);
+    console.log("Userinfo is :",userinfo);
+    console.log("Google Avatar Url is :",user?.identities[0]?.identity_data?.avatar_url);
+  });
+
   useEffect(() => {
     setMounted(true);
     if (!loading) setInfoLoading(false);
@@ -91,8 +97,7 @@ export default function UserSidebar({ onClose } = {}) {
     formatName(userinfo) ||
     userinfo?.display_name;
 
-  const avatarUrl =
-    user?.user_metadata?.avatar_url || user?.user_metadata?.avatar || null;
+  const avatarUrl = user?.identities[0]?.identity_data?.picture || user?.identities[0]?.identity_data?.avatar_url || user?.user_metadata?.avatar_url || user?.user_metadata?.picture || "";
 
   if (!mounted) return null;
 

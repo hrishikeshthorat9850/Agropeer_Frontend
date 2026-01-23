@@ -216,7 +216,7 @@ export default function MobileNavbar() {
         {/* RIGHT SIDE ICONS */}
         <div className="flex items-center gap-1 flex-shrink-0">
           {/* Notifications */}
-          {user && (
+
             <Link
               href="/notifications"
               className="relative p-2 active:scale-95 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
@@ -228,8 +228,7 @@ export default function MobileNavbar() {
                 </div>
               )}
             </Link>
-          )}
-
+            
           {/* Chats */}
           {user && (
             <Link

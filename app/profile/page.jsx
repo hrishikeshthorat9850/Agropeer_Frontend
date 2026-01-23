@@ -20,7 +20,7 @@ import { useLanguage } from "@/Context/languagecontext";
 import { ProfileSkeleton } from "@/components/skeletons";
 import { supabase } from "@/lib/supabaseClient";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
-
+import {shareContent} from "@/utils/shareHandler"
 // Formatter: links, mentions, hashtags, line breaks
 function formatBio(text) {
   if (!text) return "";
@@ -356,6 +356,31 @@ export default function ProfilePage() {
   const shortRaw = bioRaw.slice(0, shortLimit);
   const shortFormatted = formatBio(shortRaw);
 
+  const handleProfileShare = async ()=>{
+    const result = await shareContent({
+      title : "Checkout this user...",
+      id : user?.id,
+      text : "See this users profile , how he used Agropeer",
+      route : "profile"
+    });
+      if (result.platform === "native") {
+        console.log("✔ Shared via native bottom sheet");
+      }
+
+      if (result.platform === "web") {
+        console.log("🌍 Shared via browser share dialog");
+      }
+
+      if (result.platform === "copy") {
+        showToast("info", "📋 Link copied to clipboard!");
+      }
+
+      if (!result.success) {
+        return;
+      }
+    console.log("Share response is :",share);
+  }
+
   return (
     <MobilePageContainer noPadding>
       <div className="bg-white dark:bg-black pb-6">
@@ -365,7 +390,7 @@ export default function ProfilePage() {
             {user?.email ? user.email.split("@")[0] : "Profile"}
             <BadgeCheck
               size={16}
-              className="text-green-500 fill-green-500 text-white"
+              className=" fill-green-500 text-white"
             />
           </span>
           <div className="flex items-center gap-2">
@@ -470,7 +495,10 @@ export default function ProfilePage() {
               >
                 {t("edit_profile")}
               </button>
-              <button className="flex-1 h-10 bg-gray-100 dark:bg-[#1C1C1E] rounded-lg font-semibold text-sm text-gray-900 dark:text-white active:scale-[0.98] transition-transform">
+              <button 
+                className="flex-1 h-10 bg-gray-100 dark:bg-[#1C1C1E] rounded-lg font-semibold text-sm text-gray-900 dark:text-white active:scale-[0.98] transition-transform"
+                onClick={handleProfileShare}
+              >
                 Share Profile
               </button>
             </div>

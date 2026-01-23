@@ -46,7 +46,7 @@ export default function ChatModal({
   const fetchMessages = async (convId) => {
     if (!convId || !user?.id) return;
 
-    setLoading(true);
+    setLoading(false);
     try {
       // Optimized: select specific fields to reduce egress
       const { data, error } = await supabase
@@ -294,7 +294,7 @@ export default function ChatModal({
       showToast("error", t("msg_empty_error"));
       return;
     }
-    if (!conversationId || !user?.id || !socket) {
+    if (!user?.id || !socket) {
       showToast("error", t("send_msg_error"));
       return;
     }

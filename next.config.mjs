@@ -4,8 +4,8 @@ const nextConfig = {
   trailingSlash: true,
   output: "export",
   // REQUIRED for static export
-  images: {
-    unoptimized: true,
+ images: {
+    unoptimized : true,
   },
 
   // Keep this – safe
@@ -20,6 +20,7 @@ const nextConfig = {
   turbopack: {},
   // Enable production client source maps to map runtime errors to original source
   productionBrowserSourceMaps: true,
+  
 };
 
 export default nextConfig;

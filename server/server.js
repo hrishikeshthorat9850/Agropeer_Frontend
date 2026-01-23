@@ -12,18 +12,13 @@ const server = http.createServer(app);
 
 const normalize = (url) => url?.replace(/\/$/, "");
 
-// const allowedOrigins = process.env.FRONTEND_URL
-//   ? process.env.FRONTEND_URL
-//       .split(",")
-//       .map((o) => normalize(o.trim()))
-//   : [
-//       "http://localhost:3000",
-//       "http:192.168.31.74:3000",
-//       "capacitor://localhost",
-//       "agropeer://localhost",
-//     ];
-
-const allowedOrigins = "http://192.168.31.74:3000" || "capacitor://localhost" || "agropeer://localhost";
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://192.168.31.74:3000",
+  "capacitor://localhost",
+  "agropeer://localhost",
+  "https://localhost"
+];
 
 
 const io = new Server(server, {
@@ -120,7 +115,7 @@ io.on("connection", (socket) => {
       io.emit("online-status", {
         userId,
         online: true,
-        last_seen : null
+        last_seen: null
       });
     }
   }
@@ -150,7 +145,7 @@ io.on("connection", (socket) => {
       userActivity.set(userId, {});
     }
     userActivity.get(userId).activeConversation = active ? conversationId : null;
-    
+
     console.log(`📍 User ${userId} active conversation →`, active ? conversationId : "none");
   });
 
@@ -290,7 +285,7 @@ io.on("connection", (socket) => {
       console.error("❌ Error saving message:", err);
     }
   });
-  
+
   socket.on("markAsRead", async ({ conversation_id, reader_id }) => {
     try {
       // Update unread messages for this conversation
@@ -306,7 +301,7 @@ io.on("connection", (socket) => {
 
       if (!updated?.length) {
         console.log("⚠️ No messages updated — maybe all already read");
-        
+
         const { count: unreadCount, error: countError } = await supabase
           .from("messages")
           .select("*", { count: "exact", head: true })
@@ -321,7 +316,7 @@ io.on("connection", (socket) => {
         } else {
           console.log("✅ Unread count fetched successfully:", unreadCount);
         }
-        
+
         io.to(conversation_id).emit("messagesSeen", {
           conversation_id,
           reader_id,
