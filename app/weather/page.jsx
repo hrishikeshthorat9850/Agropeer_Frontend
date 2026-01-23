@@ -94,7 +94,7 @@ export default function WeatherPage() {
                   </button>
                 )}
                 {!weatherLoading && !weatherError && (
-                  <div className="w-2 h-2 rounded-full bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.6)]"></div>
+                  <div className="w-0 h-0 rounded-full bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.6)]"></div>
                 )}
               </div>
           {/* Toggle Button */}

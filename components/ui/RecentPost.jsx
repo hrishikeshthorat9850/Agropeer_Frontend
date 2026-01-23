@@ -42,6 +42,9 @@ export default function RecentPost({
   const { t } = useLanguage();
   const { showToast } = useToast();
 
+  // Track media zoom state to unlock overflow
+  const [isMediaZoomed, setIsMediaZoomed] = useState(false);
+
   // Initialize like state
   useEffect(() => {
     if (!user) return;
@@ -49,6 +52,18 @@ export default function RecentPost({
     setIsLike(liked);
     setLikeCount(post?.post_likes?.length || 0);
   }, [post, user]);
+
+  // ... (omitting fetchComments logic for brevity as it is unchanged, referring to existing code context will be tricky with replace_file_content if I don't target specific blocks. I'll target the state init block and the render block separately if needed, or just insert the state at top and use it in render).
+
+  // Actually, I can just insert the state near others and then update the RETURN statement.
+  // But wait, replace_file_content only works on contiguous blocks. I should do it in 2 steps or find a block that covers both if small enough.
+  // The file is large (500 lines). State decl is line 41. Render is line 436.
+  // I will make TWO calls.
+  // Call 1: Add state.
+  // Call 2: Update render.
+
+  // WAIT, I can't generate thought trace inside tool call argument. I must do it before.
+  // I will first add the state.
 
   // Fetch comments
   useEffect(() => {
@@ -68,7 +83,7 @@ export default function RecentPost({
           parent_comment_id,
           userinfo(id, firstName, lastName, display_name, profile_url, avatar_url),
           comment_likes(id, user_id, comment_id)
-        `
+        `,
         )
         .eq("post_id", post.id)
         .order("created_at", { ascending: true })
@@ -89,7 +104,7 @@ export default function RecentPost({
 
       replies.forEach((reply) => {
         const isParentComment = mainComments.some(
-          (c) => c.id === reply.parent_comment_id
+          (c) => c.id === reply.parent_comment_id,
         );
 
         if (isParentComment) {
@@ -110,7 +125,7 @@ export default function RecentPost({
         const likedRepliesMap = {};
         replies.forEach((reply) => {
           const isLiked = reply.comment_likes?.some(
-            (like) => like.user_id === user.id
+            (like) => like.user_id === user.id,
           );
           likedRepliesMap[reply.id] = isLiked || false;
         });
@@ -148,7 +163,7 @@ export default function RecentPost({
         *,
         userinfo(*),
         comment_likes(*)
-      `
+      `,
       )
       .eq("post_id", post.id)
       .order("created_at", { ascending: true });
@@ -162,7 +177,7 @@ export default function RecentPost({
 
       replies.forEach((reply) => {
         const isParentComment = mainComments.some(
-          (c) => c.id === reply.parent_comment_id
+          (c) => c.id === reply.parent_comment_id,
         );
 
         if (isParentComment) {
@@ -182,7 +197,7 @@ export default function RecentPost({
         const likedRepliesMap = {};
         replies.forEach((reply) => {
           const isLiked = reply.comment_likes?.some(
-            (like) => like.user_id === user.id
+            (like) => like.user_id === user.id,
           );
           likedRepliesMap[reply.id] = isLiked || false;
         });
@@ -309,7 +324,7 @@ export default function RecentPost({
           post_id,
           parent_comment_id,
           userinfo(id, firstName, lastName, display_name, profile_url, avatar_url)
-        `
+        `,
         )
         .single();
 
@@ -439,9 +454,10 @@ export default function RecentPost({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="relative w-full max-w-lg mx-auto mb-4 mt-6 bg-white dark:bg-black border-b md:border border-gray-200 dark:border-zinc-800 md:rounded-xl overflow-hidden"
+        className={`relative w-full max-w-lg mx-auto mb-4 mt-6 bg-white dark:bg-black border-b md:border border-gray-200 dark:border-zinc-800 md:rounded-xl transition-all duration-200 ${
+          isMediaZoomed ? "overflow-visible z-50" : "overflow-hidden z-0"
+        }`}
       >
-
         <PostHeader
           post={post}
           idx={0}
@@ -454,7 +470,7 @@ export default function RecentPost({
         {/* Post Media */}
         {post.images && post.images.length > 0 && (
           <div className="dark:bg-[#272727]">
-            <PostMedia images={post.images} />
+            <PostMedia images={post.images} onZoomChange={setIsMediaZoomed} />
           </div>
         )}
 
@@ -476,11 +492,7 @@ export default function RecentPost({
                 {post?.userinfo?.display_name || "User"}
               </span>
               <span className="text-gray-800 dark:text-gray-200">
-                <TextClamp
-                  text={post.caption}
-                  lines={2}
-                  className="inline"
-                />
+                <TextClamp text={post.caption} lines={2} className="inline" />
               </span>
             </div>
           </div>

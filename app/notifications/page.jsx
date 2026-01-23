@@ -37,7 +37,7 @@ export default function NotificationsPage() {
   const [showUndo, setShowUndo] = useState(false);
   const [lastDeleted, setLastDeleted] = useState(null);
   const [localNotificationsCount, setLocalNotificationsCount] = useState(
-    localNotifications.length
+    localNotifications.length,
   );
   const [showBulkConfirm, setShowBulkConfirm] = useState(false);
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
@@ -193,10 +193,10 @@ export default function NotificationsPage() {
 
   return (
     <MobilePageContainer>
-      <div className="bg-gray-50 dark:bg-black">
-        {/* Creative Sticky Header */}
-        <div className="sticky top-0 z-30 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-gray-100 dark:border-white/10 shadow-sm">
-          <div className="px-5 py-4 flex items-center justify-between">
+      <div className="bg-gray-50 dark:bg-black min-h-screen">
+        {/* Creative Sticky Header - Changed to FIXED as requested */}
+        <div className="fixed top-[56px] left-0 right-0 z-30 bg-white dark:bg-black/80 backdrop-blur-xl border-b border-gray-100 dark:border-white/10 shadow-sm">
+          <div className="px-5 py-4 flex items-center justify-between max-w-7xl mx-auto">
             <div>
               <h1 className="text-2xl font-black bg-gradient-to-r from-farm-600 to-emerald-500 bg-clip-text text-transparent">
                 {t("notifications_title")}
@@ -238,6 +238,9 @@ export default function NotificationsPage() {
           </div>
         </div>
 
+        {/* Spacer to prevent content from hiding behind fixed header */}
+        <div className="h-[88px] w-full" />
+
         {/* Creative Notifications List */}
         {notificationsLoading ? (
           <div className="flex flex-col items-center justify-center py-24 space-y-4">
@@ -260,7 +263,7 @@ export default function NotificationsPage() {
             </p>
           </div>
         ) : (
-          <div className="px-1 py-2 space-y-2">
+          <div className="px-1 space-y-1">
             {localNotifications.map((notification, index) => (
               <motion.div
                 key={notification.id}
@@ -302,15 +305,15 @@ export default function NotificationsPage() {
                   {/* Content */}
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between items-start mb-1">
-                      <h3
-                        className={`text-base font-bold pr-6 leading-tigher ${
+                      <h4
+                        className={`text-base font-bold pr-6 leading-tight ${
                           !notification.seen
                             ? "text-gray-900 dark:text-white"
                             : "text-gray-600 dark:text-gray-400"
                         }`}
                       >
                         {notification.title}
-                      </h3>
+                      </h4>
                       <span className="text-[10px] font-bold px-2 py-1 rounded-md bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400 whitespace-nowrap">
                         {timeAgo(notification.created_at)}
                       </span>

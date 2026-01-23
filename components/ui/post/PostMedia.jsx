@@ -3,13 +3,18 @@ import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import { motion, useMotionValue, animate, useSpring } from "framer-motion";
 
-export default function PostMedia({ images }) {
+export default function PostMedia({ images, onZoomChange }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
   const containerRef = useRef(null);
   const [width, setWidth] = useState(0);
   // Default to 4:5 (0.8), will update based on FIRST image only
   const [aspectRatio, setAspectRatio] = useState(4 / 5);
+
+  // Notify parent of zoom state
+  useEffect(() => {
+    onZoomChange?.(isZoomed);
+  }, [isZoomed, onZoomChange]);
 
   // Determine container width for drag constraints
   useEffect(() => {
@@ -281,9 +286,7 @@ function ZoomableMedia({
             src={media.url || "/placeholder.png"}
             alt="Post media"
             fill
-            className={`object-cover transition-opacity duration-300 ${
-              isLoaded ? "opacity-100" : "opacity-0"
-            }`}
+            className="object-cover"
             priority={preload}
             unoptimized={true} // Bypass Next.js optimization for raw speed / static export
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

@@ -48,7 +48,9 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
   const [showCommentsSection, setShowCommentsSection] = useState(false);
   const [originalCommentCount, setOriginalCommentCount] = useState(0);
   const [edit, setEdit] = useState(false);
+
   const [loadingComments, setLoadingComments] = useState(false);
+  const [isMediaZoomed, setIsMediaZoomed] = useState(false); // Track zoom state
   const [loadingLike, setLoadingLike] = useState(false);
   const [loadingBookmark, setLoadingBookmark] = useState(false);
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
@@ -698,7 +700,9 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: idx * 0.1 }}
-      className="relative w-full max-w-lg mx-auto mb-4 bg-white dark:bg-black border-b md:border border-gray-200 dark:border-zinc-800 md:rounded-xl overflow-hidden"
+      className={`relative w-full max-w-lg mx-auto mb-4 bg-white dark:bg-black border-b md:border border-gray-200 dark:border-zinc-800 md:rounded-xl transition-all duration-200 ${
+        isMediaZoomed ? "overflow-visible z-50" : "overflow-hidden z-0"
+      }`}
     >
       <PostHeader
         post={post}
@@ -717,7 +721,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
       {/* Post Media */}
       {post.images && post.images.length > 0 && (
         <div className="dark:bg-[#272727]">
-          <PostMedia images={post?.images} />
+          <PostMedia images={post?.images} onZoomChange={setIsMediaZoomed} />
         </div>
       )}
 
