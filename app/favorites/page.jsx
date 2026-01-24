@@ -31,7 +31,7 @@ export default function FavoritesPage() {
       .from("user_favorites")
       .select("id, post_id, product_id, created_at")
       .eq("user_id", user.id);
-
+    console.log("Data from supabase of favourites :",savedItems);
     if (error) {
       showToast("error", error.message);
       return;
@@ -45,16 +45,15 @@ export default function FavoritesPage() {
         ? supabase
           .from("posts")
           .select(`
-              id,
-              user_id,
-              caption,
-              images,
-              created_at,
-              updated_at,
-              post_comments(id, comment, created_at, user_id, post_id),
-              post_likes(id, user_id, post_id, created_at),
-              userinfo(id, firstName, lastName, display_name, profile_url, avatar_url, email)
-            `)
+            id,
+            user_id,
+            caption,
+            images,
+            created_at,
+            post_comments!post_id(id, comment, created_at, user_id, post_id),
+            post_likes!post_id(id, user_id, post_id, created_at),
+            userinfo!user_id(id, firstName, lastName, display_name, profile_url, avatar_url, email)
+          `)
           .in("id", postIds)
         : { data: [] },
       productIds.length
@@ -68,21 +67,19 @@ export default function FavoritesPage() {
               price,
               category,
               photos,
-              extra,
               location,
-              date,
-              created_at,
-              updated_at
+              date
             `)
           .in("id", productIds)
         : { data: [] },
     ]);
-
+    console.log("postsData are :",postsData);
+    console.log("Products data are :",productsData);
     const combined = [
       ...(postsData.data || []).map((p) => ({ ...p, type: "post" })),
       ...(productsData.data || []).map((p) => ({ ...p, type: "product" })),
     ];
-
+    console.log("Combined are :",combined);
     setFavorites(combined);
     setLoading(false);
   };
@@ -133,6 +130,7 @@ export default function FavoritesPage() {
     }),
   };
 
+    console.log("Favourites are :",favorites);
   return (
     <MobilePageContainer>
       <div className="w-full max-w-4xl mx-auto">
