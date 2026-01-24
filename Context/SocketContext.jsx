@@ -74,10 +74,23 @@ export function SocketProvider({ loggedInUser, children }) {
       const convId = msg.conversation_id;
 
       // Add message to store
-      setMessages((prev) => ({
-        ...prev,
-        [convId]: prev[convId] ? [...prev[convId], msg] : [msg],
-      }));
+      // setMessages((prev) => ({
+      //   ...prev,
+      //   [convId]: prev[convId] ? [...prev[convId], msg] : [msg],
+      // }));
+      setMessages((prev) => {
+        const existing = prev[convId] || [];
+
+        // 🔥 DEDUP CHECK
+        if (existing.some((m) => m.id === msg.id)) {
+          return prev; // already have this message
+        }
+
+        return {
+          ...prev,
+          [convId]: [...existing, msg],
+        };
+      });
 
       // Update UNREAD count only if not current conversation
       if (activeConversation !== convId && msg.sender_id !== loggedInUser.id) {
@@ -258,6 +271,13 @@ export function SocketProvider({ loggedInUser, children }) {
     });
   };
 
+  const loadMessages = (conversationId, msgs) => {
+    setMessages((prev) => ({
+      ...prev,
+      [conversationId]: msgs,
+    }));
+  };
+
   const findOrCreateConversation = (payload) => {
     return new Promise((resolve, reject) => {
       if (!socket) {
@@ -301,6 +321,7 @@ export function SocketProvider({ loggedInUser, children }) {
         markAsRead,
         sendTyping,
         findOrCreateConversation,
+        loadMessages,
       }}
     >
       {children}

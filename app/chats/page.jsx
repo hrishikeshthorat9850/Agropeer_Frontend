@@ -745,8 +745,6 @@ export default function ChatsPage() {
             onSelectUser={handleSelectUser}
             selected={selected}
           />
-          {/* Chat Area */}
-          {/* <ChatArea selected={selected} messages={messages} sendMessage={sendMessage} endRef={endRef} /> */}
         </div>
       </div>
     </div>

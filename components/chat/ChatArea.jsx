@@ -4,12 +4,13 @@ import ChatHeader from "./ChatHeader";
 import MessageBubble from "./MessageBubble";
 import ChatInputComposer from "./ChatInputComposer";
 import DateSeparator from "./DateSeparator";
-import { socket } from "@/utils/socket";
 import { useLogin } from "@/Context/logincontext";
 import { Capacitor } from "@capacitor/core";
+import { useSocket } from "@/Context/SocketContext";
+
 export default function ChatArea({ messages = [], selected, sendMessage }) {
   const { user } = useLogin();
-
+  const {socket} = useSocket();
   const isNative = Capacitor.isNativePlatform();
 
   const hasRealMessages = Array.isArray(messages) && messages.length > 0;
@@ -109,3 +110,5 @@ export default function ChatArea({ messages = [], selected, sendMessage }) {
     </main>
   );
 }
+
+

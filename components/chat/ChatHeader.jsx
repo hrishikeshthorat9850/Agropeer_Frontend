@@ -77,7 +77,7 @@ export default function ChatHeader({ selected }) {
 
         <div>
           <div className="font-semibold text-gray-900 dark:text-gray-100">
-            {selected?.display_name || formatName(selected)}
+            {selected?.displayName || formatName(selected)}
           </div>
 
           <div className="text-xs text-gray-500">

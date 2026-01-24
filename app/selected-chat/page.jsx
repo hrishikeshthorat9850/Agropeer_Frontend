@@ -3,9 +3,11 @@ import ChatArea from "@/components/chat/ChatArea";
 import { useChat } from "@/Context/ChatContext";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
+import { useSocket } from "@/Context/SocketContext";
 
 export default function SelectedChat() {
   const { selected, messages, sendMessage, loadConversation } = useChat();
+  const {socket} = useSocket();
   const searchParams = useSearchParams();
   const conversationId = searchParams.get("conversationId");
 
