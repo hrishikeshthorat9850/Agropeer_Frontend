@@ -86,13 +86,13 @@ export default function EditProfilePage() {
         const fileName = `avatars/${user.id}-${Date.now()}.${fileExt}`;
 
         const { error: uploadError } = await supabase.storage
-          .from("agri-photos")
+          .from("profile-photos")
           .upload(fileName, avatarFile, { upsert: true });
 
-        if (uploadError) throw uploadError;
+        if (uploadError) throw uploadError.message;
 
         const { data } = supabase.storage
-          .from("agri-photos")
+          .from("profile-photos")
           .getPublicUrl(fileName);
 
         avatarUrl = data.publicUrl;
@@ -107,7 +107,16 @@ export default function EditProfilePage() {
           avatar_url: avatarUrl,
         },
       });
-
+      // const {data,error} = await supabase
+      //   .from("userinfo")
+      //   .upsert({
+      //     full_name: formData.full_name,
+      //     phone: formData.phone,
+      //     location: formData.location,
+      //     bio: formData.bio.slice(0, BIO_LIMIT),
+      //     avatar_url: avatarUrl,
+      //   })
+      //   .eq("user_id",user?.id)
       if (error) throw error;
 
       showToast("success", t("profile_update_success"));
@@ -121,7 +130,6 @@ export default function EditProfilePage() {
       setLoading(false);
     }
   };
-
   return (
     <MobilePageContainer noPadding>
       <div className="bg-white dark:bg-black font-sans">

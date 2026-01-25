@@ -31,7 +31,6 @@ export default function FavoritesPage() {
       .from("user_favorites")
       .select("id, post_id, product_id, created_at")
       .eq("user_id", user.id);
-    console.log("Data from supabase of favourites :",savedItems);
     if (error) {
       showToast("error", error.message);
       return;
