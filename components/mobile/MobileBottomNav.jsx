@@ -11,7 +11,7 @@ export default function MobileBottomNav({ onAI }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
-  const safeBottom = "env(safe-area-inset-bottom)";
+  const safeBottom = "env(safe-area-inset-bottom, 0px)";
 
   const openAI = () => {
     if (typeof onAI === "function") onAI();
@@ -45,7 +45,7 @@ export default function MobileBottomNav({ onAI }) {
             initial={{ opacity: 0, scale: 0, x: 60, y: 20 }}
             animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
             exit={{ opacity: 0, scale: 0, x: 60, y: 20 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            transition={{ duration: 0.15, ease: "easeOut" }} // Fast Pop
             onClick={() => {
               setOpen(false);
               router.push("/sell/choose");
@@ -74,7 +74,7 @@ export default function MobileBottomNav({ onAI }) {
             initial={{ opacity: 0, scale: 0, x: -60, y: 20 }}
             animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
             exit={{ opacity: 0, scale: 0, x: -60, y: 20 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            transition={{ duration: 0.15, ease: "easeOut" }} // Fast Pop
             onClick={() => {
               setOpen(false);
               router.push("/posts");
@@ -103,6 +103,7 @@ export default function MobileBottomNav({ onAI }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }} // Fast Overlay
             className="fixed inset-0 z-[997] bg-black/20 backdrop-blur-[2px]"
             onClick={() => setOpen(false)}
           />
@@ -110,13 +111,7 @@ export default function MobileBottomNav({ onAI }) {
       </AnimatePresence>
 
       {/* ⭐ MATERIAL 3 BOTTOM NAVIGATION */}
-      <div
-        className="fixed bottom-0 left-0 right-0 md:hidden z-[999] bg-white dark:bg-black"
-        style={{
-          paddingBottom: "env(safe-area-inset-bottom)",
-          height: "calc(56px + env(safe-area-inset-bottom))",
-        }}
-      >
+      <div className="fixed bottom-0 left-0 right-0 md:hidden z-[999] bg-white dark:bg-black pb-safe-bottom h-mobile-bottom-nav">
         <div className="flex items-center justify-between px-4 h-[56px]">
           {/* HOME */}
           <button
@@ -156,18 +151,12 @@ export default function MobileBottomNav({ onAI }) {
                 e.stopPropagation();
                 setOpen((p) => !p);
               }}
-              whileTap={{ scale: 0.95 }}
+              whileTap={{ scale: 0.9 }}
               animate={{ rotate: open ? 45 : 0 }}
-              className="
-                w-16 h-16 rounded-2xl
-                bg-farm-500 text-white
-                shadow-elevation-3
-                flex items-center justify-center
-                transform transition-all duration-300
-                hover:shadow-glow-farm hover:scale-105 active:scale-95
-              "
+              transition={{ duration: 0.15, ease: "easeInOut" }} // Fast Rotate
+              className="w-16 h-16 rounded-2xl bg-farm-500 text-white shadow-elevation-3 flex items-center justify-center transition-all duration-200 ease-out active:scale-95 hover:scale-105"
             >
-              <FaPlusCircle size={32} />
+              <FaPlusCircle size={32} className="bg-orange-500 rounded-full" />
             </motion.button>
           </div>
 

@@ -59,8 +59,8 @@ export default function MobilePageLayout({ children, className = "" }) {
     // Standard mobile pages with navbar and bottom nav
     // Top padding for navbar, bottom padding for bottom nav
     return `
-      pt-[56px]
-      pb-[64px]
+      pt-mobile-layout
+      pb-mobile-layout
     `;
   };
 

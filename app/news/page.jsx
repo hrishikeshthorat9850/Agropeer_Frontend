@@ -70,7 +70,7 @@ export default function NewsPage() {
         if (selectedCategory) params.append("category", selectedCategory);
 
         const { data, error: apiError } = await apiRequest(
-          `${BASE_URL}/api/news?${params.toString()}`
+          `${BASE_URL}/api/news?${params.toString()}`,
         );
 
         if (apiError) {
@@ -87,7 +87,7 @@ export default function NewsPage() {
         setLoading(false);
       }
     },
-    [pagination.limit, searchQuery, selectedCategory]
+    [pagination.limit, searchQuery, selectedCategory],
   );
 
   useEffect(() => {
@@ -121,7 +121,7 @@ export default function NewsPage() {
       setArticleError(null);
       try {
         const { data, error: apiError } = await apiRequest(
-          `${BASE_URL}/api/news/${articleId}`
+          `${BASE_URL}/api/news/${articleId}`,
         );
 
         if (apiError) {
@@ -133,7 +133,7 @@ export default function NewsPage() {
       } catch (err) {
         console.error("Unexpected error:", err);
         setArticleError(
-          "An unexpected error occurred. Please refresh the page."
+          "An unexpected error occurred. Please refresh the page.",
         );
       } finally {
         setArticleLoading(false);
@@ -344,7 +344,7 @@ export default function NewsPage() {
     <ErrorBoundary>
       <div className="bg-gray-50 dark:bg-black pb-6">
         {/* Mobile App Header */}
-        <header className="sticky top-0 z-40 bg-white dark:bg-black border-b border-gray-100 dark:border-white/10 px-4 py-3 flex items-center justify-between shadow-sm">
+        <header className="sticky top-mobile-navbar-height z-40 bg-white dark:bg-black border-b border-gray-100 dark:border-white/10 px-4 py-3 flex items-center justify-between shadow-sm">
           <h1 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
             Agro News
           </h1>
@@ -360,7 +360,7 @@ export default function NewsPage() {
           </div>
 
           {/* Horizontal Scrollable Filters (YouTube/Instagram Style) */}
-          <div className="sticky top-[57px] z-30 bg-gray-50/95 dark:bg-black/95 backdrop-blur-sm py-2 pl-4 border-b border-gray-100 dark:border-white/5">
+          <div className="sticky top-[calc(var(--mobile-navbar-height)+57px)] z-30 bg-gray-50/95 dark:bg-black/95 backdrop-blur-sm py-2 pl-4 border-b border-gray-100 dark:border-white/5">
             <div className="overflow-x-auto flex gap-2 pr-4 no-scrollbar pb-1">
               <NewsFilterBar
                 onCategoryChange={handleCategoryChange}

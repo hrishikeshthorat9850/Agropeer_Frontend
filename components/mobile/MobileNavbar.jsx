@@ -217,18 +217,18 @@ export default function MobileNavbar() {
         <div className="flex items-center gap-1 flex-shrink-0">
           {/* Notifications */}
 
-            <Link
-              href="/notifications"
-              className="relative p-2 active:scale-95 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-            >
-              <FaBell className="text-[24px] text-zinc-800 dark:text-zinc-100" />
-              {notificationsUnreadCount > 0 && (
-                <div className="absolute top-0 right-0">
-                  <NotificationBadge unreadCount={notificationsUnreadCount} />
-                </div>
-              )}
-            </Link>
-            
+          <Link
+            href="/notifications"
+            className="relative p-2 active:scale-95 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+          >
+            <FaBell className="text-[24px] text-zinc-800 dark:text-zinc-100" />
+            {notificationsUnreadCount > 0 && (
+              <div className="absolute top-0 right-0">
+                <NotificationBadge unreadCount={notificationsUnreadCount} />
+              </div>
+            )}
+          </Link>
+
           {/* Chats */}
           {user && (
             <Link

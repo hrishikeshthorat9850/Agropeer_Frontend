@@ -114,14 +114,14 @@ export default function MobileSidebar() {
 
           {/* LEFT SIDEBAR - MATCHING USER PROFILE SIDEBAR */}
           <motion.div
-            className="fixed left-0 top-0 w-[85%] max-w-[320px] h-[100dvh]
-              bg-white dark:bg-[#1C1C1E] z-[9999] rounded-r-[40px]
-              shadow-2xl flex flex-col overflow-hidden
+            className="fixed left-0 w-[85%] max-w-[320px] 
+              bg-white dark:bg-[#1C1C1E] z-[9999] rounded-tr-[30px] rounded-br-[30px]
+              shadow-2xl flex flex-col overflow-hidden sidebar-panel-position
             "
             initial={{ x: "-100%" }}
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            transition={{ type: "tween", duration: 0.2, ease: "easeOut" }}
           >
             {/* HEADER - GREEN GRADIENT */}
             <div className="relative px-8 pt-12 pb-8 flex justify-between items-center z-10 bg-gradient-to-br from-green-600 to-emerald-800 text-white">

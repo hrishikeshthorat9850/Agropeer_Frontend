@@ -193,9 +193,9 @@ export default function NotificationsPage() {
 
   return (
     <MobilePageContainer>
-      <div className="bg-gray-50 dark:bg-black min-h-screen">
+      <div className="bg-gray-50 dark:bg-black pb-4">
         {/* Creative Sticky Header - Changed to FIXED as requested */}
-        <div className="fixed top-[56px] left-0 right-0 z-30 bg-white dark:bg-black/80 backdrop-blur-xl border-b border-gray-100 dark:border-white/10 shadow-sm">
+        <div className="fixed top-mobile-navbar-height left-0 right-0 z-30 bg-white dark:bg-black/80 backdrop-blur-xl border-b border-gray-100 dark:border-white/10 shadow-sm">
           <div className="px-5 py-4 flex items-center justify-between max-w-7xl mx-auto">
             <div>
               <h1 className="text-2xl font-black bg-gradient-to-r from-farm-600 to-emerald-500 bg-clip-text text-transparent">
