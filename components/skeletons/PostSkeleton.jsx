@@ -1,45 +1,43 @@
-"use client";
-import { motion } from "framer-motion";
+import Skeleton from "@/components/ui/Skeleton";
 
 export default function PostSkeleton({ count = 3 }) {
   return (
     <div className="space-y-6">
       {Array.from({ length: count }).map((_, index) => (
-        <motion.div
+        <div
           key={index}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: index * 0.1 }}
-          className="farm-card p-6 animate-pulse"
+          className="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-3xl p-4 sm:p-6 shadow-sm"
         >
           {/* Header */}
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-12 h-12 bg-farm-200 rounded-full"></div>
-            <div className="flex-1">
-              <div className="h-5 bg-farm-200 rounded w-32 mb-2"></div>
-              <div className="h-4 bg-farm-100 rounded w-24"></div>
+          <div className="flex items-center gap-3 mb-4">
+            <Skeleton className="w-10 h-10 rounded-full" />
+            <div className="flex-1 space-y-2">
+              <Skeleton className="h-4 w-32 rounded-md" />
+              <Skeleton className="h-3 w-20 rounded-md" />
             </div>
+            <Skeleton className="w-8 h-8 rounded-full" />
           </div>
 
-          {/* Content */}
-          <div className="space-y-3 mb-4">
-            <div className="h-4 bg-farm-100 rounded w-full"></div>
-            <div className="h-4 bg-farm-100 rounded w-5/6"></div>
-            <div className="h-4 bg-farm-100 rounded w-4/6"></div>
+          {/* Image Skeleton - Square aspect ratio */}
+          <Skeleton className="w-full aspect-square sm:aspect-video rounded-2xl mb-4" />
+
+          {/* Action Bar */}
+          <div className="flex items-center justify-between mb-4 px-1">
+            <div className="flex gap-4">
+              <Skeleton className="w-6 h-6 rounded-full" />
+              <Skeleton className="w-6 h-6 rounded-full" />
+              <Skeleton className="w-6 h-6 rounded-full" />
+            </div>
+            <Skeleton className="w-6 h-6 rounded-full" />
           </div>
 
-          {/* Image Skeleton */}
-          <div className="w-full h-64 bg-farm-200 rounded-xl mb-4"></div>
-
-          {/* Actions */}
-          <div className="flex items-center gap-6">
-            <div className="h-6 bg-farm-100 rounded w-16"></div>
-            <div className="h-6 bg-farm-100 rounded w-16"></div>
-            <div className="h-6 bg-farm-100 rounded w-16"></div>
+          {/* Content Lines */}
+          <div className="space-y-2 px-1">
+            <Skeleton className="h-3 w-full rounded-md" />
+            <Skeleton className="h-3 w-5/6 rounded-md" />
           </div>
-        </motion.div>
+        </div>
       ))}
     </div>
   );
 }
-

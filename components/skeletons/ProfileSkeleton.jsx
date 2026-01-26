@@ -1,39 +1,43 @@
-"use client";
-import { motion } from "framer-motion";
+import Skeleton from "@/components/ui/Skeleton";
 
 export default function ProfileSkeleton() {
   return (
     <div className="min-h-[calc(100vh-122px)] py-4 px-2">
-      <div className="max-w-4xl mx-auto bg-green-50 shadow-lg rounded-2xl overflow-hidden border border-gray-100 dark:bg-[#272727] animate-pulse">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-farm-500 to-farm-600 p-8">
-          <div className="flex items-center gap-6">
-            <div className="w-24 h-24 bg-white/20 rounded-full"></div>
-            <div className="flex-1">
-              <div className="h-8 bg-white/20 rounded-lg w-48 mb-3"></div>
-              <div className="h-5 bg-white/20 rounded-lg w-32"></div>
-            </div>
-          </div>
+      <div className="max-w-4xl mx-auto bg-white dark:bg-[#1E1E1E] shadow-lg rounded-2xl overflow-hidden border border-gray-100 dark:border-[#333]">
+        {/* Header / Banner */}
+        <div className="h-48 bg-gray-100 dark:bg-[#2C2C2C] relative">
+          <Skeleton className="w-full h-full rounded-none" />
         </div>
 
-        {/* Content */}
-        <div className="p-8 space-y-6">
-          {/* Bio Section */}
-          <div>
-            <div className="h-6 bg-farm-200 rounded-lg w-24 mb-3"></div>
+        <div className="px-8 pb-8">
+          {/* Avatar Overlap */}
+          <div className="-mt-12 mb-6">
+            <Skeleton className="w-24 h-24 rounded-full border-4 border-white dark:border-[#1E1E1E]" />
+          </div>
+
+          {/* User Info */}
+          <div className="space-y-4 mb-8">
             <div className="space-y-2">
-              <div className="h-4 bg-farm-100 rounded w-full"></div>
-              <div className="h-4 bg-farm-100 rounded w-5/6"></div>
-              <div className="h-4 bg-farm-100 rounded w-4/6"></div>
+              <Skeleton className="h-8 w-48 rounded-lg" />
+              <Skeleton className="h-4 w-32 rounded-lg" />
+            </div>
+
+            <div className="space-y-2 max-w-lg">
+              <Skeleton className="h-4 w-full rounded-md" />
+              <Skeleton className="h-4 w-5/6 rounded-md" />
+              <Skeleton className="h-4 w-4/6 rounded-md" />
             </div>
           </div>
 
-          {/* Info Cards */}
+          {/* Stats / Info Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="p-4 bg-white rounded-xl">
-                <div className="h-5 bg-farm-100 rounded w-32 mb-2"></div>
-                <div className="h-4 bg-farm-200 rounded w-24"></div>
+              <div
+                key={i}
+                className="p-4 bg-gray-50 dark:bg-[#2C2C2C] rounded-xl border border-gray-100 dark:border-[#333]"
+              >
+                <Skeleton className="h-5 w-32 rounded mb-2" />
+                <Skeleton className="h-4 w-24 rounded" />
               </div>
             ))}
           </div>
@@ -42,4 +46,3 @@ export default function ProfileSkeleton() {
     </div>
   );
 }
-

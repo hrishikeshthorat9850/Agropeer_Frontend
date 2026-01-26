@@ -1,40 +1,35 @@
-"use client";
-import { motion } from "framer-motion";
+import Skeleton from "@/components/ui/Skeleton";
 
 export default function TipSkeleton({ count = 6 }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {Array.from({ length: count }).map((_, index) => (
-        <motion.div
+        <div
           key={index}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: index * 0.05 }}
-          className="farm-card p-6 animate-pulse"
+          className="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-3xl p-6 shadow-sm"
         >
           {/* Icon & Category */}
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-farm-200 rounded-xl"></div>
-            <div className="h-4 bg-farm-100 rounded w-24"></div>
+            <Skeleton className="w-12 h-12 rounded-xl" />
+            <Skeleton className="h-4 w-24 rounded-md" />
           </div>
 
           {/* Title */}
-          <div className="h-6 bg-farm-200 rounded w-3/4 mb-3"></div>
+          <Skeleton className="h-6 w-3/4 rounded-md mb-3" />
 
           {/* Description */}
           <div className="space-y-2 mb-4">
-            <div className="h-4 bg-farm-100 rounded w-full"></div>
-            <div className="h-4 bg-farm-100 rounded w-5/6"></div>
+            <Skeleton className="h-4 w-full rounded-md" />
+            <Skeleton className="h-4 w-5/6 rounded-md" />
           </div>
 
           {/* Footer */}
           <div className="flex items-center justify-between">
-            <div className="h-4 bg-farm-100 rounded w-20"></div>
-            <div className="h-8 bg-farm-200 rounded w-24"></div>
+            <Skeleton className="h-4 w-20 rounded-md" />
+            <Skeleton className="h-8 w-24 rounded-lg" />
           </div>
-        </motion.div>
+        </div>
       ))}
     </div>
   );
 }
-
