@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useLocation, LOCATION } from "./hooks/useLocation";
 import useGeolocation from "@/hooks/useGeolocation";
+import PullToRefresh from "./PullToRefresh"; // Import
 import {
   FaLeaf,
   FaTractor,
@@ -39,12 +40,21 @@ export default function MobileHome() {
     }
   }, [position, weather, weatherLoading, getWeather]);
 
+  // Handle Pull-to-Refresh
+  const handleRefresh = async () => {
+    if (position?.latitude && position?.longitude) {
+      await getWeather(position.latitude, position.longitude);
+    }
+    // Simulate other data delays or real fetches
+    await new Promise((r) => setTimeout(r, 800));
+  };
+
   // ✅ memoized success handler
   const onLocationSuccess = useCallback(
     (lat, lng) => {
       getWeather(lat, lng);
     },
-    [getWeather]
+    [getWeather],
   );
 
   const { status, retry } = useLocation(onLocationSuccess);
@@ -68,23 +78,24 @@ export default function MobileHome() {
       : "--";
 
   return (
-    <div className="md:hidden min-h-screen bg-neutral-50 dark:bg-black font-sans pb-6">
-      {/* ================================================================= */}
-      {/*                        TOP HEADER SECTION                         */}
-      {/* ================================================================= */}
+    <PullToRefresh onRefresh={handleRefresh}>
+      <div className="md:hidden min-h-screen bg-neutral-50 dark:bg-black font-sans pb-6">
+        {/* ================================================================= */}
+        {/*                        TOP HEADER SECTION                         */}
+        {/* ================================================================= */}
 
-      {/* ================= TOP HEADER + FLOATING CARD ================= */}
-      <div className="relative w-full z-10 px-0 pb-0">
-        <HomeBanner />
-      </div>
+        {/* ================= TOP HEADER + FLOATING CARD ================= */}
+        <div className="relative w-full z-10 px-0 pb-0">
+          <HomeBanner />
+        </div>
 
-      {/* =============================================================== */}
-      {/*                        PREMIUM WEATHER CARD                     */}
-      {/* =============================================================== */}
+        {/* =============================================================== */}
+        {/*                        PREMIUM WEATHER CARD                     */}
+        {/* =============================================================== */}
 
-      <div className="mt-2 px-4">
-        <div
-          className="
+        <div className="mt-2 px-4">
+          <div
+            className="
           relative overflow-hidden 
           rounded-[30px]
           p-6
@@ -93,128 +104,131 @@ export default function MobileHome() {
           shadow-lg shadow-blue-200/50 dark:shadow-none
           text-white
         "
-        >
-          {/* Decorative shapes */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full blur-2xl -ml-6 -mb-6 pointer-events-none" />
+          >
+            {/* Decorative shapes */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full blur-2xl -ml-6 -mb-6 pointer-events-none" />
 
-          <div className="relative z-10">
-            <div className="flex items-center justify-between mb-2">
-              <h2 className="text-base font-medium text-blue-50 dark:text-gray-300 tracking-wide opacity-90">
-                Today’s Weather
-              </h2>
-              <div className="flex items-center gap-2">
-                {status === LOCATION.LOADING && (
-                  <span className="text-xs bg-white/20 px-2 py-1 rounded-full animate-pulse">
-                    Locating...
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="text-base font-medium text-blue-50 dark:text-gray-300 tracking-wide opacity-90">
+                  Today’s Weather
+                </h2>
+                <div className="flex items-center gap-2">
+                  {status === LOCATION.LOADING && (
+                    <span className="text-xs bg-white/20 px-2 py-1 rounded-full animate-pulse">
+                      Locating...
+                    </span>
+                  )}
+                  {status === LOCATION.DENIED && (
+                    <button
+                      onClick={retry}
+                      className="text-xs bg-red-500/90 hover:bg-red-500 px-3 py-1 rounded-full text-white font-medium transition-colors"
+                    >
+                      Enable Location
+                    </button>
+                  )}
+                  {status === LOCATION.GPS_OFF && (
+                    <button
+                      onClick={openAppSettings}
+                      className="text-xs bg-orange-500/90 hover:bg-orange-500 px-3 py-1 rounded-full text-white font-medium transition-colors"
+                    >
+                      Turn On GPS
+                    </button>
+                  )}
+                  {!weatherLoading && !weatherError && (
+                    <div className="w-2 h-2 rounded-full bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.6)]"></div>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex items-end justify-between mt-1">
+                <div className="flex flex-col">
+                  <h3 className="text-5xl font-light tracking-tighter text-white">
+                    {cleanTemp}°
+                  </h3>
+                  <span className="text-sm text-blue-100 font-medium mt-1">
+                    Mostly Sunny
                   </span>
-                )}
-                {status === LOCATION.DENIED && (
-                  <button
-                    onClick={retry}
-                    className="text-xs bg-red-500/90 hover:bg-red-500 px-3 py-1 rounded-full text-white font-medium transition-colors"
-                  >
-                    Enable Location
-                  </button>
-                )}
-                {status === LOCATION.GPS_OFF && (
-                  <button
-                    onClick={openAppSettings}
-                    className="text-xs bg-orange-500/90 hover:bg-orange-500 px-3 py-1 rounded-full text-white font-medium transition-colors"
-                  >
-                    Turn On GPS
-                  </button>
-                )}
-                {!weatherLoading && !weatherError && (
-                  <div className="w-2 h-2 rounded-full bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.6)]"></div>
-                )}
-              </div>
-            </div>
+                </div>
 
-            <div className="flex items-end justify-between mt-1">
-              <div className="flex flex-col">
-                <h3 className="text-5xl font-light tracking-tighter text-white">
-                  {cleanTemp}°
-                </h3>
-                <span className="text-sm text-blue-100 font-medium mt-1">
-                  Mostly Sunny
-                </span>
+                <div className="flex flex-col items-end space-y-1.5 min-w-[100px]">
+                  <WeatherDetailRow label="Humidity" value={`${humidity}%`} />
+                  <WeatherDetailRow label="Rain" value={rainChance} />
+                  <WeatherDetailRow label="Wind" value={`${windSpeed} km/h`} />
+                </div>
               </div>
 
-              <div className="flex flex-col items-end space-y-1.5 min-w-[100px]">
-                <WeatherDetailRow label="Humidity" value={`${humidity}%`} />
-                <WeatherDetailRow label="Rain" value={rainChance} />
-                <WeatherDetailRow label="Wind" value={`${windSpeed} km/h`} />
-              </div>
-            </div>
-
-            <div className="mt-5 pt-4 border-t border-white/10 flex justify-center">
-              <Link
-                href="/weather"
-                className="
+              <div className="mt-5 pt-4 border-t border-white/10 flex justify-center">
+                <Link
+                  href="/weather"
+                  className="
                   text-sm font-semibold text-white/90 hover:text-white
                   flex items-center gap-2 transition-colors
                 "
-              >
-                See 7-Day Forecast <span className="opacity-70">→</span>
-              </Link>
+                >
+                  See 7-Day Forecast <span className="opacity-70">→</span>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* ================================================================= */}
-      {/*                    MODERN WELCOME HERO SECTION                    */}
-      {/* ================================================================= */}
+        {/* ================================================================= */}
+        {/*                    MODERN WELCOME HERO SECTION                    */}
+        {/* ================================================================= */}
 
-      <div className="relative mt-6 px-4 mb-4">
-        <div className="text-center flex flex-col items-center space-y-2">
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white leading-tight">
-            Welcome to{" "}
-            <span className="text-green-600 dark:text-green-400">AgroPeer</span>
-          </h1>
-          <p className="text-sm text-slate-500 dark:text-gray-400 max-w-[90%] leading-relaxed">
-            Your smart farming companion. Connect, grow, and explore.
-          </p>
+        <div className="relative mt-6 px-4 mb-4">
+          <div className="text-center flex flex-col items-center space-y-2">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white leading-tight">
+              Welcome to{" "}
+              <span className="text-green-600 dark:text-green-400">
+                AgroPeer
+              </span>
+            </h1>
+            <p className="text-sm text-slate-500 dark:text-gray-400 max-w-[90%] leading-relaxed">
+              Your smart farming companion. Connect, grow, and explore.
+            </p>
+          </div>
+        </div>
+
+        {/* ================================================================= */}
+        {/*                        FEATURE GRID (10)                         */}
+        {/* ================================================================= */}
+
+        <div className="px-4">
+          <FeatureGrid />
+        </div>
+
+        {/* ================================================================= */}
+        {/*                        RECENT POSTS CARD                         */}
+        {/* ================================================================= */}
+
+        <div className="mt-8 px-4">
+          <SectionHeader title="Community" subtitle="What's happening now" />
+          <div className="mt-3 grid grid-cols-2 gap-3">
+            <ActionCard
+              href="/recents"
+              title="Recent Posts"
+              subtitle="Live updates"
+              icon={<FaUserClock className="text-white text-lg" />}
+              gradient="bg-gradient-to-br from-indigo-500 to-purple-600"
+            />
+            <ActionCard
+              href="/trending"
+              title="Trending"
+              subtitle="Most liked"
+              icon={
+                <svg width="18" height="18" fill="white" viewBox="0 0 24 24">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 6 4 4 6.5 4c1.74 0 3.41 1 4.13 2.44h.74C13.09 5 14.76 4 16.5 4 19 4 21 6 21 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                </svg>
+              }
+              gradient="bg-gradient-to-br from-orange-500 to-pink-600"
+            />
+          </div>
         </div>
       </div>
-
-      {/* ================================================================= */}
-      {/*                        FEATURE GRID (10)                         */}
-      {/* ================================================================= */}
-
-      <div className="px-4">
-        <FeatureGrid />
-      </div>
-
-      {/* ================================================================= */}
-      {/*                        RECENT POSTS CARD                         */}
-      {/* ================================================================= */}
-
-      <div className="mt-8 px-4">
-        <SectionHeader title="Community" subtitle="What's happening now" />
-        <div className="mt-3 grid grid-cols-2 gap-3">
-          <ActionCard
-            href="/recents"
-            title="Recent Posts"
-            subtitle="Live updates"
-            icon={<FaUserClock className="text-white text-lg" />}
-            gradient="bg-gradient-to-br from-indigo-500 to-purple-600"
-          />
-          <ActionCard
-            href="/trending"
-            title="Trending"
-            subtitle="Most liked"
-            icon={
-              <svg width="18" height="18" fill="white" viewBox="0 0 24 24">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 6 4 4 6.5 4c1.74 0 3.41 1 4.13 2.44h.74C13.09 5 14.76 4 16.5 4 19 4 21 6 21 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-              </svg>
-            }
-            gradient="bg-gradient-to-br from-orange-500 to-pink-600"
-          />
-        </div>
-      </div>
-    </div>
+    </PullToRefresh>
   );
 }
 

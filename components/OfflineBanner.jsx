@@ -2,31 +2,61 @@
 import React, { useEffect, useState } from "react";
 import { useLanguage } from "@/Context/languagecontext";
 
+import { Network } from "@capacitor/network";
+import { Capacitor } from "@capacitor/core";
+
 export default function OfflineBanner() {
   const [offline, setOffline] = useState(false);
   const [justBack, setJustBack] = useState(false);
   const { t } = useLanguage();
 
   useEffect(() => {
-    const goOffline = () => {
-      setOffline(true);
-      setJustBack(false);
-    };
-    const goOnline = () => {
-      setOffline(false);
-      setJustBack(true);
-      setTimeout(() => setJustBack(false), 2500);
+    // Handler for status changes
+    const handleStatusChange = (status) => {
+      const isConnected = status.connected;
+      if (!isConnected) {
+        setOffline(true);
+        setJustBack(false);
+      } else {
+        // If we were offline, show "Back Online"
+        setOffline((prev) => {
+          if (prev) {
+            setJustBack(true);
+            setTimeout(() => setJustBack(false), 2500);
+          }
+          return false;
+        });
+      }
     };
 
-    window.addEventListener("offline", goOffline);
-    window.addEventListener("online", goOnline);
+    // Initialize
+    const initNetwork = async () => {
+      if (Capacitor.isNativePlatform()) {
+        const status = await Network.getStatus();
+        handleStatusChange(status);
 
-    // initial
-    if (!navigator.onLine) setOffline(true);
+        Network.addListener("networkStatusChange", handleStatusChange);
+      } else {
+        // Web Fallback
+        window.addEventListener("offline", () =>
+          handleStatusChange({ connected: false }),
+        );
+        window.addEventListener("online", () =>
+          handleStatusChange({ connected: true }),
+        );
+        handleStatusChange({ connected: navigator.onLine });
+      }
+    };
+
+    initNetwork();
 
     return () => {
-      window.removeEventListener("offline", goOffline);
-      window.removeEventListener("online", goOnline);
+      if (Capacitor.isNativePlatform()) {
+        Network.removeAllListeners();
+      } else {
+        window.removeEventListener("offline", () => {});
+        window.removeEventListener("online", () => {});
+      }
     };
   }, []);
 

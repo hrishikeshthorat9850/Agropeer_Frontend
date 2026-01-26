@@ -5,6 +5,7 @@ import { FaHome, FaPlusCircle, FaTractor, FaImages } from "react-icons/fa";
 import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles } from "lucide-react";
+import { Haptics, ImpactStyle } from "@capacitor/haptics";
 
 export default function MobileBottomNav({ onAI }) {
   const router = useRouter();
@@ -55,7 +56,7 @@ export default function MobileBottomNav({ onAI }) {
               flex flex-col items-center gap-2
               active:scale-95
             "
-            style={{ bottom: `calc(${safeBottom} + 66px)` }}
+            style={{ bottom: `calc(${safeBottom} + 90px)` }}
           >
             <div className="w-12 h-12 rounded-full bg-earth-500 text-white shadow-elevation-3 flex items-center justify-center">
               <FaTractor size={20} />
@@ -84,7 +85,7 @@ export default function MobileBottomNav({ onAI }) {
               flex flex-col items-center gap-2
               active:scale-95
             "
-            style={{ bottom: `calc(${safeBottom} + 66px)` }}
+            style={{ bottom: `calc(${safeBottom} + 90px)` }}
           >
             <div className="w-12 h-12 rounded-full bg-farm-500 text-white shadow-elevation-3 flex items-center justify-center">
               <FaImages size={20} />
@@ -111,11 +112,14 @@ export default function MobileBottomNav({ onAI }) {
       </AnimatePresence>
 
       {/* ⭐ MATERIAL 3 BOTTOM NAVIGATION */}
-      <div className="fixed bottom-0 left-0 right-0 md:hidden z-[999] bg-white dark:bg-black pb-safe-bottom h-mobile-bottom-nav">
+      <div className="w-full md:hidden z-[999] bg-white dark:bg-black pb-safe-bottom h-mobile-bottom-nav relative border-t border-gray-100 dark:border-gray-800">
         <div className="flex items-center justify-between px-4 h-[56px]">
           {/* HOME */}
           <button
-            onClick={() => router.push("/")}
+            onClick={() => {
+              Haptics.impact({ style: ImpactStyle.Light });
+              router.push("/");
+            }}
             className="flex-1 flex flex-col items-center group"
           >
             <div
@@ -149,6 +153,7 @@ export default function MobileBottomNav({ onAI }) {
             <motion.button
               onClick={(e) => {
                 e.stopPropagation();
+                Haptics.impact({ style: ImpactStyle.Medium });
                 setOpen((p) => !p);
               }}
               whileTap={{ scale: 0.9 }}
@@ -162,7 +167,10 @@ export default function MobileBottomNav({ onAI }) {
 
           {/* AI */}
           <button
-            onClick={openAI}
+            onClick={() => {
+              Haptics.impact({ style: ImpactStyle.Light });
+              openAI();
+            }}
             className="flex-1 flex flex-col items-center group"
           >
             <div

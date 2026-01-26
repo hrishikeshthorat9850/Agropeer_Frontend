@@ -58,10 +58,9 @@ export default function MobilePageLayout({ children, className = "" }) {
 
     // Standard mobile pages with navbar and bottom nav
     // Top padding for navbar, bottom padding for bottom nav
-    return `
-      pt-mobile-layout
-      pb-mobile-layout
-    `;
+    // LayoutClient now handles "Sandwich" structure (Navbar -> Content -> Footer)
+    // So we don't need padding here anymore, the content just lives in the growing middle-section.
+    return "";
   };
 
   // Get background color based on route

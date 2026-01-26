@@ -15,6 +15,8 @@ import {
 import { formatName } from "@/utils/formatName";
 import { useLogin } from "@/Context/logincontext";
 import { useLanguage } from "@/Context/languagecontext";
+import { useNativeShare } from "@/Mobile/hooks/useNativeShare";
+import { FaShareAlt } from "react-icons/fa";
 
 export default function ProductCard({
   product,
@@ -30,6 +32,7 @@ export default function ProductCard({
 }) {
   const { user } = useLogin();
   const { t } = useLanguage();
+  const { share } = useNativeShare();
   const [imageError, setImageError] = useState(false);
   const firstPhoto =
     product.photos?.length > 0 && !imageError
@@ -68,12 +71,30 @@ export default function ProductCard({
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => onFavoriteClick?.(product)}
-            className={`w-9 h-9 flex items-center justify-center rounded-full shadow-md backdrop-blur-md transition ${isFavorite
+            className={`w-9 h-9 flex items-center justify-center rounded-full shadow-md backdrop-blur-md transition ${
+              isFavorite
                 ? "bg-gradient-to-br from-rose-500 via-pink-500 to-red-500 text-white shadow-[0_4px_12px_rgba(244,63,94,0.4)] hover:shadow-[0_6px_20px_rgba(244,63,94,0.5)]"
                 : "bg-white/90 text-gray-700 hover:bg-white"
-              }`}
+            }`}
           >
             <FaHeart className="w-4 h-4" />
+          </motion.button>
+
+          {/* Share Button (Visible to all) */}
+          <motion.button
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => {
+              share({
+                title: product.title,
+                text: `Check out this ${product.title} on AgroPeer! Price: ₹${product.price}`,
+                url: `https://agropeer.com/market?id=${product.id}`,
+                dialogTitle: "Share Product",
+              });
+            }}
+            className="w-9 h-9 flex items-center justify-center rounded-full shadow-md backdrop-blur-md bg-white/90 text-blue-600 hover:bg-white"
+          >
+            <FaShareAlt className="w-4 h-4" />
           </motion.button>
 
           {/* Menu */}

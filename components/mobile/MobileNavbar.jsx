@@ -11,6 +11,8 @@ import ProfileModal from "@/components/ProfileModal";
 import { motion, AnimatePresence } from "framer-motion";
 import SearchBar from "../SearchBar";
 import { supabase } from "@/lib/supabaseClient";
+import { Haptics, ImpactStyle } from "@capacitor/haptics";
+
 export default function MobileNavbar() {
   const { user } = useLogin();
   const unreadChats = useUnreadMessagesCount();
@@ -197,11 +199,14 @@ export default function MobileNavbar() {
     window.dispatchEvent(new CustomEvent("open-mobile-sidebar"));
 
   return (
-    <div className="pt-safe-top md:hidden fixed top-0 left-0 right-0 z-[100] bg-white dark:bg-black shadow-sm">
+    <div className="pt-safe-top w-full z-[100] bg-white dark:bg-black shadow-sm transition-all relative">
       <div className="flex items-center justify-between py-1.5 px-3 h-[56px] flex-shrink-0 gap-3">
         {/* MENU / SIDEBAR BUTTON */}
         <button
-          onClick={openSidebar}
+          onClick={() => {
+            Haptics.impact({ style: ImpactStyle.Light });
+            openSidebar();
+          }}
           className="p-2 active:scale-95 transition flex-shrink-0 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800"
           aria-label="Open menu"
         >
@@ -219,6 +224,7 @@ export default function MobileNavbar() {
 
           <Link
             href="/notifications"
+            onClick={() => Haptics.impact({ style: ImpactStyle.Light })}
             className="relative p-2 active:scale-95 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
           >
             <FaBell className="text-[24px] text-zinc-800 dark:text-zinc-100" />
@@ -233,6 +239,7 @@ export default function MobileNavbar() {
           {user && (
             <Link
               href="/chats"
+              onClick={() => Haptics.impact({ style: ImpactStyle.Light })}
               className="relative p-2 active:scale-95 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
             >
               <FaComments className="text-[24px] text-zinc-800 dark:text-zinc-100" />
@@ -247,7 +254,10 @@ export default function MobileNavbar() {
           {/* LANGUAGE DROPDOWN */}
           <div ref={langRef} className="relative">
             <button
-              onClick={() => setLangOpen(!langOpen)}
+              onClick={() => {
+                Haptics.impact({ style: ImpactStyle.Light });
+                setLangOpen(!langOpen);
+              }}
               className="p-2 active:scale-95 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
             >
               <FaLanguage className="text-[28px] text-zinc-800 dark:text-zinc-100" />
@@ -273,6 +283,7 @@ export default function MobileNavbar() {
                     <button
                       key={l}
                       onClick={() => {
+                        Haptics.impact({ style: ImpactStyle.Medium });
                         setLocale(l);
                         setLangOpen(false);
                       }}

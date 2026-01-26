@@ -3,6 +3,7 @@
 import { App } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
 import { useEffect, useState, useRef } from "react";
+import { Toast } from "@capacitor/toast"; // Import Toast
 // import ExitConfirmModal from "./ExitConfirmModal"; // Removed
 import useToast from "@/hooks/useToast";
 
@@ -30,6 +31,14 @@ export default function AppShell({ children }) {
       }
 
       backPressedOnce.current = true;
+
+      // Show native toast "Press back again to exit"
+      Toast.show({
+        text: "Press back again to exit",
+        duration: "short",
+        position: "bottom",
+      }).catch((e) => console.error("Toast error", e));
+
       // Clear any existing timer and set a new one
       if (backButtonTimer.current) {
         clearTimeout(backButtonTimer.current);

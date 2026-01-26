@@ -181,22 +181,26 @@ html.capacitor-platform-android .touch-manipulation {
 }
 
 /* Safe-area utility classes with robust native fallbacks */
+/* BASE DEFAULTS */
 .pt-safe-top {
-  padding-top: env(safe-area-inset-top, 0px);
+  padding-top: env(safe-area-inset-top, 20px);
 }
 
 .pb-safe-bottom {
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 20px);
 }
 
 .h-mobile-bottom-nav {
-  height: calc(56px + env(safe-area-inset-bottom, 0px));
+  height: calc(56px + env(safe-area-inset-bottom, 20px));
 }
 
-/* 📱 CAPACITOR NATIVE OVERRIDES */
-/* Android: Ensure minimum padding because status bar is transparent overlay */
+/* 📱 CAPACITOR NATIVE OVERRIDES - ANDROID */
+/* Android often reports 0 safe area even with status bar overlay, so we force a minimum */
 body.capacitor-platform-android .pt-safe-top {
-  padding-top: max(env(safe-area-inset-top), 32px);
+  padding-top: max(
+    env(safe-area-inset-top),
+    36px
+  ); /* 36px is standard Android status bar height */
 }
 body.capacitor-platform-android .pb-safe-bottom {
   padding-bottom: max(env(safe-area-inset-bottom), 16px);
@@ -205,15 +209,21 @@ body.capacitor-platform-android .h-mobile-bottom-nav {
   height: calc(56px + max(env(safe-area-inset-bottom), 16px));
 }
 
-/* iOS: Ensure minimum just in case, though usually accurate */
+/* 📱 CAPACITOR NATIVE OVERRIDES - iOS */
 body.capacitor-platform-ios .pt-safe-top {
-  padding-top: max(env(safe-area-inset-top), 20px);
+  padding-top: max(
+    env(safe-area-inset-top),
+    44px
+  ); /* iOS notch is usually ~44px+ */
 }
 body.capacitor-platform-ios .pb-safe-bottom {
-  padding-bottom: max(env(safe-area-inset-bottom), 16px);
+  padding-bottom: max(
+    env(safe-area-inset-bottom),
+    24px
+  ); /* Home indicator area */
 }
 body.capacitor-platform-ios .h-mobile-bottom-nav {
-  height: calc(56px + max(env(safe-area-inset-bottom), 16px));
+  height: calc(56px + max(env(safe-area-inset-bottom), 24px));
 }
 
 /* ------------------------------------------------------ */

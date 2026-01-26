@@ -261,7 +261,7 @@ export default function WeatherForecast() {
             </div>
           )}
 
-          {/* {status === LOCATION.DENIED && (
+          {status === LOCATION.DENIED && (
             <div className="flex flex-col items-center gap-3">
               <p className="text-red-500 font-medium">
                 Location access is required for local weather.
@@ -273,9 +273,9 @@ export default function WeatherForecast() {
                 Enable Location
               </button>
             </div>
-          )} */}
+          )}
 
-          {/* {status === LOCATION.GPS_OFF && (
+          {status === LOCATION.GPS_OFF && (
             <div className="flex flex-col items-center gap-3">
               <p className="text-orange-500 font-medium">
                 Please turn on your GPS.
@@ -287,7 +287,7 @@ export default function WeatherForecast() {
                 Turn On GPS
               </button>
             </div>
-          )} */}
+          )}
 
           {!loading &&
             !error &&

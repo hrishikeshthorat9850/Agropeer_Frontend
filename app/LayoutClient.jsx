@@ -19,6 +19,7 @@ import { useKeyboardOpen } from "@/Mobile/hooks/useKeyboardOpen";
 // import PopupModal from "@/components/popup/PopupModal";
 import { setupAndroidNotificationChannel } from "@/utils/capacitorNotifications";
 import DeepLinkManager from "@/components/Deeplink/DeeplinkManager";
+import StatusBarManager from "@/components/mobile/StatusBarManager";
 
 export default function ClientLayout({ children }) {
   const pathname = usePathname();
@@ -65,31 +66,6 @@ export default function ClientLayout({ children }) {
     }
   }, []);
 
-  // ⭐ FIX STATUS BAR - Make it overlay and match navbar color
-  useEffect(() => {
-    async function applyStatusBar() {
-      try {
-        if (
-          Capacitor.isNativePlatform() &&
-          Capacitor.getPlatform() === "android"
-        ) {
-          // Set status bar to overlay the webview so navbar shows through
-          await StatusBar.setOverlaysWebView({ overlay: true });
-
-          // Set status bar background to match navbar gradient (green)
-          await StatusBar.setBackgroundColor({ color: "#2E7D32" });
-
-          // Use light style (white icons) for dark green navbar background
-          await StatusBar.setStyle({ style: Style.Light });
-        }
-      } catch (e) {
-        console.error("StatusBar error:", e);
-      }
-    }
-
-    applyStatusBar();
-  }, []);
-
   // Force Scroll to Top on Path Change
   useEffect(() => {
     // Disable native browser scroll restoration to handle it manually
@@ -130,6 +106,7 @@ export default function ClientLayout({ children }) {
         }}
       />
       <AppProviders>
+        <StatusBarManager />
         <TopLoader />
         <OfflineBanner />
 
@@ -138,37 +115,46 @@ export default function ClientLayout({ children }) {
           <PopupModal onClose={() => setShowPopup(false)} />
         )} */}
 
-        {/* Main Layout Structure (Mobile Only) */}
+        {/* Main Layout Structure (Mobile Only) - SANDWICH STRUCTURE */}
+        <div className="flex flex-col h-[100dvh] w-full overflow-hidden bg-background">
+          {/* 1. TOP: Mobile Navbar (Fixed Height) */}
+          {showNavbar && (
+            <div className="flex-none z-[100] w-full bg-white dark:bg-black relative">
+              {/* Navbar component handles its own safe-area padding internally via 'pt-safe-top' */}
+              <MobileNavbar onOpenAI={() => setAiOpen(true)} />
+            </div>
+          )}
 
-        <>
-          {/* Mobile Navbar */}
-          {showNavbar && <MobileNavbar onOpenAI={() => setAiOpen(true)} />}
-
-          {/* Main Content Area */}
-          <main className={`w-full ${showNavbar ? "" : ""}`}>
-            <div className="flex flex-col w-full">
+          {/* 2. MIDDLE: Scrollable Content Area (Flex Grow) */}
+          <main className="flex-1 overflow-y-auto overflow-x-hidden w-full relative overscroll-none scroll-smooth">
+            <div className="flex flex-col w-full min-h-full">
               <PageTransition>
-                {/* Always use MobilePageLayout if not explicitly native-only, but here we assume mobile behaviour */}
-                <MobilePageLayout>{children}</MobilePageLayout>
+                {/* MobilePageLayout provides consistent logic but NO extra padding if navbar/bottomnav are outside */}
+                <MobilePageLayout hasNavbar={showNavbar}>
+                  {children}
+                </MobilePageLayout>
               </PageTransition>
             </div>
           </main>
 
-          {/* Mobile Bottom Nav */}
+          {/* 3. BOTTOM: Mobile Bottom Nav (Fixed Height) */}
           {showNavbar && !keyboardOpen && !aiOpen ? (
-            <MobileBottomNav onAI={() => setAiOpen(true)} />
+            <div className="flex-none z-[50] w-full bg-white dark:bg-black relative">
+              {/* BottomNav handles its own safe-area padding internally via 'pb-safe-bottom' */}
+              <MobileBottomNav onAI={() => setAiOpen(true)} />
+            </div>
           ) : null}
+        </div>
 
-          <MobileSidebar />
+        <MobileSidebar />
 
-          {/* Chatbot */}
-          {!noUIRoutes.includes(pathname) && (
-            <>
-              {!aiOpen && <AIChatbotButton open={aiOpen} setOpen={setAiOpen} />}
-              <AIChatWindow open={aiOpen} setOpen={setAiOpen} />
-            </>
-          )}
-        </>
+        {/* Chatbot */}
+        {!noUIRoutes.includes(pathname) && (
+          <>
+            {!aiOpen && <AIChatbotButton open={aiOpen} setOpen={setAiOpen} />}
+            <AIChatWindow open={aiOpen} setOpen={setAiOpen} />
+          </>
+        )}
 
         <AndroidNotificationHandler />
         <ToastContainer position="top-center" maxToasts={5} />
