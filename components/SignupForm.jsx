@@ -75,25 +75,28 @@ export default function SignupForm() {
     e.preventDefault();
     setErrorMsg("");
     setLoading(true);
-
+    console.log("Signup FOrmData is :",form);
     try {
       const { data, error } = await supabase.auth.signUp({
         email: form.email,
         password: form.password,
       });
-
+      console.log("Error in signup is :",error);
       if (error) throw error;
       if (!data?.user?.id) throw new Error(t("user_id_missing"));
 
-      const { error: profileError } = await supabase.from("userinfo").insert({
-        id: data.user.id,
-        firstName: form.firstName,
-        lastName: form.lastName,
-        mobile: form.phone,
-        country: form.country || null,
-      });
+      const { error: profileError } = await supabase
+        .from("userinfo")
+        .update({
+          firstName: form.firstName,
+          lastName: form.lastName,
+          mobile: form.phone,
+          country: form.country || null,
+        })
+        .eq("id", data.user?.id);
 
       if (profileError) throw profileError;
+
 
       showToast("success", t("account_created_success"));
       setTimeout(() => router.push("/login"), 1200);

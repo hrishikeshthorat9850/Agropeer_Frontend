@@ -7,7 +7,7 @@ import { useLanguage } from "@/Context/languagecontext";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import useToast from "@/hooks/useToast";
-
+import { apiRequest } from "@/utils/apiHelpers";
 export default function AccountDeleteModal({ isOpen, onClose }) {
   const { t } = useLanguage();
   const router = useRouter();
@@ -19,6 +19,7 @@ export default function AccountDeleteModal({ isOpen, onClose }) {
   // Required confirmation text (case-insensitive)
   const requiredText = "DELETE";
   const isConfirmed = confirmText.toUpperCase().trim() === requiredText;
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   // Lock scroll when modal is open
   useEffect(() => {
@@ -84,13 +85,13 @@ export default function AccountDeleteModal({ isOpen, onClose }) {
       }
 
       // Get access token from session
-      const accessToken = session.access_token;
+      const accessToken = session?.access_token;
       if (!accessToken) {
         throw new Error(t("token_error"));
       }
 
       // Send request with Authorization header (Production standard)
-      const response = await fetch("/api/user/delete-account", {
+      const response = await apiRequest(`${BASE_URL}/api/user/delete-account`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -99,7 +100,7 @@ export default function AccountDeleteModal({ isOpen, onClose }) {
         credentials: "include", // Include cookies as backup
       });
 
-      const data = await response.json();
+      // const data = await response.json();
 
       if (!response.ok) {
         throw new Error(data.error || t("delete_failed"));

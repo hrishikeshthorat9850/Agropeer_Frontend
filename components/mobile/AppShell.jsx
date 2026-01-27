@@ -1,5 +1,4 @@
 "use client";
-
 import { App } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
 import { useEffect, useState, useRef } from "react";
