@@ -344,24 +344,22 @@ export default function NewsPage() {
     <ErrorBoundary>
       <div className="bg-gray-50 dark:bg-black pb-6">
         {/* Mobile App Header */}
-        <header className="sticky top-mobile-navbar-height z-40 bg-white dark:bg-black border-b border-gray-100 dark:border-white/10 px-4 py-3 flex items-center justify-between shadow-sm">
-          <h1 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+        {/* Mobile App Header (Title) */}
+        <header className="sticky top-mobile-navbar-height z-40 bg-white/95 dark:bg-black/95 backdrop-blur-sm border-b border-transparent px-5 py-3 flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
             Agro News
           </h1>
-          <div className="flex gap-4 text-gray-600 dark:text-gray-300">
-            {/* Placeholder for future actions if needed, currently empty to keep it clean like WhatsApp/Insta */}
-          </div>
         </header>
 
         <div className="w-full max-w-lg mx-auto md:max-w-5xl">
           {/* Search Area */}
-          <div className="px-4 py-3 bg-white dark:bg-black/50">
+          <div className="px-4 pb-2 bg-white dark:bg-black">
             <NewsSearch onSearch={handleSearch} />
           </div>
 
-          {/* Horizontal Scrollable Filters (YouTube/Instagram Style) */}
-          <div className="sticky top-[calc(var(--mobile-navbar-height)+57px)] z-30 bg-gray-50/95 dark:bg-black/95 backdrop-blur-sm py-2 pl-4 border-b border-gray-100 dark:border-white/5">
-            <div className="overflow-x-auto flex gap-2 pr-4 no-scrollbar pb-1">
+          {/* Horizontal Scrollable Filters */}
+          <div className="sticky top-[calc(var(--mobile-navbar-height)+55px)] z-30 bg-white/95 dark:bg-black/95 backdrop-blur-sm pt-2 pb-3 pl-4 border-b border-gray-100 dark:border-white/5">
+            <div className="overflow-x-auto flex gap-2 pr-4 no-scrollbar">
               <NewsFilterBar
                 onCategoryChange={handleCategoryChange}
                 selectedCategory={selectedCategory}

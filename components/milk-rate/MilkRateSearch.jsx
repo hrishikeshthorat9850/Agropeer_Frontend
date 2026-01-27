@@ -25,7 +25,7 @@ export default function MilkRateSearch({ onSearch, placeholder }) {
   return (
     <form onSubmit={handleSubmit} className="w-full">
       <div className="relative">
-        <div className="flex items-center gap-3 bg-gray-100 dark:bg-white/10 rounded-full px-4 py-2.5 transition-all focus-within:ring-2 focus-within:ring-green-500/50">
+        <div className="flex items-center gap-3 bg-gray-100 dark:bg-white/10 rounded-full px-4 py-1.5 transition-all focus-within:ring-2 focus-within:ring-green-500/50">
           {/* Search Icon */}
           <FaSearch className="text-gray-400 dark:text-gray-500 text-sm" />
           {/* Input */}

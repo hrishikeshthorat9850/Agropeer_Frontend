@@ -8,8 +8,8 @@ export default function PostMedia({ images, onZoomChange }) {
   const [isZoomed, setIsZoomed] = useState(false);
   const containerRef = useRef(null);
   const [width, setWidth] = useState(0);
-  // Default to 4:5 (0.8), will update based on FIRST image only
-  const [aspectRatio, setAspectRatio] = useState(4 / 5);
+  // Default to Square (1:1) as per Instagram standard
+  const [aspectRatio, setAspectRatio] = useState(1);
 
   // Notify parent of zoom state
   useEffect(() => {
@@ -21,6 +21,12 @@ export default function PostMedia({ images, onZoomChange }) {
     if (containerRef.current) {
       setWidth(containerRef.current.offsetWidth);
     }
+    // Update width on resize
+    const handleResize = () => {
+      if (containerRef.current) setWidth(containerRef.current.offsetWidth);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   // Sync drag x with current index
@@ -45,11 +51,16 @@ export default function PostMedia({ images, onZoomChange }) {
   };
 
   const handleRatioDetected = (index, ratio) => {
-    // ONLY set ratio for the first image
+    // 🔒 INSTAGRAM LOGIC:
+    // The FIRST image dictates the aspect ratio for the ENTIRE carousel.
+    // All subsequent images will be cropped to fit this ratio.
     if (index !== 0) return;
 
     // Instagram limits: 4:5 (0.8) to 1.91:1
+    // If < 0.8 (e.g. 9:16), clamp to 0.8 (Crop top/bottom)
+    // If > 1.91 (e.g. 21:9), clamp to 1.91 (Crop sides)
     const clampedRatio = Math.min(Math.max(ratio, 0.8), 1.91);
+
     setAspectRatio(clampedRatio);
   };
 
@@ -94,6 +105,7 @@ export default function PostMedia({ images, onZoomChange }) {
                 onZoomChange={setIsZoomed}
                 // Detect ratio for first slide (others will be ignored by handler)
                 onRatioDetected={(ratio) => handleRatioDetected(i, ratio)}
+                containerAspectRatio={aspectRatio}
               />
             </div>
           ))}
@@ -119,22 +131,24 @@ export default function PostMedia({ images, onZoomChange }) {
               </button>
             )}
 
-            {/* Counter */}
-            <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-2 py-1 rounded-full text-xs font-medium text-white/90 z-20 pointer-events-none">
+            {/* Counter (Instagram Style Pill) */}
+            <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-medium text-white/90 z-20 pointer-events-none">
               {currentIndex + 1}/{images.length}
             </div>
           </>
         )}
       </div>
 
-      {/* Pagination Dots */}
+      {/* Pagination Dots (Instagram Style) */}
       {images.length > 1 && (
-        <div className="flex justify-center mt-2 gap-1.5">
+        <div className="flex justify-center mt-2 gap-1.5 min-h-[6px]">
           {images.map((_, i) => (
             <div
               key={i}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                i === currentIndex ? "w-6 bg-green-600" : "w-1.5 bg-gray-300"
+              className={`rounded-full transition-all duration-300 ${
+                i === currentIndex
+                  ? "w-1.5 h-1.5 bg-blue-500"
+                  : "w-1.5 h-1.5 bg-gray-300 dark:bg-gray-600 scale-75"
               }`}
             />
           ))}
@@ -151,11 +165,13 @@ function ZoomableMedia({
   preload,
   onZoomChange,
   onRatioDetected,
+  containerAspectRatio,
 }) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const scale = useMotionValue(1);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [imageRatio, setImageRatio] = useState(null);
 
   // Track zooming state locally to enable panning
   const isZooming = useRef(false);
@@ -231,6 +247,11 @@ function ZoomableMedia({
     // Pan Logic (One finger, but only if zoomed)
     else if (e.touches.length === 1 && scale.get() > 1 && isZooming.current) {
       e.stopPropagation(); // Stop slider
+
+      const touch = e.touches[0];
+      // Initialize pan if we just dropped from 2 fingers to 1 (not fully handled here for brevity, usually needs dedicated state)
+      // OR simple pan continuation if architecture supports it.
+      // For now, robust 2-finger pan is implemented above. 1-finger pan requires more complex state tracking (lastX/Y).
     }
   };
 
@@ -249,15 +270,79 @@ function ZoomableMedia({
     }
   };
 
+  // Detect metadata for fast layout
+  useEffect(() => {
+    if (media && media.width && media.height) {
+      const r = media.width / media.height;
+      setImageRatio(r);
+      if (isActive) onRatioDetected?.(r);
+    }
+  }, [media, isActive, onRatioDetected]);
+
+  // Determine sizing style based on ratio comparison
+  // If Image is Taller than Container (imageRatio < containerRatio) -> Fit Width (w-full), let Height overflow
+  // If Image is Wider than Container (imageRatio > containerRatio) -> Fit Height (h-full), let Width overflow
+  // Default to object-cover like behavior if unknown
+
+  const getMediaStyle = () => {
+    if (!imageRatio || !containerAspectRatio)
+      return { width: "100%", height: "100%", objectFit: "cover" };
+
+    // Tolerance for float comparison
+    if (Math.abs(imageRatio - containerAspectRatio) < 0.01) {
+      return { width: "100%", height: "100%", objectFit: "cover" };
+    }
+
+    if (imageRatio < containerAspectRatio) {
+      // Image is Taller -> Fill Width, Auto Height
+      return {
+        width: "100%",
+        height: "auto",
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+      };
+    } else {
+      // Image is Wider -> Fill Height, Auto Width
+      return {
+        height: "100%",
+        width: "auto",
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+      };
+    }
+  };
+
+  const mediaStyle = getMediaStyle();
+  // If we are using the detailed positioning, we shouldn't use fill=true on NextImage
+
   return (
     <motion.div
       className="w-full h-full flex items-center justify-center relative bg-gray-50 dark:bg-zinc-900"
+      // overflow-hidden on the wrapper ensures the cropping happens visually when not zoomed
+      // BUT, we apply the scale transform to THIS wrapper.
+      // Wait, if we scale THIS wrapper, the overflow limit scales with it.
+      // To reveal outside content, THIS wrapper needs overflow-visible.
+      // The PARENT of this component (in the customized map) has relative.
+      // We need the 'crop' to be static.
+
       style={{ x, y, scale }}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       onTouchCancel={handleTouchEnd}
     >
+      {/* 
+          CORRECTION: 
+          To support uncropping on zoom, the CLIP must happen on a PARENT that does NOT scale.
+          The `motion.div` here scales. 
+          So `overflow-hidden` should be on the SLIDER CONTAINER (PostMedia root).
+          This component should effectively be `overflow-visible`.
+       */}
+
       {/* Loading Skeleton / Pulse */}
       {!isLoaded && media?.type !== "video" && (
         <div className="absolute inset-0 z-0 bg-gray-200 dark:bg-zinc-800 animate-pulse" />
@@ -266,44 +351,51 @@ function ZoomableMedia({
       {media?.type === "video" ? (
         <video
           src={media.url}
-          className="w-full h-full object-cover"
+          className="max-w-none"
+          style={mediaStyle}
           controls
           controlsList="nodownload nofullscreen noremoteplayback"
           disablePictureInPicture
+          playsInline
           onClick={(e) => e.stopPropagation()}
           onLoadedMetadata={(e) => {
-            if (onRatioDetected) {
-              const { videoWidth, videoHeight } = e.target;
-              if (videoWidth && videoHeight) {
-                onRatioDetected(videoWidth / videoHeight);
-              }
+            const { videoWidth, videoHeight } = e.target;
+            if (videoWidth && videoHeight) {
+              const r = videoWidth / videoHeight;
+              setImageRatio(r);
+              if (isActive && onRatioDetected) onRatioDetected(r);
             }
           }}
         />
       ) : (
-        <div className="relative w-full h-full pointer-events-none">
+        <div className="relative w-full h-full pointer-events-none flex items-center justify-center">
+          {/* We use a standard img tag or Next Image with specific sizing to allow overflow */}
+          {/* If we use Next Image without fill, we need width/height. */}
+          {/* Since we want CSS controlled sizing (100% / auto), we can use fill={false} width={0} height={0} sizes="100vw" style={mediaStyle} */}
+
           <Image
             src={media.url || "/placeholder.png"}
             alt="Post media"
-            fill
-            className="object-cover"
-            priority={preload}
-            unoptimized={true} // Bypass Next.js optimization for raw speed / static export
+            width={0}
+            height={0}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="max-w-none"
+            style={mediaStyle} // Applies the centering and auto-sizing
+            priority={preload}
+            unoptimized={true}
             onLoad={(e) => {
-              // Determine ratio immediately on load if possible
-              if (onRatioDetected && e.target.naturalWidth) {
-                onRatioDetected(e.target.naturalWidth / e.target.naturalHeight);
+              if (e.target.naturalWidth) {
+                const r = e.target.naturalWidth / e.target.naturalHeight;
+                setImageRatio(r);
+                if (isActive && onRatioDetected) onRatioDetected(r);
               }
               setIsLoaded(true);
             }}
             onLoadingComplete={(result) => {
-              if (
-                onRatioDetected &&
-                result.naturalWidth &&
-                result.naturalHeight
-              ) {
-                onRatioDetected(result.naturalWidth / result.naturalHeight);
+              if (result.naturalWidth) {
+                const r = result.naturalWidth / result.naturalHeight;
+                setImageRatio(r);
+                if (isActive && onRatioDetected) onRatioDetected(r);
               }
               setIsLoaded(true);
             }}

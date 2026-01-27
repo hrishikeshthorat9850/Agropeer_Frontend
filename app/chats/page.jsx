@@ -58,7 +58,7 @@ export default function ChatsPage() {
             updated_at,
             message_type
           )
-        `
+        `,
         )
         .or(`user1_id.eq.${loggedInUser.id},user2_id.eq.${loggedInUser.id}`)
         .order("last_message_at", { ascending: false })
@@ -128,11 +128,11 @@ export default function ChatsPage() {
             unread_count: unreadCount,
             all_conversation_ids: [conv.id],
           };
-        })
+        }),
       );
 
       const validContacts = mappedContacts.filter(
-        (contact) => contact !== null
+        (contact) => contact !== null,
       );
 
       const contactsByUserId = {};
@@ -142,7 +142,7 @@ export default function ChatsPage() {
         if (contactsByUserId[contact.id]) {
           const existing = contactsByUserId[contact.id];
           const existingTime = new Date(
-            existing.last_message_at || 0
+            existing.last_message_at || 0,
           ).getTime();
           const newTime = new Date(contact.last_message_at || 0).getTime();
 
@@ -154,7 +154,7 @@ export default function ChatsPage() {
 
           existing.unread_count = Math.min(
             (existing.unread_count || 0) + (contact.unread_count || 0),
-            999
+            999,
           );
 
           const mergedIds = new Set([
@@ -249,7 +249,7 @@ export default function ChatsPage() {
 
             // Update to most recent conversation if this one is newer
             const currentTime = new Date(
-              contact.last_message_at || 0
+              contact.last_message_at || 0,
             ).getTime();
             const newTime = new Date(msgg.created_at || 0).getTime();
 
@@ -293,7 +293,7 @@ export default function ChatsPage() {
             // Merge: keep most recent
             const existing = contactsByUserId[contact.id];
             const existingTime = new Date(
-              existing.last_message_at || 0
+              existing.last_message_at || 0,
             ).getTime();
             const newTime = new Date(contact.last_message_at || 0).getTime();
 
@@ -305,7 +305,7 @@ export default function ChatsPage() {
             // Sum unread counts (but cap at reasonable number to prevent overflow)
             existing.unread_count = Math.min(
               (existing.unread_count || 0) + (contact.unread_count || 0),
-              999
+              999,
             );
             // Merge conversation IDs
             const mergedIds = new Set([
@@ -346,7 +346,7 @@ export default function ChatsPage() {
                 m.id &&
                 m.id.startsWith("temp-") &&
                 m.from === "me" &&
-                m.text === msgg.content
+                m.text === msgg.content,
             );
 
             if (tempIndex !== -1) {
@@ -385,7 +385,7 @@ export default function ChatsPage() {
       }
 
       const conversationExists = conversationsRef.current?.some(
-        (conv) => conv && conv.id === msgg.conversation_id
+        (conv) => conv && conv.id === msgg.conversation_id,
       );
       if (!conversationExists) {
         fetchMessages();
@@ -493,7 +493,7 @@ export default function ChatsPage() {
         console.error("❌ Unexpected error fetching messages:", err);
       }
     },
-    [loggedInUser?.id]
+    [loggedInUser?.id],
   );
 
   useEffect(() => {
@@ -558,7 +558,7 @@ export default function ChatsPage() {
       setContacts((prevContacts) => {
         if (!Array.isArray(prevContacts)) return prevContacts;
         return prevContacts.map((c) =>
-          c && c.id === contact.id ? { ...c, unread_count: 0 } : c
+          c && c.id === contact.id ? { ...c, unread_count: 0 } : c,
         );
       });
 
@@ -578,7 +578,7 @@ export default function ChatsPage() {
       socket,
       joinConversation,
       markAsRead,
-    ]
+    ],
   );
 
   useEffect(() => {
@@ -666,7 +666,7 @@ export default function ChatsPage() {
         if (contactsByUserId[contact.id]) {
           const existing = contactsByUserId[contact.id];
           const existingTime = new Date(
-            existing.last_message_at || 0
+            existing.last_message_at || 0,
           ).getTime();
           const newTime = new Date(contact.last_message_at || 0).getTime();
 
@@ -678,7 +678,7 @@ export default function ChatsPage() {
           // Preserve unread count (don't add, just keep max)
           existing.unread_count = Math.max(
             existing.unread_count || 0,
-            contact.unread_count || 0
+            contact.unread_count || 0,
           );
           // Merge conversation IDs
           const mergedIds = new Set([
@@ -727,13 +727,7 @@ export default function ChatsPage() {
             relative
           "
           style={{
-            paddingTop: isNative
-              ? "calc(20px + env(safe-area-inset-top))"
-              : "56px",
-
-            height: isNative
-              ? "calc(100dvh - 20px - 70px - env(safe-area-inset-top) - env(safe-area-inset-bottom))"
-              : "calc(100vh - 56px - 70px)",
+            minHeight: "100%",
           }}
         >
           {/* Sidebar */}

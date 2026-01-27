@@ -1,5 +1,6 @@
 "use client";
 
+import { useTheme } from "@/Context/themecontext";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -23,6 +24,8 @@ import { StatusBar, Style } from "@capacitor/status-bar";
 
 export default function MobileSidebar() {
   const [open, setOpen] = useState(false);
+
+  const { theme } = useTheme();
 
   // Logic preserved: Overlay styling for capacitor
   useEffect(() => {
@@ -78,13 +81,17 @@ export default function MobileSidebar() {
 
   useEffect(() => {
     if (open) {
-      // Sidebar OPEN → light style (dark icons) if bg is white, but header is green...
-      // Actually standardizing to matches UserProfileSidebar which uses standard status bar
-      StatusBar.setStyle({ style: Style.Light }); // White text for green header
-    } else {
+      // Sidebar OPEN: Green Header -> Dark Background -> Light Icons (Style.Dark)
       StatusBar.setStyle({ style: Style.Dark });
+    } else {
+      // Sidebar CLOSED: Revert to theme
+      if (theme === "dark") {
+        StatusBar.setStyle({ style: Style.Dark });
+      } else {
+        StatusBar.setStyle({ style: Style.Light });
+      }
     }
-  }, [open]);
+  }, [open, theme]);
 
   const MENU_ITEMS = [
     { href: "/about-us", label: "About Us", icon: <FaLeaf /> },

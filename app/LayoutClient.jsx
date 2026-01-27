@@ -116,34 +116,31 @@ export default function ClientLayout({ children }) {
         )} */}
 
         {/* Main Layout Structure (Mobile Only) - SANDWICH STRUCTURE */}
-        <div className="flex flex-col h-[100dvh] w-full overflow-hidden bg-background">
-          {/* 1. TOP: Mobile Navbar (Fixed Height) */}
-          {showNavbar && (
-            <div className="flex-none z-[100] w-full bg-white dark:bg-black relative">
-              {/* Navbar component handles its own safe-area padding internally via 'pt-safe-top' */}
-              <MobileNavbar onOpenAI={() => setAiOpen(true)} />
-            </div>
-          )}
+        {/* Main Layout Structure (Mobile Only) */}
+        <div className="min-h-[100dvh] w-full relative">
+          {/* 1. TOP: Mobile Navbar (Fixed) */}
+          {showNavbar && <MobileNavbar onOpenAI={() => setAiOpen(true)} />}
 
-          {/* 2. MIDDLE: Scrollable Content Area (Flex Grow) */}
-          <main className="flex-1 overflow-y-auto overflow-x-hidden w-full relative overscroll-none scroll-smooth">
-            <div className="flex flex-col w-full min-h-full">
-              <PageTransition>
-                {/* MobilePageLayout provides consistent logic but NO extra padding if navbar/bottomnav are outside */}
-                <MobilePageLayout hasNavbar={showNavbar}>
-                  {children}
-                </MobilePageLayout>
-              </PageTransition>
-            </div>
+          {/* 2. MIDDLE: Content Area */}
+          <main
+            className={`
+              w-full min-h-screen 
+              ${showNavbar ? "pt-mobile-layout" : ""} 
+              ${showNavbar && !keyboardOpen ? "pb-mobile-layout" : ""}
+            `}
+          >
+            <PageTransition>
+              {/* MobilePageLayout provides consistent logic but NO extra padding if navbar/bottomnav are outside */}
+              <MobilePageLayout hasNavbar={showNavbar}>
+                {children}
+              </MobilePageLayout>
+            </PageTransition>
           </main>
 
-          {/* 3. BOTTOM: Mobile Bottom Nav (Fixed Height) */}
-          {showNavbar && !keyboardOpen && !aiOpen ? (
-            <div className="flex-none z-[50] w-full bg-white dark:bg-black relative">
-              {/* BottomNav handles its own safe-area padding internally via 'pb-safe-bottom' */}
-              <MobileBottomNav onAI={() => setAiOpen(true)} />
-            </div>
-          ) : null}
+          {/* 3. BOTTOM: Mobile Bottom Nav (Fixed) */}
+          {showNavbar && !keyboardOpen && !aiOpen && (
+            <MobileBottomNav onAI={() => setAiOpen(true)} />
+          )}
         </div>
 
         <MobileSidebar />

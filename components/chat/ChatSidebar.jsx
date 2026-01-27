@@ -52,7 +52,7 @@ export default function ChatSidebar({
         dark:border-neutral-800 md:rounded-2xl p-4 z-10 w-full md:w-[340px] flex flex-col 
         shadow-lg md:h-full overflow-hidden"
           style={{
-            top: isNative ? "calc(56px + env(safe-area-inset-top))" : "56px",
+            top: "var(--mobile-navbar-height)",
           }}
         >
           {/* Header */}
