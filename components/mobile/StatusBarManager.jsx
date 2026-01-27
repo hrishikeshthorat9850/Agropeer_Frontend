@@ -13,19 +13,25 @@ export default function StatusBarManager() {
 
     const applyStatusStyle = async () => {
       try {
-        // Transparent background to let the app layout (safe-area) show through
         if (Capacitor.getPlatform() === "android") {
+          // Keep overlay true so content goes behind, but set color as requested
+          // Note: If color is opaque, it might obscure content depending on OS version
+          // User requested: Dark -> Black, Light -> White
           await StatusBar.setOverlaysWebView({ overlay: true });
-          await StatusBar.setBackgroundColor({ color: "#00000000" }); // Transparent
         }
 
-        // Set Style based on Theme
-        // Light Theme (White bg) -> Light Style (Dark icons)
-        // Dark Theme (Black bg) -> Dark Style (Light icons)
         if (theme === "dark") {
+          // Dark Theme: Black Background, Light Icons
           await StatusBar.setStyle({ style: Style.Dark });
+          if (Capacitor.getPlatform() === "android") {
+             await StatusBar.setBackgroundColor({ color: "#000000" });
+          }
         } else {
+          // Light Theme: White Background, Dark Icons
           await StatusBar.setStyle({ style: Style.Light });
+           if (Capacitor.getPlatform() === "android") {
+             await StatusBar.setBackgroundColor({ color: "#ffffff" });
+          }
         }
       } catch (err) {
         console.error("StatusBarManager error:", err);

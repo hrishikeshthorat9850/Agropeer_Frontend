@@ -21,6 +21,7 @@ import {
 } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
+import { Capacitor } from "@capacitor/core";
 
 export default function MobileSidebar() {
   const [open, setOpen] = useState(false);
@@ -80,6 +81,9 @@ export default function MobileSidebar() {
   }, [open]);
 
   useEffect(() => {
+    // Only run on native platform
+    if (!Capacitor.isNativePlatform()) return;
+
     if (open) {
       // Sidebar OPEN: Green Header -> Dark Background -> Light Icons (Style.Dark)
       StatusBar.setStyle({ style: Style.Dark });

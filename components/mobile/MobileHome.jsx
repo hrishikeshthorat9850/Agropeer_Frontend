@@ -21,6 +21,7 @@ import { FaIndianRupeeSign } from "react-icons/fa6";
 import { useWeather } from "@/Context/WeatherContext";
 import { openAppSettings } from "./utils/openAppSettings";
 import HomeBanner from "./HomeBanner";
+import { Haptics, ImpactStyle } from "@capacitor/haptics";
 
 export default function MobileHome() {
   const {
@@ -77,6 +78,15 @@ export default function MobileHome() {
       ? weather?.windspeed?.toFixed(1)
       : "--";
 
+  // Haptic Helper
+  const triggerHaptic = async () => {
+    try {
+      await Haptics.impact({ style: ImpactStyle.Light });
+    } catch (e) {
+      // Ignore on web
+    }
+  };
+
   return (
     <PullToRefresh onRefresh={handleRefresh}>
       <div className="md:hidden min-h-screen bg-neutral-50 dark:bg-black font-sans pb-6">
@@ -122,7 +132,10 @@ export default function MobileHome() {
                   )}
                   {status === LOCATION.DENIED && (
                     <button
-                      onClick={retry}
+                      onClick={() => {
+                        triggerHaptic();
+                        retry();
+                      }}
                       className="text-xs bg-red-500/90 hover:bg-red-500 px-3 py-1 rounded-full text-white font-medium transition-colors"
                     >
                       Enable Location
@@ -130,7 +143,10 @@ export default function MobileHome() {
                   )}
                   {status === LOCATION.GPS_OFF && (
                     <button
-                      onClick={openAppSettings}
+                      onClick={() => {
+                        triggerHaptic();
+                        openAppSettings();
+                      }}
                       className="text-xs bg-orange-500/90 hover:bg-orange-500 px-3 py-1 rounded-full text-white font-medium transition-colors"
                     >
                       Turn On GPS
@@ -162,6 +178,7 @@ export default function MobileHome() {
               <div className="mt-5 pt-4 border-t border-white/10 flex justify-center">
                 <Link
                   href="/weather"
+                  onClick={triggerHaptic}
                   className="
                   text-sm font-semibold text-white/90 hover:text-white
                   flex items-center gap-2 transition-colors
@@ -197,7 +214,7 @@ export default function MobileHome() {
         {/* ================================================================= */}
 
         <div className="px-4">
-          <FeatureGrid />
+          <FeatureGrid onHaptic={triggerHaptic} />
         </div>
 
         {/* ================================================================= */}
@@ -213,6 +230,7 @@ export default function MobileHome() {
               subtitle="Live updates"
               icon={<FaUserClock className="text-white text-lg" />}
               gradient="bg-gradient-to-br from-indigo-500 to-purple-600"
+              onHaptic={triggerHaptic}
             />
             <ActionCard
               href="/trending"
@@ -224,6 +242,7 @@ export default function MobileHome() {
                 </svg>
               }
               gradient="bg-gradient-to-br from-orange-500 to-pink-600"
+              onHaptic={triggerHaptic}
             />
           </div>
         </div>
@@ -248,9 +267,10 @@ const SectionHeader = ({ title, subtitle }) => (
   </div>
 );
 
-const ActionCard = ({ href, title, subtitle, icon, gradient }) => (
+const ActionCard = ({ href, title, subtitle, icon, gradient, onHaptic }) => (
   <Link
     href={href}
+    onClick={onHaptic}
     className={`
         group relative overflow-hidden rounded-[24px] p-4 h-32
         flex flex-col justify-between
@@ -279,7 +299,7 @@ const ActionCard = ({ href, title, subtitle, icon, gradient }) => (
 /*                        FEATURE CARDS GRID                         */
 /* ================================================================= */
 
-function FeatureGrid() {
+function FeatureGrid({ onHaptic }) {
   const cards = [
     {
       href: "/farmer-dashboard",
@@ -346,7 +366,7 @@ function FeatureGrid() {
   return (
     <div className="grid grid-cols-4 gap-4 sm:gap-6 mt-2">
       {cards.map((c, i) => (
-        <FeatureItem key={i} {...c} />
+        <FeatureItem key={i} {...c} onHaptic={onHaptic} />
       ))}
     </div>
   );
@@ -356,10 +376,11 @@ function FeatureGrid() {
 /*                           FEATURE ITEM                            */
 /* ================================================================= */
 
-const FeatureItem = ({ href, icon, bg, label }) => {
+const FeatureItem = ({ href, icon, bg, label, onHaptic }) => {
   return (
     <Link
       href={href}
+      onClick={onHaptic}
       className="
         flex flex-col items-center gap-2
         group cursor-pointer
