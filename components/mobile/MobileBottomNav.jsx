@@ -158,7 +158,7 @@ export default function MobileBottomNav({ onAI }) {
             >
               <FaHome
                 size={24}
-                className={pathname === "/" ? "" : "opacity-90"}
+                className={ `text-earth-500 ${pathname === "/" ? "" : "opacity-90"}`}
               />
             </div>
             <span

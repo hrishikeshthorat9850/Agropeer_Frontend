@@ -53,169 +53,147 @@ export default function CommentItem({
     <motion.div
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
-      className={`flex items-start gap-3 py-3 px-4 rounded-3xl hover:scale-[1.01] transition-all duration-300 group/comment shadow-lg ${menuOpen ? "z-[50] relative" : "relative"}`}
-      style={{
-        background:
-          typeof window !== "undefined" &&
-            document.documentElement.classList.contains("dark")
-            ? "transparent" // transparent in dark mode for cleaner look
-            : "linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.45) 100%)",
-        backdropFilter: "blur(20px)",
-        border:
-          typeof window !== "undefined" &&
-            document.documentElement.classList.contains("dark")
-            ? "none"
-            : "1px solid rgba(255,255,255,0.25)",
-        boxShadow: "none",
-      }}
+      className={`flex items-start gap-4 px-3 py-3 w-full group/comment ${
+        menuOpen ? "z-[50] relative" : "relative"
+      }`}
     >
-      {/* 🌿 Avatar Icon */}
+      {/* 🌿 Avatar */}
       <div
-        className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 shadow-md group-hover/comment:scale-110 transition-transform duration-300"
+        className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm overflow-hidden"
         style={{
-          background:
-            "linear-gradient(135deg, #10b981 0%, #0284c7 70%, #f97316 35%, #000000 100%)",
-          boxShadow:
-            "0 4px 10px rgba(16, 185, 129, 0.4), inset 0 1px 0 rgba(255,255,255,0.25)",
+          background: "linear-gradient(135deg, #10b981 0%, #0284c7 100%)",
         }}
       >
-        <FaLeaf className="w-3.5 h-3.5 text-white" />
+        {comment?.userinfo?.avatar_url ? (
+          <img
+            src={comment.userinfo.avatar_url}
+            alt="Avatar"
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <FaLeaf className="w-4 h-4 text-white" />
+        )}
       </div>
+
       <div className="flex-1 min-w-0">
-        {/* 🧾 Name + Time */}
-        <div className="flex items-center gap-2">
-          <span className="text-slate-800 text-[0.95rem] font-semibold tracking-tight dark:text-white">
-            {comment?.userinfo?.display_name
-              ? comment?.userinfo?.display_name
-              : formatName(comment?.userinfo)}
-          </span>
-          <div className="w-1 h-1 bg-slate-300 rounded-full"></div>
-          <span className="text-slate-400 text-[0.75rem] font-medium">
+        <div className="flex justify-between items-start gap-2">
+          {/* Text Content */}
+          <div className="text-sm leading-tight text-gray-900 dark:text-gray-100">
+            <span className="font-semibold mr-2 cursor-pointer hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+              {comment?.userinfo?.display_name
+                ? comment?.userinfo?.display_name
+                : formatName(comment?.userinfo)}
+            </span>
+            <span className="whitespace-pre-wrap break-words font-normal">
+              {comment.comment}
+            </span>
+          </div>
+
+          {/* Like Button (Far Right) */}
+          <button
+            onClick={() => onLike(comment?.id)}
+            className="mt-1 flex-shrink-0 focus:outline-none transform active:scale-75 transition-transform"
+          >
+            {isLiked ? (
+              <FaHeart className="w-3.5 h-3.5 text-red-500 animate-pulse" />
+            ) : (
+              <FaRegHeart className="w-3.5 h-3.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" />
+            )}
+          </button>
+        </div>
+
+        {/* Metadata Row: Time • Likes • Reply */}
+        <div
+          className="flex items-center gap-4 mt-1.5 select-none relative"
+          ref={menuRef}
+        >
+          <span className="text-xs text-gray-500 font-medium">
             {timeAgo(comment.created_at)}
           </span>
+
+          {comment?.comment_likes?.length > 0 && (
+            <span className="text-xs text-gray-500 font-semibold cursor-pointer">
+              {comment.comment_likes.length}{" "}
+              {comment.comment_likes.length === 1 ? "like" : "likes"}
+            </span>
+          )}
+
+          <button
+            onClick={() => onReply(comment.id)}
+            className="text-xs font-semibold text-gray-500 hover:text-gray-800 dark:hover:text-gray-300 transition-colors"
+          >
+            {t("reply_btn")}
+          </button>
+
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors opacity-0 group-hover/comment:opacity-100 p-0.5"
+          >
+            <FaEllipsisH className="w-3 h-3" />
+          </button>
+
+          {/* Dropdown Menu */}
+          {menuOpen && (
+            <div className="absolute left-0 top-6 w-32 bg-white dark:bg-[#1C1C1E] rounded-lg shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden z-[9999] animate-in fade-in zoom-in-95 duration-200">
+              <button
+                onClick={() => {
+                  setMenuOpen(false);
+                  if (onEdit) onEdit(comment.id);
+                }}
+                className="w-full flex items-center gap-2 px-3 py-2.5 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left"
+              >
+                <FaEdit className="w-3 h-3" />
+                {t("edit_btn") || "Edit"}
+              </button>
+              <button
+                onClick={() => {
+                  setMenuOpen(false);
+                  if (onDelete) onDelete(comment.id);
+                }}
+                className="w-full flex items-center gap-2 px-3 py-2.5 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left"
+              >
+                <FaTrash className="w-3 h-3" />
+                {t("delete_btn") || "Delete"}
+              </button>
+            </div>
+          )}
         </div>
 
-        {/* 💬 Comment Text */}
-        <p className="text-slate-700 dark:text-gray-200 text-[0.9rem] leading-relaxed font-normal">
-          {comment.comment}
-        </p>
-
-        {/* ❤️ Like + Reply */}
-        <div className="flex items-center justify-between text-xs text-farm-500 dark:text-gray-400 mt-2 select-none">
-          <div className="flex items-center gap-5">
-            {/* Like */}
-            <button
-              onClick={() => onLike(comment?.id)}
-              className={`flex items-center gap-1 transition-all duration-300 ease-out 
-              ${isLiked ? "text-red-500" : "text-farm-500 hover:text-red-500"}`}
-            >
-              {isLiked ? (
-                <FaHeart className="w-4 h-4 text-red-500 animate-pulse drop-shadow-sm" />
-              ) : (
-                <FaRegHeart className="w-4 h-4" />
-              )}
-              {comment?.comment_likes?.length > 0 && (
-                <span
-                  className={`text-[0.8rem] font-medium transition-all duration-200 ${isLiked ? "text-red-500" : "text-slate-500"
-                    }`}
-                >
-                  {comment.comment_likes.length}
-                </span>
-              )}
-            </button>
-
-            {/* Reply */}
-            <button
-              onClick={() => onReply(comment.id)}
-              className="flex items-center gap-1 text-[0.8rem] font-semibold text-farm-700 hover:text-farm-800 dark:text-gray-300 dark:hover:text-white transition-all duration-200 active:scale-95"
-            >
-              {t("reply_btn")}
-              {comment?.replies?.length > 0 && (
-                <span className="text-[0.75rem] text-slate-400 font-medium">
-                  ({comment.replies.length})
-                </span>
-              )}
-            </button>
-          </div>
-
-          {/* ⋯ Menu */}
-          <div className="relative" ref={menuRef}>
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="text-slate-400 hover:text-slate-700 transition-all duration-200 p-1 rounded-full hover:bg-slate-100 dark:hover:bg-white/10"
-            >
-              <FaEllipsisH className="w-3.5 h-3.5" />
-            </button>
-
-            {/* Dropdown Menu */}
-            {menuOpen && (
-              <div className="absolute right-0 top-8 w-36 bg-white dark:bg-[#1C1C1E] rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden z-[9999] animate-in fade-in zoom-in-95 duration-200">
-                <button
-                  onClick={() => {
-                    setMenuOpen(false);
-                    if (onEdit) onEdit(comment.id);
-                  }}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors text-left border-b border-gray-100 dark:border-white/5"
-                >
-                  <div className="p-1.5 rounded-full bg-blue-100 dark:bg-blue-900/30">
-                    <FaEdit className="w-3.5 h-3.5" />
-                  </div>
-                  {t("edit_btn") || "Edit"}
-                </button>
-                <button
-                  onClick={() => {
-                    setMenuOpen(false);
-                    if (onDelete) onDelete(comment.id);
-                  }}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-left"
-                >
-                  <div className="p-1.5 rounded-full bg-red-100 dark:bg-red-900/30">
-                    <FaTrash className="w-3.5 h-3.5" />
-                  </div>
-                  {t("delete_btn") || "Delete"}
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* ✏️ Reply Input (Premium Glass UI) */}
+        {/* ✏️ Reply Input (Pill Style) */}
         {showReplyBox === comment.id && (
           <div className="mt-3 flex items-center gap-2">
-            <div
-              className="flex-1 flex items-center px-3 py-1.5 rounded-full border border-white/30 bg-white/30 
-              backdrop-blur-xl shadow-inner transition focus-within:ring-2 focus-within:ring-farm-400"
-            >
+            <div className="flex-1 relative">
               <input
                 type="text"
-                placeholder={t("write_reply_placeholder")}
                 value={replyText}
                 onChange={onReplyTextChange}
                 onKeyPress={(e) => e.key === "Enter" && onSendReply()}
-                className="flex-1 bg-transparent text-sm text-gray-700 placeholder:text-slate-400 
-                focus:outline-none"
+                placeholder={t("write_reply_placeholder")}
+                autoFocus
+                className="w-full px-4 py-2 bg-gray-100 border border-transparent rounded-full text-sm focus:border-gray-300 focus:bg-white focus:outline-none pr-12 dark:bg-[#272727] dark:border-gray-700 dark:text-white transition-all"
               />
-            </div>
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              whileHover={{ scale: 1.1 }}
-              onClick={onSendReply}
-              className="p-2 rounded-full bg-gradient-to-r from-farm-500 to-farm-600 
-              hover:from-farm-600 hover:to-farm-700 text-white shadow-md transition-all duration-300"
-            >
-              <motion.div
-                animate={{ rotate: [0, 15, 0] }}
-                transition={{ repeat: Infinity, duration: 2 }}
+              <button
+                onClick={onSendReply}
+                disabled={!replyText.trim()}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-blue-500 font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:text-blue-600"
               >
-                <FaPaperPlane className="w-3.5 h-3.5" />
-              </motion.div>
-            </motion.button>
+                {t("post_btn") || "Post"}
+              </button>
+            </div>
           </div>
         )}
 
-        {/* 🪴 Replies */}
+        {/* 🪴 Nested Replies */}
         {replies?.length > 0 && (
-          <div className="ml-6 mt-3 space-y-2">
+          <div className="ml-2 mt-2 space-y-3">
+            <button className="flex items-center gap-2 py-2">
+              <div className="w-8 h-[1px] bg-gray-300 dark:bg-gray-700"></div>
+              <span className="text-xs font-semibold text-gray-500 dark:text-gray-400">
+                View {replies.length}{" "}
+                {replies.length === 1 ? "reply" : "replies"}
+              </span>
+            </button>
+
             {replies.map((reply) => (
               <ReplyItem
                 key={reply.id}
