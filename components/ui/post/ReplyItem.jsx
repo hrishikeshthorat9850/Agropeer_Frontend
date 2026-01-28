@@ -35,9 +35,11 @@ export default function ReplyItem({
     .sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
 
   // Determine if this reply is liked by the current user
-  const isLiked =
-    replyLikes[reply.id]?.some((like) => like.user_id === currentUserId) ||
-    false;
+  // const isLiked =
+  //   replyLikes[reply.id]?.some((like) => like.user_id === currentUserId) ||
+  //   false;
+
+  const isLiked = replyLikes[reply.id] === true;
 
   const likeCount = replyLikes[reply.id]?.length || 0;
 
@@ -59,8 +61,8 @@ export default function ReplyItem({
           }}
         >
           <span className="text-[10px] text-white font-bold">
-            {reply.userinfo?.display_name
-              ? reply.userinfo.display_name.charAt(0)
+            {reply?.userinfo?.display_name
+              ? reply.userinfo?.display_name.charAt(0)
               : formatName(reply.userinfo).charAt(0)}
           </span>
         </div>
@@ -70,7 +72,7 @@ export default function ReplyItem({
           <div className="bg-farm-50/80 rounded-2xl px-3 py-2 inline-block max-w-full hover:bg-farm-100/80 transition-colors border border-farm-100 dark:bg-[#1a1a1a] dark:border-gray-700">
             <div className="flex items-baseline gap-2 mb-0.5">
               <span className="text-farm-900 text-xs font-bold tracking-tight dark:text-gray-200">
-                {reply.userinfo?.display_name || formatName(reply.userinfo)}
+                {reply?.userinfo?.display_name || formatName(reply?.userinfo)}
               </span>
               <span className="text-farm-400 text-[10px] font-medium">
                 {timeAgo(reply.created_at)}

@@ -179,8 +179,20 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
           created_at,
           user_id,
           post_id,
-          userinfo(id, firstName, lastName, display_name, profile_url, avatar_url),
-          comment_likes(id, user_id, comment_id)
+          parent_comment_id,
+          userinfo (
+            id, 
+            firstName, 
+            lastName, 
+            display_name, 
+            profile_url, 
+            avatar_url
+          ),
+          comment_likes (
+            id, 
+            user_id, 
+            comment_id
+          )
         `,
         )
         .eq("post_id", post?.id)
