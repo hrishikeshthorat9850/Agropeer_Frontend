@@ -20,6 +20,9 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { formatName } from "@/utils/formatName";
 import { useLanguage } from "@/Context/languagecontext";
+import { StatusBar, Style } from "@capacitor/status-bar";
+import { Capacitor } from "@capacitor/core";
+import { useTheme } from "@/Context/themecontext";
 
 export default function UserSidebar({ onClose } = {}) {
   const router = useRouter();
@@ -28,10 +31,13 @@ export default function UserSidebar({ onClose } = {}) {
   const [infoLoading, setInfoLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
 
-  useEffect(()=>{
-    console.log("User is :",user);
-    console.log("Userinfo is :",userinfo);
-    console.log("Google Avatar Url is :",user?.identities[0]?.identity_data?.avatar_url);
+  useEffect(() => {
+    console.log("User is :", user);
+    console.log("Userinfo is :", userinfo);
+    console.log(
+      "Google Avatar Url is :",
+      user?.identities[0]?.identity_data?.avatar_url,
+    );
   });
 
   useEffect(() => {
@@ -79,6 +85,39 @@ export default function UserSidebar({ onClose } = {}) {
     };
   }, []); // Empty dependency array means this runs once on mount and once on unmount
 
+  const { theme } = useTheme();
+
+  useEffect(() => {
+    // Only run on native platform
+    if (!Capacitor.isNativePlatform()) return;
+
+    const updateStatusBar = async () => {
+      // Sidebar always has a dark/green header at the top, so we want Light content (white text)
+      // and transparent background so the gradient shows through.
+      await StatusBar.setStyle({ style: Style.Dark });
+      if (Capacitor.getPlatform() === "android") {
+        await StatusBar.setBackgroundColor({ color: "#00000000" }); // Transparent
+      }
+
+      return async () => {
+        // Cleanup: Reset to theme defaults when unmounting
+        if (theme === "dark") {
+          await StatusBar.setStyle({ style: Style.Dark });
+          if (Capacitor.getPlatform() === "android") {
+            await StatusBar.setBackgroundColor({ color: "#000000" });
+          }
+        } else {
+          await StatusBar.setStyle({ style: Style.Light });
+          if (Capacitor.getPlatform() === "android") {
+            await StatusBar.setBackgroundColor({ color: "#ffffff" });
+          }
+        }
+      };
+    };
+
+    updateStatusBar();
+  }, [theme]);
+
   const handleLogout = async () => {
     try {
       if (supabase?.auth?.signOut) {
@@ -97,7 +136,12 @@ export default function UserSidebar({ onClose } = {}) {
     formatName(userinfo) ||
     userinfo?.display_name;
 
-  const avatarUrl = user?.identities[0]?.identity_data?.picture || user?.identities[0]?.identity_data?.avatar_url || user?.user_metadata?.avatar_url || user?.user_metadata?.picture || "";
+  const avatarUrl =
+    user?.identities[0]?.identity_data?.picture ||
+    user?.identities[0]?.identity_data?.avatar_url ||
+    user?.user_metadata?.avatar_url ||
+    user?.user_metadata?.picture ||
+    "";
 
   if (!mounted) return null;
 
@@ -122,13 +166,13 @@ export default function UserSidebar({ onClose } = {}) {
           className="absolute top-0 right-0 h-full w-[280px] sm:w-[320px] bg-white dark:bg-[#1C1C1E] shadow-2xl flex flex-col pointer-events-auto"
         >
           {/* Header Section */}
-          <div className="relative h-[180px] bg-gradient-to-br from-green-600 to-emerald-800 p-6 flex flex-col justify-end text-white">
-            <button
+          <div className="relative h-[180px] bg-gradient-to-br from-green-600 to-emerald-800 p-6 pt-safe-top flex flex-col justify-end text-white">
+            {/* <button
               onClick={onClose}
               className="absolute top-4 right-4 p-2 text-white/80 hover:text-white transition-colors"
             >
               <X size={24} />
-            </button>
+            </button> */}
 
             {user?.id ? (
               <div className="flex items-center gap-4">
@@ -251,7 +295,7 @@ export default function UserSidebar({ onClose } = {}) {
         </motion.aside>
       </div>
     </AnimatePresence>,
-    document.body
+    document.body,
   );
 }
 

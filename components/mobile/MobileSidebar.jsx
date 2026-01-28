@@ -84,17 +84,30 @@ export default function MobileSidebar() {
     // Only run on native platform
     if (!Capacitor.isNativePlatform()) return;
 
-    if (open) {
-      // Sidebar OPEN: Green Header -> Dark Background -> Light Icons (Style.Dark)
-      StatusBar.setStyle({ style: Style.Dark });
-    } else {
-      // Sidebar CLOSED: Revert to theme
-      if (theme === "dark") {
-        StatusBar.setStyle({ style: Style.Dark });
+    const updateStatusBar = async () => {
+      if (open) {
+        // Sidebar OPEN: Transparent background to show gradient, Light text
+        await StatusBar.setStyle({ style: Style.Dark });
+        if (Capacitor.getPlatform() === "android") {
+          await StatusBar.setBackgroundColor({ color: "#00000000" }); // Transparent
+        }
       } else {
-        StatusBar.setStyle({ style: Style.Light });
+        // Sidebar CLOSED: Revert to theme
+        if (theme === "dark") {
+          await StatusBar.setStyle({ style: Style.Dark });
+          if (Capacitor.getPlatform() === "android") {
+            await StatusBar.setBackgroundColor({ color: "#000000" });
+          }
+        } else {
+          await StatusBar.setStyle({ style: Style.Light });
+          if (Capacitor.getPlatform() === "android") {
+            await StatusBar.setBackgroundColor({ color: "#ffffff" });
+          }
+        }
       }
-    }
+    };
+
+    updateStatusBar();
   }, [open, theme]);
 
   const MENU_ITEMS = [
@@ -125,8 +138,8 @@ export default function MobileSidebar() {
 
           {/* LEFT SIDEBAR - MATCHING USER PROFILE SIDEBAR */}
           <motion.div
-            className="fixed left-0 w-[85%] max-w-[320px] 
-              bg-white dark:bg-[#1C1C1E] z-[9999] rounded-tr-[30px] rounded-br-[30px]
+            className="fixed top-0 left-0 h-full w-[85%] max-w-[320px] 
+              bg-white dark:bg-[#1C1C1E] z-[9999]
               shadow-2xl flex flex-col overflow-hidden sidebar-panel-position
             "
             initial={{ x: "-100%" }}
@@ -135,7 +148,7 @@ export default function MobileSidebar() {
             transition={{ type: "tween", duration: 0.2, ease: "easeOut" }}
           >
             {/* HEADER - GREEN GRADIENT */}
-            <div className="relative px-8 pt-12 pb-8 flex justify-between items-center z-10 bg-gradient-to-br from-green-600 to-emerald-800 text-white">
+            <div className="relative px-8 h-[180px] pt-safe-top pb-8 flex justify-between items-end z-10 bg-gradient-to-br from-green-600 to-emerald-800 text-white">
               <div>
                 <h2 className="text-2xl font-bold text-white">AgroPeer</h2>
                 <p className="text-xs text-green-100/80 tracking-wider uppercase mt-1">

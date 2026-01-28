@@ -11,34 +11,38 @@ export default function StatusBarManager() {
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
 
-    const applyStatusStyle = async () => {
+    const setStatusBarStyle = async () => {
       try {
         if (Capacitor.getPlatform() === "android") {
-          // Keep overlay true so content goes behind, but set color as requested
-          // Note: If color is opaque, it might obscure content depending on OS version
-          // User requested: Dark -> Black, Light -> White
+          // Ensure overlay is set correctly first
           await StatusBar.setOverlaysWebView({ overlay: true });
         }
 
         if (theme === "dark") {
-          // Dark Theme: Black Background, Light Icons
           await StatusBar.setStyle({ style: Style.Dark });
           if (Capacitor.getPlatform() === "android") {
-             await StatusBar.setBackgroundColor({ color: "#000000" });
+            await StatusBar.setBackgroundColor({ color: "#000000" });
           }
         } else {
-          // Light Theme: White Background, Dark Icons
           await StatusBar.setStyle({ style: Style.Light });
-           if (Capacitor.getPlatform() === "android") {
-             await StatusBar.setBackgroundColor({ color: "#ffffff" });
+          if (Capacitor.getPlatform() === "android") {
+            // Explicitly set white for light mode
+            await StatusBar.setBackgroundColor({ color: "#ffffff" });
           }
         }
-      } catch (err) {
-        console.error("StatusBarManager error:", err);
+      } catch (error) {
+        console.error("Error setting status bar style:", error);
       }
     };
 
-    applyStatusStyle();
+    // Run immediately
+    setStatusBarStyle();
+
+    // Also set up a listener for app state changes if needed, but usually theme change is enough.
+    // We add a small delay to ensure native webview is ready if this is mounting on app launch
+    const timeoutId = setTimeout(setStatusBarStyle, 500);
+
+    return () => clearTimeout(timeoutId);
   }, [theme]);
 
   return null;

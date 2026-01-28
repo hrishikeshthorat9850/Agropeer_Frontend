@@ -199,7 +199,7 @@ export default function MobileNavbar() {
     window.dispatchEvent(new CustomEvent("open-mobile-sidebar"));
 
   return (
-    <div className="fixed top-0 left-0 right-0 pt-safe-top w-full z-50 bg-white dark:bg-black backdrop-blur-md shadow-sm transition-all border-b border-zinc-100 dark:border-zinc-800">
+    <div className="fixed top-0 left-0 right-0 pt-safe-top w-full z-[999] bg-white dark:bg-black backdrop-blur-md shadow-sm transition-all border-b border-zinc-100 dark:border-zinc-800">
       <div className="flex items-center justify-between py-1.5 px-3 h-[56px] flex-shrink-0 gap-3">
         {/* MENU / SIDEBAR BUTTON */}
         <button
@@ -229,7 +229,7 @@ export default function MobileNavbar() {
           >
             <FaBell className="text-[24px] text-zinc-800 dark:text-zinc-100" />
             {notificationsUnreadCount > 0 && (
-              <div className="absolute top-0 right-0">
+              <div className="absolute top-1 right-0">
                 <NotificationBadge unreadCount={notificationsUnreadCount} />
               </div>
             )}
@@ -244,7 +244,7 @@ export default function MobileNavbar() {
             >
               <FaComments className="text-[24px] text-zinc-800 dark:text-zinc-100" />
               {unreadChats > 0 && (
-                <div className="absolute top-0 right-0">
+                <div className="absolute top-1 right-0">
                   <NotificationBadge unreadCount={unreadChats} />
                 </div>
               )}
