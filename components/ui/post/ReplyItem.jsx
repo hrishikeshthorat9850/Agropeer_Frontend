@@ -18,7 +18,7 @@ export default function ReplyItem({
   currentUserId,
   replyLikes = {},
   onLike, // handle reply like
-  onReplyClick, // opens nested reply box
+  onReply, // opens nested reply box
   onMenuClick, // opens reply menu
   showReplyBox, // ID of the reply currently being replied to
   replyText,
@@ -26,20 +26,17 @@ export default function ReplyItem({
   onSendReply, // function to send nested reply
   parentId, // ID of the parent comment
   level = 0, // nesting level
-  allReplies = [], // flattened array of all replies for lookup
+  nestedReplies = [], // nested replies for this reply
+  nestedRepliesMap = {}, // map of all nested replies
 }) {
   const { t } = useLanguage();
-  // Find nested replies (replies where parent_id matches this reply's id)
-  const nestedReplies = allReplies
-    .filter((r) => r.parent_id === reply.id)
-    .sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
 
   // Determine if this reply is liked by the current user
   // const isLiked =
   //   replyLikes[reply.id]?.some((like) => like.user_id === currentUserId) ||
   //   false;
 
-  const isLiked = replyLikes[reply.id] === true;
+  const isLiked = replyLikes[reply?.id] === true;
 
   const likeCount = replyLikes[reply.id]?.length || 0;
 
@@ -100,7 +97,7 @@ export default function ReplyItem({
 
             {level < 2 && (
               <button
-                onClick={() => onReplyClick(reply.id)}
+                onClick={() => onReply(reply.id)}
                 className="text-[10px] font-semibold text-farm-500 hover:text-farm-700 transition-colors dark:text-gray-400 dark:hover:text-gray-200"
               >
                 {t("reply_btn")}
@@ -130,14 +127,14 @@ export default function ReplyItem({
                     value={replyText}
                     onChange={onReplyTextChange}
                     onKeyPress={(e) =>
-                      e.key === "Enter" && onSendReply(reply.id)
+                      e.key === "Enter" && onSendReply(reply?.id)
                     }
                     placeholder={t("write_reply_placeholder")}
                     autoFocus
                     className="w-full px-3 py-1.5 bg-white border-2 border-farm-200 rounded-full text-xs focus:border-farm-400 focus:outline-none pr-8 dark:bg-[#272727] dark:border-gray-600 dark:text-white"
                   />
                   <button
-                    onClick={() => onSendReply(reply.id)}
+                    onClick={() => onSendReply(reply?.id)}
                     className="absolute right-1 top-1/2 -translate-y-1/2 p-1 bg-farm-500 text-white rounded-full hover:bg-farm-600 transition-colors"
                   >
                     <FaPaperPlane className="w-2.5 h-2.5" />
@@ -157,7 +154,7 @@ export default function ReplyItem({
                   currentUserId={currentUserId}
                   replyLikes={replyLikes}
                   onLike={onLike}
-                  onReplyClick={onReplyClick}
+                  onReply={onReply}
                   onMenuClick={onMenuClick}
                   showReplyBox={showReplyBox}
                   replyText={replyText}
@@ -165,7 +162,8 @@ export default function ReplyItem({
                   onSendReply={onSendReply}
                   parentId={reply.id}
                   level={level + 1}
-                  allReplies={allReplies}
+                  nestedReplies={nestedRepliesMap[nestedReply.id] || []}
+                  nestedRepliesMap={nestedRepliesMap}
                 />
               ))}
             </div>
