@@ -25,7 +25,12 @@ import ScheduleTab from "./farmer-dashboard/ScheduleTab";
 
 const FarmerDashboard = () => {
   const { t } = useLanguage();
-  const { weather, loading: weatherLoading, getWeather, error: weatherError } = useWeather();
+  const {
+    weather,
+    loading: weatherLoading,
+    getWeather,
+    error: weatherError,
+  } = useWeather();
   const { position } = useGeolocation();
   const { user, loading: authLoading, accessToken, session } = useLogin();
   const [activeTab, setActiveTab] = useState("crops");
@@ -60,7 +65,6 @@ const FarmerDashboard = () => {
     }
   }, [position, weather, weatherLoading, getWeather]);
 
-
   // Insights fetch
   useEffect(() => {
     if (authLoading) return;
@@ -78,13 +82,16 @@ const FarmerDashboard = () => {
       setInsightsLoading(true);
       setInsightsError(null);
       try {
-        const response = await fetch(`${BASE_URL}/api/smart-farm/insights?farmerId=${user.id}`, {
-          signal: controller.signal,
-          cache: "no-store",
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        });
+        const response = await fetch(
+          `${BASE_URL}/api/smart-farm/insights?farmerId=${user.id}`,
+          {
+            signal: controller.signal,
+            cache: "no-store",
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
+        );
 
         if (!response.ok) {
           const payload = await response.json().catch(() => ({}));
@@ -115,7 +122,7 @@ const FarmerDashboard = () => {
       ([entry]) => {
         setShowBottomNav(!entry.isIntersecting);
       },
-      { threshold: 0 }
+      { threshold: 0 },
     );
 
     observer.observe(oldNavRef.current);
@@ -139,31 +146,67 @@ const FarmerDashboard = () => {
   const renderTabContent = () => {
     switch (activeTab) {
       case "crops":
-        return <CropProfileManager onSelectCrop={handleCropSelect} selectedCrop={selectedCrop} />;
+        return (
+          <CropProfileManager
+            onSelectCrop={handleCropSelect}
+            selectedCrop={selectedCrop}
+          />
+        );
 
       case "weather":
-        return <PersonalizedWeatherGuide selectedCrop={selectedCrop} weatherData={weather} />;
+        return (
+          <PersonalizedWeatherGuide
+            selectedCrop={selectedCrop}
+            weatherData={weather}
+          />
+        );
 
       case "irrigation":
-        return <IrrigationTab selectedCrop={selectedCrop} data={insightsData?.irrigation} loading={insightsLoading} error={insightsError} />;
+        return (
+          <IrrigationTab
+            selectedCrop={selectedCrop}
+            data={insightsData?.irrigation}
+            loading={insightsLoading}
+            error={insightsError}
+          />
+        );
 
       case "pests":
-        return <PestControlTab data={insightsData?.pests} loading={insightsLoading} error={insightsError} />;
+        return (
+          <PestControlTab
+            data={insightsData?.pests}
+            loading={insightsLoading}
+            error={insightsError}
+          />
+        );
 
       case "schedule":
-        return <ScheduleTab data={insightsData?.schedule} loading={insightsLoading} error={insightsError} />;
+        return (
+          <ScheduleTab
+            data={insightsData?.schedule}
+            loading={insightsLoading}
+            error={insightsError}
+          />
+        );
 
       case "analytics":
-        return <AnalyticsTab data={insightsData?.analytics} loading={insightsLoading} error={insightsError} />;
+        return (
+          <AnalyticsTab
+            data={insightsData?.analytics}
+            loading={insightsLoading}
+            error={insightsError}
+          />
+        );
 
       default:
         return null;
     }
   };
 
-
   const cleanTemp =
-    typeof weather?.temperature === "number" ? weather.temperature.toFixed(1) : "--";
+    typeof weather?.temperature === "number"
+      ? weather.temperature.toFixed(1)
+      : "--";
 
   const rainChance =
     typeof weather?.forecast?.[0]?.rainChance === "number"
@@ -173,9 +216,8 @@ const FarmerDashboard = () => {
   // UI Render
   return (
     <div className="bg-gray-50 dark:bg-black font-sans">
-
       {/* 📱 STICKY APP BAR (Header + Quick Stats) */}
-      <header className="sticky top-0 z-40 bg-white/95 dark:bg-[#121212]/95 backdrop-blur-md border-b border-gray-100 dark:border-white/5 shadow-sm">
+      <header className="relative z-40 bg-white/95 dark:bg-[#121212]/95 backdrop-blur-md border-b border-gray-100 dark:border-white/5 shadow-sm">
         <div className="max-w-lg mx-auto px-4 py-3">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2.5">
@@ -198,22 +240,34 @@ const FarmerDashboard = () => {
           {/* Quick Stats Row - Minimalist */}
           <div className="flex items-center justify-between bg-gray-50 dark:bg-[#1e1e1e] rounded-xl p-2.5 border border-gray-100 dark:border-[#333]">
             <div className="text-center px-2 border-r border-gray-200 dark:border-gray-700 w-1/3">
-              <span className="block text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5">{t("active_crops")}</span>
-              <span className="text-base font-black text-gray-900 dark:text-white">{insightsData?.meta?.totalCrops ?? "--"}</span>
+              <span className="block text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5">
+                {t("active_crops")}
+              </span>
+              <span className="text-base font-black text-gray-900 dark:text-white">
+                {insightsData?.meta?.totalCrops ?? "--"}
+              </span>
             </div>
             <div className="text-center px-2 border-r border-gray-200 dark:border-gray-700 w-1/3">
-              <span className="block text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5">{t("current_temp")}</span>
-              <span className="text-base font-black text-gray-900 dark:text-white">{cleanTemp}°C</span>
+              <span className="block text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5">
+                {t("current_temp")}
+              </span>
+              <span className="text-base font-black text-gray-900 dark:text-white">
+                {cleanTemp}°C
+              </span>
             </div>
             <div className="text-center px-2 w-1/3">
-              <span className="block text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5">{t("rain_chance")}</span>
-              <span className="text-base font-black text-sky-500 dark:text-sky-400">{rainChance}%</span>
+              <span className="block text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5">
+                {t("rain_chance")}
+              </span>
+              <span className="text-base font-black text-sky-500 dark:text-sky-400">
+                {rainChance}%
+              </span>
             </div>
           </div>
         </div>
 
         {/* 📱 HORIZONTAL SCROLLABLE TABS (YouTube/Instagram Style) */}
-        <div className="border-t border-gray-100 dark:border-[#333]">
+        <div className="sticky top-[60px] z-30 bg-white dark:bg-[#121212] border-t border-gray-100 dark:border-[#333]">
           <div className="max-w-lg mx-auto flex items-center gap-1 overflow-x-auto no-scrollbar px-4 py-2">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id;
@@ -221,12 +275,19 @@ const FarmerDashboard = () => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all whitespace-nowrap border ${isActive
-                    ? "bg-gray-900 dark:bg-white text-white dark:text-black border-transparent shadow-sm"
-                    : "bg-gray-100 dark:bg-[#1e1e1e] text-gray-600 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-[#333]"
-                    }`}
+                  className={`flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all whitespace-nowrap border ${
+                    isActive
+                      ? "bg-gray-900 dark:bg-white text-white dark:text-black border-transparent shadow-sm"
+                      : "bg-gray-100 dark:bg-[#1e1e1e] text-gray-600 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-[#333]"
+                  }`}
                 >
-                  <tab.icon className={isActive ? "text-white dark:text-black" : "text-gray-500 dark:text-gray-500"} />
+                  <tab.icon
+                    className={
+                      isActive
+                        ? "text-white dark:text-black"
+                        : "text-gray-500 dark:text-gray-500"
+                    }
+                  />
                   {tab.name}
                 </button>
               );
@@ -241,7 +302,9 @@ const FarmerDashboard = () => {
         {selectedCrop && (
           <div className="mb-6 p-4 bg-emerald-50 dark:bg-emerald-900/10 rounded-2xl border border-emerald-100 dark:border-emerald-800/20 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <span className="text-2xl">{selectedCrop?.crop_info?.icon || "🌱"}</span>
+              <span className="text-2xl">
+                {selectedCrop?.crop_info?.icon || "🌱"}
+              </span>
               <div>
                 <h3 className="text-sm font-bold text-emerald-900 dark:text-emerald-100 leading-tight">
                   {selectedCrop?.crop_info?.name}

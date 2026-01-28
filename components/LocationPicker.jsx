@@ -433,7 +433,7 @@ export default function LocationPicker({ value, onChange, errors }) {
       </div>
 
       {/* Map Picker Toggle */}
-      <div className="flex items-center gap-3">
+      {/* <div className="flex items-center gap-3">
         <button
           type="button"
           onClick={() => setShowMap(!showMap)}
@@ -452,7 +452,7 @@ export default function LocationPicker({ value, onChange, errors }) {
             {t("use_my_location")}
           </button>
         )}
-      </div>
+      </div> */}
 
       {/* Map Container */}
       {showMap && (

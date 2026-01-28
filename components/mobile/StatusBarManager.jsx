@@ -6,7 +6,7 @@ import { Capacitor } from "@capacitor/core";
 import { useTheme } from "@/Context/themecontext";
 
 export default function StatusBarManager() {
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
 
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
@@ -14,36 +14,43 @@ export default function StatusBarManager() {
     const setStatusBarStyle = async () => {
       try {
         if (Capacitor.getPlatform() === "android") {
-          // Ensure overlay is set correctly first
+          // We use overlay: true globally for smooth sidebar transitions (green gradient).
+          // Main layout must handle pt-safe-top.
           await StatusBar.setOverlaysWebView({ overlay: true });
         }
 
-        if (theme === "dark") {
-          await StatusBar.setStyle({ style: Style.Dark });
-          if (Capacitor.getPlatform() === "android") {
-            await StatusBar.setBackgroundColor({ color: "#000000" });
+        // Delay slightly to ensure theme is resolved and native bridge is ready
+        setTimeout(async () => {
+          if (resolvedTheme === "dark") {
+            // Dark Mode: Black Background, White Icons
+            await StatusBar.setStyle({ style: Style.Dark });
+            if (Capacitor.getPlatform() === "android") {
+              await StatusBar.setBackgroundColor({ color: "#000000" });
+            }
+          } else {
+            // Light Mode: White Background, Dark Icons
+            await StatusBar.setStyle({ style: Style.Light });
+            if (Capacitor.getPlatform() === "android") {
+              await StatusBar.setBackgroundColor({ color: "#ffffff" });
+            }
           }
-        } else {
-          await StatusBar.setStyle({ style: Style.Light });
-          if (Capacitor.getPlatform() === "android") {
-            // Explicitly set white for light mode
-            await StatusBar.setBackgroundColor({ color: "#ffffff" });
-          }
-        }
+        }, 100);
       } catch (error) {
         console.error("Error setting status bar style:", error);
       }
     };
 
-    // Run immediately
     setStatusBarStyle();
 
-    // Also set up a listener for app state changes if needed, but usually theme change is enough.
-    // We add a small delay to ensure native webview is ready if this is mounting on app launch
-    const timeoutId = setTimeout(setStatusBarStyle, 500);
+    // Safety check sequence
+    const t1 = setTimeout(setStatusBarStyle, 500);
+    const t2 = setTimeout(setStatusBarStyle, 2000); // Final check
 
-    return () => clearTimeout(timeoutId);
-  }, [theme]);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, [resolvedTheme]);
 
   return null;
 }

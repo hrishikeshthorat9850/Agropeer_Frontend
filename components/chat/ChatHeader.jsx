@@ -30,9 +30,8 @@ export default function ChatHeader({ selected }) {
 
   if (!selected) {
     return (
-      <div
-        className="flex items-center px-4 py-3 border-b dark:border-neutral-800 
-        bg-white/90 dark:bg-neutral-900/90 backdrop-blur-sm sticky top-0"
+      <div className="flex items-center px-4 py-3 pt-safe-top border-b dark:border-neutral-800 
+        bg-white/90 dark:bg-neutral-900/90 backdrop-blur-sm sticky top-0 z-50"
       >
         <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-neutral-800 animate-pulse" />
 
@@ -45,9 +44,8 @@ export default function ChatHeader({ selected }) {
   }
 
   return (
-    <div
-      className="flex justify-between items-center px-4 py-3 border-b dark:border-neutral-800 
-      bg-white/90 dark:bg-neutral-900/90 backdrop-blur-sm sticky top-0"
+    <div className="flex justify-between items-center px-4 py-3 pt-safe-top border-b dark:border-neutral-800 
+      bg-white/90 dark:bg-neutral-900/90 backdrop-blur-sm sticky top-0 z-50"
     >
       <div className="flex items-center gap-3">
         {!showContacts && (

@@ -37,11 +37,58 @@ export default function ChatModal({
   const [conversationId, setConversationId] = useState(null);
   const [otherUserInfo, setOtherUserInfo] = useState(null);
   const [isTyping, setIsTyping] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [infoLoading, setInfoLoading] = useState(true);
   const messagesEndRef = useRef(null);
   const typingTimeoutRef = useRef(null);
   const conversationIdRef = useRef(null);
   const messageFallbackTimeoutRef = useRef(null);
   const { t } = useLanguage();
+
+  useEffect(() => {
+    setMounted(true);
+    if (!loading) setInfoLoading(false);
+    return () => setMounted(false);
+  }, [loading]);
+
+  useEffect(() => {
+    if (isOpen) {
+      // Lock scroll
+      const scrollY = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
+      document.body.style.width = "100%";
+      document.body.style.overflow = "hidden";
+      document.body.dataset.lockScrollY = scrollY;
+    } else {
+      // Unlock scroll
+      const scrollY = document.body.dataset.lockScrollY || 0;
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+      window.scrollTo(0, parseInt(scrollY));
+      delete document.body.dataset.lockScrollY;
+    }
+
+    // Cleanup (when component unmounts or isOpen changes)
+    return () => {
+      // Unlock scroll
+      const scrollY = document.body.dataset.lockScrollY || "0";
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+      window.scrollTo(0, parseInt(scrollY));
+      delete document.body.dataset.lockScrollY;
+    };
+  }, [isOpen]);
 
   const fetchMessages = async (convId) => {
     if (!convId || !user?.id) return;
@@ -60,7 +107,7 @@ export default function ChatModal({
           created_at,
           read_at,
           sender:userinfo(id, firstName, lastName, display_name, profile_url, avatar_url)
-        `
+        `,
         )
         .eq("conversation_id", convId)
         .order("created_at", { ascending: true });
@@ -192,7 +239,7 @@ export default function ChatModal({
                 m.id &&
                 m.id.startsWith("temp-") &&
                 m.from === "me" &&
-                m.text === msg.content
+                m.text === msg.content,
             );
 
             if (tempIndex !== -1) {
@@ -339,7 +386,7 @@ export default function ChatModal({
       setMessages((prev) => {
         if (!Array.isArray(prev)) return prev;
         const tempMsgExists = prev.some(
-          (m) => m && m.id === optimisticMsg.id && m.id.startsWith("temp-")
+          (m) => m && m.id === optimisticMsg.id && m.id.startsWith("temp-"),
         );
         if (tempMsgExists) {
           fetchMessages(conversationId);
@@ -444,7 +491,7 @@ export default function ChatModal({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         // 💡 New background: no blur, just a clean gradient
-        className="fixed left-0 right-0 top-[56px] bottom-[70px] flex items-center justify-end z-50 p-2 sm:p-4"
+        className="fixed left-0 right-0 top-[66px] bottom-[76px] flex items-center justify-end z-50 p-2 sm:p-4"
         onClick={onClose}
       >
         <motion.div

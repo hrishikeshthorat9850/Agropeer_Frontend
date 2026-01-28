@@ -10,7 +10,7 @@ import { useSocket } from "@/Context/SocketContext";
 
 export default function ChatArea({ messages = [], selected, sendMessage }) {
   const { user } = useLogin();
-  const {socket} = useSocket();
+  const { socket } = useSocket();
   const isNative = Capacitor.isNativePlatform();
 
   const hasRealMessages = Array.isArray(messages) && messages.length > 0;
@@ -69,13 +69,7 @@ export default function ChatArea({ messages = [], selected, sendMessage }) {
   }, [selected?.conversation_id]);
 
   return (
-    <main
-      className="fixed left-0 right-0 bg-white dark:bg-black z-0"
-      style={{
-        top: isNative ? "env(safe-area-inset-top)" : "0px",
-        bottom: isNative ? "env(safe-area-inset-bottom)" : "0px",
-      }}
-    >
+    <main className="fixed inset-0 bg-white dark:bg-black z-40">
       <div className="flex flex-col w-full h-full overflow-hidden">
         <ChatHeader selected={selected} />
 
@@ -110,5 +104,3 @@ export default function ChatArea({ messages = [], selected, sendMessage }) {
     </main>
   );
 }
-
-

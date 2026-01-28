@@ -51,6 +51,8 @@ export const metadata = {
 export const viewport = {
   width: "device-width",
   initialScale: 1,
+  maximumScale: 1,
+  userScalable: false, // 🚫 Disable zoom for native feel
   viewportFit: "cover", // 🔥 important for Capacitor safe-area
 };
 
@@ -62,8 +64,12 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased no-scrollbar`}>
-        <ClientLayout><AppShell>{children}</AppShell></ClientLayout>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased no-scrollbar`}
+      >
+        <ClientLayout>
+          <AppShell>{children}</AppShell>
+        </ClientLayout>
       </body>
     </html>
   );

@@ -342,10 +342,10 @@ export default function NewsPage() {
   // List view
   return (
     <ErrorBoundary>
-      <div className="bg-gray-50 dark:bg-black pb-6">
+      <div className="bg-gray-50 dark:bg-black pb-6 pt-safe-top pt-24">
         {/* Mobile App Header */}
         {/* Mobile App Header (Title) */}
-        <header className="sticky top-mobile-navbar-height z-40 bg-white/95 dark:bg-black/95 backdrop-blur-sm border-b border-transparent px-5 py-3 flex items-center justify-between">
+        <header className="relative z-40 bg-white/95 dark:bg-black/95 backdrop-blur-sm border-b border-transparent px-5 py-3 flex items-center justify-between">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
             Agro News
           </h1>
@@ -358,7 +358,7 @@ export default function NewsPage() {
           </div>
 
           {/* Horizontal Scrollable Filters */}
-          <div className="sticky top-[calc(var(--mobile-navbar-height)+55px)] z-30 bg-white/95 dark:bg-black/95 backdrop-blur-sm pt-2 pb-3 pl-4 border-b border-gray-100 dark:border-white/5">
+          <div className="sticky top-[60px] z-30 bg-white/95 dark:bg-black/95 backdrop-blur-sm pt-2 pb-3 pl-4 border-b border-gray-100 dark:border-white/5">
             <div className="overflow-x-auto flex gap-2 pr-4 no-scrollbar">
               <NewsFilterBar
                 onCategoryChange={handleCategoryChange}

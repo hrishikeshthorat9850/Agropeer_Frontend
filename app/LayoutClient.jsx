@@ -66,16 +66,13 @@ export default function ClientLayout({ children }) {
     }
   }, []);
 
-  // Force Scroll to Top on Path Change
+  // Force Scroll to Top on Path Change logic moved to PageTransition.jsx
   useEffect(() => {
     // Disable native browser scroll restoration to handle it manually
     if (typeof window !== "undefined" && window.history) {
       window.history.scrollRestoration = "manual";
     }
-
-    // Immediate scroll to top with instant behavior to override CSS smooth scroll
-    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-  }, [pathname]);
+  }, []);
 
   // Body padding adjustments for mobile no-padding routes
   useEffect(() => {

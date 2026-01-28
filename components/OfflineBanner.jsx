@@ -24,7 +24,7 @@ export default function OfflineBanner() {
         setOffline((prev) => {
           if (prev) {
             setJustBack(true);
-            setTimeout(() => setJustBack(false), 3000);
+            setTimeout(() => setJustBack(false), 2000);
           }
           return false;
         });

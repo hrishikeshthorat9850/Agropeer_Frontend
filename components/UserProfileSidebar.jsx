@@ -92,25 +92,34 @@ export default function UserSidebar({ onClose } = {}) {
     if (!Capacitor.isNativePlatform()) return;
 
     const updateStatusBar = async () => {
-      // Sidebar always has a dark/green header at the top, so we want Light content (white text)
-      // and transparent background so the gradient shows through.
-      await StatusBar.setStyle({ style: Style.Dark });
-      if (Capacitor.getPlatform() === "android") {
-        await StatusBar.setBackgroundColor({ color: "#00000000" }); // Transparent
+      // Sidebar always has a dark/green header at the top.
+      // We want White Icons (Style.Dark) and Transparent Background.
+      try {
+        await StatusBar.setStyle({ style: Style.Dark });
+        if (Capacitor.getPlatform() === "android") {
+          await StatusBar.setBackgroundColor({ color: "#00000000" }); // Transparent
+          await StatusBar.setOverlaysWebView({ overlay: true });
+        }
+      } catch (e) {
+        console.error("StatusBar open error:", e);
       }
 
       return async () => {
         // Cleanup: Reset to theme defaults when unmounting
-        if (theme === "dark") {
-          await StatusBar.setStyle({ style: Style.Dark });
-          if (Capacitor.getPlatform() === "android") {
-            await StatusBar.setBackgroundColor({ color: "#000000" });
+        try {
+          if (theme === "dark") {
+            await StatusBar.setStyle({ style: Style.Dark });
+            if (Capacitor.getPlatform() === "android") {
+              await StatusBar.setBackgroundColor({ color: "#000000" });
+            }
+          } else {
+            await StatusBar.setStyle({ style: Style.Light });
+            if (Capacitor.getPlatform() === "android") {
+              await StatusBar.setBackgroundColor({ color: "#ffffff" });
+            }
           }
-        } else {
-          await StatusBar.setStyle({ style: Style.Light });
-          if (Capacitor.getPlatform() === "android") {
-            await StatusBar.setBackgroundColor({ color: "#ffffff" });
-          }
+        } catch (e) {
+          console.error("StatusBar cleanup error:", e);
         }
       };
     };

@@ -28,7 +28,7 @@ const MarketList = dynamic(
         </div>
       );
     },
-  }
+  },
 );
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
@@ -65,7 +65,7 @@ export default function MarketPricesPage() {
     {
       revalidateOnFocus: false,
       dedupingInterval: 60000, // Cache for 1 minute
-    }
+    },
   );
 
   // Update allStates when statesData is loaded
@@ -195,7 +195,7 @@ export default function MarketPricesPage() {
   return (
     <div className="bg-gray-50 dark:bg-black font-sans">
       {/* 📱 STICKY APP BAR HEADER */}
-      <div className="sticky top-0 z-40 bg-white/95 dark:bg-[#121212]/95 backdrop-blur-md shadow-sm border-b border-gray-100 dark:border-white/5 px-4 h-[60px] flex items-center justify-between">
+      <div className="relative z-40 bg-white/95 dark:bg-[#121212]/95 backdrop-blur-md shadow-sm border-b border-gray-100 dark:border-white/5 px-4 h-[60px] flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
             onClick={() => router.back()}
@@ -211,7 +211,6 @@ export default function MarketPricesPage() {
 
       {/* 🟢 Main Content Area */}
       <div className="max-w-lg mx-auto w-full">
-
         {/* Sticky Filters Block (Just below header) */}
         <div className="sticky top-[60px] z-30">
           <MarketFilters
@@ -247,7 +246,9 @@ export default function MarketPricesPage() {
           {isLoading && displayRecords.length === 0 && (
             <div className="flex flex-col items-center justify-center py-32 opacity-60">
               <div className="animate-spin rounded-full h-10 w-10 border-4 border-emerald-500 border-t-transparent mb-4"></div>
-              <p className="text-gray-500 font-medium text-sm animate-pulse">{t("loading_market_data")}</p>
+              <p className="text-gray-500 font-medium text-sm animate-pulse">
+                {t("loading_market_data")}
+              </p>
             </div>
           )}
 

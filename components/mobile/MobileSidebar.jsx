@@ -86,23 +86,38 @@ export default function MobileSidebar() {
 
     const updateStatusBar = async () => {
       if (open) {
-        // Sidebar OPEN: Transparent background to show gradient, Light text
-        await StatusBar.setStyle({ style: Style.Dark });
-        if (Capacitor.getPlatform() === "android") {
-          await StatusBar.setBackgroundColor({ color: "#00000000" }); // Transparent
+        // Sidebar OPEN:
+        // We want the Green Gradient Header to show through the status bar.
+        // So we need:
+        // 1. Transparent Background (#00000000)
+        // 2. Light Content / White Icons (Style.Dark)
+        try {
+          await StatusBar.setStyle({ style: Style.Dark });
+          if (Capacitor.getPlatform() === "android") {
+            await StatusBar.setBackgroundColor({ color: "#00000000" }); // Fully Transparent
+            await StatusBar.setOverlaysWebView({ overlay: true }); // Ensure overlay is on
+          }
+        } catch (e) {
+          console.error("StatusBar error:", e);
         }
       } else {
         // Sidebar CLOSED: Revert to theme
-        if (theme === "dark") {
-          await StatusBar.setStyle({ style: Style.Dark });
-          if (Capacitor.getPlatform() === "android") {
-            await StatusBar.setBackgroundColor({ color: "#000000" });
+        try {
+          if (theme === "dark") {
+            // Dark Mode: Dark Background, White Icons (Style.Dark)
+            await StatusBar.setStyle({ style: Style.Dark });
+            if (Capacitor.getPlatform() === "android") {
+              await StatusBar.setBackgroundColor({ color: "#000000" }); // Black
+            }
+          } else {
+            // Light Mode: Light Background, Dark Icons (Style.Light)
+            await StatusBar.setStyle({ style: Style.Light });
+            if (Capacitor.getPlatform() === "android") {
+              await StatusBar.setBackgroundColor({ color: "#ffffff" }); // White
+            }
           }
-        } else {
-          await StatusBar.setStyle({ style: Style.Light });
-          if (Capacitor.getPlatform() === "android") {
-            await StatusBar.setBackgroundColor({ color: "#ffffff" });
-          }
+        } catch (e) {
+          console.error("StatusBar close error:", e);
         }
       }
     };
@@ -138,7 +153,7 @@ export default function MobileSidebar() {
 
           {/* LEFT SIDEBAR - MATCHING USER PROFILE SIDEBAR */}
           <motion.div
-            className="fixed top-0 left-0 h-full w-[85%] max-w-[320px] 
+            className="fixed top-0 left-0 h-full w-[85%] max-w-[300px] 
               bg-white dark:bg-[#1C1C1E] z-[9999]
               shadow-2xl flex flex-col overflow-hidden sidebar-panel-position
             "
