@@ -56,7 +56,7 @@ export default function PostCreation({ onSuccess }) {
       userinfo(id, firstName, lastName, display_name, profile_url, avatar_url),
       post_comments(id, comment, created_at, user_id, post_id),
       post_likes(id, user_id, post_id, created_at)
-    `
+    `,
       )
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
@@ -86,7 +86,7 @@ export default function PostCreation({ onSuccess }) {
         userinfo(id, firstName, lastName, display_name, profile_url, avatar_url),
         post_comments(id, comment, created_at, user_id, post_id),
         post_likes(id, user_id, post_id, created_at)
-      `
+      `,
       )
       .order("created_at", { ascending: false })
       .limit(50); // Add limit to reduce egress
@@ -177,7 +177,7 @@ export default function PostCreation({ onSuccess }) {
           userinfo(id, firstName, lastName, display_name, profile_url, avatar_url),
           post_comments(id, comment, created_at, user_id, post_id),
           post_likes(id, user_id, post_id, created_at)
-        `
+        `,
         )
         .eq("id", inserted.id)
         .single();
@@ -211,8 +211,8 @@ export default function PostCreation({ onSuccess }) {
       showToast(
         "error",
         t("post_create_error_toast") +
-        " " +
-        (err.message || "Please try again.")
+          " " +
+          (err.message || t("request_failed_retry")),
       );
     } finally {
       setUploading(false);
@@ -261,8 +261,8 @@ export default function PostCreation({ onSuccess }) {
 
     setPosts((prevPosts) =>
       prevPosts.map((p) =>
-        p.id === postId ? { ...p, post_likes: updatedLikes } : p
-      )
+        p.id === postId ? { ...p, post_likes: updatedLikes } : p,
+      ),
     );
 
     try {
@@ -287,7 +287,7 @@ export default function PostCreation({ onSuccess }) {
       console.error("Error updating like:", err);
       // Rollback UI
       setPosts((prevPosts) =>
-        prevPosts.map((p) => (p.id === postId ? post : p))
+        prevPosts.map((p) => (p.id === postId ? post : p)),
       );
     }
   };
@@ -316,8 +316,8 @@ export default function PostCreation({ onSuccess }) {
     setLiked(!existing);
     setPosts((prev) =>
       prev.map((p) =>
-        p.id === postId ? { ...p, post_likes: updated || [] } : p
-      )
+        p.id === postId ? { ...p, post_likes: updated || [] } : p,
+      ),
     );
   };
 
@@ -338,8 +338,8 @@ export default function PostCreation({ onSuccess }) {
         prev.map((p) =>
           p.id === postId
             ? { ...p, post_comments: [...(p.post_comments || []), inserted] }
-            : p
-        )
+            : p,
+        ),
       );
 
       // Update recentPost if needed
@@ -356,7 +356,7 @@ export default function PostCreation({ onSuccess }) {
       console.error("Failed to add comment:", err);
       showToast(
         "error",
-        t("add_comment_failed") + " " + (err.message || "Please try again.")
+        t("add_comment_failed") + " " + (err.message || "Please try again."),
       );
     }
   };
@@ -573,7 +573,8 @@ export default function PostCreation({ onSuccess }) {
                     className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-orange-100 dark:bg-orange-900/30 hover:bg-orange-200 dark:hover:bg-orange-900/50 text-orange-700 dark:text-orange-300 text-sm sm:text-base font-medium"
                     onClick={() => videoinputRef.current.click()}
                   >
-                    <FaVideo className="w-4 h-4 text-orange-600 dark:text-orange-400" /> {t("video_btn")}
+                    <FaVideo className="w-4 h-4 text-orange-600 dark:text-orange-400" />{" "}
+                    {t("video_btn")}
                   </motion.button>
                   <input
                     ref={videoinputRef}

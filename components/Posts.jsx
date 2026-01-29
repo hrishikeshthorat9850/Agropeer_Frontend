@@ -321,7 +321,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
       showToast("success", t("add_comment_success"));
     } catch (e) {
       setError(t("network_error"));
-      showToast("error", t("network_error") + " Please try again.");
+      showToast("error", t("network_error") + " " + t("request_failed_retry"));
       console.error("Error saving comment:", e);
     } finally {
       setIsSubmitting(false);
@@ -389,7 +389,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
       // Rollback on error
       setIsLike(previousLike);
       setLikeCount(previousCount);
-      showToast("error", t("network_error") + " Please try again.");
+      showToast("error", t("network_error") + " " + t("request_failed_retry"));
       console.error("Unexpected error:", err);
     } finally {
       setLoadingLike(false);
@@ -533,7 +533,10 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
       showToast("success", t("reply_sent_success"));
     } catch (err) {
       console.error("Error sending reply:", err);
-      showToast("error", t("reply_send_failed") + " Please try again.");
+      showToast(
+        "error",
+        t("reply_send_failed") + " " + t("request_failed_retry"),
+      );
     }
   }, [
     replyText,
@@ -574,7 +577,10 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
         await refreshComments();
       } catch (err) {
         console.error("Error toggling comment like:", err);
-        showToast("error", t("network_error") + " Please try again.");
+        showToast(
+          "error",
+          t("network_error") + " " + t("request_failed_retry"),
+        );
       }
     },
     [user?.id, refreshComments, accessToken, showToast, t],
@@ -635,7 +641,10 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
         await refreshComments();
       } catch (err) {
         console.error("Error toggling reply like:", err);
-        showToast("error", t("network_error") + " Please try again.");
+        showToast(
+          "error",
+          t("network_error") + " " + t("request_failed_retry"),
+        );
       }
     },
     [user?.id, refreshComments, accessToken, showToast, t],
@@ -712,7 +721,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: idx * 0.1 }}
-      className={`relative w-full max-w-lg mx-auto mb-4 bg-white dark:bg-black border-b md:border border-gray-200 dark:border-zinc-800 md:rounded-xl transition-all duration-200 ${
+      className={`relative w-full max-w-lg mx-auto mb-6 bg-white dark:bg-[#1C1C1E] border-b md:border border-gray-200 dark:border-zinc-800 shadow-lg md:rounded-xl transition-all duration-200 ${
         isMediaZoomed ? "overflow-visible z-50" : "overflow-hidden z-0"
       }`}
     >
@@ -748,7 +757,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
       />
 
       {/* Post Content (Caption) - Instagram Style */}
-      <div className="px-3 pb-2 pt-1 dark:bg-black">
+      <div className="px-3 pb-2 pt-1 dark:bg-[#1C1C1E]">
         <div className="flex flex-col gap-1">
           {/* Like Count Text if needed, usually inside Actions or here */}
 

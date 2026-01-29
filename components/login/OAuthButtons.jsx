@@ -92,7 +92,7 @@ export default function OAuthButtons() {
         <button
           type="button"
           onClick={() => handleOAuthLogin("facebook")}
-          disabled={loading.google || loading.facebook}
+          disabled={true}
           className="flex items-center justify-center gap-2 h-12 rounded-xl bg-gray-50 dark:bg-[#1C1C1E] text-gray-900 dark:text-white font-semibold text-sm border border-transparent shadow-sm hover:bg-gray-100 dark:hover:bg-[#2C2C2E] transition-all disabled:opacity-50"
         >
           {loading.facebook ? (

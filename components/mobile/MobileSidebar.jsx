@@ -22,11 +22,21 @@ import {
 import { useEffect, useState } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { Capacitor } from "@capacitor/core";
+import { Haptics, ImpactStyle } from "@capacitor/haptics";
 
 export default function MobileSidebar() {
   const [open, setOpen] = useState(false);
 
   const { theme } = useTheme();
+
+  // Haptic Helper
+  const triggerHaptic = async () => {
+    try {
+      await Haptics.impact({ style: ImpactStyle.Light });
+    } catch (e) {
+      // Ignore on web
+    }
+  };
 
   // Logic preserved: Overlay styling for capacitor
   useEffect(() => {
@@ -180,7 +190,10 @@ export default function MobileSidebar() {
                   <Link
                     key={it.href}
                     href={it.href}
-                    onClick={() => setOpen(false)}
+                    onClick={() => {
+                      triggerHaptic();
+                      setOpen(false);
+                    }}
                     className="flex items-center gap-4 px-4 py-3.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#2C2C2E] transition-all group"
                   >
                     <span
@@ -220,6 +233,7 @@ export default function MobileSidebar() {
                     color="from-rose-500 to-pink-600"
                     iconColor="text-white"
                     setOpen={setOpen}
+                    triggerHaptic={triggerHaptic}
                   />
                   <SidebarCard
                     href="/settings"
@@ -229,6 +243,7 @@ export default function MobileSidebar() {
                     color="from-indigo-500 to-violet-600"
                     iconColor="text-white"
                     setOpen={setOpen}
+                    triggerHaptic={triggerHaptic}
                   />
                   <SidebarCard
                     href="/profile"
@@ -238,6 +253,7 @@ export default function MobileSidebar() {
                     color="from-emerald-500 to-teal-600"
                     iconColor="text-white"
                     setOpen={setOpen}
+                    triggerHaptic={triggerHaptic}
                   />
                 </div>
               </div>
@@ -250,21 +266,25 @@ export default function MobileSidebar() {
                   href="https://www.facebook.com/profile.php?id=61584709015575"
                   icon={<FaFacebookF />}
                   hover="hover:text-[#1877F2]"
+                  triggerHaptic={triggerHaptic}
                 />
                 <SocialIcon
                   href="https://chat.whatsapp.com/HRVHJXmrX6Q6gv07wnw1e3?mode=wwt"
                   icon={<FaWhatsapp />}
                   hover="hover:text-[#25D366]"
+                  triggerHaptic={triggerHaptic}
                 />
                 <SocialIcon
                   href="https://www.instagram.com/agro_peer/"
                   icon={<FaInstagram />}
                   hover="hover:text-[#d62976]"
+                  triggerHaptic={triggerHaptic}
                 />
                 <SocialIcon
                   href="https://youtube.com/@agropeer"
                   icon={<FaYoutube />}
                   hover="hover:text-[#FF0000]"
+                  triggerHaptic={triggerHaptic}
                 />
               </div>
               <div className="text-center mt-4">
@@ -281,10 +301,22 @@ export default function MobileSidebar() {
 }
 
 // Sub-components for cleaner code
-const SidebarCard = ({ href, icon, label, sub, color, iconColor, setOpen }) => (
+const SidebarCard = ({
+  href,
+  icon,
+  label,
+  sub,
+  color,
+  iconColor,
+  setOpen,
+  triggerHaptic,
+}) => (
   <Link
     href={href}
-    onClick={() => setOpen(false)}
+    onClick={() => {
+      if (triggerHaptic) triggerHaptic();
+      setOpen(false);
+    }}
     className={`
         relative overflow-hidden group
         flex items-center justify-between
@@ -320,9 +352,10 @@ const SidebarCard = ({ href, icon, label, sub, color, iconColor, setOpen }) => (
   </Link>
 );
 
-const SocialIcon = ({ href, icon, hover }) => (
+const SocialIcon = ({ href, icon, hover, triggerHaptic }) => (
   <a
     href={href}
+    onClick={triggerHaptic}
     target="_blank"
     rel="noopener noreferrer"
     className={`w-10 h-10 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center text-black dark:text-white/70 shadow-sm transition-all duration-300 hover:bg-white hover:scale-110 hover:shadow-md ${hover}`}

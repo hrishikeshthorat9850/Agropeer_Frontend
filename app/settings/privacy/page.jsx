@@ -19,6 +19,7 @@ import { useLogin } from "@/Context/logincontext";
 import { useLanguage } from "@/Context/languagecontext";
 import { supabase } from "@/lib/supabaseClient";
 import useToast from "@/hooks/useToast";
+import { Haptics, ImpactStyle } from "@capacitor/haptics";
 
 export default function PrivacySettingsPage() {
   const router = useRouter();
@@ -27,6 +28,15 @@ export default function PrivacySettingsPage() {
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
   const { showToast } = useToast();
+
+  // Haptic Helper
+  const triggerHaptic = async () => {
+    try {
+      await Haptics.impact({ style: ImpactStyle.Light });
+    } catch (e) {
+      // Ignore on web
+    }
+  };
 
   // Privacy settings state
   const [privacySettings, setPrivacySettings] = useState({
@@ -50,6 +60,7 @@ export default function PrivacySettingsPage() {
 
   // Handle privacy settings update
   const handlePrivacyUpdate = async () => {
+    triggerHaptic();
     if (!user) return;
 
     setLoading(true);
@@ -85,6 +96,7 @@ export default function PrivacySettingsPage() {
   };
 
   const handleSettingChange = (key, value) => {
+    triggerHaptic();
     setPrivacySettings((prev) => ({ ...prev, [key]: value }));
   };
 
@@ -94,7 +106,10 @@ export default function PrivacySettingsPage() {
       <header className="sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50">
         <div className="flex items-center justify-between px-4 h-14">
           <button
-            onClick={() => router.push("/settings")}
+            onClick={() => {
+              triggerHaptic();
+              router.push("/settings");
+            }}
             className="p-2 -ml-2 rounded-full hover:bg-gray-100 dark:hover:bg-neutral-900 transition-colors"
           >
             <ArrowLeft className="w-6 h-6 text-black dark:text-white" />

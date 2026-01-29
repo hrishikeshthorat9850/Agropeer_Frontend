@@ -239,8 +239,8 @@ export default function PostHeader({
                 onClick={onBookmarkClick}
                 className={`p-2 rounded-full transition-colors ${
                   isBookmarked
-                    ? "bg-sunset-100 text-gray-500"
-                    : "text-farm-400 hover:bg-farm-50"
+                    ? "text-farm-400 hover:bg-farm-50"
+                    : "bg-sunset-100 text-gray-500"
                 }`}
               >
                 <FaBookmark className="w-4 h-4" />

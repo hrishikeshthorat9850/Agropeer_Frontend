@@ -1,108 +1,90 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { formatName } from "@/utils/formatName";
 import { timeAgo } from "@/utils/timeConverter";
-import {
-  FaRegHeart,
-  FaHeart,
-  FaEllipsisH,
-} from "react-icons/fa";
+import { FaRegHeart, FaHeart, FaEllipsisH } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/Context/languagecontext";
 
 export default function ReplyItem({
-  reply, // current reply object
+  reply,
   currentUserId,
   replyLikes = {},
-  onLike, // handle reply like
-  onReply, // opens nested reply box
-  onMenuClick, // opens reply menu
-  showReplyBox, // ID of the reply currently being replied to
+  onLike,
+  onReply,
+  onMenuClick,
+  showReplyBox,
   replyText,
   onReplyTextChange,
-  onSendReply, // function to send nested reply
-  parentId, // ID of the parent comment
-  level = 0, // nesting level
-  nestedReplies = [], // nested replies for this reply
-  nestedRepliesMap = {}, // map of all nested replies
+  onSendReply,
+  parentId,
+  level = 0,
+  nestedReplies = [],
+  nestedRepliesMap = {},
 }) {
   const { t } = useLanguage();
-
-  // Determine if this reply is liked by the current user
-  // const isLiked =
-  //   replyLikes[reply.id]?.some((like) => like.user_id === currentUserId) ||
-  //   false;
-
   const isLiked = replyLikes[reply?.id] === true;
-
   const likeCount = replyLikes[reply.id]?.length || 0;
 
   return (
-    <div
-      className={`mt-3 ${
-        level > 0 ? "ml-4 pl-3 border-l-2 border-farm-200/50" : "ml-2"
-      }`}
-    >
+    <div className={`mt-3 ${level > 0 ? "ml-8" : "ml-0"}`}>
       <motion.div
         initial={{ opacity: 0, x: -5 }}
         animate={{ opacity: 1, x: 0 }}
-        className="flex gap-3 group/reply w-full pr-2"
+        className="flex gap-3 items-start group/reply w-full"
       >
         {/* Avatar */}
-        <div
-          className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm overflow-hidden"
-          style={{
-            background: "linear-gradient(135deg, #059669 0%, #047857 100%)",
-          }}
-        >
-          {reply?.userinfo?.avatar_url ? (
-            <img
-              src={reply.userinfo.avatar_url}
-              alt="Avatar"
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <span className="text-xs text-white font-bold">
-              {reply?.userinfo?.display_name
-                ? reply.userinfo?.display_name.charAt(0)
-                : formatName(reply.userinfo).charAt(0)}
-            </span>
-          )}
+        <div className="flex-shrink-0">
+          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full overflow-hidden shadow-sm border border-gray-100 dark:border-gray-800 bg-gray-100 dark:bg-gray-800">
+            {reply?.userinfo?.avatar_url ? (
+              <img
+                src={reply.userinfo.avatar_url}
+                alt={reply?.userinfo?.display_name || "User"}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-emerald-500 to-emerald-700">
+                <span className="text-white text-[10px] font-bold">
+                  {(
+                    reply?.userinfo?.display_name || formatName(reply.userinfo)
+                  )?.charAt(0)}
+                </span>
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Content Area */}
+        {/* Content Block */}
         <div className="flex-1 min-w-0">
-          <div className="flex justify-between items-start gap-2">
-            <div className="text-sm leading-tight text-gray-900 dark:text-gray-100">
-              <span className="font-semibold mr-2 cursor-pointer hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex flex-col text-[14px] leading-snug">
+              <span className="font-semibold text-gray-900 dark:text-white cursor-pointer hover:underline mb-0.5">
                 {reply?.userinfo?.display_name || formatName(reply?.userinfo)}
               </span>
-              <span className="whitespace-pre-wrap break-words font-normal">
+              <span className="text-gray-800 dark:text-gray-200 whitespace-pre-wrap font-normal">
                 {reply.comment}
               </span>
             </div>
 
-            {/* Like Button (Far Right) */}
+            {/* Like Icon */}
             <button
               onClick={() => onLike(reply.id)}
-              className="mt-1 flex-shrink-0 focus:outline-none transform active:scale-75 transition-transform"
+              className="pt-1 flex-shrink-0 focus:outline-none transition-transform active:scale-90"
             >
               {isLiked ? (
                 <FaHeart className="w-3 h-3 text-red-500" />
               ) : (
-                <FaRegHeart className="w-3 h-3 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" />
+                <FaRegHeart className="w-3 h-3 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300" />
               )}
             </button>
           </div>
 
-          {/* Metadata Row: Time • Likes • Reply */}
-          <div className="flex items-center gap-4 mt-1">
-            <span className="text-xs text-gray-500 font-medium">
-              {timeAgo(reply.created_at)}
-            </span>
+          {/* Metadata Row */}
+          <div className="flex items-center gap-4 mt-1 text-[11px] text-gray-500 dark:text-gray-400 font-medium select-none">
+            <span>{timeAgo(reply.created_at)}</span>
 
             {likeCount > 0 && (
-              <span className="text-xs text-gray-500 font-semibold cursor-pointer">
+              <span className="font-semibold text-gray-800 dark:text-gray-300">
                 {likeCount} {likeCount === 1 ? "like" : "likes"}
               </span>
             )}
@@ -110,15 +92,15 @@ export default function ReplyItem({
             {level < 2 && (
               <button
                 onClick={() => onReply(reply.id)}
-                className="text-xs font-semibold text-gray-500 hover:text-gray-800 dark:hover:text-gray-300 transition-colors"
+                className="font-semibold text-gray-500 hover:text-gray-800 dark:hover:text-gray-300 transition-colors"
               >
                 {t("reply_btn")}
               </button>
             )}
 
             <button
-              onClick={() => onMenuClick(reply.id)}
-              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors opacity-0 group-hover/reply:opacity-100 p-0.5"
+              onClick={(e) => onMenuClick(reply.id, e)}
+              className="opacity-0 group-hover/reply:opacity-100 transition-opacity p-0.5 text-gray-400 hover:text-gray-600"
             >
               <FaEllipsisH className="w-2.5 h-2.5" />
             </button>
@@ -131,9 +113,9 @@ export default function ReplyItem({
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
-                className="mt-3 flex items-center gap-2"
+                className="overflow-hidden mt-3"
               >
-                <div className="flex-1 relative">
+                <div className="flex items-center gap-2">
                   <input
                     type="text"
                     value={replyText}
@@ -143,12 +125,12 @@ export default function ReplyItem({
                     }
                     placeholder={t("write_reply_placeholder")}
                     autoFocus
-                    className="w-full px-4 py-2 bg-gray-100 border border-transparent rounded-full text-sm focus:border-gray-300 focus:bg-white focus:outline-none pr-10 dark:bg-[#272727] dark:border-gray-700 dark:text-white transition-all"
+                    className="flex-1 bg-gray-100 dark:bg-gray-800 text-xs px-4 py-2 rounded-full focus:outline-none focus:ring-1 focus:ring-green-500/50 text-gray-900 dark:text-white placeholder-gray-500"
                   />
                   <button
                     onClick={() => onSendReply(reply?.id)}
                     disabled={!replyText.trim()}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-blue-500 font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:text-blue-600"
+                    className="text-blue-500 font-semibold text-xs disabled:opacity-50 hover:text-blue-600 transition-colors px-2"
                   >
                     {t("post_btn") || "Post"}
                   </button>
@@ -159,7 +141,7 @@ export default function ReplyItem({
 
           {/* Recursively Render Nested Replies */}
           {nestedReplies.length > 0 && (
-            <div className="mt-2">
+            <div className="mt-2 space-y-3">
               {nestedReplies.map((nestedReply) => (
                 <ReplyItem
                   key={nestedReply.id}

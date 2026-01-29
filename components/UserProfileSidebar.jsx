@@ -22,6 +22,7 @@ import { formatName } from "@/utils/formatName";
 import { useLanguage } from "@/Context/languagecontext";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { Capacitor } from "@capacitor/core";
+import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { useTheme } from "@/Context/themecontext";
 
 export default function UserSidebar({ onClose } = {}) {
@@ -87,6 +88,15 @@ export default function UserSidebar({ onClose } = {}) {
 
   const { theme } = useTheme();
 
+  // Haptic Helper
+  const triggerHaptic = async () => {
+    try {
+      await Haptics.impact({ style: ImpactStyle.Light });
+    } catch (e) {
+      // Ignore on web
+    }
+  };
+
   useEffect(() => {
     // Only run on native platform
     if (!Capacitor.isNativePlatform()) return;
@@ -128,6 +138,7 @@ export default function UserSidebar({ onClose } = {}) {
   }, [theme]);
 
   const handleLogout = async () => {
+    triggerHaptic();
     try {
       if (supabase?.auth?.signOut) {
         await supabase.auth.signOut();
@@ -229,6 +240,7 @@ export default function UserSidebar({ onClose } = {}) {
                   icon={User}
                   label={t("my_profile")}
                   onClick={() => {
+                    triggerHaptic();
                     router.push("/profile");
                     if (typeof onClose === "function") onClose();
                   }}
@@ -237,6 +249,7 @@ export default function UserSidebar({ onClose } = {}) {
                   icon={Settings}
                   label={t("settings")}
                   onClick={() => {
+                    triggerHaptic();
                     router.push("/settings");
                     if (typeof onClose === "function") onClose();
                   }}
@@ -248,6 +261,7 @@ export default function UserSidebar({ onClose } = {}) {
               icon={HelpCircle}
               label={t("help_support")}
               onClick={() => {
+                triggerHaptic();
                 router.push("/help");
                 if (typeof onClose === "function") onClose();
               }}
@@ -262,7 +276,10 @@ export default function UserSidebar({ onClose } = {}) {
                 </div>
                 <Link
                   href="/login"
-                  onClick={() => typeof onClose === "function" && onClose()}
+                  onClick={() => {
+                    triggerHaptic();
+                    typeof onClose === "function" && onClose();
+                  }}
                   className="w-full flex items-center justify-center gap-2 h-12 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl shadow-lg shadow-green-600/20 transition-all active:scale-[0.98]"
                 >
                   <Heart size={18} fill="currentColor" />
@@ -270,7 +287,10 @@ export default function UserSidebar({ onClose } = {}) {
                 </Link>
                 <Link
                   href="/signup"
-                  onClick={() => typeof onClose === "function" && onClose()}
+                  onClick={() => {
+                    triggerHaptic();
+                    typeof onClose === "function" && onClose();
+                  }}
                   className="w-full flex items-center justify-center gap-2 h-12 bg-white dark:bg-[#2C2C2E] border-2 border-green-100 dark:border-[#3A3A3C] text-green-700 dark:text-green-400 font-semibold rounded-xl transition-all active:scale-[0.98]"
                 >
                   <Sprout size={18} />

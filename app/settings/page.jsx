@@ -14,6 +14,7 @@ import {
   Settings,
 } from "lucide-react";
 import { FaShieldAlt, FaFileContract, FaCookie } from "react-icons/fa";
+import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { useTheme } from "@/Context/themecontext";
 import { useLanguage } from "@/Context/languagecontext";
 import { useLogin } from "@/Context/logincontext";
@@ -32,6 +33,15 @@ export default function SettingsPage() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [loading, setLoading] = useState(false); // Restored unused state if it was there
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  // Haptic Helper
+  const triggerHaptic = async () => {
+    try {
+      await Haptics.impact({ style: ImpactStyle.Light });
+    } catch (e) {
+      // Ignore on web
+    }
+  };
 
   // Load notification preference on mount
   useEffect(() => {
@@ -59,7 +69,7 @@ export default function SettingsPage() {
         });
         showToast(
           "success",
-          newValue ? "Notifications enabled 🔔" : "Notifications disabled 🔕"
+          newValue ? "Notifications enabled 🔔" : "Notifications disabled 🔕",
         );
       } catch (error) {
         console.error("Error updating notification preference:", error);
@@ -82,7 +92,10 @@ export default function SettingsPage() {
         <header className="sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50">
           <div className="flex items-center justify-between px-4 h-14">
             <button
-              onClick={() => router.push("/profile")}
+              onClick={() => {
+                triggerHaptic();
+                router.push("/profile");
+              }}
               className="p-2 -ml-2 rounded-full hover:bg-gray-100 dark:hover:bg-neutral-900 transition-colors"
             >
               <ArrowLeft className="w-6 h-6 text-black dark:text-white" />
@@ -126,12 +139,13 @@ export default function SettingsPage() {
                       className="sr-only peer"
                       checked={theme === "dark"}
                       onChange={() => {
+                        triggerHaptic();
                         toggleTheme();
                         showToast(
                           "info",
                           theme === "dark"
                             ? "Switched to light mode ☀️"
-                            : "Switched to dark mode 🌙"
+                            : "Switched to dark mode 🌙",
                         );
                       }}
                     />
@@ -169,7 +183,10 @@ export default function SettingsPage() {
                       type="checkbox"
                       className="sr-only peer"
                       checked={notificationsEnabled}
-                      onChange={handleNotificationToggle}
+                      onChange={(e) => {
+                        triggerHaptic();
+                        handleNotificationToggle(e);
+                      }}
                     />
                     <div className="w-[50px] h-[30px] bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-[26px] after:w-[26px] after:transition-all dark:border-gray-600 peer-checked:bg-green-500 shadow-sm"></div>
                   </label>
@@ -195,11 +212,13 @@ export default function SettingsPage() {
                     <select
                       value={locale}
                       onChange={(e) => {
+                        triggerHaptic();
                         setLocale(e.target.value);
                         showToast(
                           "success",
-                          `Language changed to ${LOCALE_NAMES[e.target.value] || e.target.value
-                          } 🌐`
+                          `Language changed to ${
+                            LOCALE_NAMES[e.target.value] || e.target.value
+                          } 🌐`,
                         );
                       }}
                       className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 dark:bg-black dark:text-white"
@@ -232,7 +251,10 @@ export default function SettingsPage() {
           </h3>
           <div className="overflow-hidden bg-white dark:bg-[#1C1C1E] sm:rounded-xl shadow-sm">
             <div
-              onClick={() => router.push("/settings/privacy")}
+              onClick={() => {
+                triggerHaptic();
+                router.push("/settings/privacy");
+              }}
               className="flex flex-col p-4 bg-white dark:bg-[#1C1C1E] active:bg-gray-50 dark:active:bg-[#2C2C2E] transition-colors cursor-pointer"
             >
               <div className="flex items-center justify-between gap-3">
@@ -264,7 +286,10 @@ export default function SettingsPage() {
             <div className="flex flex-col bg-white dark:bg-[#1C1C1E]">
               {/* Privacy Policy */}
               <div
-                onClick={() => router.push("/privacy-policy")}
+                onClick={() => {
+                  triggerHaptic();
+                  router.push("/privacy-policy");
+                }}
                 className="flex items-center justify-between gap-3 p-4 active:bg-gray-50 dark:active:bg-[#2C2C2E] transition-colors cursor-pointer border-b border-gray-100 dark:border-[#2C2C2E]"
               >
                 <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -282,7 +307,10 @@ export default function SettingsPage() {
 
               {/* Terms of Service */}
               <div
-                onClick={() => router.push("/terms-of-service")}
+                onClick={() => {
+                  triggerHaptic();
+                  router.push("/terms-of-service");
+                }}
                 className="flex items-center justify-between gap-3 p-4 active:bg-gray-50 dark:active:bg-[#2C2C2E] transition-colors cursor-pointer border-b border-gray-100 dark:border-[#2C2C2E]"
               >
                 <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -300,7 +328,10 @@ export default function SettingsPage() {
 
               {/* Cookie Policy */}
               <div
-                onClick={() => router.push("/cookie-policy")}
+                onClick={() => {
+                  triggerHaptic();
+                  router.push("/cookie-policy");
+                }}
                 className="flex items-center justify-between gap-3 p-4 active:bg-gray-50 dark:active:bg-[#2C2C2E] transition-colors cursor-pointer"
               >
                 <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -324,7 +355,10 @@ export default function SettingsPage() {
           </h3>
           <div className="overflow-hidden bg-white dark:bg-[#1C1C1E] sm:rounded-xl shadow-sm">
             <div
-              onClick={handleDeleteAccountClick}
+              onClick={() => {
+                triggerHaptic();
+                handleDeleteAccountClick();
+              }}
               className="flex flex-col p-4 bg-white dark:bg-[#1C1C1E] active:bg-gray-50 dark:active:bg-[#2C2C2E] transition-colors cursor-pointer"
             >
               <div className="flex items-center justify-between gap-3">
