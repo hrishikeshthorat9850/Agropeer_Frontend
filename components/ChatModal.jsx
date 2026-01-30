@@ -491,7 +491,8 @@ export default function ChatModal({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         // 💡 New background: no blur, just a clean gradient
-        className="fixed left-0 right-0 top-[66px] bottom-[76px] flex items-center justify-end z-50 p-2 sm:p-4"
+        // Updated to be full screen z-[9999] with 4px padding (p-1)
+        className="fixed inset-0 flex items-center justify-center z-[9999] p-1 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
       >
         <motion.div
@@ -499,9 +500,9 @@ export default function ChatModal({
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.96, opacity: 0 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
-          className="w-full sm:w-[420px] h-full flex flex-col overflow-hidden 
+          className="w-full h-full flex flex-col overflow-hidden 
                      bg-white rounded-3xl shadow-[0_12px_45px_rgba(0,0,0,0.2)] 
-                     border border-emerald-100 self-end dark:bg-[#1E1E1E] dark:border-[#333]"
+                     border border-emerald-100 dark:bg-[#1E1E1E] dark:border-[#333]"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}

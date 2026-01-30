@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 import ToastQueue from "@/lib/toast/toastQueue";
 import { showNativeToast, isAndroidPlatform } from "@/lib/toast/toastAdapter";
 
@@ -32,54 +38,60 @@ export function ToastProvider({ children }) {
    * @param {string|object} typeOrOptions - Toast type or options object
    * @param {string} message - Toast message (if first param is type)
    */
-  const showToast = useCallback((typeOrOptions, message) => {
-    let options;
+  const showToast = useCallback(
+    (typeOrOptions, message) => {
+      let options;
 
-    // Handle both signatures: showToast(type, message) or showToast(options)
-    if (typeof typeOrOptions === "string") {
-      options = {
-        type: typeOrOptions,
-        message: message || "",
-      };
-    } else {
-      options = typeOrOptions;
-    }
+      // Handle both signatures: showToast(type, message) or showToast(options)
+      if (typeof typeOrOptions === "string") {
+        options = {
+          type: typeOrOptions,
+          message: message || "",
+        };
+      } else {
+        options = typeOrOptions;
+      }
 
-    const {
-      type = "info",
-      message: msg = "",
-      duration = 3000,
-      position = "top-right",
-      showIcon = true,
-      showCloseButton = true,
-      action,
-      onDismiss,
-      persistent = false,
-      useNativeToast = false, // Option to use native Android toast
-    } = options;
+      const {
+        type = "info",
+        message: msg = "",
+        duration = 3000,
+        position = "top-right",
+        showIcon = true,
+        showCloseButton = true,
+        action,
+        onDismiss,
+        persistent = false,
+        useNativeToast = false, // Option to use native Android toast
+      } = options;
 
-    // If Android and useNativeToast is true, use native toast
-    if (isAndroid && useNativeToast && typeof msg === "string") {
-      showNativeToast(msg, duration >= 5000 ? "long" : "short");
-      onDismiss?.();
-      return;
-    }
+      // If Android and useNativeToast is true, use native toast
+      if (isAndroid && useNativeToast && typeof msg === "string") {
+        showNativeToast(msg, duration >= 5000 ? "long" : "short");
+        onDismiss?.();
+        return;
+      }
 
-    // Add to queue
-    const id = toastQueue.add({
-      type,
-      message: msg,
-      duration,
-      position,
-      showIcon,
-      showCloseButton,
-      action,
-      onDismiss,
-      persistent,
-    });
+      // Clear existing toasts to ensure override behavior (YouTube style)
+      toastQueue.clear();
 
-    return id;
-  }, [isAndroid]);
+      // Add to queue
+      const id = toastQueue.add({
+        type,
+        message: msg,
+        duration,
+        position,
+        showIcon,
+        showCloseButton,
+        action,
+        onDismiss,
+        persistent,
+      });
+
+      return id;
+    },
+    [isAndroid],
+  );
 
   /**
    * Remove toast by ID
@@ -96,21 +108,33 @@ export function ToastProvider({ children }) {
   }, []);
 
   // Convenience methods
-  const success = useCallback((message, options = {}) => {
-    return showToast({ ...options, type: "success", message });
-  }, [showToast]);
+  const success = useCallback(
+    (message, options = {}) => {
+      return showToast({ ...options, type: "success", message });
+    },
+    [showToast],
+  );
 
-  const error = useCallback((message, options = {}) => {
-    return showToast({ ...options, type: "error", message });
-  }, [showToast]);
+  const error = useCallback(
+    (message, options = {}) => {
+      return showToast({ ...options, type: "error", message });
+    },
+    [showToast],
+  );
 
-  const info = useCallback((message, options = {}) => {
-    return showToast({ ...options, type: "info", message });
-  }, [showToast]);
+  const info = useCallback(
+    (message, options = {}) => {
+      return showToast({ ...options, type: "info", message });
+    },
+    [showToast],
+  );
 
-  const warning = useCallback((message, options = {}) => {
-    return showToast({ ...options, type: "warning", message });
-  }, [showToast]);
+  const warning = useCallback(
+    (message, options = {}) => {
+      return showToast({ ...options, type: "warning", message });
+    },
+    [showToast],
+  );
 
   const value = {
     toasts,
@@ -125,9 +149,7 @@ export function ToastProvider({ children }) {
   };
 
   return (
-    <ToastContext.Provider value={value}>
-      {children}
-    </ToastContext.Provider>
+    <ToastContext.Provider value={value}>{children}</ToastContext.Provider>
   );
 }
 
@@ -138,4 +160,3 @@ export function useToast() {
   }
   return context;
 }
-
