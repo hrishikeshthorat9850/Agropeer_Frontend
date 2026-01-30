@@ -62,7 +62,7 @@ export default function MobileHome() {
 
   const cleanTemp =
     typeof weather?.temperature === "number"
-      ? weather.temperature.toFixed(1)
+      ? weather.temperature.toFixed(0)
       : "--";
 
   const rainChance =
@@ -75,7 +75,7 @@ export default function MobileHome() {
 
   const windSpeed =
     typeof weather?.windspeed === "number"
-      ? weather?.windspeed?.toFixed(1)
+      ? weather?.windspeed?.toFixed(0)
       : "--";
 
   // Haptic Helper
@@ -169,8 +169,8 @@ export default function MobileHome() {
                 </div>
 
                 <div className="flex flex-col items-end space-y-1.5 min-w-[100px]">
-                  <WeatherDetailRow label="Humidity" value={`${humidity}%`} />
-                  <WeatherDetailRow label="Rain" value={rainChance} />
+                  <WeatherDetailRow label="Humidity" value={`${humidity} %`} />
+                  <WeatherDetailRow label="Rain" value={`${rainChance} %`} />
                   <WeatherDetailRow label="Wind" value={`${windSpeed} km/h`} />
                 </div>
               </div>

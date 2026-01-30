@@ -36,7 +36,7 @@ export default function WeatherPage() {
 
   const cleanTemp =
     typeof weather?.temperature === "number"
-      ? weather.temperature.toFixed(1)
+      ? weather.temperature.toFixed(0)
       : "--";
 
   const rainChance =
@@ -49,7 +49,7 @@ export default function WeatherPage() {
 
   const windSpeed =
     typeof weather?.windspeed === "number"
-      ? weather?.windspeed?.toFixed(1)
+      ? weather?.windspeed?.toFixed(0)
       : "--";
   // Load selected crop from localStorage
   useEffect(() => {

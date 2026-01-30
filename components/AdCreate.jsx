@@ -10,7 +10,6 @@ import {
   FaTimes,
   FaBullhorn,
   FaCheckCircle,
-  FaCheckCircle,
 } from "react-icons/fa";
 import LoadingSpinner from "@/components/LoadingSpinner";
 

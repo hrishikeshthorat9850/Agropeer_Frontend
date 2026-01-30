@@ -60,9 +60,70 @@ export default function AccountDeleteModal({ isOpen, onClose }) {
     };
   }, [isOpen]);
 
+  // const handleDelete = async () => {
+  //   if (step === 1) {
+  //     // Move to confirmation step
+  //     setStep(2);
+  //     return;
+  //   }
+
+  //   if (!isConfirmed) {
+  //     showToast("error", t("delete_mismatch_error"));
+  //     return;
+  //   }
+
+  //   setLoading(true);
+  //   try {
+  //     // Get session and access token for authentication
+  //     const {
+  //       data: { session },
+  //       error: sessionError,
+  //     } = await supabase.auth.getSession();
+
+  //     if (sessionError || !session) {
+  //       throw new Error(t("session_expired"));
+  //     }
+
+  //     // Get access token from session
+  //     const accessToken = session?.access_token;
+  //     if (!accessToken) {
+  //       throw new Error(t("token_error"));
+  //     }
+
+  //     // Send request with Authorization header (Production standard)
+  //     const response = await apiRequest(`${BASE_URL}/api/user/delete-account`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${accessToken}`, // Production standard: Bearer token in header
+  //       },
+  //       credentials: "include", // Include cookies as backup
+  //     });
+  //     // const data = await response.json();
+
+  //     if (!response.ok) {
+  //       throw new Error(response?.error || t("delete_failed"));
+  //     }
+
+  //     // Sign out and clear data
+  //     await supabase.auth.signOut();
+  //     if (typeof window !== "undefined") {
+  //       localStorage.clear();
+  //     }
+
+  //     showToast("success", t("account_deleted"));
+  //     setTimeout(() => {
+  //       router.push("/login");
+  //     }, 1500);
+  //   } catch (error) {
+  //     console.error("Error deleting account:", error);
+  //     showToast("error", error.message || t("delete_failed"));
+  //     setLoading(false);
+  //   }
+  // };
+  
   const handleDelete = async () => {
     if (step === 1) {
-      // Move to confirmation step
       setStep(2);
       return;
     }
@@ -73,55 +134,64 @@ export default function AccountDeleteModal({ isOpen, onClose }) {
     }
 
     setLoading(true);
+
     try {
-      // Get session and access token for authentication
+      // 1️⃣ Get session ONCE
       const {
         data: { session },
-        error: sessionError,
       } = await supabase.auth.getSession();
 
-      if (sessionError || !session) {
+      if (!session?.access_token) {
         throw new Error(t("session_expired"));
       }
 
-      // Get access token from session
-      const accessToken = session?.access_token;
-      if (!accessToken) {
-        throw new Error(t("token_error"));
+      const accessToken = session.access_token;
+
+      // 2️⃣ CALL DELETE API
+      const response = await apiRequest(
+        `${BASE_URL}/api/user/delete-account`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      if (![200, 401, 403].includes(response.status)) {
+        throw new Error(t("delete_failed"));
       }
 
-      // Send request with Authorization header (Production standard)
-      const response = await apiRequest(`${BASE_URL}/api/user/delete-account`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`, // Production standard: Bearer token in header
-        },
-        credentials: "include", // Include cookies as backup
+      // 3️⃣ HARD RESET CLIENT SESSION (NO supabase.signOut)
+      localStorage.clear();
+      sessionStorage.clear();
+
+      // Clear all cookies (including Supabase auth cookies)
+      document.cookie.split(";").forEach((cookie) => {
+        document.cookie = cookie
+          .replace(/^ +/, "")
+          .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
       });
 
-      // const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || t("delete_failed"));
-      }
-
-      // Sign out and clear data
-      await supabase.auth.signOut();
-      if (typeof window !== "undefined") {
-        localStorage.clear();
-      }
-
       showToast("success", t("account_deleted"));
-      setTimeout(() => {
-        router.push("/login");
-      }, 1500);
+
+      // 4️⃣ REDIRECT IMMEDIATELY
+      router.replace("/login");
     } catch (error) {
-      console.error("Error deleting account:", error);
-      showToast("error", error.message || t("delete_failed"));
-      setLoading(false);
+      console.error("Delete account error:", error);
+
+      // Even if backend complains after deletion, force logout UX
+      localStorage.clear();
+      sessionStorage.clear();
+
+      setTimeout(() => {
+        router.replace("/login");
+      }, 300);
     }
   };
+
+
 
   if (!isOpen) return null;
 
