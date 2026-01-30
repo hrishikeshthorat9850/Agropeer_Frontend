@@ -21,7 +21,7 @@ const ClientModalWrapper = dynamic(
   () => import("@/components/ui/post/ClientModalWrapper"),
   {
     loading: () => null,
-  }
+  },
 );
 
 export default function PostsPage() {
@@ -78,7 +78,7 @@ export default function PostsPage() {
           comment_likes(id, user_id)
         ),
         post_likes(id, user_id)
-      `
+      `,
       )
       .eq("id", postId.trim())
       .limit(1);
@@ -110,7 +110,7 @@ export default function PostsPage() {
         // This runs the complex join safely on the DB side with SECURITY DEFINER
         const { data: rpcData, error: rpcError } = await supabase.rpc(
           "get_post_details_safe",
-          { p_id: postId }
+          { p_id: postId },
         );
 
         if (rpcError) throw rpcError;
@@ -371,7 +371,7 @@ export default function PostsPage() {
                   >
                     {isFetchingMore && hasMore && (
                       <div className="flex flex-col items-center gap-2">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-farm-600"></div>
+                        <LoadingSpinner size="sm" color="green" text="" />
                         <span className="text-sm text-gray-500">
                           {t("loading_more_posts")}
                         </span>

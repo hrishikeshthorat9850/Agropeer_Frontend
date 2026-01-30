@@ -20,6 +20,7 @@ import { useLanguage } from "@/Context/languagecontext";
 import { supabase } from "@/lib/supabaseClient";
 import useToast from "@/hooks/useToast";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function PrivacySettingsPage() {
   const router = useRouter();
@@ -401,7 +402,7 @@ export default function PrivacySettingsPage() {
             className="w-full h-12 flex items-center justify-center gap-2 bg-green-600 active:scale-[0.98] transition-all rounded-xl text-white font-semibold text-lg shadow-lg shadow-green-600/20 disabled:opacity-70 disabled:active:scale-100"
           >
             {loading ? (
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <LoadingSpinner size="tiny" color="white" text="" />
             ) : (
               <>
                 <Check size={20} strokeWidth={3} />

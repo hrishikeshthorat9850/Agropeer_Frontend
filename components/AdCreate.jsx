@@ -10,8 +10,9 @@ import {
   FaTimes,
   FaBullhorn,
   FaCheckCircle,
-  FaSpinner,
+  FaCheckCircle,
 } from "react-icons/fa";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function AdCreate({ onAdCreated }) {
   const [form, setForm] = useState({
@@ -376,7 +377,8 @@ export default function AdCreate({ onAdCreated }) {
             >
               {loading ? (
                 <>
-                  <FaSpinner className="animate-spin" /> Posting...
+                  <LoadingSpinner size="tiny" color="white" text="" />{" "}
+                  Posting...
                 </>
               ) : (
                 <>

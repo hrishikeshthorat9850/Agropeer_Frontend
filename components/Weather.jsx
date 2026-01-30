@@ -29,6 +29,7 @@ import {
 import { useLanguage } from "@/Context/languagecontext";
 import { useLocation, LOCATION } from "./mobile/hooks/useLocation";
 import { openAppSettings } from "./mobile/utils/openAppSettings";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function WeatherForecast() {
   const { t, currentLanguage } = useLanguage();
@@ -254,7 +255,7 @@ export default function WeatherForecast() {
         <div className="flex flex-col items-center justify-center gap-4 p-8 bg-white dark:bg-[#1E1E1E] rounded-3xl shadow-sm border border-gray-100 dark:border-[#333]">
           {status === LOCATION.LOADING && (
             <div className="flex flex-col items-center gap-2">
-              <div className="w-8 h-8 border-4 border-farm-500 border-t-transparent rounded-full animate-spin"></div>
+              <LoadingSpinner size="sm" color="green" text="" />
               <p className="text-gray-500">
                 {t("loading_location") || "Locating..."}
               </p>

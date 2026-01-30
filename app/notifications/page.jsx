@@ -14,6 +14,7 @@ import Link from "next/link";
 import useToast from "@/hooks/useToast";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
 import { useLanguage } from "@/Context/languagecontext";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function NotificationsPage() {
   const { t } = useLanguage();
@@ -150,7 +151,7 @@ export default function NotificationsPage() {
       <MobilePageContainer>
         <div className="min-h-screen flex items-center justify-center py-20">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-farm-600 dark:border-farm-500 mx-auto"></div>
+            <LoadingSpinner size="md" color="green" />
             <p className="mt-4 text-farm-600 dark:text-farm-400">
               {t("loading")}
             </p>
@@ -244,7 +245,7 @@ export default function NotificationsPage() {
         {/* Creative Notifications List */}
         {notificationsLoading ? (
           <div className="flex flex-col items-center justify-center py-24 space-y-4">
-            <div className="w-12 h-12 border-4 border-farm-200 border-t-farm-600 rounded-full animate-spin"></div>
+            <LoadingSpinner size="md" color="green" />
             <p className="text-sm font-medium text-gray-400 animate-pulse">
               {t("loading_notifications")}
             </p>

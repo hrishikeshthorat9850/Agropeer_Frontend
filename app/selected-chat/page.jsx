@@ -4,10 +4,11 @@ import { useChat } from "@/Context/ChatContext";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useSocket } from "@/Context/SocketContext";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function SelectedChat() {
   const { selected, messages, sendMessage, loadConversation } = useChat();
-  const {socket} = useSocket();
+  const { socket } = useSocket();
   const searchParams = useSearchParams();
   const conversationId = searchParams.get("conversationId");
 
@@ -20,7 +21,7 @@ export default function SelectedChat() {
   if (!selected) {
     return (
       <div className="flex justify-center items-center h-[100dvh]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <LoadingSpinner size="md" />
       </div>
     );
   }

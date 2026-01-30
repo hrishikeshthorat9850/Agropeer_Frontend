@@ -7,7 +7,8 @@ import {
   useSpring,
   useTransform,
 } from "framer-motion";
-import { ArrowDown, Loader2, Check } from "lucide-react";
+import { ArrowDown, Check } from "lucide-react";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 
 /**
@@ -156,7 +157,7 @@ export default function PullToRefresh({ onRefresh, children }) {
                     animate={{ scale: 1, rotate: 0 }}
                     exit={{ scale: 0 }}
                   >
-                    <Loader2 size={18} className="animate-spin" />
+                    <LoadingSpinner size="tiny" text="" />
                   </motion.div>
                 ) : (
                   <motion.div

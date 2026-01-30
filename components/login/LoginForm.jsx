@@ -13,6 +13,7 @@ import OAuthButtons from "./OAuthButtons";
 import { useLanguage } from "@/Context/languagecontext";
 import { AnimatePresence } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function LoginForm() {
   const { t } = useLanguage();
@@ -144,7 +145,7 @@ export default function LoginForm() {
           className="w-full h-14 bg-green-600 hover:bg-green-700 active:scale-[0.98] transition-all rounded-2xl text-white font-bold text-base shadow-lg shadow-green-600/30 flex items-center justify-center gap-2 disabled:opacity-70 disabled:active:scale-100"
         >
           {loading ? (
-            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            <LoadingSpinner size="xs" color="white" text="" />
           ) : (
             <>
               {t("sign_in")}

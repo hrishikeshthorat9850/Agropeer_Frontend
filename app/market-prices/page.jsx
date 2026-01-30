@@ -11,6 +11,8 @@ import MarketFilters from "@/components/market-prices/MarketFilters";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { useLanguage } from "@/Context/languagecontext";
 
+import LoadingSpinner from "@/components/LoadingSpinner";
+
 // Lazy load MarketList to improve initial render
 const MarketList = dynamic(
   () => import("@/components/market-prices/MarketList"),
@@ -21,10 +23,7 @@ const MarketList = dynamic(
       const { t } = useLanguage();
       return (
         <div className="flex justify-center items-center py-20">
-          <div className="flex flex-col items-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mb-4"></div>
-            <p className="text-gray-500 text-sm">{t("loading_list")}</p>
-          </div>
+          <LoadingSpinner size="sm" text={t("loading_list")} />
         </div>
       );
     },
@@ -227,9 +226,11 @@ export default function MarketPricesPage() {
         <div className="px-4 py-2">
           {/* Loading State for States */}
           {statesLoading && allStates.length === 0 && (
-            <div className="mb-4 text-xs text-emerald-600 flex items-center justify-center gap-2 bg-emerald-50 py-2 rounded-lg">
-              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-emerald-600"></div>
-              <span>{t("loading_states")}</span>
+            <div className="mb-4 flex items-center justify-center gap-2 bg-emerald-50 py-2 rounded-lg">
+              <LoadingSpinner size="tiny" text="" />
+              <span className="text-xs text-emerald-600">
+                {t("loading_states")}
+              </span>
             </div>
           )}
 
@@ -245,10 +246,7 @@ export default function MarketPricesPage() {
           {/* Full Screen Loading */}
           {isLoading && displayRecords.length === 0 && (
             <div className="flex flex-col items-center justify-center py-32 opacity-60">
-              <div className="animate-spin rounded-full h-10 w-10 border-4 border-emerald-500 border-t-transparent mb-4"></div>
-              <p className="text-gray-500 font-medium text-sm animate-pulse">
-                {t("loading_market_data")}
-              </p>
+              <LoadingSpinner size="md" text={t("loading_market_data")} />
             </div>
           )}
 
@@ -266,7 +264,7 @@ export default function MarketPricesPage() {
               >
                 {isLoading && (
                   <div className="scale-75">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
+                    <LoadingSpinner size="xxs" text="" />
                   </div>
                 )}
                 {!hasMore && (

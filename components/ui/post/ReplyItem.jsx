@@ -1,8 +1,13 @@
-"use client";
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { formatName } from "@/utils/formatName";
 import { timeAgo } from "@/utils/timeConverter";
-import { FaRegHeart, FaHeart, FaEllipsisH } from "react-icons/fa";
+import {
+  FaRegHeart,
+  FaHeart,
+  FaEllipsisH,
+  FaEdit,
+  FaTrash,
+} from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/Context/languagecontext";
 
@@ -21,21 +26,42 @@ export default function ReplyItem({
   level = 0,
   nestedReplies = [],
   nestedRepliesMap = {},
+  onEdit,
+  onDelete,
 }) {
   const { t } = useLanguage();
   const isLiked = replyLikes[reply?.id] === true;
   const likeCount = replyLikes[reply.id]?.length || 0;
 
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className={`mt-3 ${level > 0 ? "ml-8" : "ml-0"}`}>
+    <div className={`relative ${level > 0 ? "ml-0" : ""}`}>
+      {/* Connector Curve for Level 0 Replies */}
+      <div className="absolute -left-[23px] -top-3 w-[20px] h-[26px] border-b-[1.5px] border-l-[1.5px] border-gray-300 dark:border-zinc-700/80 rounded-bl-[16px] pointer-events-none select-none" />
+
       <motion.div
         initial={{ opacity: 0, x: -5 }}
         animate={{ opacity: 1, x: 0 }}
-        className="flex gap-3 items-start group/reply w-full"
+        className="flex gap-2.5 items-start group/reply w-full"
       >
         {/* Avatar */}
-        <div className="flex-shrink-0">
-          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full overflow-hidden shadow-sm border border-gray-100 dark:border-gray-800 bg-gray-100 dark:bg-gray-800">
+        <div className="flex-shrink-0 z-10">
+          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full overflow-hidden shadow-sm border border-gray-100 dark:border-gray-800 bg-gray-100 dark:bg-gray-800">
             {reply?.userinfo?.avatar_url ? (
               <img
                 src={reply.userinfo.avatar_url}
@@ -56,54 +82,92 @@ export default function ReplyItem({
 
         {/* Content Block */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-2">
-            <div className="flex flex-col text-[14px] leading-snug">
-              <span className="font-semibold text-gray-900 dark:text-white cursor-pointer hover:underline mb-0.5">
+          <div className="flex flex-col gap-0.5">
+            {/* Header: Name + Time */}
+            <div className="flex items-center gap-2 text-[12px]">
+              <span className="font-semibold text-gray-900 dark:text-gray-100 cursor-pointer hover:underline">
                 {reply?.userinfo?.display_name || formatName(reply?.userinfo)}
               </span>
-              <span className="text-gray-800 dark:text-gray-200 whitespace-pre-wrap font-normal">
-                {reply.comment}
+              <span className="text-[10px] text-gray-500 dark:text-gray-400">
+                {timeAgo(reply.created_at)}
               </span>
             </div>
 
-            {/* Like Icon */}
-            <button
-              onClick={() => onLike(reply.id)}
-              className="pt-1 flex-shrink-0 focus:outline-none transition-transform active:scale-90"
-            >
-              {isLiked ? (
-                <FaHeart className="w-3 h-3 text-red-500" />
-              ) : (
-                <FaRegHeart className="w-3 h-3 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300" />
-              )}
-            </button>
-          </div>
+            {/* Content */}
+            <div className="text-[13px] text-gray-900 dark:text-gray-200 whitespace-pre-wrap leading-snug">
+              {reply.comment}
+            </div>
 
-          {/* Metadata Row */}
-          <div className="flex items-center gap-4 mt-1 text-[11px] text-gray-500 dark:text-gray-400 font-medium select-none">
-            <span>{timeAgo(reply.created_at)}</span>
+            {/* Action Bar */}
+            <div className="flex items-center gap-3 mt-1.5 text-xs text-gray-500 dark:text-gray-400 font-medium select-none">
+              {/* Like */}
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => onLike(reply.id)}
+                  className="flex items-center justify-center w-6 h-6 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors focus:outline-none"
+                >
+                  {isLiked ? (
+                    <FaHeart className="w-3 h-3 text-red-500" />
+                  ) : (
+                    <FaRegHeart className="w-3 h-3 text-gray-800 dark:text-white" />
+                  )}
+                </button>
+                {likeCount > 0 && (
+                  <span className="text-[10px] font-semibold text-gray-600 dark:text-gray-400">
+                    {likeCount}
+                  </span>
+                )}
+              </div>
 
-            {likeCount > 0 && (
-              <span className="font-semibold text-gray-800 dark:text-gray-300">
-                {likeCount} {likeCount === 1 ? "like" : "likes"}
-              </span>
-            )}
-
-            {level < 2 && (
+              {/* Reply Button */}
               <button
-                onClick={() => onReply(reply.id)}
-                className="font-semibold text-gray-500 hover:text-gray-800 dark:hover:text-gray-300 transition-colors"
+                onClick={(e) => onReply(reply.id)}
+                className="hover:bg-gray-100 dark:hover:bg-zinc-800 px-2 py-0.5 rounded-full transition-colors text-xs font-semibold text-gray-700 dark:text-gray-300"
               >
-                {t("reply_btn")}
+                Reply
               </button>
-            )}
 
-            <button
-              onClick={(e) => onMenuClick(reply.id, e)}
-              className="opacity-0 group-hover/reply:opacity-100 transition-opacity p-0.5 text-gray-400 hover:text-gray-600"
-            >
-              <FaEllipsisH className="w-2.5 h-2.5" />
-            </button>
+              {/* Meatball Menu */}
+              <div ref={menuRef} className="relative ml-auto">
+                <button
+                  onClick={() => setMenuOpen(!menuOpen)}
+                  className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-500 dark:text-gray-400 transition-colors"
+                >
+                  <FaEllipsisH className="w-2.5 h-2.5" />
+                </button>
+
+                <AnimatePresence>
+                  {menuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      className="absolute right-0 top-full mt-1 w-32 bg-white dark:bg-[#1e1e1e] rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden z-[50]"
+                    >
+                      <button
+                        onClick={() => {
+                          setMenuOpen(false);
+                          if (onEdit) onEdit(reply.id);
+                        }}
+                        className="w-full flex items-center gap-2 px-3 py-2.5 text-xs font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5"
+                      >
+                        <FaEdit className="w-3 h-3" /> {t("edit_btn") || "Edit"}
+                      </button>
+                      <button
+                        onClick={() => {
+                          setMenuOpen(false);
+                          if (onDelete) onDelete(reply.id);
+                        }}
+                        className="w-full flex items-center gap-2 px-3 py-2.5 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10"
+                      >
+                        <FaTrash className="w-3 h-3" />{" "}
+                        {t("delete_btn") || "Delete"}
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
           </div>
 
           {/* Nested Reply Input */}
@@ -113,7 +177,7 @@ export default function ReplyItem({
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
-                className="overflow-hidden mt-3"
+                className="overflow-hidden mt-2"
               >
                 <div className="flex items-center gap-2">
                   <input
@@ -125,7 +189,7 @@ export default function ReplyItem({
                     }
                     placeholder={t("write_reply_placeholder")}
                     autoFocus
-                    className="flex-1 bg-gray-100 dark:bg-gray-800 text-xs px-4 py-2 rounded-full focus:outline-none focus:ring-1 focus:ring-green-500/50 text-gray-900 dark:text-white placeholder-gray-500"
+                    className="flex-1 bg-gray-100 dark:bg-zinc-800 text-xs px-3 py-1.5 rounded-full focus:outline-none focus:ring-1 focus:ring-green-500/50 text-gray-900 dark:text-white placeholder-gray-500"
                   />
                   <button
                     onClick={() => onSendReply(reply?.id)}
@@ -159,6 +223,8 @@ export default function ReplyItem({
                   level={level + 1}
                   nestedReplies={nestedRepliesMap[nestedReply.id] || []}
                   nestedRepliesMap={nestedRepliesMap}
+                  onEdit={onEdit}
+                  onDelete={onDelete}
                 />
               ))}
             </div>

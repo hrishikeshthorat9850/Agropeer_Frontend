@@ -17,14 +17,12 @@ export default function PageTransition({ children }) {
     >
       <motion.div
         key={path}
-        initial={{ opacity: 0, y: 40, scale: 0.92 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: -20, scale: 0.98 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
         transition={{
-          type: "spring",
-          stiffness: 450, // Faster snap
-          damping: 35, // Controlled stop (no wobble)
-          mass: 0.8, // Lighter feel
+          duration: 0.2, // Snappy "content update" feel
+          ease: "easeInOut",
         }}
         className="w-full h-full"
       >

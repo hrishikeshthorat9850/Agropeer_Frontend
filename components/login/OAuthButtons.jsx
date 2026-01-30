@@ -7,6 +7,7 @@ import { Browser } from "@capacitor/browser";
 import { motion } from "framer-motion";
 import { FaGoogle, FaFacebook } from "react-icons/fa";
 import { useLanguage } from "@/Context/languagecontext";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function OAuthButtons() {
   const { t } = useLanguage();
@@ -79,7 +80,7 @@ export default function OAuthButtons() {
           className="flex items-center justify-center gap-2 h-12 rounded-xl bg-gray-50 dark:bg-[#1C1C1E] text-gray-900 dark:text-white font-semibold text-sm border border-transparent shadow-sm hover:bg-gray-100 dark:hover:bg-[#2C2C2E] transition-all disabled:opacity-50"
         >
           {loading.google ? (
-            <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+            <LoadingSpinner size="tiny" color="green" text="" />
           ) : (
             <>
               <FaGoogle className="text-red-500 text-lg" />
@@ -96,7 +97,7 @@ export default function OAuthButtons() {
           className="flex items-center justify-center gap-2 h-12 rounded-xl bg-gray-50 dark:bg-[#1C1C1E] text-gray-900 dark:text-white font-semibold text-sm border border-transparent shadow-sm hover:bg-gray-100 dark:hover:bg-[#2C2C2E] transition-all disabled:opacity-50"
         >
           {loading.facebook ? (
-            <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+            <LoadingSpinner size="tiny" color="green" text="" />
           ) : (
             <>
               <FaFacebook className="text-blue-600 text-lg" />

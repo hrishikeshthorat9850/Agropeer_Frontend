@@ -13,7 +13,7 @@ import MarketSection from "@/components/explore/MarketPricesInsight";
 import ToolsSection from "@/components/explore/Tools&Calculator";
 import FarmerStories from "@/components/explore/FarmerStories";
 import CropDiscoverySection from "@/components/explore/CropDiscoverySection";
-import LoadingSpinner from "@/components/ui/market/LoadingSpinner";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
 
 // ✅ Number formatter

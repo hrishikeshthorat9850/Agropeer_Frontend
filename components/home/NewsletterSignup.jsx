@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { FaEnvelope, FaArrowRight } from "react-icons/fa";
 import { useState } from "react";
 import { useLanguage } from "@/Context/languagecontext";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const NewsletterSignup = () => {
   const { t } = useLanguage();
@@ -27,7 +28,7 @@ const NewsletterSignup = () => {
             Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
           },
           body: JSON.stringify({ email }),
-        }
+        },
       );
 
       const data = await res.json(); // read once
@@ -97,7 +98,7 @@ const NewsletterSignup = () => {
                   className="bg-white text-sunset-600 px-6 py-3 rounded-xl font-semibold hover:bg-farm-50 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-sm sm:text-base"
                 >
                   {isSubmitting ? (
-                    <div className="w-5 h-5 border-2 border-sunset-600 border-t-transparent rounded-full animate-spin"></div>
+                    <LoadingSpinner size="tiny" color="orange" text="" />
                   ) : (
                     <>
                       {t("subscribe_btn")}

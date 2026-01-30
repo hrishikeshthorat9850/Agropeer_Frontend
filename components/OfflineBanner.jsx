@@ -6,6 +6,7 @@ import { Capacitor } from "@capacitor/core";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaWifi, FaExclamationTriangle } from "react-icons/fa";
 import { IoCheckmarkCircle } from "react-icons/io5";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function OfflineBanner() {
   const [offline, setOffline] = useState(false);
@@ -115,7 +116,7 @@ export default function OfflineBanner() {
               disabled
               className="w-full py-4 px-6 rounded-2xl bg-zinc-100 dark:bg-zinc-800/50 text-zinc-500 dark:text-zinc-400 font-semibold text-sm cursor-not-allowed flex items-center justify-center gap-2.5 transition-colors border border-zinc-100 dark:border-zinc-800"
             >
-              <div className="w-4 h-4 border-[2px] border-current border-t-transparent rounded-full animate-spin opacity-70" />
+              <LoadingSpinner size="xs" />
               <span>{t("reconnecting") || "Reconnecting..."}</span>
             </button>
           </motion.div>

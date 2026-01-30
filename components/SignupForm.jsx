@@ -9,6 +9,7 @@ import useToast from "@/hooks/useToast";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/Context/languagecontext";
 import { User, Mail, Phone, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 /* ================= Helpers (Preserved Logic) ================= */
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -75,13 +76,13 @@ export default function SignupForm() {
     e.preventDefault();
     setErrorMsg("");
     setLoading(true);
-    console.log("Signup FOrmData is :",form);
+    console.log("Signup FOrmData is :", form);
     try {
       const { data, error } = await supabase.auth.signUp({
         email: form.email,
         password: form.password,
       });
-      console.log("Error in signup is :",error);
+      console.log("Error in signup is :", error);
       if (error) throw error;
       if (!data?.user?.id) throw new Error(t("user_id_missing"));
 
@@ -96,7 +97,6 @@ export default function SignupForm() {
         .eq("id", data.user?.id);
 
       if (profileError) throw profileError;
-
 
       showToast("success", t("account_created_success"));
       setTimeout(() => router.push("/login"), 1200);
@@ -299,7 +299,7 @@ export default function SignupForm() {
           className="w-full h-12 bg-green-600 hover:bg-green-700 active:scale-[0.98] transition-all rounded-xl text-white font-bold text-sm shadow-lg shadow-green-600/30 flex items-center justify-center gap-2 disabled:opacity-70 disabled:active:scale-100 mt-2"
         >
           {loading ? (
-            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            <LoadingSpinner size="xs" color="white" />
           ) : (
             <>
               {t("create_account_btn")}

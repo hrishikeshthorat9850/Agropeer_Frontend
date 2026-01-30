@@ -49,19 +49,22 @@ export default function CommentItem({
     };
   }, []);
 
+  const hasReplies = replies && replies.length > 0;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className={`relative w-full group/comment py-2 ${
+      className={`relative w-full group/comment py-3 ${
         menuOpen ? "z-20" : "z-10"
       }`}
     >
-      <div className="flex gap-3 items-start px-2 sm:px-4">
-        {/* Avatar */}
-        <div className="flex-shrink-0">
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden shadow-sm border border-gray-100 dark:border-gray-800 bg-gray-100 dark:bg-gray-800">
+      <div className="flex gap-3 px-3">
+        {/* Left Column: Avatar + Thread Line */}
+        <div className="flex flex-col items-center shrink-0 relative">
+          {/* Avatar */}
+          <div className="z-10 w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden shadow-sm border border-gray-100 dark:border-gray-800 bg-gray-100 dark:bg-gray-800">
             {comment?.userinfo?.avatar_url ? (
               <img
                 src={comment.userinfo.avatar_url}
@@ -79,92 +82,111 @@ export default function CommentItem({
               </div>
             )}
           </div>
+
+          {/* Thread Vertical Line - Only if there are replies */}
+          {hasReplies && (
+            <div className="absolute top-10 bottom-0 w-[1.5px] bg-gray-300 dark:bg-zinc-700/80 -z-0" />
+          )}
         </div>
 
-        {/* Content Block */}
+        {/* Right Column: Content + Replies */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-2">
-            <div className="flex flex-col text-[15px] leading-snug">
-              <span className="font-semibold text-gray-900 dark:text-white cursor-pointer hover:underline mb-0.5">
+          {/* Comment Header & Content */}
+          <div className="flex flex-col gap-0.5">
+            {/* Header Line: Name + Time */}
+            <div className="flex items-center gap-2 text-[13px]">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">
                 {comment?.userinfo?.display_name
                   ? comment?.userinfo?.display_name
                   : formatName(comment?.userinfo)}
               </span>
-              <span className="text-gray-800 dark:text-gray-200 whitespace-pre-wrap font-normal">
-                {comment.comment}
+              <span className="text-[11px] text-gray-500 dark:text-gray-400">
+                {timeAgo(comment.created_at)}
               </span>
             </div>
 
-            {/* Like Icon */}
-            <button
-              onClick={() => onLike(comment?.id)}
-              className="pt-1 flex-shrink-0 focus:outline-none transition-transform active:scale-90"
-            >
-              {isLiked ? (
-                <FaHeart className="w-3.5 h-3.5 text-red-500" />
-              ) : (
-                <FaRegHeart className="w-3.5 h-3.5 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300" />
-              )}
-            </button>
-          </div>
+            {/* Comment Text */}
+            <div className="text-[14px] text-gray-900 dark:text-gray-200 whitespace-pre-wrap leading-snug">
+              {comment.comment}
+            </div>
 
-          {/* Metadata Row */}
-          <div className="flex items-center gap-4 mt-1.5 text-xs text-gray-500 dark:text-gray-400 font-medium select-none relative">
-            <span>{timeAgo(comment.created_at)}</span>
-
-            {comment?.comment_likes?.length > 0 && (
-              <span className="font-semibold text-gray-800 dark:text-gray-300">
-                {comment.comment_likes.length} {t("likes") || "likes"}
-              </span>
-            )}
-
-            <button
-              onClick={() => onReply(comment.id)}
-              className="font-semibold text-gray-500 hover:text-gray-800 dark:hover:text-gray-300 transition-colors"
-            >
-              {t("reply_btn")}
-            </button>
-
-            {/* Meatball Menu Trigger */}
-            <div ref={menuRef} className="relative">
-              <button
-                onClick={() => setMenuOpen(!menuOpen)}
-                className="opacity-0 group-hover/comment:opacity-100 transition-opacity p-1 text-gray-400 hover:text-gray-600"
-              >
-                <FaEllipsisH />
-              </button>
-
-              {/* Dropdown Menu */}
-              <AnimatePresence>
-                {menuOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    className="absolute left-0 top-full mt-1 w-32 bg-white dark:bg-[#1e1e1e] rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden z-[50]"
-                  >
-                    <button
-                      onClick={() => {
-                        setMenuOpen(false);
-                        if (onEdit) onEdit(comment.id);
-                      }}
-                      className="w-full flex items-center gap-2 px-3 py-2.5 text-xs font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5"
-                    >
-                      <FaEdit className="w-3 h-3" /> {t("edit_btn") || "Edit"}
-                    </button>
-                    <button
-                      onClick={() => {
-                        setMenuOpen(false);
-                        if (onDelete) onDelete(comment.id);
-                      }}
-                      className="w-full flex items-center gap-2 px-3 py-2.5 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10"
-                    >
-                      <FaTrash className="w-3 h-3" />{" "}
-                      {t("delete_btn") || "Delete"}
-                    </button>
-                  </motion.div>
+            {/* Action Bar (Like, Reply, etc) */}
+            <div className="flex items-center gap-4 mt-2">
+              {/* Like Button */}
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={() => onLike(comment?.id)}
+                  className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors focus:outline-none"
+                >
+                  {isLiked ? (
+                    <FaHeart className="w-4 h-4 text-red-500" />
+                  ) : (
+                    <FaRegHeart className="w-4 h-4 text-gray-800 dark:text-white" />
+                  )}
+                </button>
+                {comment?.comment_likes?.length > 0 && (
+                  <span className="text-xs text-gray-600 dark:text-gray-400 font-medium">
+                    {comment.comment_likes.length}
+                  </span>
                 )}
-              </AnimatePresence>
+              </div>
+              {/* <button
+                onClick={() => onReply(comment.id)}
+                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors text-gray-800 dark:text-white"
+              >
+              </button> */}
+              {/* Re-implementing the Action Row to match screenshot more exactly */}
+              {/* Screenshot shows: LikeIcon [Count] | DislikeIcon | ReplyIcon/Text */}
+              {/* I will use the previous structure but styled cleaner */}
+              <div className="flex items-center gap-4 text-xs font-semibold text-gray-500 dark:text-gray-400 select-none">
+                <button
+                  onClick={() => onReply(comment.id)}
+                  className="hover:bg-gray-100 dark:hover:bg-zinc-800 px-3 py-1.5 rounded-full transition-colors"
+                >
+                  Reply
+                </button>
+              </div>
+              {/* Meatball Menu */}
+              <div ref={menuRef} className="relative ml-auto">
+                <button
+                  onClick={() => setMenuOpen(!menuOpen)}
+                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-500 dark:text-gray-400 transition-colors"
+                >
+                  <FaEllipsisH className="w-3.5 h-3.5" />
+                </button>
+
+                {/* Menu Dropdown - Same as before */}
+                <AnimatePresence>
+                  {menuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      className="absolute right-0 top-full mt-1 w-32 bg-white dark:bg-[#1e1e1e] rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden z-[50]"
+                    >
+                      <button
+                        onClick={() => {
+                          setMenuOpen(false);
+                          if (onEdit) onEdit(comment.id);
+                        }}
+                        className="w-full flex items-center gap-2 px-3 py-2.5 text-xs font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5"
+                      >
+                        <FaEdit className="w-3 h-3" /> {t("edit_btn") || "Edit"}
+                      </button>
+                      <button
+                        onClick={() => {
+                          setMenuOpen(false);
+                          if (onDelete) onDelete(comment.id);
+                        }}
+                        className="w-full flex items-center gap-2 px-3 py-2.5 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10"
+                      >
+                        <FaTrash className="w-3 h-3" />{" "}
+                        {t("delete_btn") || "Delete"}
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </div>
           </div>
 
@@ -175,9 +197,9 @@ export default function CommentItem({
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
-                className="overflow-hidden mt-3"
+                className="overflow-hidden mt-2 mb-2"
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 bg-gray-100 dark:bg-zinc-800 rounded-2xl px-2 py-1">
                   <input
                     type="text"
                     value={replyText}
@@ -185,7 +207,7 @@ export default function CommentItem({
                     onKeyPress={(e) => e.key === "Enter" && onSendReply()}
                     placeholder={t("write_reply_placeholder")}
                     autoFocus
-                    className="flex-1 bg-gray-100 dark:bg-gray-800 text-sm px-4 py-2 rounded-full focus:outline-none focus:ring-1 focus:ring-green-500/50 text-gray-900 dark:text-white placeholder-gray-500"
+                    className="flex-1 bg-transparent text-sm px-2 py-2 focus:outline-none text-gray-900 dark:text-white placeholder-gray-500"
                   />
                   <button
                     onClick={onSendReply}
@@ -199,39 +221,31 @@ export default function CommentItem({
             )}
           </AnimatePresence>
 
-          {/* Nested Replies */}
-          {replies?.length > 0 && (
-            <div className="mt-3">
-              <button className="flex items-center gap-3 w-full group/toggle">
-                <div className="w-8 h-[1px] bg-gray-300 dark:bg-gray-700 group-hover/toggle:bg-gray-400 transition-colors"></div>
-                <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 group-hover/toggle:text-gray-600 dark:group-hover/toggle:text-gray-300 transition-colors">
-                  View {replies.length}{" "}
-                  {replies.length === 1 ? "reply" : "replies"}
-                </span>
-              </button>
-
-              <div className="space-y-4 mt-3">
-                {replies.map((reply) => (
-                  <ReplyItem
-                    key={reply.id}
-                    reply={reply}
-                    isLiked={replyLikes[reply.id] || false}
-                    nestedReplies={nestedReplies[reply.id] || []}
-                    showReplyBox={showReplyBox}
-                    replyText={replyText}
-                    onReplyTextChange={onReplyTextChange}
-                    onLike={onLike}
-                    onReply={onReply}
-                    onSendReply={onSendReply}
-                    onMenuClick={(replyId, e) => {
-                      if (onReplyMenu) onReplyMenu(replyId, e);
-                    }}
-                    menuOpen={replyMenuOpen}
-                    replyLikes={replyLikes}
-                    nestedRepliesMap={nestedReplies}
-                  />
-                ))}
-              </div>
+          {/* Nested Replies Rendering */}
+          {hasReplies && (
+            <div className="mt-2 flex flex-col gap-4">
+              {replies.map((reply) => (
+                <ReplyItem
+                  key={reply.id}
+                  reply={reply}
+                  isLiked={replyLikes[reply.id] || false}
+                  nestedReplies={nestedReplies[reply.id] || []}
+                  showReplyBox={showReplyBox}
+                  replyText={replyText}
+                  onReplyTextChange={onReplyTextChange}
+                  onLike={onLike}
+                  onReply={onReply}
+                  onSendReply={onSendReply}
+                  onMenuClick={(replyId, e) => {
+                    if (onReplyMenu) onReplyMenu(replyId, e);
+                  }}
+                  onEdit={onEdit}
+                  onDelete={onDelete}
+                  menuOpen={replyMenuOpen}
+                  replyLikes={replyLikes}
+                  nestedRepliesMap={nestedReplies}
+                />
+              ))}
             </div>
           )}
         </div>

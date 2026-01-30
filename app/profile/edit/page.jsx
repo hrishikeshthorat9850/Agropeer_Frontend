@@ -9,6 +9,7 @@ import useToast from "@/hooks/useToast";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
 import imageCompression from "browser-image-compression";
 import Image from "next/image";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function EditProfilePage() {
   const { user } = useLogin();
@@ -154,7 +155,7 @@ export default function EditProfilePage() {
               className="p-2 -mr-2 text-green-600 dark:text-green-500 font-semibold disabled:opacity-50"
             >
               {loading ? (
-                <div className="w-5 h-5 border-2 border-green-600 border-t-transparent rounded-full animate-spin" />
+                <LoadingSpinner size="tiny" color="green" text="" />
               ) : (
                 t("save_changes") || "Save"
               )}
@@ -276,7 +277,7 @@ export default function EditProfilePage() {
               className="w-full h-12 bg-green-600 active:scale-[0.98] transition-all rounded-xl text-white font-semibold text-lg shadow-lg shadow-green-600/20 disabled:opacity-60 flex items-center justify-center gap-2 mt-8 sm:hidden"
             >
               {loading ? (
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <LoadingSpinner size="tiny" color="white" text="" />
               ) : (
                 <>
                   <Check size={20} strokeWidth={3} />

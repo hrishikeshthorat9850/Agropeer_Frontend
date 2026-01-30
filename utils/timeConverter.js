@@ -1,22 +1,24 @@
 export function timeAgo(date) {
-    const seconds = Math.floor((new Date() - new Date(date)) / 1000);
-    const intervals = [
-      { label: "year", seconds: 31536000 },
-      { label: "month", seconds: 2592000 },
-      { label: "week", seconds: 604800 },
-      { label: "day", seconds: 86400 },
-      { label: "hour", seconds: 3600 },
-      { label: "minute", seconds: 60 },
-      { label: "second", seconds: 1 },
-    ];
+  const seconds = Math.floor((new Date() - new Date(date)) / 1000);
 
-    for (const i of intervals) {
-      const count = Math.floor(seconds / i.seconds);
-      if (count > 0) {
-        if (i.label === "week" && count > 1) return `${count}w`;
-        if (i.label === "week" && count === 1) return "1w";
-        return `${count} ${i.label}${count > 1 ? "s" : ""} ago`;
-      }
+  // Intervals with YouTube-style short labels
+  const intervals = [
+    { label: "yr", seconds: 31536000 },
+    { label: "mo", seconds: 2592000 },
+    { label: "wk", seconds: 604800 },
+    { label: "d", seconds: 86400 },
+    { label: "h", seconds: 3600 },
+    { label: "min", seconds: 60 },
+    { label: "s", seconds: 1 },
+  ];
+
+  for (const i of intervals) {
+    const count = Math.floor(seconds / i.seconds);
+    if (count > 0) {
+      // Return format: "1 yr ago", "2 mo ago", etc.
+      // No plural "s" for abbreviations usually.
+      return `${count} ${i.label} ago`;
     }
-    return "just now";
   }
+  return "just now";
+}
