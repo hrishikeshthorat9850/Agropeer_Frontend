@@ -217,7 +217,8 @@ const FarmerDashboard = () => {
   return (
     <div className="bg-gray-50 dark:bg-black font-sans">
       {/* 📱 STICKY APP BAR (Header + Quick Stats) */}
-      <header className="relative z-40 bg-white/95 dark:bg-[#121212]/95 backdrop-blur-md border-b border-gray-100 dark:border-white/5 shadow-sm">
+      {/* 📱 STICKY APP BAR (Header + Quick Stats) */}
+      <header className="sticky top-0 z-40 bg-white/95 dark:bg-[#121212]/95 backdrop-blur-md border-b border-gray-100 dark:border-white/5 shadow-sm">
         <div className="max-w-lg mx-auto px-4 py-3">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2.5">
@@ -267,7 +268,7 @@ const FarmerDashboard = () => {
         </div>
 
         {/* 📱 HORIZONTAL SCROLLABLE TABS (YouTube/Instagram Style) */}
-        <div className="sticky top-[60px] z-30 bg-white dark:bg-[#121212] border-t border-gray-100 dark:border-[#333]">
+        <div className="bg-white dark:bg-[#121212] border-t border-gray-100 dark:border-[#333]">
           <div className="max-w-lg mx-auto flex items-center gap-1 overflow-x-auto no-scrollbar px-4 py-2">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id;

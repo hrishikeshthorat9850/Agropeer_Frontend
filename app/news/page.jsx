@@ -342,31 +342,36 @@ export default function NewsPage() {
   // List view
   return (
     <ErrorBoundary>
-      <div className="bg-gray-50 dark:bg-black pb-6 pt-safe-top pt-24">
+      <div className="bg-gray-50 dark:bg-black pb-6">
         {/* Mobile App Header */}
         {/* Mobile App Header (Title) */}
-        <header className="relative z-40 bg-white/95 dark:bg-black/95 backdrop-blur-sm border-b border-transparent px-5 py-3 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-            Agro News
-          </h1>
-        </header>
+        {/* Sticky Header Wrapper */}
+        <div className="sticky top-0 z-40 bg-gray-50 dark:bg-black">
+          <header className="relative z-50 bg-white/95 dark:bg-black/95 backdrop-blur-sm border-b border-transparent px-5 py-3 flex items-center justify-between shadow-sm">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+              Agro News
+            </h1>
+          </header>
 
-        <div className="w-full max-w-lg mx-auto md:max-w-5xl">
-          {/* Search Area */}
-          <div className="px-4 pb-2 bg-white dark:bg-black">
-            <NewsSearch onSearch={handleSearch} />
-          </div>
+          <div className="w-full max-w-lg mx-auto md:max-w-5xl bg-white dark:bg-black">
+            {/* Search Area */}
+            <div className="px-4 pb-2">
+              <NewsSearch onSearch={handleSearch} />
+            </div>
 
-          {/* Horizontal Scrollable Filters */}
-          <div className="sticky top-[60px] z-30 bg-white/95 dark:bg-black/95 backdrop-blur-sm pt-2 pb-3 pl-4 border-b border-gray-100 dark:border-white/5">
-            <div className="overflow-x-auto flex gap-2 pr-4 no-scrollbar">
-              <NewsFilterBar
-                onCategoryChange={handleCategoryChange}
-                selectedCategory={selectedCategory}
-              />
+            {/* Horizontal Scrollable Filters */}
+            <div className="bg-white/95 dark:bg-black/95 backdrop-blur-sm pt-2 pb-3 pl-4 border-b border-gray-100 dark:border-white/5">
+              <div className="overflow-x-auto flex gap-2 pr-4 no-scrollbar">
+                <NewsFilterBar
+                  onCategoryChange={handleCategoryChange}
+                  selectedCategory={selectedCategory}
+                />
+              </div>
             </div>
           </div>
+        </div>
 
+        <div className="w-full max-w-lg mx-auto md:max-w-5xl">
           {/* Stats Row (Subtle) */}
           {!loading && !error && (
             <div className="px-4 py-3 flex items-center justify-between">

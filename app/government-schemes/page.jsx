@@ -3,7 +3,20 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { FaBullhorn, FaArrowLeft, FaTag, FaMapMarkerAlt, FaCheckCircle, FaFileAlt, FaClipboardList, FaExternalLinkAlt, FaWhatsapp, FaCopy, FaCheck, FaShareAlt } from "react-icons/fa";
+import {
+  FaBullhorn,
+  FaArrowLeft,
+  FaTag,
+  FaMapMarkerAlt,
+  FaCheckCircle,
+  FaFileAlt,
+  FaClipboardList,
+  FaExternalLinkAlt,
+  FaWhatsapp,
+  FaCopy,
+  FaCheck,
+  FaShareAlt,
+} from "react-icons/fa";
 import SchemeSearch from "@/components/government-schemes/SchemeSearch";
 import SchemeFilterBar from "@/components/government-schemes/SchemeFilterBar";
 import SchemeList from "@/components/government-schemes/SchemeList";
@@ -62,7 +75,7 @@ export default function GovernmentSchemesPage() {
         if (selectedState) params.append("state", selectedState);
 
         const { data, error: apiError } = await apiRequest(
-          `${BASE_URL}/api/government-schemes?${params.toString()}`
+          `${BASE_URL}/api/government-schemes?${params.toString()}`,
         );
 
         if (apiError) {
@@ -79,7 +92,7 @@ export default function GovernmentSchemesPage() {
         setLoading(false);
       }
     },
-    [pagination.limit, searchQuery, selectedCategory, selectedState]
+    [pagination.limit, searchQuery, selectedCategory, selectedState],
   );
 
   useEffect(() => {
@@ -99,7 +112,7 @@ export default function GovernmentSchemesPage() {
       setDetailError(null);
       try {
         const { data, error: apiError } = await apiRequest(
-          `${BASE_URL}/api/government-schemes/${selectedSchemeId}`
+          `${BASE_URL}/api/government-schemes/${selectedSchemeId}`,
         );
         if (apiError) {
           setDetailError(apiError.message || "Failed to load scheme details");
@@ -110,15 +123,21 @@ export default function GovernmentSchemesPage() {
         // Fetch related schemes from same category
         if (data?.data?.category) {
           const { data: relatedData } = await apiRequest(
-            `${BASE_URL}/api/government-schemes?category=${encodeURIComponent(data.data.category)}&limit=4`
+            `${BASE_URL}/api/government-schemes?category=${encodeURIComponent(
+              data.data.category,
+            )}&limit=4`,
           );
           setRelatedSchemes(
-            (relatedData?.data || []).filter(s => s.id !== selectedSchemeId).slice(0, 3)
+            (relatedData?.data || [])
+              .filter((s) => s.id !== selectedSchemeId)
+              .slice(0, 3),
           );
         }
       } catch (err) {
         console.error("Unexpected error:", err);
-        setDetailError("An unexpected error occurred. Please refresh the page.");
+        setDetailError(
+          "An unexpected error occurred. Please refresh the page.",
+        );
       } finally {
         setDetailLoading(false);
       }
@@ -132,7 +151,7 @@ export default function GovernmentSchemesPage() {
         title: scheme?.title,
         text: scheme?.tagline,
         id: scheme?.id,
-        route: "government-schemes"
+        route: "government-schemes",
       });
       if (result.platform === "native") {
         console.log("✔ Shared via native bottom sheet");
@@ -159,7 +178,7 @@ export default function GovernmentSchemesPage() {
       const parsed = JSON.parse(field);
       return Array.isArray(parsed) ? parsed : [];
     } catch {
-      return typeof field === 'string' ? field.split('\n').filter(Boolean) : [];
+      return typeof field === "string" ? field.split("\n").filter(Boolean) : [];
     }
   };
 
@@ -211,7 +230,10 @@ export default function GovernmentSchemesPage() {
               <p className="text-farm-600 dark:text-gray-400 mb-4">
                 {t("scheme_not_found_desc")}
               </p>
-              <button onClick={() => router.push("/government-schemes")} className="farm-button bg-farm-600 hover:bg-farm-700 text-white dark:bg-farm-600 dark:hover:bg-farm-500">
+              <button
+                onClick={() => router.push("/government-schemes")}
+                className="farm-button bg-farm-600 hover:bg-farm-700 text-white dark:bg-farm-600 dark:hover:bg-farm-500"
+              >
                 {t("back_to_schemes")}
               </button>
             </motion.div>
@@ -244,7 +266,6 @@ export default function GovernmentSchemesPage() {
           </header>
 
           <div className="w-full max-w-3xl mx-auto px-2 pt-6">
-
             {/* Hero Section */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -274,14 +295,18 @@ export default function GovernmentSchemesPage() {
                     {detailScheme.title}
                   </h1>
                   {detailScheme.tagline && (
-                    <p className="text-lg text-farm-600 dark:text-gray-400">{detailScheme.tagline}</p>
+                    <p className="text-lg text-farm-600 dark:text-gray-400">
+                      {detailScheme.tagline}
+                    </p>
                   )}
                 </div>
               </div>
 
               {/* Share Buttons */}
               <div className="flex items-center gap-3 pt-4 border-t border-farm-200 dark:border-[#333]">
-                <span className="text-sm text-farm-600 dark:text-gray-400 font-medium">{t("share_label")}</span>
+                <span className="text-sm text-farm-600 dark:text-gray-400 font-medium">
+                  {t("share_label")}
+                </span>
                 <button
                   onClick={() => handleShare(detailScheme)}
                   className="p-2 text-green-600 hover:bg-green-50 dark:text-green-400 dark:hover:bg-green-900/20 rounded-lg transition-colors"
@@ -300,7 +325,9 @@ export default function GovernmentSchemesPage() {
                 transition={{ delay: 0.1 }}
                 className="farm-card p-8 mb-8 bg-white dark:bg-[#1E1E1E] rounded-3xl shadow-sm border border-gray-100 dark:border-[#333]"
               >
-                <h2 className="text-2xl font-display font-bold text-farm-900 dark:text-white mb-4">{t("overview_title")}</h2>
+                <h2 className="text-2xl font-display font-bold text-farm-900 dark:text-white mb-4">
+                  {t("overview_title")}
+                </h2>
                 <p className="text-farm-700 dark:text-gray-300 leading-relaxed whitespace-pre-line">
                   {detailScheme.description}
                 </p>
@@ -322,9 +349,13 @@ export default function GovernmentSchemesPage() {
                 <ul className="space-y-3">
                   {benefits.map((benefit, idx) => (
                     <li key={idx} className="flex items-start gap-3">
-                      <span className="text-farm-500 dark:text-farm-400 mt-1">✓</span>
+                      <span className="text-farm-500 dark:text-farm-400 mt-1">
+                        ✓
+                      </span>
                       <span className="text-farm-700 dark:text-gray-300 flex-1">
-                        {typeof benefit === 'string' ? benefit : benefit.text || benefit}
+                        {typeof benefit === "string"
+                          ? benefit
+                          : benefit.text || benefit}
                       </span>
                     </li>
                   ))}
@@ -340,13 +371,17 @@ export default function GovernmentSchemesPage() {
                 transition={{ delay: 0.3 }}
                 className="farm-card p-8 mb-8 bg-white dark:bg-[#1E1E1E] rounded-3xl shadow-sm border border-gray-100 dark:border-[#333]"
               >
-                <h2 className="text-2xl font-display font-bold text-farm-900 dark:text-white mb-4">{t("eligibility_criteria")}</h2>
+                <h2 className="text-2xl font-display font-bold text-farm-900 dark:text-white mb-4">
+                  {t("eligibility_criteria")}
+                </h2>
                 <ul className="space-y-3">
                   {eligibility.map((item, idx) => (
                     <li key={idx} className="flex items-start gap-3">
-                      <span className="text-farm-500 dark:text-farm-400 mt-1">•</span>
+                      <span className="text-farm-500 dark:text-farm-400 mt-1">
+                        •
+                      </span>
                       <span className="text-farm-700 dark:text-gray-300 flex-1">
-                        {typeof item === 'string' ? item : item.text || item}
+                        {typeof item === "string" ? item : item.text || item}
                       </span>
                     </li>
                   ))}
@@ -369,9 +404,11 @@ export default function GovernmentSchemesPage() {
                 <ul className="space-y-3">
                   {documents.map((doc, idx) => (
                     <li key={idx} className="flex items-start gap-3">
-                      <span className="text-farm-500 dark:text-farm-400 mt-1">•</span>
+                      <span className="text-farm-500 dark:text-farm-400 mt-1">
+                        •
+                      </span>
                       <span className="text-farm-700 dark:text-gray-300 flex-1">
-                        {typeof doc === 'string' ? doc : doc.text || doc}
+                        {typeof doc === "string" ? doc : doc.text || doc}
                       </span>
                     </li>
                   ))}
@@ -394,7 +431,7 @@ export default function GovernmentSchemesPage() {
                 <ol className="space-y-3 list-decimal list-inside">
                   {applicationSteps.map((step, idx) => (
                     <li key={idx} className="text-farm-700 dark:text-gray-300">
-                      {typeof step === 'string' ? step : step.text || step}
+                      {typeof step === "string" ? step : step.text || step}
                     </li>
                   ))}
                 </ol>
@@ -409,10 +446,15 @@ export default function GovernmentSchemesPage() {
                 transition={{ delay: 0.6 }}
                 className="farm-card p-8 mb-8 bg-white dark:bg-[#1E1E1E] rounded-3xl shadow-sm border border-gray-100 dark:border-[#333]"
               >
-                <h2 className="text-2xl font-display font-bold text-farm-900 dark:text-white mb-4">{t("official_links")}</h2>
+                <h2 className="text-2xl font-display font-bold text-farm-900 dark:text-white mb-4">
+                  {t("official_links")}
+                </h2>
                 <div className="space-y-3">
                   {officialLinks.map((link, idx) => {
-                    const linkObj = typeof link === 'string' ? { url: link, text: link } : link;
+                    const linkObj =
+                      typeof link === "string"
+                        ? { url: link, text: link }
+                        : link;
                     return (
                       <a
                         key={idx}
@@ -438,17 +480,30 @@ export default function GovernmentSchemesPage() {
                 transition={{ delay: 0.7 }}
                 className="farm-card p-8 mb-8 bg-white dark:bg-[#1E1E1E] rounded-3xl shadow-sm border border-gray-100 dark:border-[#333]"
               >
-                <h2 className="text-2xl font-display font-bold text-farm-900 dark:text-white mb-4">{t("faq_title")}</h2>
+                <h2 className="text-2xl font-display font-bold text-farm-900 dark:text-white mb-4">
+                  {t("faq_title")}
+                </h2>
                 <div className="space-y-4">
                   {faqs.map((faq, idx) => {
-                    const faqObj = typeof faq === 'string'
-                      ? { question: faq, answer: '' }
-                      : { question: faq.question || faq.q || '', answer: faq.answer || faq.a || '' };
+                    const faqObj =
+                      typeof faq === "string"
+                        ? { question: faq, answer: "" }
+                        : {
+                            question: faq.question || faq.q || "",
+                            answer: faq.answer || faq.a || "",
+                          };
                     return (
-                      <div key={idx} className="border-b border-farm-200 dark:border-white/10 pb-4 last:border-0">
-                        <h3 className="font-semibold text-farm-900 dark:text-white mb-2">{faqObj.question}</h3>
+                      <div
+                        key={idx}
+                        className="border-b border-farm-200 dark:border-white/10 pb-4 last:border-0"
+                      >
+                        <h3 className="font-semibold text-farm-900 dark:text-white mb-2">
+                          {faqObj.question}
+                        </h3>
                         {faqObj.answer && (
-                          <p className="text-farm-700 dark:text-gray-300">{faqObj.answer}</p>
+                          <p className="text-farm-700 dark:text-gray-300">
+                            {faqObj.answer}
+                          </p>
                         )}
                       </div>
                     );
@@ -465,7 +520,9 @@ export default function GovernmentSchemesPage() {
                 transition={{ delay: 0.8 }}
                 className="mb-8"
               >
-                <h2 className="text-2xl font-display font-bold text-farm-900 dark:text-white mb-6">{t("related_schemes")}</h2>
+                <h2 className="text-2xl font-display font-bold text-farm-900 dark:text-white mb-6">
+                  {t("related_schemes")}
+                </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {relatedSchemes.map((scheme, index) => (
                     <SchemeCard key={scheme.id} scheme={scheme} index={index} />
@@ -476,7 +533,10 @@ export default function GovernmentSchemesPage() {
 
             {/* Back Button */}
             <div className="text-center">
-              <button onClick={() => router.push("/government-schemes")} className="farm-button bg-farm-600 hover:bg-farm-700 text-white dark:bg-farm-600 dark:hover:bg-farm-500 px-8 py-3 rounded-full font-bold shadow-lg transition-all active:scale-95">
+              <button
+                onClick={() => router.push("/government-schemes")}
+                className="farm-button bg-farm-600 hover:bg-farm-700 text-white dark:bg-farm-600 dark:hover:bg-farm-500 px-8 py-3 rounded-full font-bold shadow-lg transition-all active:scale-95"
+              >
                 {t("back_to_all_schemes")}
               </button>
             </div>
@@ -491,28 +551,33 @@ export default function GovernmentSchemesPage() {
     <ErrorBoundary>
       <div className="bg-gray-50 dark:bg-black pb-6">
         {/* Mobile App Header */}
-        <header className="sticky top-0 z-40 bg-white dark:bg-black border-b border-gray-100 dark:border-white/10 px-4 py-3 flex items-center justify-between shadow-sm">
-          <h1 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
-            {t("govt_schemes_title")}
-          </h1>
-        </header>
+        {/* Sticky Header Wrapper */}
+        <div className="sticky top-0 z-40 bg-gray-50 dark:bg-black">
+          <header className="bg-white dark:bg-black border-b border-gray-100 dark:border-white/10 px-4 py-3 flex items-center justify-between shadow-sm">
+            <h1 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+              {t("govt_schemes_title")}
+            </h1>
+          </header>
+
+          <div className="w-full max-w-lg mx-auto md:max-w-5xl bg-white dark:bg-black">
+            {/* Search Area */}
+            <div className="px-4 py-3 bg-white dark:bg-black/50">
+              <SchemeSearch onSearch={handleSearch} />
+            </div>
+
+            {/* Horizontal Scrollable Filters */}
+            <div className="bg-gray-50/95 dark:bg-black/95 backdrop-blur-sm py-2 px-4 border-b border-gray-100 dark:border-white/5">
+              <SchemeFilterBar
+                onCategoryChange={handleCategoryChange}
+                onStateChange={handleStateChange}
+                selectedCategory={selectedCategory}
+                selectedState={selectedState}
+              />
+            </div>
+          </div>
+        </div>
 
         <div className="w-full max-w-lg mx-auto md:max-w-5xl">
-          {/* Search Area */}
-          <div className="px-4 py-3 bg-white dark:bg-black/50">
-            <SchemeSearch onSearch={handleSearch} />
-          </div>
-
-          {/* Horizontal Scrollable Filters */}
-          <div className="sticky z-30 bg-gray-50/95 dark:bg-black/95 backdrop-blur-sm py-2 px-4 border-b border-gray-100 dark:border-white/5">
-            <SchemeFilterBar
-              onCategoryChange={handleCategoryChange}
-              onStateChange={handleStateChange}
-              selectedCategory={selectedCategory}
-              selectedState={selectedState}
-            />
-          </div>
-
           {/* Stats Row */}
           {!loading && !error && (
             <div className="px-4 py-3 flex items-center justify-between">

@@ -20,6 +20,7 @@ import { useKeyboardOpen } from "@/Mobile/hooks/useKeyboardOpen";
 import { setupAndroidNotificationChannel } from "@/utils/capacitorNotifications";
 import DeepLinkManager from "@/components/Deeplink/DeeplinkManager";
 import StatusBarManager from "@/components/mobile/StatusBarManager";
+import ScrollToTop from "../components/ScrollToTop";
 
 export default function ClientLayout({ children }) {
   const pathname = usePathname();
@@ -66,13 +67,6 @@ export default function ClientLayout({ children }) {
     }
   }, []);
 
-  // Force Scroll to Top on Path Change logic moved to PageTransition.jsx
-  useEffect(() => {
-    // Disable native browser scroll restoration to handle it manually
-    if (typeof window !== "undefined" && window.history) {
-      window.history.scrollRestoration = "manual";
-    }
-  }, []);
 
   // Body padding adjustments for mobile no-padding routes
   useEffect(() => {
@@ -103,6 +97,7 @@ export default function ClientLayout({ children }) {
         }}
       />
       <AppProviders>
+        <ScrollToTop />
         <StatusBarManager />
         <TopLoader />
         <OfflineBanner />

@@ -3,7 +3,13 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { FaCalculator, FaArrowLeft, FaTag, FaCalendar, FaChartLine } from "react-icons/fa";
+import {
+  FaCalculator,
+  FaArrowLeft,
+  FaTag,
+  FaCalendar,
+  FaChartLine,
+} from "react-icons/fa";
 import MilkRateSearch from "@/components/milk-rate/MilkRateSearch";
 import MilkRateFilters from "@/components/milk-rate/MilkRateFilters";
 import MilkRateList from "@/components/milk-rate/MilkRateList";
@@ -62,7 +68,7 @@ export default function MilkRateDashboardPage() {
         if (selectedRegion) params.append("region", selectedRegion);
 
         const { data, error: apiError } = await apiRequest(
-          `${BASE_URL}/api/milk-companies?${params.toString()}`
+          `${BASE_URL}/api/milk-companies?${params.toString()}`,
         );
 
         if (apiError) {
@@ -79,13 +85,13 @@ export default function MilkRateDashboardPage() {
         setLoading(false);
       }
     },
-    [pagination.limit, searchQuery, selectedMilkType, selectedRegion]
+    [pagination.limit, searchQuery, selectedMilkType, selectedRegion],
   );
 
   const fetchAllCompanies = useCallback(async () => {
     try {
       const { data, error: apiError } = await apiRequest(
-        `${BASE_URL}/api/milk-companies?limit=100`
+        `${BASE_URL}/api/milk-companies?limit=100`,
       );
       if (!apiError && data?.data) {
         setAllCompanies(data.data);
@@ -131,7 +137,9 @@ export default function MilkRateDashboardPage() {
       setCompanyLoading(true);
       setCompanyError(null);
       try {
-        const { data, error: apiError } = await apiRequest(`${BASE_URL}/api/milk-companies/${companyId}`);
+        const { data, error: apiError } = await apiRequest(
+          `${BASE_URL}/api/milk-companies/${companyId}`,
+        );
 
         if (apiError) {
           setCompanyError(apiError.message || "Failed to load company details");
@@ -141,7 +149,9 @@ export default function MilkRateDashboardPage() {
         setSelectedCompany(data?.data);
       } catch (err) {
         console.error("Unexpected error:", err);
-        setCompanyError("An unexpected error occurred. Please refresh the page.");
+        setCompanyError(
+          "An unexpected error occurred. Please refresh the page.",
+        );
       } finally {
         setCompanyLoading(false);
       }
@@ -152,10 +162,21 @@ export default function MilkRateDashboardPage() {
 
   const calculateRate = (fat, snf) => {
     if (!selectedCompany) return 0;
-    if (selectedCompany.base_rate !== null && selectedCompany.base_rate !== undefined &&
-      selectedCompany.fat_multiplier !== null && selectedCompany.fat_multiplier !== undefined &&
-      selectedCompany.snf_multiplier !== null && selectedCompany.snf_multiplier !== undefined) {
-      return Number((selectedCompany.base_rate + fat * selectedCompany.fat_multiplier + snf * selectedCompany.snf_multiplier).toFixed(2));
+    if (
+      selectedCompany.base_rate !== null &&
+      selectedCompany.base_rate !== undefined &&
+      selectedCompany.fat_multiplier !== null &&
+      selectedCompany.fat_multiplier !== undefined &&
+      selectedCompany.snf_multiplier !== null &&
+      selectedCompany.snf_multiplier !== undefined
+    ) {
+      return Number(
+        (
+          selectedCompany.base_rate +
+          fat * selectedCompany.fat_multiplier +
+          snf * selectedCompany.snf_multiplier
+        ).toFixed(2),
+      );
     }
     return selectedCompany.per_liter_rate || 0;
   };
@@ -163,7 +184,7 @@ export default function MilkRateDashboardPage() {
   const formatDate = (dateString) => {
     const fallback = {
       relative: t("recent"),
-      full: t("recent")
+      full: t("recent"),
     };
 
     if (!dateString) return fallback;
@@ -224,7 +245,10 @@ export default function MilkRateDashboardPage() {
               <p className="text-farm-600 mb-4">
                 {companyError || t("company_not_found_desc")}
               </p>
-              <Link href="/milk-rate-calculator" className="farm-button inline-block">
+              <Link
+                href="/milk-rate-calculator"
+                className="farm-button inline-block"
+              >
                 {t("back_to_dashboard")}
               </Link>
             </motion.div>
@@ -272,7 +296,9 @@ export default function MilkRateDashboardPage() {
                 transition={{ delay: 0.1 }}
                 className="bg-white dark:bg-black border border-gray-100 dark:border-white/5 rounded-2xl p-6 mb-6 shadow-sm"
               >
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-3">{t("about")}</h2>
+                <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-3">
+                  {t("about")}
+                </h2>
                 <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed whitespace-pre-line">
                   {selectedCompany.description}
                 </p>
@@ -285,33 +311,47 @@ export default function MilkRateDashboardPage() {
               transition={{ delay: 0.2 }}
               className="bg-white dark:bg-black border border-gray-100 dark:border-white/5 rounded-2xl p-6 mb-6 shadow-sm"
             >
-              <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">{t("rate_breakdown")}</h2>
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
+                {t("rate_breakdown")}
+              </h2>
               <div className="grid grid-cols-3 gap-4">
                 <div className="p-4 bg-gray-50 dark:bg-white/5 rounded-xl text-center">
-                  <div className="text-xs text-gray-500 mb-1">{t("fat_rate")}</div>
+                  <div className="text-xs text-gray-500 mb-1">
+                    {t("fat_rate")}
+                  </div>
                   <div className="text-xl font-bold text-gray-900 dark:text-white">
                     ₹{selectedCompany.fat_rate?.toFixed(2) || "N/A"}
                   </div>
                 </div>
                 <div className="p-4 bg-gray-50 dark:bg-white/5 rounded-xl text-center">
-                  <div className="text-xs text-gray-500 mb-1">{t("snf_rate")}</div>
+                  <div className="text-xs text-gray-500 mb-1">
+                    {t("snf_rate")}
+                  </div>
                   <div className="text-xl font-bold text-gray-900 dark:text-white">
                     ₹{selectedCompany.snf_rate?.toFixed(2) || "N/A"}
                   </div>
                 </div>
                 <div className="p-4 bg-gray-50 dark:bg-white/5 rounded-xl text-center">
-                  <div className="text-xs text-gray-500 mb-1">{t("base_rate")}</div>
+                  <div className="text-xs text-gray-500 mb-1">
+                    {t("base_rate")}
+                  </div>
                   <div className="text-xl font-bold text-gray-900 dark:text-white">
-                    ₹{selectedCompany.base_rate?.toFixed(2) || selectedCompany.per_liter_rate?.toFixed(2) || "N/A"}
+                    ₹
+                    {selectedCompany.base_rate?.toFixed(2) ||
+                      selectedCompany.per_liter_rate?.toFixed(2) ||
+                      "N/A"}
                   </div>
                 </div>
               </div>
 
-              {(selectedCompany.base_rate && selectedCompany.fat_multiplier && selectedCompany.snf_multiplier) && (
-                <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 rounded-lg text-xs font-mono">
-                  Rate = Base + Fat×{selectedCompany.fat_multiplier} + SNF×{selectedCompany.snf_multiplier}
-                </div>
-              )}
+              {selectedCompany.base_rate &&
+                selectedCompany.fat_multiplier &&
+                selectedCompany.snf_multiplier && (
+                  <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 rounded-lg text-xs font-mono">
+                    Rate = Base + Fat×{selectedCompany.fat_multiplier} + SNF×
+                    {selectedCompany.snf_multiplier}
+                  </div>
+                )}
             </motion.section>
 
             <motion.section
@@ -322,12 +362,16 @@ export default function MilkRateDashboardPage() {
             >
               <div className="flex items-center gap-3 mb-4">
                 <FaCalculator className="text-xl text-green-600" />
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white">{t("calculate_your_rate")}</h2>
+                <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+                  {t("calculate_your_rate")}
+                </h2>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">{t("fat_percentage")}</label>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">
+                    {t("fat_percentage")}
+                  </label>
                   <input
                     type="number"
                     step={0.1}
@@ -337,7 +381,9 @@ export default function MilkRateDashboardPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">{t("snf_percentage")}</label>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">
+                    {t("snf_percentage")}
+                  </label>
                   <input
                     type="number"
                     step={0.1}
@@ -347,7 +393,9 @@ export default function MilkRateDashboardPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">{t("quantity_liters")}</label>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">
+                    {t("quantity_liters")}
+                  </label>
                   <input
                     type="number"
                     value={quantity}
@@ -360,58 +408,81 @@ export default function MilkRateDashboardPage() {
               <div className="p-4 bg-green-600 rounded-xl text-white">
                 <div className="flex justify-between items-center">
                   <div>
-                    <div className="text-xs opacity-80 mb-1">{t("rate_per_liter")}</div>
+                    <div className="text-xs opacity-80 mb-1">
+                      {t("rate_per_liter")}
+                    </div>
                     <div className="text-xl font-bold">₹{calculatedRate}</div>
                   </div>
                   <div className="text-right">
-                    <div className="text-xs opacity-80 mb-1">{t("total_amount")}</div>
+                    <div className="text-xs opacity-80 mb-1">
+                      {t("total_amount")}
+                    </div>
                     <div className="text-2xl font-bold">₹{total}</div>
                   </div>
                 </div>
               </div>
             </motion.section>
 
-            {selectedCompany.historicalRates && selectedCompany.historicalRates.length > 0 && (
-              <motion.section
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="bg-white dark:bg-black border border-gray-100 dark:border-white/5 rounded-2xl p-6 mb-6 shadow-sm"
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <FaChartLine className="text-xl text-blue-600" />
-                  <h2 className="text-lg font-bold text-gray-900 dark:text-white">{t("rate_trends")}</h2>
-                </div>
-                <div className="space-y-2">
-                  {selectedCompany.historicalRates.slice(0, 5).map((rate, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-white/5 rounded-lg text-sm">
-                      <div className="text-gray-500">
-                        {new Date(rate.created_at).toLocaleDateString()}
-                      </div>
-                      <div className="font-bold text-gray-900 dark:text-white">
-                        ₹{rate.per_liter_rate?.toFixed(2) || calculateRate(rate.fat_rate || 4, rate.snf_rate || 8.5).toFixed(2)}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </motion.section>
-            )}
+            {selectedCompany.historicalRates &&
+              selectedCompany.historicalRates.length > 0 && (
+                <motion.section
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="bg-white dark:bg-black border border-gray-100 dark:border-white/5 rounded-2xl p-6 mb-6 shadow-sm"
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <FaChartLine className="text-xl text-blue-600" />
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+                      {t("rate_trends")}
+                    </h2>
+                  </div>
+                  <div className="space-y-2">
+                    {selectedCompany.historicalRates
+                      .slice(0, 5)
+                      .map((rate, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center justify-between p-3 bg-gray-50 dark:bg-white/5 rounded-lg text-sm"
+                        >
+                          <div className="text-gray-500">
+                            {new Date(rate.created_at).toLocaleDateString()}
+                          </div>
+                          <div className="font-bold text-gray-900 dark:text-white">
+                            ₹
+                            {rate.per_liter_rate?.toFixed(2) ||
+                              calculateRate(
+                                rate.fat_rate || 4,
+                                rate.snf_rate || 8.5,
+                              ).toFixed(2)}
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </motion.section>
+              )}
 
-            {selectedCompany.relatedCompanies && selectedCompany.relatedCompanies.length > 0 && (
-              <motion.section
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-                className="mb-8"
-              >
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">{t("related_companies")}</h2>
-                <div className="grid grid-cols-1 gap-4">
-                  {selectedCompany.relatedCompanies.map((relatedCompany) => (
-                    <MilkCompanyCard key={relatedCompany.id} company={relatedCompany} />
-                  ))}
-                </div>
-              </motion.section>
-            )}
+            {selectedCompany.relatedCompanies &&
+              selectedCompany.relatedCompanies.length > 0 && (
+                <motion.section
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                  className="mb-8"
+                >
+                  <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
+                    {t("related_companies")}
+                  </h2>
+                  <div className="grid grid-cols-1 gap-4">
+                    {selectedCompany.relatedCompanies.map((relatedCompany) => (
+                      <MilkCompanyCard
+                        key={relatedCompany.id}
+                        company={relatedCompany}
+                      />
+                    ))}
+                  </div>
+                </motion.section>
+              )}
           </div>
         </div>
       </ErrorBoundary>
@@ -423,15 +494,33 @@ export default function MilkRateDashboardPage() {
     <ErrorBoundary>
       <div className="bg-gray-50 dark:bg-black pb-6">
         {/* App Bar Header */}
-        <header className="sticky top-0 z-40 bg-white dark:bg-black border-b border-gray-100 dark:border-white/10 px-4 py-3 shadow-sm flex items-center justify-between">
-          <h1 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
-            {t("milk_rate_dashboard")}
-          </h1>
-          {/* Optional: Add action button here like Calculator? */}
-        </header>
+        {/* Sticky Header Wrapper */}
+        <div className="sticky top-0 z-40 bg-gray-50 dark:bg-black">
+          <header className="bg-white dark:bg-black border-b border-gray-100 dark:border-white/10 px-4 py-3 shadow-sm flex items-center justify-between">
+            <h1 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+              {t("milk_rate_dashboard")}
+            </h1>
+          </header>
+
+          <div className="w-full max-w-lg mx-auto md:max-w-5xl bg-white dark:bg-black">
+            {/* Search Bar */}
+            <div className="px-4 py-2 bg-white dark:bg-black/50">
+              <MilkRateSearch onSearch={handleSearch} />
+            </div>
+
+            {/* Filter Bar */}
+            <div className="bg-gray-50/95 dark:bg-black/95 backdrop-blur-sm py-2 px-4 border-b border-gray-100 dark:border-white/5">
+              <MilkRateFilters
+                onMilkTypeChange={handleMilkTypeChange}
+                onRegionChange={handleRegionChange}
+                selectedMilkType={selectedMilkType}
+                selectedRegion={selectedRegion}
+              />
+            </div>
+          </div>
+        </div>
 
         <div className="w-full max-w-lg mx-auto md:max-w-5xl">
-
           {/* Comparison Feature Card (Condensed) */}
           {allCompanies.length > 0 && (
             <div className="px-4 pt-4 pb-2">
@@ -440,60 +529,41 @@ export default function MilkRateDashboardPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-green-600 rounded-xl p-4 text-white shadow-lg flex items-center justify-between cursor-pointer"
                 onClick={() => {
-                  document.getElementById('comparison-section')?.scrollIntoView({ behavior: 'smooth' });
-                  // Ideally toggle validity or navigate, but keeping inline for now
+                  document
+                    .getElementById("comparison-section")
+                    ?.scrollIntoView({ behavior: "smooth" });
                 }}
               >
                 <div>
                   <h3 className="font-bold text-lg">{t("compare_rates")}</h3>
-                  <p className="text-xs opacity-90">{t("compare_rates_desc")}</p>
+                  <p className="text-xs opacity-90">
+                    {t("compare_rates_desc")}
+                  </p>
                 </div>
                 <FaCalculator className="text-2xl opacity-80" />
               </motion.div>
             </div>
           )}
 
-          {/* Search Bar */}
-          <div className="px-4 py-2 bg-white dark:bg-black/50">
-            <MilkRateSearch onSearch={handleSearch} />
-          </div>
-
-          {/* Sticky Filter Bar */}
-          <div className="sticky top-[53px] z-30 bg-gray-50/95 dark:bg-black/95 backdrop-blur-sm py-2 px-4 border-b border-gray-100 dark:border-white/5">
-            <MilkRateFilters
-              onMilkTypeChange={handleMilkTypeChange}
-              onRegionChange={handleRegionChange}
-              selectedMilkType={selectedMilkType}
-              selectedRegion={selectedRegion}
-            />
-          </div>
-
-          {/* Comparison Section (Hidden/Expanded or Just inline) -> keeping inline calculator as is but maybe wrapped strictly? 
-               Actually the user code had ComparisonCalculator component. I should include it.
-           */}
-          <div id="comparison-section" className="px-4 py-4 hidden">
-            {/* We can hide this by default or show it. Let's keep it simpler for the Feed. 
-                 The user asked for Mobile App Aesthetic. A huge calculator on top might be too much.
-                 Maybe put it in a separate tab or modal?
-                 For now, I'll render it below if needed, but maybe hidden to keep feed clean?
-                 User code had it. I will render it but maybe collapsed? 
-                 Let's keep it simpler: Remove it from top flow to focus on Feed. 
-                 OR render it as a button that opens a modal?
-                 I will keep it rendered but cleaner. 
-                 Actually, just render the list first.
-             */}
-          </div>
+          {/* Comparison Section (Hidden/Expanded) */}
+          <div id="comparison-section" className="px-4 py-4 hidden"></div>
 
           {/* Results List */}
           <div className="px-0">
             {/* Results Count - subtle */}
             {!loading && !error && (
               <div className="px-4 py-2 text-xs text-gray-500 font-medium">
-                {t("showing_companies").replace("{current}", companies.length).replace("{total}", pagination.total)}
+                {t("showing_companies")
+                  .replace("{current}", companies.length)
+                  .replace("{total}", pagination.total)}
               </div>
             )}
 
-            <MilkRateList companies={companies} loading={loading} error={error} />
+            <MilkRateList
+              companies={companies}
+              loading={loading}
+              error={error}
+            />
           </div>
 
           {/* Pagination */}
