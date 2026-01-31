@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { FaSearch, FaFilter } from "react-icons/fa";
 import useSWR from "swr";
 import { useLanguage } from "@/Context/languagecontext";
+import BottomSelect from "../ui/BottomSelect";
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
@@ -18,7 +19,7 @@ export default function MarketFilters({
   const { t } = useLanguage();
   const [selectedState, setSelectedState] = useState(filters.state || "");
   const [selectedDistrict, setSelectedDistrict] = useState(
-    filters.district || ""
+    filters.district || "",
   );
   const [selectedMarket, setSelectedMarket] = useState(filters.market || "");
   const [searchQuery, setSearchQuery] = useState(filters.search || "");
@@ -29,22 +30,22 @@ export default function MarketFilters({
     allStates.length > 0
       ? allStates
       : data && Array.isArray(data)
-        ? [
+      ? [
           ...new Set(
-            data.filter((item) => item && item.state).map((item) => item.state)
+            data.filter((item) => item && item.state).map((item) => item.state),
           ),
         ].sort()
-        : [];
+      : [];
 
   // Fetch districts from database when state is selected
   const { data: districtsData } = useSWR(
     selectedState
       ? `${BASE_URL}/api/get-districts?state=${encodeURIComponent(
-        selectedState
-      )}`
+          selectedState,
+        )}`
       : null,
     fetcher,
-    { revalidateOnFocus: false }
+    { revalidateOnFocus: false },
   );
 
   const districts = districtsData?.districts || [];
@@ -53,14 +54,15 @@ export default function MarketFilters({
   const { data: marketsData } = useSWR(
     selectedState
       ? `${BASE_URL}/api/get-markets?state=${encodeURIComponent(
-        selectedState
-      )}${selectedDistrict
-        ? `&district=${encodeURIComponent(selectedDistrict)}`
-        : ""
-      }`
+          selectedState,
+        )}${
+          selectedDistrict
+            ? `&district=${encodeURIComponent(selectedDistrict)}`
+            : ""
+        }`
       : null,
     fetcher,
-    { revalidateOnFocus: false }
+    { revalidateOnFocus: false },
   );
 
   const markets = marketsData?.markets || [];
@@ -177,71 +179,56 @@ export default function MarketFilters({
         </div>
 
         {/* State Chip */}
-        <div className="relative flex-shrink-0">
-          <select
+        <div className="relative flex-shrink-0 min-w-[120px]">
+          <BottomSelect
             value={selectedState}
-            onChange={(e) => setSelectedState(e.target.value)}
-            className={`appearance-none pl-3 pr-8 py-1.5 rounded-full text-md font-semibold border transition-all cursor-pointer outline-none ${selectedState
+            onChange={(val) => setSelectedState(val)}
+            options={states}
+            placeholder={t("all_states")}
+            searchPlaceholder="Search State"
+            className="w-auto"
+            triggerClassName={`appearance-none pl-3 pr-8 py-2 rounded-full text-md font-semibold border transition-all cursor-pointer outline-none ${
+              selectedState
                 ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300"
                 : "bg-white dark:bg-[#1e1e1e] border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300"
-              }`}
-          >
-            <option value="">{t("all_states")}</option>
-            {states.map((state) => (
-              <option key={state} value={state}>
-                {state}
-              </option>
-            ))}
-          </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-gray-400">
-            <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-          </div>
+            }`}
+          />
         </div>
 
         {/* District Chip */}
-        <div className="relative flex-shrink-0">
-          <select
+        <div className="relative flex-shrink-0 min-w-[140px]">
+          <BottomSelect
             value={selectedDistrict}
-            onChange={(e) => setSelectedDistrict(e.target.value)}
+            onChange={(val) => setSelectedDistrict(val)}
+            options={districts}
             disabled={!selectedState}
-            className={`appearance-none pl-3 pr-8 py-1.5 rounded-full text-md font-semibold border transition-all cursor-pointer outline-none ${selectedDistrict
+            placeholder={t("all_districts")}
+            searchPlaceholder="Search District"
+            className="w-auto"
+            triggerClassName={`appearance-none pl-3 pr-8 py-2 rounded-full text-md font-semibold border transition-all cursor-pointer outline-none ${
+              selectedDistrict
                 ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300"
                 : "bg-white dark:bg-[#1e1e1e] border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-              }`}
-          >
-            <option value="">{t("all_districts")}</option>
-            {districts.map((district) => (
-              <option key={district} value={district}>
-                {district}
-              </option>
-            ))}
-          </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-gray-400">
-            <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-          </div>
+            }`}
+          />
         </div>
 
         {/* Market Chip */}
-        <div className="relative flex-shrink-0">
-          <select
+        <div className="relative flex-shrink-0 min-w-[140px]">
+          <BottomSelect
             value={selectedMarket}
-            onChange={(e) => setSelectedMarket(e.target.value)}
+            onChange={(val) => setSelectedMarket(val)}
+            options={markets}
             disabled={!selectedState}
-            className={`appearance-none pl-3 pr-8 py-1.5 rounded-full text-md font-semibold border transition-all cursor-pointer outline-none ${selectedMarket
+            placeholder={t("all_markets")}
+            searchPlaceholder="Search Market"
+            className="w-auto"
+            triggerClassName={`appearance-none pl-3 pr-8 py-2 rounded-full text-md font-semibold border transition-all cursor-pointer outline-none ${
+              selectedMarket
                 ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300"
                 : "bg-white dark:bg-[#1e1e1e] border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-              }`}
-          >
-            <option value="">{t("all_markets")}</option>
-            {markets.map((market) => (
-              <option key={market} value={market}>
-                {market}
-              </option>
-            ))}
-          </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-gray-400">
-            <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-          </div>
+            }`}
+          />
         </div>
 
         {/* Clear Button (Only visible if filters active) */}

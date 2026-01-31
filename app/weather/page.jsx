@@ -71,32 +71,32 @@ export default function WeatherPage() {
           <p className="text-base md:text-lg text-farm-700 dark:text-gray-300 mb-6">
             {t('weather_page_subtitle')}
           </p>
-              <div className="flex items-center gap-2">
-                {status === LOCATION.LOADING && (
-                  <span className="text-xs bg-white/20 px-2 py-1 rounded-full animate-pulse">
-                    Locating...
-                  </span>
-                )}
-                {status === LOCATION.DENIED && (
-                  <button
-                    onClick={retry}
-                    className="text-xs bg-red-500/90 hover:bg-red-500 px-3 py-1 rounded-full text-white font-medium transition-colors"
-                  >
-                    Enable Location
-                  </button>
-                )}
-                {status === LOCATION.GPS_OFF && (
-                  <button
-                    onClick={openAppSettings}
-                    className="text-xs bg-orange-500/90 hover:bg-orange-500 px-3 py-1 rounded-full text-white font-medium transition-colors"
-                  >
-                    Turn On GPS
-                  </button>
-                )}
-                {!weatherLoading && !weatherError && (
-                  <div className="w-0 h-0 rounded-full bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.6)]"></div>
-                )}
-              </div>
+          {/* <div className="flex items-center gap-2">
+            {status === LOCATION.LOADING && (
+              <span className="text-xs bg-white/20 px-2 py-1 rounded-full animate-pulse">
+                Locating...
+              </span>
+            )}
+            {status === LOCATION.DENIED && (
+              <button
+                onClick={retry}
+                className="text-xs bg-red-500/90 hover:bg-red-500 px-3 py-1 rounded-full text-white font-medium transition-colors"
+              >
+                Enable Location
+              </button>
+            )}
+            {status === LOCATION.GPS_OFF && (
+              <button
+                onClick={openAppSettings}
+                className="text-xs bg-orange-500/90 hover:bg-orange-500 px-3 py-1 rounded-full text-white font-medium transition-colors"
+              >
+                Turn On GPS
+              </button>
+            )}
+            {!weatherLoading && !weatherError && (
+              <div className="w-0 h-0 rounded-full bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.6)]"></div>
+            )}
+          </div> */}
           {/* Toggle Button */}
           <motion.button
             whileHover={{ scale: 1.05 }}

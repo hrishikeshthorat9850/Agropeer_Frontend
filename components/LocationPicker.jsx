@@ -4,6 +4,7 @@ import { FaMapMarkerAlt } from "react-icons/fa";
 import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
 import { getAllStates, loadStateData } from "@/utils/locationData";
 import { useLanguage } from "@/Context/languagecontext";
+import BottomSelect from "./ui/BottomSelect";
 
 const DEFAULT_CENTER = { lat: 23.0225, lng: 72.5714 }; // Ahmedabad
 const MAP_LIBRARIES = ["places"];
@@ -18,19 +19,21 @@ export default function LocationPicker({ value, onChange, errors }) {
   const [lloading, setLLoading] = useState(false);
 
   const [selectedState, setSelectedState] = useState(value?.state || "");
-  const [selectedDistrict, setSelectedDistrict] = useState(value?.district || "");
+  const [selectedDistrict, setSelectedDistrict] = useState(
+    value?.district || "",
+  );
   const [selectedTaluka, setSelectedTaluka] = useState(value?.taluka || "");
   const [selectedVillage, setSelectedVillage] = useState(value?.village || "");
   const [mapCenter, setMapCenter] = useState(
     value?.latitude && value?.longitude
       ? { lat: value.latitude, lng: value.longitude }
-      : DEFAULT_CENTER
+      : DEFAULT_CENTER,
   );
   const [showMap, setShowMap] = useState(false);
   const [mapMarker, setMapMarker] = useState(
     value?.latitude && value?.longitude
       ? { lat: value.latitude, lng: value.longitude }
-      : null
+      : null,
   );
   const mapRef = useRef(null);
   const advancedMarkerRef = useRef(null);
@@ -66,7 +69,7 @@ export default function LocationPicker({ value, onChange, errors }) {
       const normalizedTarget = normalize(target);
       return list.find((item) => normalize(item) === normalizedTarget) || null;
     },
-    [normalize]
+    [normalize],
   );
 
   useEffect(() => {
@@ -113,7 +116,12 @@ export default function LocationPicker({ value, onChange, errors }) {
 
   // Update villages when taluka changes
   useEffect(() => {
-    if (selectedState && selectedDistrict && selectedTaluka && locationData[selectedDistrict]?.[selectedTaluka]) {
+    if (
+      selectedState &&
+      selectedDistrict &&
+      selectedTaluka &&
+      locationData[selectedDistrict]?.[selectedTaluka]
+    ) {
       setVillages([...locationData[selectedDistrict][selectedTaluka]]);
       setSelectedVillage("");
     } else {
@@ -124,7 +132,14 @@ export default function LocationPicker({ value, onChange, errors }) {
   // Update parent form when location changes
   useEffect(() => {
     // Prevent firing when parent state resets location
-    if (!selectedState && !selectedDistrict && !selectedTaluka && !selectedVillage && !mapMarker) return;
+    if (
+      !selectedState &&
+      !selectedDistrict &&
+      !selectedTaluka &&
+      !selectedVillage &&
+      !mapMarker
+    )
+      return;
 
     onChange({
       state: selectedState,
@@ -134,7 +149,13 @@ export default function LocationPicker({ value, onChange, errors }) {
       latitude: mapMarker?.lat || null,
       longitude: mapMarker?.lng || null,
     });
-  }, [selectedState, selectedDistrict, selectedTaluka, selectedVillage, mapMarker]);
+  }, [
+    selectedState,
+    selectedDistrict,
+    selectedTaluka,
+    selectedVillage,
+    mapMarker,
+  ]);
 
   const applyPendingSelections = useCallback(() => {
     const pending = pendingLocationRef.current;
@@ -156,7 +177,12 @@ export default function LocationPicker({ value, onChange, errors }) {
       }
     }
 
-    if (!pending.district && !pending.taluka && pending.village && villages.length) {
+    if (
+      !pending.district &&
+      !pending.taluka &&
+      pending.village &&
+      villages.length
+    ) {
       const match = findMatch(villages, pending.village);
       if (match) {
         setSelectedVillage(match);
@@ -176,13 +202,15 @@ export default function LocationPicker({ value, onChange, errors }) {
   const reverseGeocodeCoordinates = useCallback(
     async (lat, lng) => {
       if (!mapsApiKey) {
-        console.warn("Google Maps API key not configured; cannot reverse geocode.");
+        console.warn(
+          "Google Maps API key not configured; cannot reverse geocode.",
+        );
         return;
       }
 
       try {
         const response = await fetch(
-          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${mapsApiKey}`
+          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${mapsApiKey}`,
         );
         const data = await response.json();
         if (data.status !== "OK" || !data.results?.length) {
@@ -192,11 +220,13 @@ export default function LocationPicker({ value, onChange, errors }) {
 
         const components = data.results[0].address_components || [];
         const getComponent = (type) =>
-          components.find((part) => part.types.includes(type))?.long_name || null;
+          components.find((part) => part.types.includes(type))?.long_name ||
+          null;
 
         const stateName = getComponent("administrative_area_level_1");
         const districtName = getComponent("administrative_area_level_2");
-        const talukaName = getComponent("administrative_area_level_3") || districtName;
+        const talukaName =
+          getComponent("administrative_area_level_3") || districtName;
         const villageName =
           getComponent("locality") ||
           getComponent("sublocality_level_1") ||
@@ -212,7 +242,10 @@ export default function LocationPicker({ value, onChange, errors }) {
           if (stateMatch) {
             setSelectedState(stateMatch);
           } else {
-            console.warn("Matched coordinates to state not in list:", stateName);
+            console.warn(
+              "Matched coordinates to state not in list:",
+              stateName,
+            );
             pendingLocationRef.current = null;
           }
         }
@@ -223,19 +256,22 @@ export default function LocationPicker({ value, onChange, errors }) {
         pendingLocationRef.current = null;
       }
     },
-    [mapsApiKey, states, findMatch, applyPendingSelections]
+    [mapsApiKey, states, findMatch, applyPendingSelections],
   );
 
-  const handleMapClick = useCallback((event) => {
-    const lat = event.latLng?.lat();
-    const lng = event.latLng?.lng();
-    if (typeof lat === "number" && typeof lng === "number") {
-      const nextPosition = { lat, lng };
-      setMapMarker(nextPosition);
-      setMapCenter(nextPosition);
-      reverseGeocodeCoordinates(lat, lng);
-    }
-  }, [reverseGeocodeCoordinates]);
+  const handleMapClick = useCallback(
+    (event) => {
+      const lat = event.latLng?.lat();
+      const lng = event.latLng?.lng();
+      if (typeof lat === "number" && typeof lng === "number") {
+        const nextPosition = { lat, lng };
+        setMapMarker(nextPosition);
+        setMapCenter(nextPosition);
+        reverseGeocodeCoordinates(lat, lng);
+      }
+    },
+    [reverseGeocodeCoordinates],
+  );
 
   const handleUseCurrentLocation = () => {
     if (!navigator.geolocation) {
@@ -255,7 +291,7 @@ export default function LocationPicker({ value, onChange, errors }) {
       (error) => {
         console.error("Error getting location:", error);
         alert(t("unable_load_map"));
-      }
+      },
     );
   };
 
@@ -272,7 +308,7 @@ export default function LocationPicker({ value, onChange, errors }) {
         },
       ],
     }),
-    []
+    [],
   );
 
   const handleMapLoad = useCallback((map) => {
@@ -287,7 +323,11 @@ export default function LocationPicker({ value, onChange, errors }) {
 
   const ensureAdvancedMarker = useCallback(
     (position) => {
-      if (!mapRef.current || !window.google?.maps?.marker?.AdvancedMarkerElement || !position) {
+      if (
+        !mapRef.current ||
+        !window.google?.maps?.marker?.AdvancedMarkerElement ||
+        !position
+      ) {
         return;
       }
 
@@ -312,7 +352,7 @@ export default function LocationPicker({ value, onChange, errors }) {
         advancedMarkerRef.current.position = position;
       }
     },
-    [reverseGeocodeCoordinates]
+    [reverseGeocodeCoordinates],
   );
 
   useEffect(() => {
@@ -338,99 +378,64 @@ export default function LocationPicker({ value, onChange, errors }) {
       </label>
 
       {/* State Dropdown */}
-      <div className="flex flex-col">
-        <label className="text-sm text-gray-600 mb-1">{t("state")}</label>
-        <select
-          value={selectedState}
-          onChange={(e) => {
-            pendingLocationRef.current = null;
-            setSelectedState(e.target.value);
-          }}
-          className={`w-full border rounded-lg px-3 py-2 focus:outline-none text-green-900 focus:ring-2 focus:ring-green-500 transition dark:text-white ${
-            errors?.state ? "border-red-500 focus:ring-red-500" : "border-gray-300"
-          }`}
-        >
-          <option value="">{t("select_state")}</option>
-          {states.map((state) => (
-            <option key={state} value={state}>
-              {state}
-            </option>
-          ))}
-        </select>
-        {errors?.state && <span className="text-red-500 text-sm mt-1">{errors.state}</span>}
-      </div>
+      <BottomSelect
+        label={t("state")}
+        value={selectedState}
+        onChange={(val) => {
+          pendingLocationRef.current = null;
+          setSelectedState(val);
+        }}
+        options={states}
+        placeholder={t("select_state")}
+        searchPlaceholder="Search State"
+        error={errors?.state}
+      />
 
       {/* District Dropdown */}
-      <div className="flex flex-col">
-        <label className="text-sm text-gray-600 mb-1">{t("district")}</label>
-        <select
-          value={selectedDistrict}
-          onChange={(e) => {
-            pendingLocationRef.current = null;
-            setSelectedDistrict(e.target.value);
-          }}
-          disabled={!selectedState || lloading}
-          className={`w-full border rounded-lg px-3 py-2 focus:outline-none text-farm-900 focus:ring-2 focus:ring-green-500 transition disabled:bg-gray-100 disabled:cursor-not-allowed dark:text-white ${
-            errors?.district ? "border-red-500 focus:ring-red-500" : "border-gray-300"
-          }`}
-        >
-          <option value="">{lloading ? t("loading") : t("select_district")}</option>
-          {districts.map((district) => (
-            <option key={district} value={district}>
-              {district}
-            </option>
-          ))}
-        </select>
-        {errors?.district && <span className="text-red-500 text-sm mt-1">{errors.district}</span>}
-      </div>
+      <BottomSelect
+        label={t("district")}
+        value={selectedDistrict}
+        onChange={(val) => {
+          pendingLocationRef.current = null;
+          setSelectedDistrict(val);
+        }}
+        options={districts}
+        placeholder={lloading ? t("loading") : t("select_district")}
+        searchPlaceholder="Search District"
+        disabled={!selectedState || lloading}
+        loading={lloading}
+        error={errors?.district}
+      />
 
       {/* Taluka Dropdown */}
-      <div className="flex flex-col">
-        <label className="text-sm text-gray-600 mb-1">{t("taluka")}</label>
-        <select
-          value={selectedTaluka}
-          onChange={(e) => {
-            pendingLocationRef.current = null;
-            setSelectedTaluka(e.target.value);
-          }}
-          disabled={!selectedDistrict || lloading}
-          className={`w-full border rounded-lg px-3 py-2 focus:outline-none text-farm-900 focus:ring-2 focus:ring-green-500 transition disabled:bg-gray-100 disabled:cursor-not-allowed dark:text-white ${
-            errors?.taluka ? "border-red-500 focus:ring-red-500" : "border-gray-300"
-          }`}
-        >
-          <option value="">{t("select_taluka")}</option>
-          {talukas.map((taluka) => (
-            <option key={taluka} value={taluka}>
-              {taluka}
-            </option>
-          ))}
-        </select>
-        {errors?.taluka && <span className="text-red-500 text-sm mt-1">{errors.taluka}</span>}
-      </div>
+      <BottomSelect
+        label={t("taluka")}
+        value={selectedTaluka}
+        onChange={(val) => {
+          pendingLocationRef.current = null;
+          setSelectedTaluka(val);
+        }}
+        options={talukas}
+        placeholder={t("select_taluka")}
+        searchPlaceholder="Search Taluka"
+        disabled={!selectedDistrict || lloading}
+        error={errors?.taluka}
+      />
 
       {/* Village Dropdown */}
-      <div className="flex flex-col">
-        <label className="text-sm text-gray-600 mb-1">{t("village")}</label>
-        <select
-          value={selectedVillage}
-          onChange={(e) => {
-            pendingLocationRef.current = null;
-            setSelectedVillage(e.target.value);
-          }}
-          disabled={!selectedTaluka || lloading}
-          className={`w-full border rounded-lg px-3 py-2 focus:outline-none text-farm-900 focus:ring-2 focus:ring-green-500 transition disabled:bg-gray-100 disabled:cursor-not-allowed dark:text-white ${
-            errors?.village ? "border-red-500 focus:ring-red-500" : "border-gray-300"
-          }`}
-        >
-          <option value="">{t("select_village")}</option>
-          {villages.map((village) => (
-            <option key={village} value={village}>
-              {village}
-            </option>
-          ))}
-        </select>
-        {errors?.village && <span className="text-red-500 text-sm mt-1">{errors.village}</span>}
-      </div>
+      <BottomSelect
+        label={t("village")}
+        value={selectedVillage}
+        onChange={(val) => {
+          pendingLocationRef.current = null;
+          setSelectedVillage(val);
+        }}
+        options={villages}
+        placeholder={t("select_village")}
+        searchPlaceholder="Search Village"
+        disabled={!selectedTaluka || lloading}
+        error={errors?.village}
+      />
 
       {/* Map Picker Toggle */}
       {/* <div className="flex items-center gap-3">
@@ -456,7 +461,10 @@ export default function LocationPicker({ value, onChange, errors }) {
 
       {/* Map Container */}
       {showMap && (
-        <div className="border rounded-lg overflow-hidden relative z-0" style={{ height: "400px", width: "100%" }}>
+        <div
+          className="border rounded-lg overflow-hidden relative z-0"
+          style={{ height: "400px", width: "100%" }}
+        >
           {isApiKeyMissing && (
             <div className="flex h-full w-full items-center justify-center bg-yellow-50 text-yellow-700 text-center px-4">
               {t("missing_api_key")}
@@ -484,14 +492,14 @@ export default function LocationPicker({ value, onChange, errors }) {
               onClick={handleMapClick}
               onLoad={handleMapLoad}
               onUnmount={handleMapUnmount}
-            >
-            </GoogleMap>
+            ></GoogleMap>
           )}
 
           {mapMarker && (
             <div className="p-2 bg-green-50 border-t">
               <p className="text-sm text-gray-700">
-                {t("map_selected")} {mapMarker.lat.toFixed(6)}, {mapMarker.lng.toFixed(6)}
+                {t("map_selected")} {mapMarker.lat.toFixed(6)},{" "}
+                {mapMarker.lng.toFixed(6)}
               </p>
             </div>
           )}

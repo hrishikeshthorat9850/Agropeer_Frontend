@@ -21,6 +21,7 @@ import { supabase } from "@/lib/supabaseClient";
 import useToast from "@/hooks/useToast";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import BottomSelect from "@/components/ui/BottomSelect";
 
 export default function PrivacySettingsPage() {
   const router = useRouter();
@@ -163,35 +164,19 @@ export default function PrivacySettingsPage() {
                 </div>
               </div>
               <div className="flex-shrink-0">
-                <div className="relative">
-                  <select
+                <div className="w-40">
+                  <BottomSelect
                     value={privacySettings.profileVisibility}
-                    onChange={(e) =>
-                      handleSettingChange("profileVisibility", e.target.value)
+                    onChange={(val) =>
+                      handleSettingChange("profileVisibility", val)
                     }
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 dark:bg-black dark:text-white"
-                  >
-                    <option
-                      value="public"
-                      className="text-black bg-white dark:bg-black dark:text-white"
-                    >
-                      {t("public") || "Public"}
-                    </option>
-                    <option
-                      value="private"
-                      className="text-black bg-white dark:bg-black dark:text-white"
-                    >
-                      {t("private") || "Private"}
-                    </option>
-                  </select>
-                  <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
-                    <span className="text-sm font-medium text-gray-900 dark:text-white">
-                      {privacySettings.profileVisibility === "public"
-                        ? t("public") || "Public"
-                        : t("private") || "Private"}
-                    </span>
-                    <ChevronRight size={16} />
-                  </div>
+                    options={[
+                      { value: "public", label: t("public") || "Public" },
+                      { value: "private", label: t("private") || "Private" },
+                    ]}
+                    placeholder="Visibility"
+                    className=""
+                  />
                 </div>
               </div>
             </div>
@@ -214,43 +199,22 @@ export default function PrivacySettingsPage() {
                 </div>
               </div>
               <div className="flex-shrink-0">
-                <div className="relative">
-                  <select
+                <div className="w-40">
+                  <BottomSelect
                     value={privacySettings.allowMessages}
-                    onChange={(e) =>
-                      handleSettingChange("allowMessages", e.target.value)
+                    onChange={(val) =>
+                      handleSettingChange("allowMessages", val)
                     }
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 dark:bg-black dark:text-white"
-                  >
-                    <option
-                      value="all"
-                      className="text-black bg-white dark:bg-black dark:text-white"
-                    >
-                      {t("everyone") || "Everyone"}
-                    </option>
-                    <option
-                      value="contacts"
-                      className="text-black bg-white dark:bg-black dark:text-white"
-                    >
-                      {t("contacts_only") || "Contacts Only"}
-                    </option>
-                    <option
-                      value="none"
-                      className="text-black bg-white dark:bg-black dark:text-white"
-                    >
-                      {t("nobody") || "Nobody"}
-                    </option>
-                  </select>
-                  <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
-                    <span className="text-sm font-medium text-gray-900 dark:text-white">
-                      {privacySettings.allowMessages === "all"
-                        ? t("everyone") || "Everyone"
-                        : privacySettings.allowMessages === "contacts"
-                        ? t("contacts_only") || "Contacts Only"
-                        : t("nobody") || "Nobody"}
-                    </span>
-                    <ChevronRight size={16} />
-                  </div>
+                    options={[
+                      { value: "all", label: t("everyone") || "Everyone" },
+                      {
+                        value: "contacts",
+                        label: t("contacts_only") || "Contacts Only",
+                      },
+                      { value: "none", label: t("nobody") || "Nobody" },
+                    ]}
+                    placeholder="Messages"
+                  />
                 </div>
               </div>
             </div>

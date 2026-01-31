@@ -4,6 +4,7 @@ import Image from "next/image";
 import { FaBoxOpen, FaUpload, FaTimes } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/Context/languagecontext";
+import BottomSelect from "./ui/BottomSelect";
 
 export default function PostSellAd({ refreshPosts }) {
   const [showForm, setShowForm] = useState(false);
@@ -72,17 +73,18 @@ export default function PostSellAd({ refreshPosts }) {
                 className="w-full border p-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
               />
               <div className="flex gap-2">
-                <select
+                <BottomSelect
                   value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  className="w-1/2 border p-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-600"
-                >
-                  <option value="">{t("select_category")}</option>
-                  <option value="seeds">Seeds</option>
-                  <option value="fertilizers">Fertilizers</option>
-                  <option value="equipment">Equipment</option>
-                  <option value="produce">Produce</option>
-                </select>
+                  onChange={setCategory}
+                  options={[
+                    { value: "seeds", label: "Seeds" },
+                    { value: "fertilizers", label: "Fertilizers" },
+                    { value: "equipment", label: "Equipment" },
+                    { value: "produce", label: "Produce" },
+                  ]}
+                  placeholder={t("select_category")}
+                  className="w-1/2"
+                />
                 <input
                   type="number"
                   placeholder={t("price_placeholder")}

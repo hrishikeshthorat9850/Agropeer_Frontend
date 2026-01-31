@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { useLanguage } from "@/Context/languagecontext";
+import BottomSelect from "./ui/BottomSelect";
 
 const LANGUAGES = [
   { code: "en", label: "English" },
@@ -17,20 +18,16 @@ export default function LanguageSelector({ className }) {
 
   return (
     <div className={className}>
-      <label htmlFor="site-language" className="sr-only">Select Language</label>
-      <select
-        id="site-language"
+      <label htmlFor="site-language" className="sr-only">
+        Select Language
+      </label>
+      <BottomSelect
         value={locale}
-        onChange={(e) => setLocale(e.target.value)}
-        className="px-2 py-1 rounded border"
-        aria-label="Site language"
-      >
-        {LANGUAGES.map((l) => (
-          <option key={l.code} value={l.code}>
-            {l.label}
-          </option>
-        ))}
-      </select>
+        onChange={setLocale}
+        options={LANGUAGES.map((l) => ({ value: l.code, label: l.label }))}
+        placeholder="Select Language"
+        searchPlaceholder="Search Language"
+      />
     </div>
   );
 }

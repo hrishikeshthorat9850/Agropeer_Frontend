@@ -194,7 +194,7 @@ export default function ReplyItem({
                   <button
                     onClick={() => onSendReply(reply?.id)}
                     disabled={!replyText.trim()}
-                    className="text-blue-500 font-semibold text-xs disabled:opacity-50 hover:text-blue-600 transition-colors px-2"
+                    className="text-blue-700 font-semibold text-xs hover:text-blue-600 transition-colors px-2"
                   >
                     {t("post_btn") || "Post"}
                   </button>

@@ -655,7 +655,7 @@ export default function WeatherForecast() {
               </div>
 
               {/* Integrated Location Controls in Simple View - Keep these as fallback below card */}
-              <div className="flex items-center justify-center gap-2 mt-2 opacity-80">
+              {/* <div className="flex items-center justify-center gap-2 mt-2 opacity-80">
                 {status === LOCATION.LOADING && (
                   <span className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full animate-pulse text-gray-500">
                     Locating...
@@ -677,7 +677,7 @@ export default function WeatherForecast() {
                     Turn On GPS
                   </button>
                 )}
-              </div>
+              </div> */}
 
               {/* Tip Box - Restored */}
               <div

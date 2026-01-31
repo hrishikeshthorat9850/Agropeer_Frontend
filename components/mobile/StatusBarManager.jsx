@@ -13,28 +13,30 @@ export default function StatusBarManager() {
 
     const setStatusBarStyle = async () => {
       try {
+        // Overlay is critical for the full-screen feel
         if (Capacitor.getPlatform() === "android") {
-          // We use overlay: true globally for smooth sidebar transitions (green gradient).
-          // Main layout must handle pt-safe-top.
           await StatusBar.setOverlaysWebView({ overlay: true });
         }
 
-        // Delay slightly to ensure theme is resolved and native bridge is ready
+        // Small delay to ensure bridge is ready and theme is stable
         setTimeout(async () => {
           if (resolvedTheme === "dark") {
-            // Dark Mode: Black Background, White Icons
+            // Dark Mode: Background is Black (or Dark), so we need WHITE Icons
+            // Style.Dark => Light Content (White Text)
             await StatusBar.setStyle({ style: Style.Dark });
+
+            // On Android with overlay, setting background color might be transparent/ignored depending on overlay,
+            // but we set it just in case overlay is toggled off or for safe areas.
             if (Capacitor.getPlatform() === "android") {
-              await StatusBar.setBackgroundColor({ color: "#000000" });
+              // We keep it transparent or match theme if needed, but overlay handles the look.
+              // Just ensuring contrast.
             }
           } else {
-            // Light Mode: White Background, Dark Icons
+            // Light Mode: Background is White, so we need BLACK Icons
+            // Style.Light => Dark Content (Black Text)
             await StatusBar.setStyle({ style: Style.Light });
-            if (Capacitor.getPlatform() === "android") {
-              await StatusBar.setBackgroundColor({ color: "#ffffff" });
-            }
           }
-        }, 100);
+        }, 50);
       } catch (error) {
         console.error("Error setting status bar style:", error);
       }
@@ -42,14 +44,10 @@ export default function StatusBarManager() {
 
     setStatusBarStyle();
 
-    // Safety check sequence
-    const t1 = setTimeout(setStatusBarStyle, 500);
-    const t2 = setTimeout(setStatusBarStyle, 2000); // Final check
+    // Safety check: Re-apply after small delay to fix race conditions on app launch
+    const t = setTimeout(setStatusBarStyle, 1000);
 
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-    };
+    return () => clearTimeout(t);
   }, [resolvedTheme]);
 
   return null;
