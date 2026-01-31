@@ -2,21 +2,19 @@
 
 import { useEffect } from "react";
 
-/**
- * MobilePageContainer - Container for page content with consistent styling
- *
- * Use this to wrap page content for consistent spacing and styling
- */
 export default function MobilePageContainer({
   children,
   className = "",
   fullWidth = false,
   noPadding = false,
+  scrollOnMount = true,
 }) {
-  // Ensure page always opens at the top
+  // Ensure page always opens at the top (skip when scrollOnMount=false for infinite-scroll pages)
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    if (scrollOnMount) {
+      window.scrollTo(0, 0);
+    }
+  }, [scrollOnMount]);
 
   return (
     <div

@@ -176,7 +176,7 @@ export default function PostsPage() {
 
   return (
     <ErrorBoundary>
-      <MobilePageContainer>
+      <MobilePageContainer scrollOnMount={false}>
         <div className="py-4">
           {/* Header */}
           <motion.div
