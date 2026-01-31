@@ -492,7 +492,7 @@ export default function ChatModal({
         exit={{ opacity: 0 }}
         // 💡 New background: no blur, just a clean gradient
         // Updated to be full screen z-[9999] with 4px padding (p-1)
-        className="fixed inset-0 flex items-center justify-center z-[9999] p-1 bg-black/60 backdrop-blur-sm"
+        className="fixed inset-0 flex items-center justify-center z-[9999] p-1 pt-9 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
       >
         <motion.div

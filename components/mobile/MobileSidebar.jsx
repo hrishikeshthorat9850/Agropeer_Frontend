@@ -164,9 +164,7 @@ export default function MobileSidebar() {
           {/* LEFT SIDEBAR - MATCHING USER PROFILE SIDEBAR */}
           <motion.div
             className="fixed top-0 left-0 h-full w-[85%] max-w-[300px] 
-              bg-white dark:bg-[#1C1C1E] z-[9999]
-              shadow-2xl flex flex-col overflow-hidden sidebar-panel-position
-            "
+              bg-white dark:bg-[#1C1C1E] z-[9999] shadow-2xl flex flex-col overflow-hidden"
             initial={{ x: "-100%" }}
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}

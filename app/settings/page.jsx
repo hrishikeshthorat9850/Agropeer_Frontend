@@ -23,6 +23,7 @@ import { LOCALE_NAMES } from "@/lib/locales";
 import useToast from "@/hooks/useToast";
 import AccountDeleteModal from "@/components/ui/AccountDeleteModal";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
+import BottomSelect from "@/components/ui/BottomSelect";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -208,37 +209,24 @@ export default function SettingsPage() {
                   </div>
                 </div>
                 <div className="flex-shrink-0">
-                  <div className="relative">
-                    <select
+                  <div className="w-40">
+                    <BottomSelect
                       value={locale}
-                      onChange={(e) => {
+                      onChange={(val) => {
                         triggerHaptic();
-                        setLocale(e.target.value);
+                        setLocale(val);
                         showToast(
                           "success",
-                          `Language changed to ${
-                            LOCALE_NAMES[e.target.value] || e.target.value
-                          } 🌐`,
+                          `Language changed to ${LOCALE_NAMES[val] || val} 🌐`,
                         );
                       }}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 dark:bg-black dark:text-white"
-                    >
-                      {SUPPORTED_LOCALES.map((code) => (
-                        <option
-                          key={code}
-                          value={code}
-                          className="text-black bg-white dark:bg-black dark:text-white"
-                        >
-                          {LOCALE_NAMES[code] || code}
-                        </option>
-                      ))}
-                    </select>
-                    <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">
-                        {LOCALE_NAMES[locale] || locale}
-                      </span>
-                      <ChevronRight size={16} />
-                    </div>
+                      options={SUPPORTED_LOCALES.map((code) => ({
+                        value: code,
+                        label: LOCALE_NAMES[code] || code,
+                      }))}
+                      placeholder="Language"
+                      searchPlaceholder="Search..."
+                    />
                   </div>
                 </div>
               </div>

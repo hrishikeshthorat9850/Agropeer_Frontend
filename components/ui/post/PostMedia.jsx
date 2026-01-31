@@ -56,10 +56,9 @@ export default function PostMedia({ images, onZoomChange }) {
     // All subsequent images will be cropped to fit this ratio.
     if (index !== 0) return;
 
-    // Instagram limits: 4:5 (0.8) to 1.91:1
-    // If < 0.8 (e.g. 9:16), clamp to 0.8 (Crop top/bottom)
-    // If > 1.91 (e.g. 21:9), clamp to 1.91 (Crop sides)
-    const clampedRatio = Math.min(Math.max(ratio, 0.8), 1.91);
+    // Instagram limits: Extended range for full visibility
+    // Allow up to 9:20 (0.45) vertically and 2.5 horizontally
+    const clampedRatio = Math.min(Math.max(ratio, 0.45), 2.5);
 
     setAspectRatio(clampedRatio);
   };
@@ -294,17 +293,8 @@ function ZoomableMedia({
     }
 
     if (imageRatio < containerAspectRatio) {
-      // Image is Taller -> Fill Width, Auto Height
-      return {
-        width: "100%",
-        height: "auto",
-        position: "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-      };
-    } else {
-      // Image is Wider -> Fill Height, Auto Width
+      // Image is Taller than container -> Constrain Height to Fit (Contain)
+      // This results in black bars on sides (letterboxing) instead of cropping top/bottom
       return {
         height: "100%",
         width: "auto",
@@ -312,6 +302,19 @@ function ZoomableMedia({
         top: "50%",
         left: "50%",
         transform: "translate(-50%, -50%)",
+        maxWidth: "none", // Ensure it can size freely
+      };
+    } else {
+      // Image is Wider than container -> Constrain Width to Fit (Contain)
+      // This results in black bars on top/bottom instead of cropping sides
+      return {
+        width: "100%",
+        height: "auto",
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        maxHeight: "none",
       };
     }
   };

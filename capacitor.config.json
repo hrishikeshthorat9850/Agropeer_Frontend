@@ -18,8 +18,8 @@
       "splashImmersive": true
     },
     "StatusBar": {
-      "style": "dark",
-      "backgroundColor": "#4ade80"
+      "style": "light",
+      "backgroundColor": "#ffffff"
     },
     "Keyboard": {
       "resize": "native",
@@ -31,10 +31,7 @@
       "photosPermission": "Allow AgroGram to access your photos to select images."
     },
     "Filesystem": {
-      "androidPermissions": [
-        "READ_EXTERNAL_STORAGE",
-        "WRITE_EXTERNAL_STORAGE"
-      ]
+      "androidPermissions": ["READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE"]
     },
     "Geolocation": {
       "locationAlwaysAndWhenInUse": "Allow AgroGram to access your location to show nearby markets and weather information.",
