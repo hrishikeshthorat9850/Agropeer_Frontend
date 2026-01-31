@@ -54,6 +54,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
   const [loadingLike, setLoadingLike] = useState(false);
   const [loadingBookmark, setLoadingBookmark] = useState(false);
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+  const likeInFlightRef = useRef(false);
 
   function sanitizeCaption(str) {
     if (!str) return "";
@@ -90,7 +91,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
 
   // Initialize post data - use stable references
   useEffect(() => {
-    if (!user || !post) return;
+    if (!user || !post || loadingLike) return;
     const liked = post?.post_likes?.some((like) => like.user_id === user.id);
     setIsLike(liked);
     setLikeCount(post?.post_likes?.length || 0);
@@ -98,7 +99,8 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
   }, [
     post?.id,
     user?.id,
-    post?.post_likes?.length,
+    // post?.post_likes?.length,
+    loadingLike,
     post?.post_comments?.length,
   ]);
 
@@ -351,7 +353,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
       return;
     }
 
-    if (loadingLike) return; // Prevent double clicks
+    // if (loadingLike) return; // Prevent double clicks
 
     // Optimistic update
     const previousLike = isLike;
@@ -404,6 +406,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
     showToast,
     t,
   ]);
+
 
   const handleBookmarkClick = useCallback(async () => {
     if (!user) {
