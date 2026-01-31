@@ -88,19 +88,22 @@ export default function OptionsPopup({ open, onClose, onEdit, onDelete, onReport
             <Divider variant="middle" />
 
             {/* REPORT - Amber/Orange */}
-            <StyledListItem
-              onClick={onReport}
-              sx={{
-                "& .MuiListItemIcon-root": { color: "#d97706" }, // amber
-                "& .MuiListItemText-primary": { color: "#92400e" },
-                "&:hover": { backgroundColor: "#fef3c7" }, // light amber hover
-              }}
-            >
+            {post?.user_id != user?.id && (          
+              <StyledListItem
+                onClick={onReport}
+                sx={{
+                  "& .MuiListItemIcon-root": { color: "#d97706" }, // amber
+                  "& .MuiListItemText-primary": { color: "#92400e" },
+                  "&:hover": { backgroundColor: "#fef3c7" }, // light amber hover
+                }}
+              >
               <ListItemIcon>
                 <FaFlag />
               </ListItemIcon>
               <ListItemText primary="Report Post" />
             </StyledListItem>
+            )}
+
 
             <Divider variant="middle" />
             {/* 🗑️ DELETE - Red (danger) */}
