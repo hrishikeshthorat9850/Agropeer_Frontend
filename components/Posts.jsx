@@ -54,7 +54,10 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
   const [loadingLike, setLoadingLike] = useState(false);
   const [loadingBookmark, setLoadingBookmark] = useState(false);
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
-  const likeInFlightRef = useRef(false);
+  // Track most recent like request to prevent stale responses from overwriting newer actions
+  const latestLikeRequestIdRef = useRef(0);
+  // Store previous state for potential rollback of the latest request
+  const likePrevStateRef = useRef({ isLike: false, likeCount: 0 });
 
   function sanitizeCaption(str) {
     if (!str) return "";
@@ -91,16 +94,15 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
 
   // Initialize post data - use stable references
   useEffect(() => {
-    if (!user || !post || loadingLike) return;
+    if (!user || !post) return;
     const liked = post?.post_likes?.some((like) => like.user_id === user.id);
     setIsLike(liked);
-    setLikeCount(post?.post_likes?.length || 0);
-    setcommentCount(post?.post_comments?.length || 0);
+    setLikeCount(post?.post_likes?.length ?? 0);
+    setcommentCount(post?.post_comments?.length ?? 0);
   }, [
     post?.id,
     user?.id,
-    // post?.post_likes?.length,
-    loadingLike,
+    post?.post_likes?.length,
     post?.post_comments?.length,
   ]);
 
@@ -346,21 +348,24 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
     }
   }, []);
 
-  // Like handlers with optimistic updates
+  // Like handlers with optimistic updates (idempotent client requests + response reconciliation)
   const handleLikeClick = useCallback(async () => {
     if (!user) {
       showToast("error", t("login_required_toast"));
       return;
     }
 
-    // if (loadingLike) return; // Prevent double clicks
-
-    // Optimistic update
     const previousLike = isLike;
     const previousCount = likeCount;
-    setIsLike(!isLike);
-    setLikeCount((prev) => (previousLike ? Math.max(0, prev - 1) : prev + 1));
-    setLoadingLike(true);
+    const desired = !previousLike; // explicit desired state
+
+    // Optimistic update
+    setIsLike(desired);
+    setLikeCount((prev) => (desired ? prev + 1 : Math.max(0, prev - 1)));
+
+    // Bump request id and save previous state for rollback if needed
+    const reqId = ++latestLikeRequestIdRef.current;
+    likePrevStateRef.current = { isLike: previousLike, likeCount: previousCount };
 
     try {
       const { data, error: apiError } = await apiRequest(
@@ -370,38 +375,37 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-          body: JSON.stringify({ user_id: user.id }),
+          body: JSON.stringify({ user_id: user.id, liked: desired, request_id: reqId }),
         },
       );
 
       if (apiError) {
-        // Rollback on error
-        setIsLike(previousLike);
-        setLikeCount(previousCount);
-        showToast("error", apiError.message || t("like_update_failed"));
+        throw apiError;
+      }
+
+      // Only apply server response if this is the latest request (prevents stale overwrites)
+      if (reqId !== latestLikeRequestIdRef.current) {
         return;
       }
 
-      // Update with server response
       if (data) {
-        setIsLike(data.liked);
-        setLikeCount(data.likeCount || likeCount);
+        setIsLike(Boolean(data.liked));
+        setLikeCount(typeof data.likeCount === "number" ? data.likeCount : previousCount);
       }
     } catch (err) {
-      // Rollback on error
-      setIsLike(previousLike);
-      setLikeCount(previousCount);
-      showToast("error", t("network_error") + " " + t("request_failed_retry"));
+      // If this was the most recent request, rollback to previous state
+      if (reqId === latestLikeRequestIdRef.current) {
+        setIsLike(likePrevStateRef.current.isLike);
+        setLikeCount(likePrevStateRef.current.likeCount);
+        showToast("error", t("like_update_failed"));
+      }
       console.error("Unexpected error:", err);
-    } finally {
-      setLoadingLike(false);
     }
   }, [
     user?.id,
     isLike,
     likeCount,
     post?.id,
-    loadingLike,
     accessToken,
     showToast,
     t,

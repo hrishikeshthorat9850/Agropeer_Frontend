@@ -18,8 +18,8 @@
 			"splashImmersive": true
 		},
 		"StatusBar": {
-			"style": "dark",
-			"backgroundColor": "#4ade80"
+			"style": "light",
+			"backgroundColor": "#ffffff"
 		},
 		"Keyboard": {
 			"resize": "native",
