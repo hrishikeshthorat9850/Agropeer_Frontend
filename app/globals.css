@@ -109,7 +109,7 @@ body::-webkit-scrollbar,
 html.capacitor-platform-android,
 body.capacitor-platform-android {
   height: 100%;
-  overscroll-behavior-y: contain;
+  overscroll-behavior-y: none;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }

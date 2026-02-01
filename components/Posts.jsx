@@ -365,7 +365,10 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
 
     // Bump request id and save previous state for rollback if needed
     const reqId = ++latestLikeRequestIdRef.current;
-    likePrevStateRef.current = { isLike: previousLike, likeCount: previousCount };
+    likePrevStateRef.current = {
+      isLike: previousLike,
+      likeCount: previousCount,
+    };
 
     try {
       const { data, error: apiError } = await apiRequest(
@@ -375,7 +378,11 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-          body: JSON.stringify({ user_id: user.id, liked: desired, request_id: reqId }),
+          body: JSON.stringify({
+            user_id: user.id,
+            liked: desired,
+            request_id: reqId,
+          }),
         },
       );
 
@@ -390,7 +397,9 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
 
       if (data) {
         setIsLike(Boolean(data.liked));
-        setLikeCount(typeof data.likeCount === "number" ? data.likeCount : previousCount);
+        setLikeCount(
+          typeof data.likeCount === "number" ? data.likeCount : previousCount,
+        );
       }
     } catch (err) {
       // If this was the most recent request, rollback to previous state
@@ -401,16 +410,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
       }
       console.error("Unexpected error:", err);
     }
-  }, [
-    user?.id,
-    isLike,
-    likeCount,
-    post?.id,
-    accessToken,
-    showToast,
-    t,
-  ]);
-
+  }, [user?.id, isLike, likeCount, post?.id, accessToken, showToast, t]);
 
   const handleBookmarkClick = useCallback(async () => {
     if (!user) {
@@ -798,6 +798,60 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
         onReplyMenu={commentHandlers.onReplyMenu}
         replyLikes={replyLikes}
         onToggleComments={() => setShowCommentsSection(!showCommentsSection)}
+        // Pass update/delete handlers
+        onUpdateComment={async (commentId, newText) => {
+          if (!commentId || !newText.trim()) return;
+          try {
+            const { error } = await supabase
+              .from("post_comments")
+              .update({ comment: newText })
+              .eq("id", commentId);
+
+            if (error) throw error;
+
+            showToast(
+              "success",
+              t("comment_updated_success") || "Comment updated",
+            );
+            await refreshComments();
+          } catch (err) {
+            console.error("Error updating comment:", err);
+            showToast(
+              "error",
+              t("comment_update_failed") || "Failed to update comment",
+            );
+          }
+        }}
+        onDeleteComment={async (commentId) => {
+          if (
+            !confirm(
+              t("delete_comment_confirm") ||
+                "Are you sure you want to delete this comment?",
+            )
+          )
+            return;
+          try {
+            const { error } = await supabase
+              .from("post_comments")
+              .delete()
+              .eq("id", commentId);
+
+            if (error) throw error;
+
+            showToast(
+              "success",
+              t("comment_deleted_success") || "Comment deleted",
+            );
+            // Optimistic update could go here, but refresh is safer for threading
+            await refreshComments();
+          } catch (err) {
+            console.error("Error deleting comment:", err);
+            showToast(
+              "error",
+              t("comment_delete_failed") || "Failed to delete comment",
+            );
+          }
+        }}
         onToggleShowAll={() => setShowAllComments(!showAllComments)}
         totalCommentCount={commentInfo.length}
         currentUserId={user?.id}

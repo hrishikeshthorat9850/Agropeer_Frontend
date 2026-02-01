@@ -1,6 +1,15 @@
 "use client";
-import { FaRegHeart, FaHeart, FaRegComment, FaShare, FaLightbulb, FaBalanceScale } from "react-icons/fa";
+import {
+  FaRegHeart,
+  FaHeart,
+  FaRegComment,
+  FaShare,
+  FaLightbulb,
+  FaBalanceScale,
+} from "react-icons/fa";
 import { motion } from "framer-motion";
+
+import { Haptics, ImpactStyle } from "@capacitor/haptics";
 
 export default function PostActions({
   isLike,
@@ -12,6 +21,14 @@ export default function PostActions({
   onAdviceClick,
   onCompareClick,
 }) {
+  const triggerHaptic = async (style = ImpactStyle.Light) => {
+    try {
+      await Haptics.impact({ style });
+    } catch (e) {
+      // Ignore on web
+    }
+  };
+
   return (
     <div className="md:px-3 px-2 border-t md:border-none border-gray-100 dark:border-zinc-800 bg-transparent dark:bg-transparent">
       <div className="flex items-center justify-between">
@@ -19,11 +36,15 @@ export default function PostActions({
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={onLikeClick}
-            className={`flex items-center gap-2 px-3 py-2 rounded-full transition-all duration-200 ${isLike
-                ? 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-500'
-                : 'text-gray-700 hover:bg-gray-100 dark:text-white dark:hover:bg-white/10'
-              }`}
+            onClick={() => {
+              triggerHaptic(ImpactStyle.Medium);
+              onLikeClick();
+            }}
+            className={`flex items-center gap-2 px-3 py-2 rounded-full transition-all duration-200 ${
+              isLike
+                ? "bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-500"
+                : "text-gray-700 hover:bg-gray-100 dark:text-white dark:hover:bg-white/10"
+            }`}
           >
             <motion.div
               animate={{ scale: isLike ? 1.2 : 1 }}
@@ -41,7 +62,10 @@ export default function PostActions({
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={onCommentClick}
+            onClick={() => {
+              triggerHaptic(ImpactStyle.Light);
+              onCommentClick();
+            }}
             className="flex items-center gap-2 px-3 py-2 rounded-full text-gray-700 hover:bg-gray-100 dark:text-white dark:hover:bg-white/10 transition-all duration-200"
           >
             <FaRegComment className="text-xl" />
@@ -51,7 +75,10 @@ export default function PostActions({
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={onShareClick}
+            onClick={() => {
+              triggerHaptic(ImpactStyle.Light);
+              onShareClick();
+            }}
             className="flex items-center gap-2 px-3 py-2 rounded-full text-gray-700 hover:bg-gray-100 dark:text-white dark:hover:bg-white/10 transition-all duration-200"
           >
             <FaShare className="text-xl" />

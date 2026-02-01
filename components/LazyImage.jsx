@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
-import { useIntersectionObserver } from "@/utils/lazyLoading";
+
 import { useLanguage } from "@/Context/languagecontext";
 
 /**
@@ -14,56 +14,40 @@ export default function LazyImage({
   width,
   height,
   className = "",
-  priority = false,
+  priority = false, // If true, native "eager", else "lazy"
   placeholder = "blur",
   blurDataURL,
   ...props
 }) {
-  const [elementRef, isVisible] = useIntersectionObserver();
-  const [imageError, setImageError] = useState(false);
+  const [error, setError] = useState(false);
   const { t } = useLanguage();
 
-  // If priority is true, load immediately
-  if (priority) {
+  if (error) {
     return (
-      <Image
-        src={src}
-        alt={alt}
-        width={width}
-        height={height}
-        className={className}
-        priority
-        {...props}
-      />
+      <div
+        className={`bg-gray-200 flex items-center justify-center ${className}`}
+        style={{ width, height }}
+      >
+        <span className="text-gray-400 text-xs text-center p-1">
+          {t("image_failed_to_load") || "Failed"}
+        </span>
+      </div>
     );
   }
 
   return (
-    <div ref={elementRef} className={className} style={{ width, height }}>
-      {isVisible && !imageError ? (
-        <Image
-          src={src}
-          alt={alt}
-          width={width}
-          height={height}
-          className={className}
-          loading="lazy"
-          onError={() => setImageError(true)}
-          placeholder={placeholder}
-          blurDataURL={blurDataURL}
-          {...props}
-        />
-      ) : (
-        <div
-          className={`bg-gray-200 animate-pulse flex items-center justify-center ${className}`}
-          style={{ width, height }}
-        >
-          {imageError && (
-            <span className="text-gray-400 text-sm">{t("image_failed_to_load")}</span>
-          )}
-        </div>
-      )}
-    </div>
+    <Image
+      src={src}
+      alt={alt || "Image"}
+      width={width}
+      height={height}
+      className={`${className} transition-opacity duration-300`}
+      priority={priority}
+      loading={priority ? "eager" : "lazy"}
+      placeholder={placeholder === "blur" && blurDataURL ? "blur" : "empty"}
+      blurDataURL={blurDataURL}
+      onError={() => setError(true)}
+      {...props}
+    />
   );
 }
-

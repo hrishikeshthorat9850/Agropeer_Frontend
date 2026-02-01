@@ -29,12 +29,21 @@ export default function CommentItem({
   replyMenuOpen,
   replyLikes = {},
   onReplyMenu,
-  onEdit,
-  onDelete,
+  onEdit, // Using this as trigger from menu
+  onDelete, // Using this as trigger from menu
+  // New props
+  onUpdateComment,
+  onDeleteComment,
+  currentUserId,
 }) {
   const { t } = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
+
+  // Editing State
+  const [isEditing, setIsEditing] = useState(false);
+  const [editContent, setEditContent] = useState(comment.comment);
+  const [isSaving, setIsSaving] = useState(false);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -50,6 +59,22 @@ export default function CommentItem({
   }, []);
 
   const hasReplies = replies && replies.length > 0;
+  const isOwner = currentUserId && comment.user_id === currentUserId;
+
+  const handleSaveEdit = async () => {
+    if (!editContent.trim() || isSaving) return;
+    setIsSaving(true);
+    if (onUpdateComment) {
+      await onUpdateComment(comment.id, editContent);
+    }
+    setIsEditing(false);
+    setIsSaving(false);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditContent(comment.comment);
+  };
 
   return (
     <motion.div
@@ -105,95 +130,122 @@ export default function CommentItem({
               </span>
             </div>
 
-            {/* Comment Text */}
-            <div className="text-[14px] text-gray-900 dark:text-gray-200 whitespace-pre-wrap leading-snug">
-              {comment.comment}
-            </div>
+            {/* Comment Text or Edit Input */}
+            {isEditing ? (
+              <div className="mt-1">
+                <textarea
+                  value={editContent}
+                  onChange={(e) => setEditContent(e.target.value)}
+                  className="w-full bg-gray-50 dark:bg-zinc-800 border-none rounded-xl p-2 text-sm focus:ring-1 focus:ring-green-500/50 resize-none"
+                  rows={2}
+                  autoFocus
+                />
+                <div className="flex justify-end gap-2 mt-2">
+                  <button
+                    onClick={handleCancelEdit}
+                    className="text-xs font-medium text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                  >
+                    {t("cancel") || "Cancel"}
+                  </button>
+                  <button
+                    onClick={handleSaveEdit}
+                    disabled={!editContent.trim() || isSaving}
+                    className="text-xs font-bold text-green-600 hover:text-green-700 disabled:opacity-50"
+                  >
+                    {isSaving
+                      ? t("saving") || "Saving..."
+                      : t("save") || "Save"}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="text-[14px] text-gray-900 dark:text-gray-200 whitespace-pre-wrap leading-snug">
+                {comment.comment}
+              </div>
+            )}
 
-            {/* Action Bar (Like, Reply, etc) */}
-            <div className="flex items-center gap-4 mt-2">
-              {/* Like Button */}
-              <div className="flex items-center gap-1.5">
-                <button
-                  onClick={() => onLike(comment?.id)}
-                  className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors focus:outline-none"
-                >
-                  {isLiked ? (
-                    <FaHeart className="w-4 h-4 text-red-500" />
-                  ) : (
-                    <FaRegHeart className="w-4 h-4 text-gray-800 dark:text-white" />
+            {/* Action Bar (Like, Reply, etc) - Hide when editing */}
+            {!isEditing && (
+              <div className="flex items-center gap-4 mt-2">
+                {/* Like Button */}
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => onLike(comment?.id)}
+                    className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors focus:outline-none"
+                  >
+                    {isLiked ? (
+                      <FaHeart className="w-4 h-4 text-red-500" />
+                    ) : (
+                      <FaRegHeart className="w-4 h-4 text-gray-800 dark:text-white" />
+                    )}
+                  </button>
+                  {comment?.comment_likes?.length > 0 && (
+                    <span className="text-xs text-gray-600 dark:text-gray-400 font-medium">
+                      {comment.comment_likes.length}
+                    </span>
                   )}
-                </button>
-                {comment?.comment_likes?.length > 0 && (
-                  <span className="text-xs text-gray-600 dark:text-gray-400 font-medium">
-                    {comment.comment_likes.length}
-                  </span>
+                </div>
+
+                <div className="flex items-center gap-4 text-xs font-semibold text-gray-500 dark:text-gray-400 select-none">
+                  <button
+                    onClick={() => onReply(comment.id)}
+                    className="hover:bg-gray-100 dark:hover:bg-zinc-800 px-3 py-1.5 rounded-full transition-colors"
+                  >
+                    Reply
+                  </button>
+                </div>
+
+                {/* Meatball Menu - Only show if own comment (for Edit/Delete) */}
+                {isOwner && (
+                  <div ref={menuRef} className="relative ml-auto">
+                    <button
+                      onClick={() => setMenuOpen(!menuOpen)}
+                      className="px-2 py-1 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-500 dark:text-gray-400 transition-colors"
+                    >
+                      <FaEllipsisH className="w-3.5 h-3.5" />
+                    </button>
+
+                    {/* Menu Dropdown */}
+                    <AnimatePresence>
+                      {menuOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.95 }}
+                          className="absolute right-0 top-full flex bg-white dark:bg-[#1e1e1e] rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden z-[50]"
+                        >
+                          <button
+                            onClick={() => {
+                              setMenuOpen(false);
+                              setIsEditing(true);
+                            }}
+                            className="w-full flex items-center gap-2 px-3 py-2.5 text-xs font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5"
+                          >
+                            <FaEdit className="w-3 h-3" />
+                            {/* {t("edit_btn") || "Edit"} */}
+                          </button>
+                          <button
+                            onClick={() => {
+                              setMenuOpen(false);
+                              if (onDeleteComment) onDeleteComment(comment.id);
+                            }}
+                            className="w-full flex items-center gap-2 px-3 py-2.5 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10"
+                          >
+                            <FaTrash className="w-3 h-3" />{" "}
+                            {/* {t("delete_btn") || "Delete"} */}
+                          </button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 )}
               </div>
-              {/* <button
-                onClick={() => onReply(comment.id)}
-                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors text-gray-800 dark:text-white"
-              >
-              </button> */}
-              {/* Re-implementing the Action Row to match screenshot more exactly */}
-              {/* Screenshot shows: LikeIcon [Count] | DislikeIcon | ReplyIcon/Text */}
-              {/* I will use the previous structure but styled cleaner */}
-              <div className="flex items-center gap-4 text-xs font-semibold text-gray-500 dark:text-gray-400 select-none">
-                <button
-                  onClick={() => onReply(comment.id)}
-                  className="hover:bg-gray-100 dark:hover:bg-zinc-800 px-3 py-1.5 rounded-full transition-colors"
-                >
-                  Reply
-                </button>
-              </div>
-              {/* Meatball Menu */}
-              <div ref={menuRef} className="relative ml-auto">
-                <button
-                  onClick={() => setMenuOpen(!menuOpen)}
-                  className="px-2 py-1 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-500 dark:text-gray-400 transition-colors"
-                >
-                  <FaEllipsisH className="w-3.5 h-3.5" />
-                </button>
-
-                {/* Menu Dropdown - Same as before */}
-                <AnimatePresence>
-                  {menuOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      className="absolute right-0 top-full flex bg-white dark:bg-[#1e1e1e] rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden z-[50]"
-                    >
-                      <button
-                        onClick={() => {
-                          setMenuOpen(false);
-                          if (onEdit) onEdit(comment.id);
-                        }}
-                        className="w-full flex items-center gap-2 px-3 py-2.5 text-xs font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5"
-                      >
-                        <FaEdit className="w-3 h-3" /> 
-                        {/* {t("edit_btn") || "Edit"} */}
-                      </button>
-                      <button
-                        onClick={() => {
-                          setMenuOpen(false);
-                          if (onDelete) onDelete(comment.id);
-                        }}
-                        className="w-full flex items-center gap-2 px-3 py-2.5 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10"
-                      >
-                        <FaTrash className="w-3 h-3" />{" "}
-                        {/* {t("delete_btn") || "Delete"} */}
-                      </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            </div>
+            )}
           </div>
 
           {/* Reply Input Box */}
           <AnimatePresence>
-            {showReplyBox === comment.id && (
+            {showReplyBox === comment.id && !isEditing && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
@@ -245,6 +297,10 @@ export default function CommentItem({
                   menuOpen={replyMenuOpen}
                   replyLikes={replyLikes}
                   nestedRepliesMap={nestedReplies}
+                  // Pass recursive handlers
+                  onUpdateComment={onUpdateComment}
+                  onDeleteComment={onDeleteComment}
+                  currentUserId={currentUserId}
                 />
               ))}
             </div>

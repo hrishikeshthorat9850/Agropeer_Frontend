@@ -25,6 +25,8 @@ export default function CommentsSection({
   totalCommentCount,
   currentUserId,
   loading = false,
+  onUpdateComment,
+  onDeleteComment,
 }) {
   const { t } = useLanguage();
   if (!comments || comments.length === 0) return null;
@@ -46,7 +48,9 @@ export default function CommentsSection({
               : t("comment_plural")}
           </span>
           <FaRegComment
-            className={`text-farm-900 dark:text-gray-300 transition-transform duration-300 ${showCommentsSection ? "rotate-180" : ""}`}
+            className={`text-farm-900 dark:text-gray-300 transition-transform duration-300 ${
+              showCommentsSection ? "rotate-180" : ""
+            }`}
           />
         </div>
       </button>
@@ -69,14 +73,14 @@ export default function CommentsSection({
               ) : (
                 [...comments]
                   .sort(
-                    (a, b) => new Date(b.created_at) - new Date(a.created_at)
+                    (a, b) => new Date(b.created_at) - new Date(a.created_at),
                   )
                   .map((comment) => {
                     // Check if user liked this comment
                     const isLiked =
                       (currentUserId &&
                         comment?.comment_likes?.some(
-                          (like) => like.user_id === currentUserId
+                          (like) => like.user_id === currentUserId,
                         )) ||
                       false;
 
@@ -97,6 +101,9 @@ export default function CommentsSection({
                         replyMenuOpen={replyMenuOpen}
                         replyLikes={replyLikes}
                         onReplyMenu={onReplyMenu}
+                        onUpdateComment={onUpdateComment}
+                        onDeleteComment={onDeleteComment}
+                        currentUserId={currentUserId}
                       />
                     );
                   })
