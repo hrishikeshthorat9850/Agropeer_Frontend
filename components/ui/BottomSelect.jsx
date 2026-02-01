@@ -206,7 +206,7 @@ export default function BottomSelect({
                             key={index}
                             onClick={() => handleSelect(option)}
                             className={`
-                            w-full flex items-center justify-between px-4 py-3.5 rounded-xl text-left transition-all duration-200
+                            w-full flex items-center justify-between px-4 py-2 rounded-xl text-left transition-all duration-200
                             ${
                               isSelected
                                 ? "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 font-medium"

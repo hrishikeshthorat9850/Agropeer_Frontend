@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { Toast } from "@/components/ui/market";
 import { FaPlus, FaTimes } from "react-icons/fa";
 import { useLanguage } from "@/Context/languagecontext";
+import ImageUploadBox from "@/components/ui/ImageUploadBox";
 
 export default function EditPostModal({
   isOpen,
@@ -92,7 +93,7 @@ export default function EditPostModal({
               .from("post-images")
               .getPublicUrl(fileName);
             return publicUrl.publicUrl;
-          })
+          }),
         );
         uploadedUrls = uploads;
       }
@@ -208,7 +209,6 @@ export default function EditPostModal({
                         </motion.div>
                       );
                     })}
-
                     {newImages.map((file, i) => (
                       <motion.div
                         key={i}
@@ -234,24 +234,16 @@ export default function EditPostModal({
                     ))}
 
                     {images.length + newImages.length < MAX_IMAGES && (
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        onClick={() => fileInputRef.current?.click()}
-                        className="w-full h-28 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-xl hover:border-green-500 hover:bg-green-50/70 transition-all text-green-900 hover:text-green-600 shadow-inner"
-                      >
-                        <FaPlus size={22} className="mb-1" />
-                        <span className="text-xs font-medium">
-                          {t("add_images_btn")}
-                        </span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          multiple
-                          ref={fileInputRef}
-                          onChange={handleImageChange}
-                          className="hidden"
-                        />
-                      </motion.button>
+                      <ImageUploadBox
+                        onFileChange={handleImageChange}
+                        multiple={true}
+                        className="w-full h-28 !p-2 bg-white hover:bg-green-50 border-gray-300 hover:border-green-500"
+                        icon={
+                          <FaPlus size={22} className="mb-1 text-green-600" />
+                        }
+                        label={t("add_images_btn")}
+                        subLabel={null}
+                      />
                     )}
                   </div>
                 </div>

@@ -18,6 +18,7 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import OptionsPopup from "@/components/ui/menu/OptionsPopup";
 import { supabase } from "@/lib/supabaseClient";
 import { useLanguage } from "@/Context/languagecontext";
+import ImageUploadBox from "@/components/ui/ImageUploadBox";
 
 export default function PostHeader({
   post,
@@ -332,19 +333,13 @@ export default function PostHeader({
                     </div>
                   ))}
 
-                  <button
-                    onClick={() => editInputRef.current?.click()}
-                    className="w-20 h-20 flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-farm-500 text-gray-400 hover:text-farm-500 transition-colors"
-                  >
-                    <span className="text-2xl">+</span>
-                  </button>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    ref={editInputRef}
-                    className="hidden"
-                    onChange={handleEditFiles}
+                  <ImageUploadBox
+                    onFileChange={handleEditFiles}
+                    multiple={true}
+                    className="w-20 h-20 !p-1 !rounded-lg"
+                    icon={<span className="text-2xl text-gray-400">+</span>}
+                    label=""
+                    subLabel={null}
                   />
                 </div>
               </div>

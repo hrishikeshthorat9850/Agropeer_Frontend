@@ -297,20 +297,15 @@ export default function AdCreate({ onAdCreated }) {
             Ad Image <span className="text-red-500">*</span>
           </label>
           <div className="mt-3 flex items-start gap-4">
-            <label
-              htmlFor="ad-image"
-              className="flex-none cursor-pointer inline-flex items-center gap-2 rounded-lg border border-dashed border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-            >
-              <FaUpload />
-              <span>{imageFile ? "Change Image" : "Choose Image"}</span>
-              <input
-                id="ad-image"
-                type="file"
-                accept="image/*"
-                onChange={handleImagePick}
-                className="sr-only"
-              />
-            </label>
+            <div className="mt-3 flex flex-col sm:flex-row items-start gap-4">
+               <ImageUploadBox
+                  onFileChange={handleImagePick}
+                  label={imageFile ? "Change Image" : "Choose Image"}
+                  subLabel="Recommended: 1200×800"
+                  icon={<FaUpload className="text-2xl" />}
+                  className="w-full sm:w-auto min-w-[200px]"
+                />
+            </div>
 
             <div className="flex-1">
               {previewUrl ? (

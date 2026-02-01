@@ -12,6 +12,7 @@ import useGeolocation from "@/hooks/useGeolocation";
 import { useLanguage } from "@/Context/languagecontext";
 import useToast from "@/hooks/useToast";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import ImageUploadBox from "./ui/ImageUploadBox";
 
 function Toast({ message, show, onClose, color = "bg-red-700" }) {
   if (!show) return null;
@@ -382,7 +383,7 @@ export default function SellForm({
         setPhotos(productData.photos);
         setPreviews(productData.photos);
         setSelectedCount(productData.photos.length);
-        if (fileInputRef.current) fileInputRef.current.value = "";
+        // fileInputRef removed
       }
     }
   }, [productData, category]);
@@ -456,8 +457,9 @@ export default function SellForm({
     setPhotos(updatedPhotos);
     setPreviews(updatedPreviews);
     setSelectedCount(updatedPreviews.length);
-    if (updatedPreviews.length === 0 && fileInputRef.current)
-      fileInputRef.current.value = "";
+    if (updatedPreviews.length === 0) {
+      // Input reset handled by component re-keying or ignored
+    }
   }
 
   function validateForm() {
@@ -572,8 +574,8 @@ export default function SellForm({
       setPreviews([]);
       setSelectedCount(0);
       setResetKey((prev) => prev + 1);
-
-      if (fileInputRef.current) fileInputRef.current.value = "";
+      
+      // fileInputRef reset removed, handled by resetKey remounting the component
     } catch (err) {
       console.error("Submit error:", err);
       showToast("error", t("toast_submit_error"));
@@ -668,16 +670,16 @@ export default function SellForm({
           <label className="text-gray-800 font-semibold mb-2 dark:text-white">
             {t("photos_label")} <span className="text-red-600">*</span>
           </label>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={onFileChange}
-            className={`w-full border rounded-lg px-2 py-2 focus:outline-none text-farm-900 focus:ring-2 focus:ring-green-500 ${
-              errors.photos ? "border-red-500" : "border-gray-300"
-            }`}
-          />
+          
+          <ImageUploadBox
+              onFileChange={onFileChange}
+              multiple={true}
+              error={!!errors.photos}
+              label={t("photos_label") || "Tap to select photos"}
+              subLabel={`${selectedCount} ${t("photos_selected") || "selected"}`}
+            />
+            {/* Native input removed as it is handled by ImageUploadBox */}
+
           {selectedCount > 0 && (
             <p className="text-gray-600 mt-1">
               {selectedCount} {t("photos_selected")}

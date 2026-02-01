@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaEdit, FaTrashAlt, FaFlag } from "react-icons/fa";
 import { supabase } from "@/lib/supabaseClient";
 import { useLanguage } from "@/Context/languagecontext";
+import ImageUploadBox from "@/components/ui/ImageUploadBox";
 
 export default function PostMenu({
   recentPost,
@@ -233,20 +234,14 @@ export default function PostMenu({
                     </button>
                   </div>
                 ))}
-                <button
-                  onClick={() => editInputRef.current.click()}
-                  className="w-24 h-24 flex flex-col items-center justify-center rounded-xl bg-gradient-to-r from-green-500 to-lime-600 text-white font-semibold shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300"
-                >
-                  <span className="text-2xl mb-1">+</span>
-                  <span className="text-sm">{t("add_img_btn")}</span>
-                </button>
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  ref={editInputRef}
-                  className="hidden"
-                  onChange={handleEditFiles}
+
+                <ImageUploadBox
+                  onFileChange={handleEditFiles}
+                  multiple={true}
+                  className="w-24 h-24 !p-1 !rounded-xl"
+                  icon={<span className="text-2xl text-green-600">+</span>}
+                  label={t("add_img_btn")}
+                  subLabel={null}
                 />
               </div>
 
