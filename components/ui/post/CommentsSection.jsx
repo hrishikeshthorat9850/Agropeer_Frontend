@@ -46,8 +46,7 @@ export default function CommentsSection({
               : t("comment_plural")}
           </span>
           <FaRegComment
-            className={`text-farm-900 dark:text-gray-300 transition-transform duration-300 ${showCommentsSection ? "rotate-180" : ""
-              }`}
+            className={`text-farm-900 dark:text-gray-300 transition-transform duration-300 ${showCommentsSection ? "rotate-180" : ""}`}
           />
         </div>
       </button>

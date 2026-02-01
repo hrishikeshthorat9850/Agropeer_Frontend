@@ -7,34 +7,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 
-import { Keyboard } from "@capacitor/keyboard";
-import { Capacitor } from "@capacitor/core";
-
 export default function MobileBottomNav({ onAI }) {
   const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
-
-  useEffect(() => {
-    if (!Capacitor.isNativePlatform()) return;
-
-    Keyboard.addListener("keyboardWillShow", () => {
-      setIsKeyboardOpen(true);
-    });
-
-    Keyboard.addListener("keyboardWillHide", () => {
-      setIsKeyboardOpen(false);
-    });
-
-    return () => {
-      Keyboard.removeAllListeners();
-    };
-  }, []);
 
   const safeBottom = "env(safe-area-inset-bottom, 0px)";
-
-  if (isKeyboardOpen) return null;
 
   const openAI = () => {
     // ... existing openAI code
@@ -158,7 +136,9 @@ export default function MobileBottomNav({ onAI }) {
             >
               <FaHome
                 size={24}
-                className={ `text-earth-500 ${pathname === "/" ? "" : "opacity-90"}`}
+                className={`text-earth-500 ${
+                  pathname === "/" ? "" : "opacity-90"
+                }`}
               />
             </div>
             <span
