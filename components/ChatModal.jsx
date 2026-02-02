@@ -106,10 +106,12 @@ export default function ChatModal({
           content,
           created_at,
           read_at,
+          deleted_at,
           sender:userinfo(id, firstName, lastName, display_name, profile_url, avatar_url)
         `,
         )
         .eq("conversation_id", convId)
+        .is("deleted_at", null)
         .order("created_at", { ascending: true });
 
       if (error) {
@@ -321,9 +323,53 @@ export default function ChatModal({
     socket.on("receiveMessage", handleReceiveMessage);
     socket.on("messagesSeen", handleMessagesSeen);
 
+    // Conversation cleared / deleted handlers
+    const handleConversationCleared = ({ conversation_id }) => {
+      if (conversation_id === conversationId) {
+        setMessages([]);
+      }
+    };
+
+    const handleConversationDeleted = ({ conversation_id }) => {
+      if (conversation_id === conversationId) {
+        // If this conversation was deleted, close modal
+        showToast("info", "This conversation has been deleted.");
+        if (typeof onClose === "function") onClose();
+      }
+    };
+
+    const handleConversationClearedLocal = (e) => {
+      const { conversation_id } = e.detail || {};
+      if (conversation_id === conversationId) setMessages([]);
+    };
+
+    const handleConversationDeletedLocal = (e) => {
+      const { conversation_id } = e.detail || {};
+      if (conversation_id === conversationId) {
+        showToast("info", "This conversation has been deleted.");
+        if (typeof onClose === "function") onClose();
+      }
+    };
+
+    socket.on("conversationCleared", handleConversationCleared);
+    socket.on("conversationDeleted", handleConversationDeleted);
+
+    // Local events in case socket event doesn't reach the client immediately
+    if (typeof window !== "undefined") {
+      window.addEventListener("conversationClearedLocal", handleConversationClearedLocal);
+      window.addEventListener("conversationDeletedLocal", handleConversationDeletedLocal);
+    }
+
     return () => {
       socket.off("receiveMessage", handleReceiveMessage);
       socket.off("messagesSeen", handleMessagesSeen);
+      socket.off("conversationCleared", handleConversationCleared);
+      socket.off("conversationDeleted", handleConversationDeleted);
+
+      if (typeof window !== "undefined") {
+        window.removeEventListener("conversationClearedLocal", handleConversationClearedLocal);
+        window.removeEventListener("conversationDeletedLocal", handleConversationDeletedLocal);
+      }
     };
   }, [conversationId, user?.id, socket]);
 
@@ -507,7 +553,7 @@ export default function ChatModal({
         >
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-700 to-blue-500 text-white py-3 shadow-sm rounded-t-3xl">
-            <ChatHeader onClose={onClose} sellerUserInfo={sellerInfo} />
+            <ChatHeader onClose={onClose} sellerUserInfo={sellerInfo} conversationId={conversationId} />
           </div>
 
           {/* Product Info */}

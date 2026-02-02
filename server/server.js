@@ -12,35 +12,48 @@ const server = http.createServer(app);
 
 const normalize = (url) => url?.replace(/\/$/, "");
 
-const allowedOrigins = [
-  "http://localhost:3000",
-  "http://192.168.31.74:3000",
-  "capacitor://localhost",
-  "agropeer://localhost",
-  "https://localhost"
-];
+const allowedOrigins = process.env.FRONTEND_URL
+  ? process.env.FRONTEND_URL
+      .split(",")
+      .map((o) => normalize(o.trim()))
+  : [
+      "https://localhost",
+      "http://localhost:3000",
+      "http://192.168.31.74:3000",
+      "https://agrogram-wheat.vercel.app",
+      "capacitor://localhost",
+      "agropeer://localhost",
+    ];
 
+// const allowedOrigins = "https://localhost" || "http://localhost:3000" ||  "http://192.168.31.74:3000" || "capacitor://localhost" || "agropeer://localhost";
+
+
+// const io = new Server(server, {
+//   transports: ["websocket", "polling"],
+//   cors: {
+//     origin: (origin, callback) => {
+//       if (!origin) return callback(null, true);
+
+//       const normalizedOrigin = normalize(origin);
+
+//       if (allowedOrigins.includes(normalizedOrigin)) {
+//         return callback(null, true);
+//       }
+
+//       console.log("❌ Blocked CORS origin:", origin);
+//       callback(new Error("Not allowed by CORS"));
+//     },
+//     credentials: true,
+//   },
+// });
 
 const io = new Server(server, {
   transports: ["websocket", "polling"],
   cors: {
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
-
-      const normalizedOrigin = normalize(origin);
-
-      if (allowedOrigins.includes(normalizedOrigin)) {
-        return callback(null, true);
-      }
-
-      console.log("❌ Blocked CORS origin:", origin);
-      callback(new Error("Not allowed by CORS"));
-    },
+    origin: true,
     credentials: true,
   },
 });
-
-
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -66,6 +79,7 @@ io.on("connection", (socket) => {
         .from("conversations")
         .select("*")
         .or(orFilter)
+        .is("deleted_at", null)
         .order("last_message_at", { ascending: false })
         .limit(1)
         .maybeSingle();
@@ -101,7 +115,14 @@ io.on("connection", (socket) => {
     }
   });
 
-  function markUserOnline(userId) {
+  function markUserOnline(payload) {
+    // Accept either (userId) or ({ userId }) so we don't set socket.userId to undefined
+    const userId = typeof payload === "string" ? payload : payload?.userId;
+    if (!userId || typeof userId !== "string" || userId.trim() === "") {
+      console.warn("[registerUser/user-online] Invalid or missing userId, skipping. Payload:", payload);
+      return;
+    }
+
     socket.userId = userId;
 
     const existing = userSocketMap.get(userId) || new Set();
@@ -378,37 +399,194 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("disconnect", () => {
-    const userId = socket.userId;
-    console.log("---- DISCONNECT DEBUG ----");
-    console.log("Socket ID:", socket.id);
-    console.log("User ID on socket:", userId);
-    // Print map in readable form
-    const mapDump = [...userSocketMap.entries()].map(([k, s]) => [k, [...s]]);
-    console.log("All userSocketMap:", JSON.stringify(mapDump));
-    console.log("--------------------------");
+  // 🔨 Clear conversation messages (soft delete messages by setting deleted_at)
+  socket.on("clearConversation", async ({ conversation_id, user_id }, callback) => {
+    console.log("[clearConversation] called", { conversation_id, user_id });
+    if (!conversation_id || !user_id) {
+      callback && callback({ error: true, message: "Missing conversation_id or user_id" });
+      return;
+    }
+    try {
+      // Validate conversation and permissions
+      const { data: convo, error: convoErr } = await supabase
+        .from("conversations")
+        .select("user1_id, user2_id")
+        .eq("id", conversation_id)
+        .single();
 
-    if (!userId) return;
+      if (convoErr || !convo) {
+        console.error("❌ Conversation not found for clearing:", convoErr);
+        callback && callback({ error: true, message: "Conversation not found" });
+        return;
+      }
 
-    const set = userSocketMap.get(userId);
-    if (!set) return;
+      const { user1_id, user2_id } = convo;
+      if (user_id !== user1_id && user_id !== user2_id) {
+        callback && callback({ error: true, message: "Unauthorized" });
+        return;
+      }
 
-    set.delete(socket.id);
+      const now = new Date().toISOString();
+      const { data: updatedMsgs, error: updErr } = await supabase
+        .from("messages")
+        .update({ deleted_at: now })
+        .eq("conversation_id", conversation_id)
+        .select("id");
 
-    if (set.size === 0) {
-      userSocketMap.delete(userId);
+      if (updErr) {
+        console.error("[clearConversation] DB update error:", updErr.message, updErr.details);
+        throw updErr;
+      }
+      console.log("[clearConversation] DB updated messages count:", updatedMsgs?.length ?? 0);
 
-      io.emit("online-status", {
-        userId,
-        online: false,
-        last_seen: new Date().toISOString(),
+      // Emit to the room so active clients clear UI
+      io.to(conversation_id).emit("conversationCleared", {
+        conversation_id,
+        by_user_id: user_id,
+        cleared_count: updatedMsgs?.length || 0,
       });
 
-      console.log("🔴 User fully offline:", userId);
-    } else {
-      userSocketMap.set(userId, set);
-      console.log("🟡 User still online via other sockets:", [...set]);
+      // Also notify both participants directly (so sidebar updates even if not in room)
+      [user1_id, user2_id].forEach((uid) => {
+        const sockets = userSocketMap.get(uid);
+        if (sockets && sockets.size) {
+          for (const sId of sockets) {
+            io.to(sId).emit("conversationCleared", {
+              conversation_id,
+              by_user_id: user_id,
+              cleared_count: updatedMsgs?.length || 0,
+            });
+          }
+        }
+      });
+
+      console.log("[clearConversation] success, clearedCount:", updatedMsgs?.length || 0);
+      callback && callback({ success: true, clearedCount: updatedMsgs?.length || 0 });
+    } catch (err) {
+      console.error("[clearConversation] ❌ Error:", err);
+      callback && callback({ error: true, message: "Internal error" });
     }
+  });
+
+  // 🗑️ Delete conversation (soft-delete conversation and messages)
+  socket.on("deleteConversation", async ({ conversation_id, user_id }, callback) => {
+    console.log("[deleteConversation] called", { conversation_id, user_id });
+    if (!conversation_id || !user_id) {
+      callback && callback({ error: true, message: "Missing conversation_id or user_id" });
+      return;
+    }
+    try {
+      // Validate conversation and permissions
+      const { data: convo, error: convoErr } = await supabase
+        .from("conversations")
+        .select("id, user1_id, user2_id")
+        .eq("id", conversation_id)
+        .single();
+
+      if (convoErr || !convo) {
+        console.error("❌ Conversation not found for deletion:", convoErr);
+        callback && callback({ error: true, message: "Conversation not found" });
+        return;
+      }
+
+      const { user1_id, user2_id } = convo;
+      const uid = user_id != null ? String(user_id) : null;
+      const u1 = user1_id != null ? String(user1_id) : null;
+      const u2 = user2_id != null ? String(user2_id) : null;
+      if (!uid || (uid !== u1 && uid !== u2)) {
+        callback && callback({ error: true, message: "Unauthorized" });
+        return;
+      }
+
+      const now = new Date().toISOString();
+      const { data: updatedConv, error: convErr } = await supabase
+        .from("conversations")
+        .update({ deleted_at: now })
+        .eq("id", conversation_id)
+        .select("id");
+
+      if (convErr) {
+        console.error("[deleteConversation] DB update conversations error:", convErr.message, convErr.details);
+        throw convErr;
+      }
+      console.log("[deleteConversation] DB updated conversation:", updatedConv?.length ?? 0);
+
+      // Soft-delete messages as well
+      const { data: updatedMsgs, error: msgsErr } = await supabase
+        .from("messages")
+        .update({ deleted_at: now })
+        .eq("conversation_id", conversation_id)
+        .select("id");
+
+      if (msgsErr) {
+        console.error("[deleteConversation] DB update messages error:", msgsErr.message, msgsErr.details);
+        throw msgsErr;
+      }
+      console.log("[deleteConversation] DB updated messages count:", updatedMsgs?.length ?? 0);
+
+      // Emit to room and to both participants
+      io.to(conversation_id).emit("conversationDeleted", {
+        conversation_id,
+        by_user_id: user_id,
+      });
+
+      [user1_id, user2_id].forEach((uid) => {
+        const sockets = userSocketMap.get(uid);
+        if (sockets && sockets.size) {
+          for (const sId of sockets) {
+            io.to(sId).emit("conversationDeleted", {
+              conversation_id,
+              by_user_id: user_id,
+            });
+          }
+        }
+      });
+
+      console.log("[deleteConversation] success");
+      callback && callback({ success: true });
+    } catch (err) {
+      console.error("[deleteConversation] ❌ Error:", err);
+      callback && callback({ error: true, message: "Internal error" });
+    }
+  });
+
+  socket.on("disconnect", () => {
+    try {
+      const userId = socket.userId;
+      console.log("[disconnect] ---- DISCONNECT DEBUG ----");
+      console.log("[disconnect] Socket ID:", socket.id, "User ID on socket:", userId);
+
+      if (!userId) {
+        console.log("[disconnect] No userId, skipping map cleanup");
+        return;
+      }
+
+      // Map method is .get() — typo .git causes "ReferenceError: git is not defined"
+      const set = userSocketMap.get(userId);
+      if (!set) {
+        console.log("[disconnect] No socket set for userId:", userId);
+        return;
+      }
+
+      set.delete(socket.id);
+
+      if (set.size === 0) {
+        userSocketMap.delete(userId);
+        io.emit("online-status", {
+          userId,
+          online: false,
+          last_seen: new Date().toISOString(),
+        });
+        console.log("[disconnect] 🔴 User fully offline:", userId);
+      } else {
+        userSocketMap.set(userId, set);
+        console.log("[disconnect] 🟡 User still online via other sockets:", [...set]);
+      }
+      console.log("[disconnect] --------------------------");
+    } catch (err) {
+      console.error("[disconnect] ❌ Error in disconnect handler:", err);
+    }
+
   });
 
 
@@ -416,6 +594,7 @@ io.on("connection", (socket) => {
 });
 
 const PORT = process.env.PORT || 4000;
-server.listen(PORT, () =>
-  console.log(`🚀 Server running on port ${PORT}`)
-);
+server.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log("[server] env check: NODE_ENV=", process.env.NODE_ENV, "FRONTEND_URL present:", !!process.env.FRONTEND_URL);
+});

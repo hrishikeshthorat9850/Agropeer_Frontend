@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, useRef } from "react";
+import { createContext, useContext, useEffect, useState, useRef, useCallback } from "react";
 import { socket } from "@/utils/socket";
 
 const SocketContext = createContext();
@@ -18,11 +18,14 @@ export function SocketProvider({ loggedInUser, children }) {
     🔵 1. REGISTER USER + EMIT user-online
   --------------------------------------------- */
   useEffect(() => {
-    if (!loggedInUser?.id) return;
+    const userId = loggedInUser?.id;
+    if (!userId) return;
 
     const handleReady = () => {
-      socket.emit("user-online", loggedInUser?.id);
-      socket.emit("registerUser", loggedInUser?.id);
+      // Only register when we have a valid userId so server never gets undefined
+      if (!userId) return;
+      socket.emit("user-online", userId);
+      socket.emit("registerUser", userId);
     };
 
     // If already connected (tab switch / fast refresh)
@@ -30,7 +33,7 @@ export function SocketProvider({ loggedInUser, children }) {
       handleReady();
     }
 
-    // Otherwise wait for connect event
+    // Otherwise wait for connect event (also runs on reconnect)
     socket.on("connect", handleReady);
 
     return () => socket.off("connect", handleReady);
@@ -71,7 +74,8 @@ export function SocketProvider({ loggedInUser, children }) {
       // Safety checks: ensure loggedInUser and message are valid
       if (!loggedInUser?.id || !msg || !msg.conversation_id) return;
 
-      const convId = msg.conversation_id;
+      const convId = msg.conversation_id != null ? String(msg.conversation_id) : null;
+      if (!convId) return;
 
       // Add message to store
       // setMessages((prev) => ({
@@ -181,13 +185,15 @@ export function SocketProvider({ loggedInUser, children }) {
   --------------------------------------------- */
   useEffect(() => {
     const handleSeen = ({ conversation_id, seen_message_ids }) => {
+      const cid = conversation_id != null ? String(conversation_id) : null;
+      if (!cid) return;
       setMessages((prev) => {
         const updated = { ...prev };
-        const msgs = updated[conversation_id];
+        const msgs = updated[cid];
 
         if (!msgs) return prev;
 
-        updated[conversation_id] = msgs.map((msg) =>
+        updated[cid] = msgs.map((msg) =>
           seen_message_ids.includes(msg.id)
             ? { ...msg, read_at: new Date().toISOString() }
             : msg
@@ -272,9 +278,11 @@ export function SocketProvider({ loggedInUser, children }) {
   };
 
   const loadMessages = (conversationId, msgs) => {
+    const cid = conversationId != null ? String(conversationId) : null;
+    if (!cid) return;
     setMessages((prev) => ({
       ...prev,
-      [conversationId]: msgs,
+      [cid]: msgs,
     }));
   };
 
@@ -305,6 +313,189 @@ export function SocketProvider({ loggedInUser, children }) {
     });
   };
 
+  // Clear conversation (client side emitter) — with timeout so UI never sticks on "Processing"
+  const CLEAR_TIMEOUT_MS = 15000;
+
+  const clearConversation = (conversationId) => {
+    return new Promise((resolve, reject) => {
+      if (!socket || !loggedInUser?.id) {
+        reject(new Error("Socket or user not available"));
+        return;
+      }
+
+      let settled = false;
+      const finish = (err, res) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        if (err) reject(err);
+        else resolve(res);
+      };
+
+      const timer = setTimeout(() => {
+        finish(new Error("Clear request timed out. Check your connection."));
+      }, CLEAR_TIMEOUT_MS);
+
+      socket.emit(
+        "clearConversation",
+        { conversation_id: conversationId, user_id: loggedInUser.id },
+        (resp) => {
+          if (!resp) {
+            finish(new Error("No response from server"));
+            return;
+          }
+          if (resp.error) finish(new Error(resp.message || "Clear failed"));
+          else finish(null, resp);
+        },
+      );
+    });
+  };
+
+  // Delete conversation (client side emitter) — with timeout so UI never sticks on "Processing"
+  const DELETE_TIMEOUT_MS = 15000;
+
+  const deleteConversation = (conversationId) => {
+    return new Promise((resolve, reject) => {
+      if (!socket || !loggedInUser?.id) {
+        reject(new Error("Socket or user not available"));
+        return;
+      }
+
+      let settled = false;
+      const finish = (err, res) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        if (err) reject(err);
+        else resolve(res);
+      };
+
+      const timer = setTimeout(() => {
+        finish(new Error("Delete request timed out. Check your connection."));
+      }, DELETE_TIMEOUT_MS);
+
+      socket.emit(
+        "deleteConversation",
+        { conversation_id: conversationId, user_id: loggedInUser.id },
+        (resp) => {
+          if (!resp) {
+            finish(new Error("No response from server"));
+            return;
+          }
+          if (resp.error) finish(new Error(resp.message || "Delete failed"));
+          else finish(null, resp);
+        },
+      );
+    });
+  };
+
+  // Update local state immediately (no event/socket) so UI clears even if event listeners miss
+  const clearConversationLocal = useCallback((conversationId) => {
+    const cid = conversationId != null ? String(conversationId) : null;
+    if (!cid) return;
+    setMessages((prev) => ({ ...prev, [cid]: [] }));
+    setUnreadCounts((prev) => ({ ...prev, [cid]: 0 }));
+    setActiveConversation((prev) => (prev != null && String(prev) === cid ? null : prev));
+    setTypingUsers((prev) => {
+      const next = { ...prev };
+      delete next[cid];
+      return next;
+    });
+  }, []);
+
+  const deleteConversationLocal = useCallback((conversationId) => {
+    const cid = conversationId != null ? String(conversationId) : null;
+    if (!cid) return;
+    setMessages((prev) => {
+      const copy = { ...prev };
+      delete copy[cid];
+      return copy;
+    });
+    // Contacts are managed by chats page / ChatContext; they update via conversationDeletedLocal event
+    setUnreadCounts((prev) => {
+      const copy = { ...prev };
+      delete copy[cid];
+      return copy;
+    });
+    setActiveConversation((prev) => (prev != null && String(prev) === cid ? null : prev));
+  }, []);
+
+  /* --------------------------------------------
+    🔁 8. REAL-TIME CONVERSATION EVENTS (CLEAR / DELETE)
+  --------------------------------------------- */
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleConversationCleared = ({ conversation_id, by_user_id }) => {
+      const cid = conversation_id != null ? String(conversation_id) : null;
+      if (!cid) return;
+
+      // Clear stored messages for this conversation
+      setMessages((prev) => ({ ...prev, [cid]: [] }));
+
+      // Update unread counts and active/typing state
+      setUnreadCounts((prev) => ({ ...prev, [cid]: 0 }));
+
+      setActiveConversation((prev) => (prev != null && String(prev) === cid ? null : prev));
+
+      setTypingUsers((prev) => {
+        const next = { ...prev };
+        delete next[cid];
+        return next;
+      });
+    };
+
+    const handleConversationDeleted = ({ conversation_id, by_user_id }) => {
+      const cid = conversation_id != null ? String(conversation_id) : null;
+      if (!cid) return;
+
+      // Remove cached messages
+      setMessages((prev) => {
+        const copy = { ...prev };
+        delete copy[cid];
+        return copy;
+      });
+
+      // Contacts are managed by chats page; it listens to conversationDeleted and updates its own state
+
+      // Clean up unread counts
+      setUnreadCounts((prev) => {
+        const copy = { ...prev };
+        delete copy[cid];
+        return copy;
+      });
+
+      // If active conversation was deleted, unset it
+      setActiveConversation((prev) => (prev != null && String(prev) === cid ? null : prev));
+    };
+
+    socket.on("conversationCleared", handleConversationCleared);
+    socket.on("conversationDeleted", handleConversationDeleted);
+
+    // Local events: update state immediately when user clears/deletes (optimistic UI)
+    const handleConversationClearedLocal = (e) => {
+      const { conversation_id } = e.detail || {};
+      if (conversation_id != null) handleConversationCleared({ conversation_id });
+    };
+    const handleConversationDeletedLocal = (e) => {
+      const { conversation_id } = e.detail || {};
+      if (conversation_id != null) handleConversationDeleted({ conversation_id });
+    };
+    if (typeof window !== "undefined") {
+      window.addEventListener("conversationClearedLocal", handleConversationClearedLocal);
+      window.addEventListener("conversationDeletedLocal", handleConversationDeletedLocal);
+    }
+
+    return () => {
+      socket.off("conversationCleared", handleConversationCleared);
+      socket.off("conversationDeleted", handleConversationDeleted);
+      if (typeof window !== "undefined") {
+        window.removeEventListener("conversationClearedLocal", handleConversationClearedLocal);
+        window.removeEventListener("conversationDeletedLocal", handleConversationDeletedLocal);
+      }
+    };
+  }, [socket]);
 
   return (
     <SocketContext.Provider
@@ -322,6 +513,10 @@ export function SocketProvider({ loggedInUser, children }) {
         sendTyping,
         findOrCreateConversation,
         loadMessages,
+        clearConversation,
+        deleteConversation,
+        clearConversationLocal,
+        deleteConversationLocal,
       }}
     >
       {children}

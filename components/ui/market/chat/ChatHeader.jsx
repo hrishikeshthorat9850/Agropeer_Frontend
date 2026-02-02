@@ -9,8 +9,9 @@ import {
 } from "react-icons/fa";
 import { useSocket } from "@/Context/SocketContext";
 import { useLanguage } from "@/Context/languagecontext";
+import ChatOptionsMenu from "@/components/chat/ChatOptionsMenu";
 
-export default function ChatHeader({ sellerUserInfo, onClose }) {
+export default function ChatHeader({ sellerUserInfo, onClose, conversationId }) {
   const { onlineUsers } = useSocket();
   const { t } = useLanguage();
   const isOnline = !!(sellerUserInfo?.id && onlineUsers?.[sellerUserInfo.id]);
@@ -72,13 +73,16 @@ export default function ChatHeader({ sellerUserInfo, onClose }) {
         >
           <FaEllipsisV className="text-white text-sm" />
         </button> */}
-        <button
-          onClick={onClose}
-          className="p-2.5 rounded-full bg-white/30 hover:bg-red-500/80 transition-all shadow-sm hover:shadow-md backdrop-blur-sm"
-          title={t("close_chat_tooltip")}
-        >
-          <FaTimes className="text-white text-sm" />
-        </button>
+        <div className="flex items-center gap-2">
+          <ChatOptionsMenu conversationId={conversationId} />
+          <button
+            onClick={onClose}
+            className="p-2.5 rounded-full bg-white/30 hover:bg-red-500/80 transition-all shadow-sm hover:shadow-md backdrop-blur-sm"
+            title={t("close_chat_tooltip")}
+          >
+            <FaTimes className="text-white text-sm" />
+          </button>
+        </div>
       </div>
     </div>
   );

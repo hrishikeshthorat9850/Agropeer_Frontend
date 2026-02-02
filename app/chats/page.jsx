@@ -8,13 +8,14 @@ import { useSocket } from "@/Context/SocketContext";
 import { ChatSkeleton } from "@/components/skeletons";
 import { Capacitor } from "@capacitor/core";
 import Router from "next/router";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useLanguage } from "@/Context/languagecontext";
 
 export default function ChatsPage() {
   const { user: loggedInUser, loading } = useLogin();
   const { t } = useLanguage();
   const router = useRouter();
+  const pathname = usePathname();
   const {
     socket,
     joinConversation,
@@ -31,6 +32,7 @@ export default function ChatsPage() {
   const [messages, setMessages] = useState([]);
   const endRef = useRef(null);
   const selectedConversationRef = useRef(null);
+  const isChatOpenRef = useRef(false);
   const [unreadMessagesCount, setunreadMessagesCount] = useState(0);
   const conversationsRef = useRef([]);
   const isNative = Capacitor.isNativePlatform();
@@ -56,11 +58,13 @@ export default function ChatsPage() {
             read_at,
             created_at,
             updated_at,
-            message_type
+            message_type,
+            deleted_at
           )
         `,
         )
         .or(`user1_id.eq.${loggedInUser.id},user2_id.eq.${loggedInUser.id}`)
+        .is("deleted_at", null)
         .order("last_message_at", { ascending: false })
         .order("created_at", { ascending: false, foreignTable: "messages" })
         .order("content", { ascending: false, foreignTable: "messages" });
@@ -86,11 +90,14 @@ export default function ChatsPage() {
 
           if (!otherUser || !otherUser.id) return null;
 
+          // Filter out soft-deleted messages
+          const visibleMessages = (conv.messages || []).filter(m => !m.deleted_at);
+
           const last_message =
-            conv.messages &&
-            Array.isArray(conv.messages) &&
-            conv.messages.length > 0
-              ? conv.messages[0].content || ""
+            visibleMessages &&
+            Array.isArray(visibleMessages) &&
+            visibleMessages.length > 0
+              ? visibleMessages[0].content || ""
               : "";
 
           let unreadCount = 0;
@@ -100,7 +107,8 @@ export default function ChatsPage() {
               .select("*", { count: "exact", head: true })
               .eq("conversation_id", conv.id)
               .neq("sender_id", loggedInUser.id)
-              .is("read_at", null);
+              .is("read_at", null)
+              .is("deleted_at", null);
 
             if (!countError && count !== null) {
               unreadCount = count;
@@ -110,10 +118,10 @@ export default function ChatsPage() {
           }
 
           const lastMessageTime =
-            conv.messages &&
-            Array.isArray(conv.messages) &&
-            conv.messages.length > 0
-              ? conv.messages[0].created_at
+            visibleMessages &&
+            Array.isArray(visibleMessages) &&
+            visibleMessages.length > 0
+              ? visibleMessages[0].created_at
               : conv.last_message_at;
 
           return {
@@ -201,6 +209,82 @@ export default function ChatsPage() {
       setContactToConversationMap({});
     }
   }, [loggedInUser?.id]);
+
+  // When a message arrives for a conversation not yet in the list, fetch that conversation and add the contact
+  const addNewContactFromMessage = useCallback(
+    async (msgg) => {
+      if (!msgg?.conversation_id || !loggedInUser?.id) return;
+      const isMyMessage = msgg.sender_id === loggedInUser.id;
+      try {
+        const { data: conv, error } = await supabase
+          .from("conversations")
+          .select(
+            `
+            id,
+            user1:user1_id(id, firstName, lastName, profile_url, display_name, avatar_url),
+            user2:user2_id(id, firstName, lastName, profile_url, display_name, avatar_url),
+            last_message_at
+          `
+          )
+          .eq("id", msgg.conversation_id)
+          .is("deleted_at", null)
+          .single();
+
+        if (error || !conv) return;
+
+        const isUser1 = conv.user1?.id === loggedInUser.id;
+        const otherUser = isUser1 ? conv.user2 : conv.user1;
+        if (!otherUser?.id) return;
+
+        const newContact = {
+          id: otherUser.id,
+          displayName: otherUser?.display_name,
+          firstName: otherUser?.firstName || "",
+          lastName: otherUser?.lastName || "",
+          profile_url: otherUser?.profile_url || otherUser?.avatar_url,
+          last_message: msgg.content || "",
+          last_message_at: msgg.created_at || new Date().toISOString(),
+          conversation_id: conv.id,
+          unread_count: isMyMessage ? 0 : 1,
+          all_conversation_ids: [conv.id],
+        };
+
+        setConversations((prev) => (prev?.some((c) => c?.id === conv.id) ? prev : [...(prev || []), conv]));
+        setContactToConversationMap((prev) => ({
+          ...prev,
+          [otherUser.id]: conv,
+        }));
+        setContacts((prev) => {
+          const list = Array.isArray(prev) ? prev : [];
+          const existingIndex = list.findIndex((c) => c?.id === otherUser.id);
+          let next;
+          if (existingIndex >= 0) {
+            const existing = list[existingIndex];
+            const existingTime = new Date(existing.last_message_at || 0).getTime();
+            const newTime = new Date(newContact.last_message_at || 0).getTime();
+            if (newTime > existingTime) {
+              next = list.slice();
+              next[existingIndex] = {
+                ...existing,
+                last_message: newContact.last_message,
+                last_message_at: newContact.last_message_at,
+                conversation_id: newContact.conversation_id,
+                unread_count: (existing.unread_count || 0) + (isMyMessage ? 0 : 1),
+                all_conversation_ids: [...new Set([...(existing.all_conversation_ids || []), conv.id])],
+              };
+            } else return prev;
+          } else {
+            next = [newContact, ...list];
+          }
+          return next.sort((a, b) => new Date(b.last_message_at || 0).getTime() - new Date(a.last_message_at || 0).getTime());
+        });
+      } catch (err) {
+        console.error("❌ addNewContactFromMessage:", err);
+        fetchMessages();
+      }
+    },
+    [loggedInUser?.id, fetchMessages]
+  );
 
   useEffect(() => {
     selectedConversationRef.current = selected;
@@ -384,11 +468,13 @@ export default function ChatsPage() {
         });
       }
 
+      // If this conversation isn't in the list yet (new chat), fetch it and add the contact so it appears
+      const convId = msgg.conversation_id != null ? String(msgg.conversation_id) : null;
       const conversationExists = conversationsRef.current?.some(
-        (conv) => conv && conv.id === msgg.conversation_id,
+        (conv) => conv && conv.id != null && String(conv.id) === convId,
       );
-      if (!conversationExists) {
-        fetchMessages();
+      if (!conversationExists && convId) {
+        addNewContactFromMessage(msgg);
       }
     };
     const handleMessagesSeen = ({
@@ -458,11 +544,109 @@ export default function ChatsPage() {
     };
     socket.on("receiveMessage", handleReceiveMessage);
     socket.on("messagesSeen", handleMessagesSeen);
+
+    const handleConversationCleared = ({ conversation_id }) => {
+      if (!conversation_id) return;
+
+      // Clear messages for the open conversation
+      if (
+        selectedConversationRef.current &&
+        selectedConversationRef.current.conversation_id === conversation_id
+      ) {
+        setMessages([]);
+      }
+
+      // Update contacts sidebar: clear last message text for affected contacts
+      setContacts((prev) => {
+        if (!Array.isArray(prev)) return prev;
+        return prev.map((contact) => {
+          if (!contact) return contact;
+          const belongs =
+            (Array.isArray(contact.all_conversation_ids) && contact.all_conversation_ids.includes(conversation_id)) ||
+            contact.conversation_id === conversation_id;
+          if (belongs) {
+            return { ...contact, last_message: "", last_message_at: new Date().toISOString() };
+          }
+          return contact;
+        });
+      });
+
+      // Reset unread count
+      setunreadMessagesCount((v) => 0);
+    };
+
+    const handleConversationDeleted = ({ conversation_id }) => {
+      if (conversation_id == null) return;
+      const cid = String(conversation_id);
+
+      // If the deleted conversation is currently selected, unselect and show contacts
+      const current = selectedConversationRef.current;
+      if (current && current.conversation_id != null && String(current.conversation_id) === cid) {
+        setSelected(null);
+        setShowContacts(true);
+        isChatOpenRef.current = false;
+      }
+
+      // Update or remove contacts that reference this conversation
+      setContacts((prev) => {
+        if (!Array.isArray(prev)) return prev;
+        return prev.map((contact) => {
+          if (!contact) return contact;
+          const contactCid = contact.conversation_id != null ? String(contact.conversation_id) : null;
+          const belongs =
+            (Array.isArray(contact.all_conversation_ids) && contact.all_conversation_ids.some((id) => String(id) === cid)) ||
+            contactCid === cid;
+          if (!belongs) return contact;
+          const remainingIds = Array.isArray(contact.all_conversation_ids)
+            ? contact.all_conversation_ids.filter((id) => String(id) !== cid)
+            : contactCid === cid ? [] : [contact.conversation_id];
+          if (remainingIds.length === 0) return null;
+          return {
+            ...contact,
+            conversation_id: remainingIds[0],
+            all_conversation_ids: remainingIds,
+          };
+        }).filter(Boolean);
+      });
+
+      // If chat window shows this conversation, clear messages
+      if (
+        selectedConversationRef.current &&
+        selectedConversationRef.current.conversation_id != null &&
+        String(selectedConversationRef.current.conversation_id) === cid
+      ) {
+        setMessages([]);
+      }
+    };
+
+    socket.on("conversationCleared", handleConversationCleared);
+    socket.on("conversationDeleted", handleConversationDeleted);
+
+    // Local events: update UI immediately when user clears/deletes (in case socket event is delayed)
+    const handleConversationClearedLocal = (e) => {
+      const { conversation_id } = e.detail || {};
+      if (conversation_id) handleConversationCleared({ conversation_id });
+    };
+    const handleConversationDeletedLocal = (e) => {
+      const { conversation_id } = e.detail || {};
+      if (conversation_id) handleConversationDeleted({ conversation_id });
+    };
+    if (typeof window !== "undefined") {
+      window.addEventListener("conversationClearedLocal", handleConversationClearedLocal);
+      window.addEventListener("conversationDeletedLocal", handleConversationDeletedLocal);
+    }
+
     return () => {
       socket.off("receiveMessage", handleReceiveMessage);
       socket.off("messagesSeen", handleMessagesSeen);
+      socket.off("conversationCleared", handleConversationCleared);
+      socket.off("conversationDeleted", handleConversationDeleted);
+      if (typeof window !== "undefined") {
+        window.removeEventListener("conversationClearedLocal", handleConversationClearedLocal);
+        window.removeEventListener("conversationDeletedLocal", handleConversationDeletedLocal);
+      }
     };
-  }, [loggedInUser?.id, socket, fetchMessages]);
+  }, [loggedInUser?.id, socket, fetchMessages, addNewContactFromMessage]);
 
   const fetchConversationMessages = useCallback(
     async (conversationId) => {
@@ -473,6 +657,7 @@ export default function ChatsPage() {
           .from("messages")
           .select("*")
           .eq("conversation_id", conversationId)
+          .is("deleted_at", null)
           .order("created_at", { ascending: true });
 
         if (error) {
@@ -548,6 +733,12 @@ export default function ChatsPage() {
         return;
       }
 
+      // Clear messages immediately when switching users to prevent showing old chat
+      setMessages([]);
+
+      // Mark chat as open (for popstate handling)
+      isChatOpenRef.current = true;
+
       setSelected({
         ...chatPartner,
         conversation_id: conversationId,
@@ -586,6 +777,17 @@ export default function ChatsPage() {
     if (!loggedInUser?.id) return;
     fetchMessages();
   }, [loading, loggedInUser?.id, fetchMessages]);
+
+  // Refetch when user navigates to /chats or when tab becomes visible (e.g. open app from push) so new conversations appear
+  useEffect(() => {
+    if (!loggedInUser?.id || pathname !== "/chats") return;
+    const onVisible = () => {
+      if (document.visibilityState === "visible") fetchMessages();
+    };
+    fetchMessages();
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  }, [pathname, loggedInUser?.id, fetchMessages]);
 
   const handleFaTimesClick = () => {
     setShowContacts(false);

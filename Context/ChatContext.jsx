@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useMemo, useState, useCallback } from "react";
+import { createContext, useContext, useMemo, useState, useCallback, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useLogin } from "@/Context/logincontext";
 import { useSocket } from "@/Context/SocketContext";
@@ -20,6 +20,27 @@ export function ChatProvider({ children }) {
 
   const [contacts, setContacts] = useState([]);
   const [selected, setSelected] = useState(null);
+  const selectedRef = useRef(selected);
+  selectedRef.current = selected;
+
+  // When current conversation is deleted, clear selected so UI can redirect/show empty state
+  useEffect(() => {
+    const handleDeleted = ({ conversation_id }) => {
+      if (conversation_id == null) return;
+      const cid = String(conversation_id);
+      if (selectedRef.current?.conversation_id != null && String(selectedRef.current.conversation_id) === cid) {
+        setSelected(null);
+      }
+    };
+    const handleDeletedLocal = (e) => {
+      const { conversation_id } = e.detail || {};
+      handleDeleted({ conversation_id });
+    };
+    if (typeof window !== "undefined") {
+      window.addEventListener("conversationDeletedLocal", handleDeletedLocal);
+      return () => window.removeEventListener("conversationDeletedLocal", handleDeletedLocal);
+    }
+  }, []);
 
   /* --------------------------------------------
     🔹 SELECT CONVERSATION
@@ -36,11 +57,12 @@ export function ChatProvider({ children }) {
       joinConversation(conversationId);
       markAsRead(conversationId);
 
-      // Load existing messages from DB
+      // Load existing messages from DB (exclude soft-deleted)
       const { data: msgs, error } = await supabase
         .from('messages')
         .select('*')
         .eq('conversation_id', conversationId)
+        .is('deleted_at', null)
         .order('created_at', { ascending: true });
 
       if (!error && msgs) {
@@ -55,7 +77,7 @@ export function ChatProvider({ children }) {
   --------------------------------------------- */
   const loadConversation = useCallback(
     async (conversationId) => {
-      if (!conversationId || !loggedInUser?.id) return;
+      if (!conversationId || !loggedInUser?.id) return false;
 
       const { data: conv, error } = await supabase
         .from("conversations")
@@ -65,16 +87,17 @@ export function ChatProvider({ children }) {
           user2:user2_id(id, firstName, lastName, display_name, profile_url, avatar_url)
         `)
         .eq("id", conversationId)
+        .is("deleted_at", null)
         .single();
 
       if (error || !conv) {
-        console.error("Failed to load conversation", error);
-        return;
+        console.error("Failed to load conversation (may be deleted)", error);
+        return false;
       }
 
       const isUser1 = conv.user1?.id === loggedInUser.id;
       const otherUser = isUser1 ? conv.user2 : conv.user1;
-      if (!otherUser) return;
+      if (!otherUser) return false;
 
       selectConversation({
         conversationId,
@@ -86,6 +109,7 @@ export function ChatProvider({ children }) {
           profile_url: otherUser.profile_url || otherUser.avatar_url,
         },
       });
+      return true;
     },
     [loggedInUser?.id, selectConversation]
   );
@@ -97,7 +121,8 @@ export function ChatProvider({ children }) {
   const messages = useMemo(() => {
     if (!selected?.conversation_id || !loggedInUser?.id) return [];
 
-    const raw = socketMessages[selected.conversation_id] || [];
+    const cid = String(selected.conversation_id);
+    const raw = socketMessages[cid] || [];
 
     return raw.map((msg) => ({
       id: msg.id,

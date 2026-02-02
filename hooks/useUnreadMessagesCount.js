@@ -42,11 +42,12 @@ export function useUnreadMessagesCount() {
     if (!loggedInUser?.id || loading) return;
 
     try {
-      // Get all conversations for this user
+      // Get all non-deleted conversations for this user
       const { data: conversations, error: convError } = await supabase
         .from("conversations")
         .select("id")
-        .or(`user1_id.eq.${loggedInUser.id},user2_id.eq.${loggedInUser.id}`);
+        .or(`user1_id.eq.${loggedInUser.id},user2_id.eq.${loggedInUser.id}`)
+        .is("deleted_at", null);
 
       if (convError) {
         console.error("❌ Error fetching conversations:", convError);
@@ -58,14 +59,15 @@ export function useUnreadMessagesCount() {
         return;
       }
 
-      // Get unread count for all conversations
+      // Get unread count for all conversations (exclude soft-deleted messages)
       const conversationIds = conversations.map((conv) => conv.id);
       const { count, error: countError } = await supabase
         .from("messages")
         .select("*", { count: "exact", head: true })
         .in("conversation_id", conversationIds)
         .neq("sender_id", loggedInUser.id)
-        .is("read_at", null);
+        .is("read_at", null)
+        .is("deleted_at", null);
 
       if (countError) {
         console.error("❌ Error fetching unread count:", countError);

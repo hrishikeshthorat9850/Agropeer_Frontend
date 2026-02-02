@@ -45,11 +45,7 @@ export default function ChatHeader({ selected }) {
       </div>
     );
   }
-  const handleClearChat = async (convId)=>{
-    if(!selected) return;
-    const {data,error} = await supabase
-      .from()
-  }
+
   return (
     <div
       className="flex justify-between items-center px-4 pb-3 pt-[calc(env(safe-area-inset-top)+12px)] border-b dark:border-neutral-800 
@@ -97,7 +93,7 @@ export default function ChatHeader({ selected }) {
       </div>
 
       <div className="flex items-center space-x-3">
-        <ChatOptionsMenu />
+        <ChatOptionsMenu conversationId={selected?.conversation_id} />
       </div>
     </div>
   );
