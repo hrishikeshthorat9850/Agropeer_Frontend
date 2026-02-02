@@ -41,7 +41,7 @@ export default function ChatInputComposer({ sendMessage }) {
 
   return (
     <div
-      className="sticky bottom-0 left-0 right-0 p-3 border-t dark:border-neutral-800 
+      className="sticky bottom-0 left-0 right-0 px-3 pt-3 pb-[calc(env(safe-area-inset-bottom)+12px)] border-t dark:border-neutral-800 
         bg-white/95 dark:bg-neutral-900/95 backdrop-blur-sm"
     >
       <div className="flex items-center gap-3">

@@ -136,7 +136,7 @@ export default function CommentItem({
                 <textarea
                   value={editContent}
                   onChange={(e) => setEditContent(e.target.value)}
-                  className="w-full bg-gray-50 dark:bg-zinc-800 border-none rounded-xl p-2 text-sm focus:ring-1 focus:ring-green-500/50 resize-none"
+                  className="w-full bg-gray-50 dark:bg-zinc-800 border-none rounded-xl p-2 text-sm text-black focus:ring-1 focus:ring-green-500/50 resize-none"
                   rows={2}
                   autoFocus
                 />
@@ -250,22 +250,37 @@ export default function CommentItem({
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
-                className="overflow-hidden mt-2 mb-2"
+                className="overflow-hidden mt-3 pr-1"
               >
-                <div className="flex items-center gap-2 bg-gray-100 dark:bg-zinc-800 rounded-2xl px-2 py-1">
+                <div className="flex items-center gap-3 w-full bg-gray-100 dark:bg-zinc-800/50 p-1.5 pr-3 rounded-[20px] transition-all focus-within:ring-1 focus-within:ring-green-500/50 focus-within:bg-white dark:focus-within:bg-black/40 border border-transparent focus-within:border-green-500/30">
+                  <div className="w-7 h-7 bg-gray-200 dark:bg-zinc-700 rounded-full flex-shrink-0 flex items-center justify-center overflow-hidden">
+                    {/* Show Small User Avatar if available, else Initials or generic */}
+                    <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400">
+                      Me
+                    </span>
+                  </div>
+
                   <input
                     type="text"
                     value={replyText}
                     onChange={onReplyTextChange}
                     onKeyPress={(e) => e.key === "Enter" && onSendReply()}
-                    placeholder={t("write_reply_placeholder")}
+                    placeholder={t("write_reply_placeholder") || "Reply..."}
                     autoFocus
-                    className="flex-1 bg-transparent text-sm px-2 py-2 focus:outline-none text-gray-900 dark:text-white placeholder-gray-500"
+                    className="flex-1 bg-transparent text-xs sm:text-sm focus:outline-none min-w-0 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                   />
+
                   <button
                     onClick={onSendReply}
                     disabled={!replyText.trim()}
-                    className="text-blue-700 font-semibold text-sm hover:text-blue-600 transition-colors px-2"
+                    className={`
+                       flex-shrink-0 text-xs font-bold px-3 py-1.5 rounded-full transition-all duration-200
+                       ${
+                         replyText.trim()
+                           ? "bg-green-600 text-white shadow-md hover:bg-green-700 active:scale-95 transform"
+                           : "bg-transparent text-gray-400 cursor-not-allowed"
+                       }
+                    `}
                   >
                     {t("post_btn") || "Post"}
                   </button>

@@ -10,34 +10,39 @@ function normalizePath(path) {
 }
 
 // Only scroll when pathname *changed* (not on remount with same route) — prevents posts/infinite-scroll jump
-let lastPathnameScrolled = null;
-
-/**
- * ScrollToTop - Ensures the page starts at the top on navigation
- *
- * Listens for pathname changes and scrolls to (0, 0). Only scrolls when the
- * pathname actually changes, so remounts (e.g. after loading more on posts) don't jump.
- */
 export default function ScrollToTop() {
   const pathname = usePathname();
   const stablePathname = normalizePath(pathname);
 
   useEffect(() => {
+    // Disable browser default scroll restoration
     if (typeof window !== "undefined" && window.history) {
       window.history.scrollRestoration = "manual";
     }
   }, []);
 
   useEffect(() => {
-    // Scroll only when we actually navigated to a different route (not on remount / same route)
-    if (lastPathnameScrolled === stablePathname) return;
-    lastPathnameScrolled = stablePathname;
+    // 1. Immediate scroll (optional, but good for "instant" feel if transition allows)
+    window.scrollTo(0, 0);
 
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: "instant",
-    });
+    // 2. Delayed scroll to ensure we hit AFTER PageTransition (mode="wait" takes ~200ms)
+    //    and after new content renders.
+    const t = setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "instant",
+      });
+    }, 100); // Small delay to catch post-render
+
+    const t2 = setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 300); // Longer delay to match transition end
+
+    return () => {
+      clearTimeout(t);
+      clearTimeout(t2);
+    };
   }, [stablePathname]);
 
   return null;
