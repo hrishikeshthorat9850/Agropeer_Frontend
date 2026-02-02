@@ -9,84 +9,6 @@ import {
   FaBroom,
 } from "react-icons/fa";
 
-//
-// 🧩 Confirm Modal (Portal)
-//
-function ConfirmModal({
-  open,
-  icon,
-  title,
-  message,
-  confirmLabel,
-  color,
-  onConfirm,
-  onClose,
-  children,
-}) {
-  if (!open) return null;
-
-  return ReactDOM.createPortal(
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          className="fixed inset-0 z-[999999] flex items-center justify-center bg-black/60 backdrop-blur-md p-4"
-        >
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0, y: -20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: -20 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
-            className="bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl w-full max-w-md text-center border border-gray-100 dark:border-neutral-800 p-6"
-          >
-            <div
-              className={`mx-auto flex items-center justify-center w-14 h-14 rounded-full ${color} bg-opacity-10 mb-4`}
-            >
-              <div className={`text-2xl ${color.replace("bg-", "text-")}`}>
-                {icon}
-              </div>
-            </div>
-
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              {title}
-            </h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-              {message}
-            </p>
-            {children}
-
-            <div className="flex justify-center gap-3 mt-6">
-              <button
-                onClick={onClose}
-                className="px-4 py-2 rounded-md bg-gray-100 dark:bg-neutral-800 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-neutral-700 transition-colors"
-              >
-                {t("cancel_btn") || "Cancel"}
-              </button>
-
-              <button
-                onClick={onConfirm}
-                className={`px-4 py-2 rounded-md text-white ${color} hover:opacity-90 transition-colors`}
-              >
-                {confirmLabel}
-              </button>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>,
-    document.body
-  );
-}
-
-//
-// ⭐ FIXED DROPDOWN — NOW MODALS ALSO WORK
-//
-//
-// ⭐ FIXED DROPDOWN — NOW MODALS ALSO WORK
-//
 import { useLanguage } from "@/Context/languagecontext";
 
 export default function ChatOptionsMenu() {
@@ -98,7 +20,85 @@ export default function ChatOptionsMenu() {
 
   const menuWidth = 176;
   const [coords, setCoords] = useState({ top: 0, left: 0 });
+  //
+  // 🧩 Confirm Modal (Portal)
+  //
+  function ConfirmModal({
+    open,
+    icon,
+    title,
+    message,
+    confirmLabel,
+    color,
+    onConfirm,
+    onClose,
+    children,
+  }) {
+    if (!open) return null;
 
+    return ReactDOM.createPortal(
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[999999] flex items-center justify-center bg-black/60 backdrop-blur-md p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: -20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: -20 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+              className="bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl w-full max-w-md text-center border border-gray-100 dark:border-neutral-800 p-6"
+            >
+              <div
+                className={`mx-auto flex items-center justify-center w-14 h-14 rounded-full ${color} bg-opacity-10 mb-4`}
+              >
+                <div className={`text-2xl ${color.replace("bg-", "text-")}`}>
+                  {icon}
+                </div>
+              </div>
+
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                {title}
+              </h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                {message}
+              </p>
+              {children}
+
+              <div className="flex justify-center gap-3 mt-6">
+                <button
+                  onClick={onClose}
+                  className="px-4 py-2 rounded-md bg-gray-100 dark:bg-neutral-800 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-neutral-700 transition-colors"
+                >
+                  {t("cancel_btn") || "Cancel"}
+                </button>
+
+                <button
+                  onClick={onConfirm}
+                  className={`px-4 py-2 rounded-md text-white ${color} hover:opacity-90 transition-colors`}
+                >
+                  {confirmLabel}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>,
+      document.body
+    );
+  }
+
+  //
+  // ⭐ FIXED DROPDOWN — NOW MODALS ALSO WORK
+  //
+  //
+  // ⭐ FIXED DROPDOWN — NOW MODALS ALSO WORK
+  //
+    
   const computePos = () => {
     const btn = btnRef.current;
     if (!btn) return;
