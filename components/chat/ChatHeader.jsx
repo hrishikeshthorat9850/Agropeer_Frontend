@@ -7,12 +7,14 @@ import ChatOptionsMenu from "@/components/chat/ChatOptionsMenu";
 import { useSocket } from "@/Context/SocketContext";
 import { formatLastSeen } from "@/utils/formatLastSeen";
 import { useLanguage } from "@/Context/languagecontext";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function ChatHeader({ selected }) {
   const { onlineUsers, lastSeen } = useSocket();
   const { t } = useLanguage();
   const [status, setStatus] = useState({ isOnline: false, lastSeen: null });
   const [showContacts, setShowContacts] = useState(true);
+
   useEffect(() => {
     if (!selected?.id) return;
 
@@ -43,7 +45,11 @@ export default function ChatHeader({ selected }) {
       </div>
     );
   }
-
+  const handleClearChat = async (convId)=>{
+    if(!selected) return;
+    const {data,error} = await supabase
+      .from()
+  }
   return (
     <div
       className="flex justify-between items-center px-4 pb-3 pt-[calc(env(safe-area-inset-top)+12px)] border-b dark:border-neutral-800 
