@@ -45,7 +45,7 @@ export default function MilkRateFilters({
   );
 
   return (
-    <div className="w-full sticky top-[60px] z-30 bg-white dark:bg-[#121212] py-2">
+    <div className="w-full sticky top-[60px] z-30 bg-white/95 dark:bg-[#121212]/95 backdrop-blur-sm py-2">
       <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide pb-2 px-1">
         {/* Milk Type Chips */}
         {MILK_TYPES.map((type) => {

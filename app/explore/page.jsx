@@ -13,6 +13,7 @@ import MarketSection from "@/components/explore/MarketPricesInsight";
 import ToolsSection from "@/components/explore/Tools&Calculator";
 import FarmerStories from "@/components/explore/FarmerStories";
 import CropDiscoverySection from "@/components/explore/CropDiscoverySection";
+import ExploreSkeleton from "@/components/skeletons/ExploreSkeleton"; // Added Skeleton
 import LoadingSpinner from "@/components/LoadingSpinner";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
 
@@ -106,14 +107,7 @@ export default function ExplorePage() {
   }, [sortedCrops, searchTerm, categoryFilter, t]);
 
   // ✅ Show loading spinner while page loads
-  if (loadingPage)
-    return (
-      <MobilePageContainer>
-        <div className="flex justify-center items-center min-h-screen py-20">
-          <LoadingSpinner />
-        </div>
-      </MobilePageContainer>
-    );
+  if (loadingPage) return <ExploreSkeleton />;
 
   return (
     <MobilePageContainer>

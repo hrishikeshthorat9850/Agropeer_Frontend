@@ -25,16 +25,19 @@ export default function StatusBarManager() {
             // Style.Dark => Light Content (White Text)
             await StatusBar.setStyle({ style: Style.Dark });
 
-            // On Android with overlay, setting background color might be transparent/ignored depending on overlay,
-            // but we set it just in case overlay is toggled off or for safe areas.
+            // Ensure background matches dark theme
             if (Capacitor.getPlatform() === "android") {
-              // We keep it transparent or match theme if needed, but overlay handles the look.
-              // Just ensuring contrast.
+              await StatusBar.setBackgroundColor({ color: "#000000" });
             }
           } else {
             // Light Mode: Background is White, so we need BLACK Icons
             // Style.Light => Dark Content (Black Text)
             await StatusBar.setStyle({ style: Style.Light });
+
+            // Ensure background matches light theme (White)
+            if (Capacitor.getPlatform() === "android") {
+              await StatusBar.setBackgroundColor({ color: "#FFFFFF" });
+            }
           }
         }, 50);
       } catch (error) {

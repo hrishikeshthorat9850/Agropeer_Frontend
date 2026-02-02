@@ -26,9 +26,9 @@ export default function CropDiscoverySection({
 
   return (
     <section className="mb-8">
-      {/* 📌 Sticky Header Wrapper */}
-      <div className="sticky top-0 z-30 bg-white/95 dark:bg-[#0a0a0a]/95 backdrop-blur-sm -mx-4 px-4 pt-4 pb-2 mb-4 border-b border-transparent transition-all">
-        <div className="flex items-center gap-2 mb-3">
+      {/* 📌 Header Title (Scrolls away) */}
+      <div className="-mx-4 px-4 pt-4 pb-2 bg-white dark:bg-[#0a0a0a] transition-all">
+        <div className="flex items-center gap-2">
           <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-full text-green-600 dark:text-green-400">
             <FaSeedling className="w-5 h-5" />
           </div>
@@ -36,9 +36,11 @@ export default function CropDiscoverySection({
             {t("crop_discovery_title")}
           </h2>
         </div>
+      </div>
 
-        {/* 🌾 Category Chips (Horizontal Scroll) */}
-        <div className="flex overflow-x-auto pb-2 gap-2 scrollbar-hide snap-x">
+      {/* 🌾 Category Chips (Horizontal Scroll) - STICKY */}
+      <div className="sticky top-0 z-30 bg-white/95 dark:bg-[#0a0a0a]/95 backdrop-blur-sm -mx-4 px-4 pb-3 mb-4 border-b border-gray-100 dark:border-gray-800 transition-all">
+        <div className="flex overflow-x-auto gap-2 scrollbar-hide snap-x">
           {categories.map((cat) => (
             <motion.button
               key={cat}

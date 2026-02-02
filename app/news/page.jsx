@@ -344,9 +344,10 @@ export default function NewsPage() {
     <ErrorBoundary>
       <div className="bg-gray-50 dark:bg-black pb-6">
         {/* Mobile App Header */}
+        {/* Mobile App Header */}
         {/* Mobile App Header (Title) */}
-        {/* Sticky Header Wrapper */}
-        <div className="sticky top-0 z-40 bg-gray-50 dark:bg-black">
+        {/* Sticky Header Wrapper - REMOVED sticky as requested */}
+        <div className="bg-gray-50 dark:bg-black">
           <header className="relative z-50 bg-white/95 dark:bg-black/95 backdrop-blur-sm border-b border-transparent px-5 py-3 flex items-center justify-between shadow-sm">
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
               Agro News

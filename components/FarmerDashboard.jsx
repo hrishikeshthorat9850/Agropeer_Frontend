@@ -217,10 +217,10 @@ const FarmerDashboard = () => {
   return (
     <div className="bg-gray-50 dark:bg-black font-sans">
       {/* 📱 STICKY APP BAR (Header + Quick Stats) */}
-      {/* 📱 STICKY APP BAR (Header + Quick Stats) */}
-      <header className="sticky top-0 z-40 bg-white/95 dark:bg-[#121212]/95 backdrop-blur-md border-b border-gray-100 dark:border-white/5 shadow-sm">
-        <div className="max-w-lg mx-auto px-4 py-3">
-          <div className="flex items-center justify-between mb-3">
+      {/* 📱 STICKY APP BAR (Header Only) */}
+      <header className="sticky top-0 z-50 bg-white/95 dark:bg-[#121212]/95 backdrop-blur-md border-b border-gray-100 dark:border-white/5 shadow-sm h-[60px] flex items-center">
+        <div className="max-w-lg mx-auto px-4 w-full">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center text-emerald-600 dark:text-emerald-400">
                 <FaHome className="text-lg" />
@@ -237,9 +237,13 @@ const FarmerDashboard = () => {
 
             {/* Notification / Profile Icon Placeholder if needed, or keep clean */}
           </div>
+        </div>
+      </header>
 
-          {/* Quick Stats Row - Minimalist */}
-          <div className="flex items-center justify-between bg-gray-50 dark:bg-[#1e1e1e] rounded-xl p-2.5 border border-gray-100 dark:border-[#333]">
+      {/* Quick Stats Row - MOVED OUT OF STICKY HEADER TO SCROLL */}
+      <div className="bg-gray-50 dark:bg-black pt-3 pb-3">
+        <div className="max-w-lg mx-auto px-4">
+          <div className="flex items-center justify-between bg-white dark:bg-[#1e1e1e] rounded-xl p-2.5 border border-gray-100 dark:border-[#333] shadow-sm">
             <div className="text-center px-2 border-r border-gray-200 dark:border-gray-700 w-1/3">
               <span className="block text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5">
                 {t("active_crops")}
@@ -266,36 +270,41 @@ const FarmerDashboard = () => {
             </div>
           </div>
         </div>
+      </div>
 
-        {/* 📱 HORIZONTAL SCROLLABLE TABS (YouTube/Instagram Style) */}
-        <div className="bg-white dark:bg-[#121212] border-t border-gray-100 dark:border-[#333]">
-          <div className="max-w-lg mx-auto flex items-center gap-1 overflow-x-auto no-scrollbar px-4 py-2">
-            {tabs.map((tab) => {
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all whitespace-nowrap border ${
-                    isActive
-                      ? "bg-gray-900 dark:bg-white text-white dark:text-black border-transparent shadow-sm"
-                      : "bg-gray-100 dark:bg-[#1e1e1e] text-gray-600 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-[#333]"
-                  }`}
-                >
-                  <tab.icon
-                    className={
+      {/* 📱 STICKY TABS */}
+      <div className="sticky top-[60px] z-40 bg-gray-50 dark:bg-black pb-2">
+        <div className="max-w-lg mx-auto px-4">
+          {/* Tabs Container with proper background to mask content behind */}
+          <div className="bg-white dark:bg-[#121212] border border-gray-100 dark:border-[#333] rounded-2xl p-1 shadow-sm">
+            <div className="flex items-center gap-1 overflow-x-auto no-scrollbar">
+              {tabs.map((tab) => {
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all whitespace-nowrap border ${
                       isActive
-                        ? "text-white dark:text-black"
-                        : "text-gray-500 dark:text-gray-500"
-                    }
-                  />
-                  {tab.name}
-                </button>
-              );
-            })}
+                        ? "bg-gray-900 dark:bg-white text-white dark:text-black border-transparent shadow-sm"
+                        : "bg-transparent text-gray-600 dark:text-gray-400 border-transparent hover:bg-gray-50 dark:hover:bg-[#1e1e1e]"
+                    }`}
+                  >
+                    <tab.icon
+                      className={
+                        isActive
+                          ? "text-white dark:text-black"
+                          : "text-gray-500 dark:text-gray-500"
+                      }
+                    />
+                    {tab.name}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
-      </header>
+      </div>
 
       {/* MAIN FEED CONTENT */}
       <main className="max-w-lg mx-auto px-4 py-6">

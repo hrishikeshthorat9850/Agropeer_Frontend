@@ -97,15 +97,14 @@ export default function MobileSidebar() {
     const updateStatusBar = async () => {
       if (open) {
         // Sidebar OPEN:
-        // We want the Green Gradient Header to show through the status bar.
-        // So we need:
-        // 1. Transparent Background (#00000000)
-        // 2. Light Content / White Icons (Style.Dark)
+        // We want the Green Gradient Header to show, so we match the green color or use transparent
+        // User reported "full white", so explicit Green matches the header start color (green-600 is #16a34a)
         try {
-          await StatusBar.setStyle({ style: Style.Dark });
+          await StatusBar.setStyle({ style: Style.Dark }); // White Icons
           if (Capacitor.getPlatform() === "android") {
-            await StatusBar.setBackgroundColor({ color: "#00000000" }); // Fully Transparent
-            await StatusBar.setOverlaysWebView({ overlay: true }); // Ensure overlay is on
+            // Set color to match from-green-600
+            await StatusBar.setBackgroundColor({ color: "#16a34a" });
+            await StatusBar.setOverlaysWebView({ overlay: true });
           }
         } catch (e) {
           console.error("StatusBar error:", e);

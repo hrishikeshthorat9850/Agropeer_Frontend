@@ -494,8 +494,8 @@ export default function MilkRateDashboardPage() {
     <ErrorBoundary>
       <div className="bg-gray-50 dark:bg-black pb-6">
         {/* App Bar Header */}
-        {/* Sticky Header Wrapper */}
-        <div className="sticky top-0 z-40 bg-gray-50 dark:bg-black">
+        {/* Sticky Header Wrapper - REMOVED sticky as requested */}
+        <div className="bg-gray-50 dark:bg-black">
           <header className="bg-white dark:bg-black border-b border-gray-100 dark:border-white/10 px-4 py-3 shadow-sm flex items-center justify-between">
             <h1 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
               {t("milk_rate_dashboard")}
