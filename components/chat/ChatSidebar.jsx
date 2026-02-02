@@ -1,9 +1,9 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { FaSearch, FaTimes } from "react-icons/fa";
+import { FaSearch, FaTimes, FaComments } from "react-icons/fa";
 import ContactRow from "./ContactRow";
 import UnreadBadge from "./UnreadBadge";
-import { useEffect } from "react";
 import { useLanguage } from "@/Context/languagecontext";
+import Link from "next/link";
 
 export default function ChatSidebar({
   showContacts,
@@ -87,7 +87,7 @@ export default function ChatSidebar({
             />
           </div>
 
-          {/* Contact List */}
+          {/* Contact List or Empty State */}
           <div
             className="mt-4 flex-1 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-neutral-700"
             style={{
@@ -96,28 +96,48 @@ export default function ChatSidebar({
                 : "0px",
             }}
           >
-            {contacts.map((c) => (
-              <div key={c?.conversation_id || c?.id} className="relative">
-                <ContactRow
-                  user={c}
-                  active={
-                    selected?.id === c?.id ||
-                    selected?.conversation_id === c?.conversation_id
-                  }
-                  onClick={(contact) => {
-                    if (onSelectUser) onSelectUser(contact);
-                    handleFaTimesClick();
-                  }}
-                />
-
-                {/* Unread badge */}
-                {c.unread_count > 0 && (
-                  <div className="absolute right-4 bottom-2 flex justify-end">
-                    <UnreadBadge count={c.unread_count} />
-                  </div>
-                )}
+            {!contacts?.length ? (
+              <div className="flex flex-col items-center justify-center py-10 px-4 text-center min-h-[200px]">
+                <div className="w-14 h-14 rounded-full bg-sky-100 dark:bg-sky-900/40 flex items-center justify-center mb-4">
+                  <FaComments className="w-7 h-7 text-sky-600 dark:text-sky-400" />
+                </div>
+                <h3 className="text-base font-medium text-gray-800 dark:text-gray-200 mb-1">
+                  {t("chat_sidebar_no_contacts")}
+                </h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-5 max-w-[260px]">
+                  {t("chat_sidebar_no_contacts_hint")}
+                </p>
+                <Link
+                  href="/market"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-sm font-medium transition-colors"
+                >
+                  {t("chat_sidebar_browse_cta")}
+                </Link>
               </div>
-            ))}
+            ) : (
+              contacts.map((c) => (
+                <div key={c?.conversation_id || c?.id} className="relative">
+                  <ContactRow
+                    user={c}
+                    active={
+                      selected?.id === c?.id ||
+                      selected?.conversation_id === c?.conversation_id
+                    }
+                    onClick={(contact) => {
+                      if (onSelectUser) onSelectUser(contact);
+                      handleFaTimesClick();
+                    }}
+                  />
+
+                  {/* Unread badge */}
+                  {c.unread_count > 0 && (
+                    <div className="absolute right-4 bottom-2 flex justify-end">
+                      <UnreadBadge count={c.unread_count} />
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
           </div>
         </motion.aside>
       )}
