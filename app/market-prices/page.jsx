@@ -10,6 +10,7 @@ import MarketFilters from "@/components/market-prices/MarketFilters";
 // MobilePageContainer removed for custom app layout
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { useLanguage } from "@/Context/languagecontext";
+import MarketPricesSkeleton from "@/components/skeletons/MarketPricesSkeleton"; // Added Skeleton
 
 import LoadingSpinner from "@/components/LoadingSpinner";
 
@@ -191,10 +192,15 @@ export default function MarketPricesPage() {
     enabled: !!hasMore,
   });
 
+  if (isLoading && displayRecords.length === 0 && !error) {
+    return <MarketPricesSkeleton />;
+  }
+
   return (
     <div className="bg-gray-50 dark:bg-black font-sans">
       {/* 📱 STICKY APP BAR HEADER */}
-      <div className="relative z-40 bg-white/95 dark:bg-[#121212]/95 backdrop-blur-md shadow-sm border-b border-gray-100 dark:border-white/5 px-4 h-[60px] flex items-center justify-between">
+      {/* 📱 STICKY APP BAR HEADER */}
+      <div className="sticky top-0 z-40 bg-white/95 dark:bg-[#121212]/95 backdrop-blur-md shadow-sm border-b border-gray-100 dark:border-white/5 px-4 h-[60px] flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
             onClick={() => router.back()}
@@ -210,8 +216,8 @@ export default function MarketPricesPage() {
 
       {/* 🟢 Main Content Area */}
       <div className="max-w-lg mx-auto w-full">
-        {/* Sticky Filters Block (Just below header) */}
-        <div className="sticky top-[60px] z-30">
+        {/* Market Filters (Internal Sticky) */}
+        <div>
           <MarketFilters
             data={displayRecords}
             onFilterChange={handleFilterChange}
@@ -243,12 +249,7 @@ export default function MarketPricesPage() {
             </div>
           )}
 
-          {/* Full Screen Loading */}
-          {isLoading && displayRecords.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-32 opacity-60">
-              <LoadingSpinner size="md" text={t("loading_market_data")} />
-            </div>
-          )}
+          {/* Full Screen Loading - REMOVED, using Skeleton now */}
 
           {/* 📄 Market List Feed */}
           {displayRecords.length > 0 && (

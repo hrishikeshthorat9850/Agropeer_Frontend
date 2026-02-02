@@ -184,23 +184,22 @@ export default function PostsPage() {
             animate={{ opacity: 1, y: 0 }}
             className="mb-6"
           >
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4 px-4">
-              <div>
-                <h1 className="text-2xl md:text-3xl font-display font-bold text-farm-900 dark:text-white mb-2">
+            <div className="mb-4 px-4">
+              <div className="flex items-center justify-between gap-4 mb-2">
+                <h1 className="text-2xl md:text-3xl font-display font-bold text-farm-900 dark:text-white">
                   {t("all_posts_title")}
                 </h1>
-                <p className="text-farm-600 dark:text-gray-300 text-base">
-                  {t("posts_subtitle")}
-                </p>
+                {/* Total Posts */}
+                <div className="flex-shrink-0 flex items-center gap-2 text-xs md:text-sm font-semibold text-farm-700 dark:text-farm-300 bg-farm-50 dark:bg-farm-900/30 px-3 py-1.5 md:px-4 md:py-2 rounded-full">
+                  <FaUsers className="w-3 h-3 md:w-4 md:h-4" />
+                  <span>
+                    {pagination.total} {t("posts_count_suffix")}
+                  </span>
+                </div>
               </div>
-
-              {/* Total Posts */}
-              <div className="flex items-center gap-2 text-sm font-semibold text-farm-700 dark:text-farm-300 bg-farm-50 dark:bg-farm-900/30 px-4 py-2 rounded-full">
-                <FaUsers className="w-4 h-4" />
-                <span>
-                  {pagination.total} {t("posts_count_suffix")}
-                </span>
-              </div>
+              <p className="text-farm-600 dark:text-gray-300 text-sm md:text-base">
+                {t("posts_subtitle")}
+              </p>
             </div>
 
             {/* Add / Close Button - Premium Mobile Style */}

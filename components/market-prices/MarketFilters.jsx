@@ -154,7 +154,7 @@ export default function MarketFilters({
   };
 
   return (
-    <div className="w-full bg-white dark:bg-[#121212] sticky top-[60px] z-30 pb-2 transition-colors duration-300">
+    <div className="w-full bg-white dark:bg-[#121212] pb-2 transition-colors duration-300">
       {/* Search Bar - Minimalist & Modern */}
       <div className="px-4 pt-2 pb-3">
         <div className="relative group">
@@ -171,8 +171,8 @@ export default function MarketFilters({
         </div>
       </div>
 
-      {/* Horizontal Scrollable Chips Filter Row */}
-      <div className="px-4 flex items-center gap-2 overflow-x-auto no-scrollbar pb-2">
+      {/* Horizontal Scrollable Chips Filter Row - STICKY NOW */}
+      <div className="sticky top-[60px] z-30 bg-white/95 dark:bg-[#121212]/95 backdrop-blur-sm px-4 py-2 flex items-center gap-2 overflow-x-auto no-scrollbar">
         {/* Filter Icon Label (Static) */}
         <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10">
           <FaFilter className="text-gray-400 text-xs" />

@@ -33,8 +33,8 @@ export default function NewsFilterBar({ onCategoryChange, selectedCategory }) {
   };
 
   return (
-    <div className="w-full">
-      <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide pb-2">
+    <div className="w-full sticky top-[60px] z-30 bg-gray-50/95 dark:bg-black/95 backdrop-blur-sm py-2">
+      <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide pb-2 px-1">
         {/* All Chips */}
         {CATEGORIES.map((category) => {
           const isSelected =

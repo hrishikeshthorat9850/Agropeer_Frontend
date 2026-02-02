@@ -551,8 +551,8 @@ export default function GovernmentSchemesPage() {
     <ErrorBoundary>
       <div className="bg-gray-50 dark:bg-black pb-6">
         {/* Mobile App Header */}
-        {/* Sticky Header Wrapper */}
-        <div className="sticky top-0 z-40 bg-gray-50 dark:bg-black">
+        {/* Sticky Header Wrapper - REMOVED sticky as requested */}
+        <div className="bg-gray-50 dark:bg-black">
           <header className="bg-white dark:bg-black border-b border-gray-100 dark:border-white/10 px-4 py-3 flex items-center justify-between shadow-sm">
             <h1 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
               {t("govt_schemes_title")}

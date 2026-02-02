@@ -65,14 +65,14 @@ export default function RecentsPage() {
   return (
     <MobilePageContainer>
       <div className="pt-4">
-        <div className="w-full max-w-2xl mx-auto mb-2 text-center">
+        {/* <div className="w-full max-w-2xl mx-auto mb-2 text-center">
           <h1 className="text-2xl md:text-3xl font-extrabold text-farm-900 dark:text-white">
             {t("recent_activity_title")}
           </h1>
           <p className="text-gray-600 dark:text-gray-300 text-sm mt-2">
             {t("recent_activity_desc")}
           </p>
-        </div>
+        </div> */}
 
         <main className="flex flex-col justify-center w-full max-w-4xl mx-auto">
           <div className="flex flex-col items-center w-full max-w-2xl mx-auto">

@@ -48,28 +48,15 @@ export default function UserSidebar({ onClose } = {}) {
   }, [loading]);
 
   useEffect(() => {
-    if (open) {
-      // Lock scroll
-      const scrollY = window.scrollY;
-      document.body.style.position = "fixed";
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.left = "0";
-      document.body.style.right = "0";
-      document.body.style.width = "100%";
-      document.body.style.overflow = "hidden";
-      document.body.dataset.lockScrollY = scrollY;
-    } else {
-      // Unlock scroll
-      const scrollY = document.body.dataset.lockScrollY || 0;
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.left = "";
-      document.body.style.right = "";
-      document.body.style.width = "";
-      document.body.style.overflow = "";
-      window.scrollTo(0, parseInt(scrollY));
-      delete document.body.dataset.lockScrollY;
-    }
+    // Lock scroll on mount
+    const scrollY = window.scrollY;
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.left = "0";
+    document.body.style.right = "0";
+    document.body.style.width = "100%";
+    document.body.style.overflow = "hidden";
+    document.body.dataset.lockScrollY = scrollY;
 
     // Cleanup (when component unmounts)
     return () => {
@@ -84,7 +71,7 @@ export default function UserSidebar({ onClose } = {}) {
       window.scrollTo(0, parseInt(scrollY));
       delete document.body.dataset.lockScrollY;
     };
-  }, []); // Empty dependency array means this runs once on mount and once on unmount
+  }, []);
 
   const { theme } = useTheme();
 
@@ -103,19 +90,24 @@ export default function UserSidebar({ onClose } = {}) {
 
     const updateStatusBar = async () => {
       // Sidebar always has a dark/green header at the top.
-      // We want White Icons (Style.Dark) and Transparent Background.
+      // We want White Icons (Style.Dark).
+      // Explicitly set Green background to match header and avoid "white status bar" glitch.
       try {
         await StatusBar.setStyle({ style: Style.Dark });
         if (Capacitor.getPlatform() === "android") {
-          await StatusBar.setBackgroundColor({ color: "#00000000" }); // Transparent
+          await StatusBar.setBackgroundColor({ color: "#16a34a" }); // Green-600
           await StatusBar.setOverlaysWebView({ overlay: true });
         }
       } catch (e) {
         console.error("StatusBar open error:", e);
       }
+    };
 
-      return async () => {
-        // Cleanup: Reset to theme defaults when unmounting
+    updateStatusBar();
+
+    return () => {
+      // Cleanup: Reset to theme defaults when unmounting
+      const resetStatusBar = async () => {
         try {
           if (theme === "dark") {
             await StatusBar.setStyle({ style: Style.Dark });
@@ -123,6 +115,7 @@ export default function UserSidebar({ onClose } = {}) {
               await StatusBar.setBackgroundColor({ color: "#000000" });
             }
           } else {
+            // Light Mode: Black Icons, White Background
             await StatusBar.setStyle({ style: Style.Light });
             if (Capacitor.getPlatform() === "android") {
               await StatusBar.setBackgroundColor({ color: "#ffffff" });
@@ -132,9 +125,8 @@ export default function UserSidebar({ onClose } = {}) {
           console.error("StatusBar cleanup error:", e);
         }
       };
+      resetStatusBar();
     };
-
-    updateStatusBar();
   }, [theme]);
 
   const handleLogout = async () => {

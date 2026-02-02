@@ -7,12 +7,31 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 
+import { Keyboard } from "@capacitor/keyboard";
+import { Capacitor } from "@capacitor/core";
+
 export default function MobileBottomNav({ onAI }) {
   const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false); // New state
 
   const safeBottom = "env(safe-area-inset-bottom, 0px)";
+
+  // Keyboard Listeners
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+
+    const onShow = () => setIsKeyboardOpen(true);
+    const onHide = () => setIsKeyboardOpen(false);
+
+    Keyboard.addListener("keyboardWillShow", onShow);
+    Keyboard.addListener("keyboardWillHide", onHide);
+
+    return () => {
+      Keyboard.removeAllListeners();
+    };
+  }, []);
 
   const openAI = () => {
     // ... existing openAI code
@@ -38,6 +57,9 @@ export default function MobileBottomNav({ onAI }) {
     { label: "Home", icon: FaHome, route: "/" },
     { label: "AI", icon: Sparkles, action: openAI, isActive: false }, // Action item
   ];
+
+  // Logic: Hide if keyboard is open
+  if (isKeyboardOpen) return null;
 
   return (
     <>
