@@ -18,9 +18,12 @@ import { v4 as uuidv4 } from "uuid";
 import { motion, AnimatePresence } from "framer-motion";
 import useToast from "@/hooks/useToast";
 import { useLanguage } from "@/Context/languagecontext";
+import { apiRequest } from "@/utils/apiHelpers";
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
 export default function PostCreation({ onSuccess }) {
-  const { user } = useLogin();
+  const { user, accessToken } = useLogin();
   const { showToast } = useToast();
   const photoinputRef = useRef();
   const videoinputRef = useRef();
@@ -254,7 +257,6 @@ export default function PostCreation({ onSuccess }) {
     const post = posts.find((p) => p.id === postId);
     const hasLiked = post?.post_likes?.some((like) => like.user_id === user.id);
 
-    // Optimistic UI update
     const updatedLikes = hasLiked
       ? post.post_likes.filter((l) => l.user_id !== user.id)
       : [...(post.post_likes || []), { user_id: user.id }];
@@ -266,26 +268,17 @@ export default function PostCreation({ onSuccess }) {
     );
 
     try {
-      if (hasLiked) {
-        // Remove like
-        const { error } = await supabase
-          .from("post_likes")
-          .delete()
-          .eq("post_id", postId)
-          .eq("user_id", user.id);
-        if (error) throw error;
-      } else {
-        // Add like (upsert avoids duplicates)
-        const { error } = await supabase
-          .from("post_likes")
-          .upsert([{ post_id: postId, user_id: user.id }], {
-            onConflict: "post_id,user_id",
-          });
-        if (error) throw error;
-      }
+      const { data, error: apiError } = await apiRequest(
+        `${BASE_URL}/api/posts/${postId}/like`,
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${accessToken}` },
+          body: JSON.stringify({ user_id: user.id }),
+        },
+      );
+      if (apiError) throw apiError;
     } catch (err) {
       console.error("Error updating like:", err);
-      // Rollback UI
       setPosts((prevPosts) =>
         prevPosts.map((p) => (p.id === postId ? post : p)),
       );
@@ -297,59 +290,68 @@ export default function PostCreation({ onSuccess }) {
       showToast("error", t("login_required_toast"));
       return;
     }
-    const { data: existing } = await supabase
-      .from("post_likes")
-      .select("*")
-      .eq("post_id", postId)
-      .eq("user_id", user.id)
-      .maybeSingle();
-    if (existing)
-      await supabase.from("post_likes").delete().eq("id", existing.id);
-    else
-      await supabase
-        .from("post_likes")
-        .insert([{ post_id: postId, user_id: user.id }]);
-    const { data: updated } = await supabase
-      .from("post_likes")
-      .select("*")
-      .eq("post_id", postId);
-    setLiked(!existing);
-    setPosts((prev) =>
-      prev.map((p) =>
-        p.id === postId ? { ...p, post_likes: updated || [] } : p,
-      ),
-    );
+    try {
+      const { data, error: apiError } = await apiRequest(
+        `${BASE_URL}/api/posts/${postId}/like`,
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${accessToken}` },
+          body: JSON.stringify({ user_id: user.id }),
+        },
+      );
+      if (apiError) throw apiError;
+      setLiked(data?.liked ?? !posts.find((p) => p.id === postId)?.post_likes?.some((l) => l.user_id === user.id));
+      setPosts((prev) =>
+        prev.map((p) => {
+          if (p.id !== postId) return p;
+          const hasLiked = p.post_likes?.some((l) => l.user_id === user.id);
+          const newLikes = data?.liked
+            ? [...(p.post_likes || []), { user_id: user.id }]
+            : (p.post_likes || []).filter((l) => l.user_id !== user.id);
+          return { ...p, post_likes: newLikes };
+        }),
+      );
+    } catch (err) {
+      console.error("Error toggling like:", err);
+    }
   };
 
   const addComment = async (postId, text) => {
     if (!user || !text.trim()) return;
 
     try {
-      const { data: inserted, error } = await supabase
-        .from("post_comments")
-        .insert([{ post_id: postId, user_id: user.id, comment: text }])
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      // Update posts state
-      setPosts((prev) =>
-        prev.map((p) =>
-          p.id === postId
-            ? { ...p, post_comments: [...(p.post_comments || []), inserted] }
-            : p,
-        ),
+      const { data, error: apiError } = await apiRequest(
+        `${BASE_URL}/api/post-comment`,
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${accessToken}` },
+          body: JSON.stringify({
+            post_id: postId,
+            comment: text.trim(),
+            user_id: user.id,
+          }),
+        },
       );
-
-      // Update recentPost if needed
-      if (recentPost.id === postId) {
-        setRecentPost((prev) => ({
-          ...prev,
-          post_comments: [...(prev.post_comments || []), inserted],
-        }));
+      if (apiError) {
+        showToast("error", apiError.message || t("add_comment_failed"));
+        return;
       }
-
+      const inserted = data?.data;
+      if (inserted) {
+        setPosts((prev) =>
+          prev.map((p) =>
+            p.id === postId
+              ? { ...p, post_comments: [...(p.post_comments || []), inserted] }
+              : p,
+          ),
+        );
+        if (recentPost.id === postId) {
+          setRecentPost((prev) => ({
+            ...prev,
+            post_comments: [...(prev.post_comments || []), inserted],
+          }));
+        }
+      }
       setCommentText("");
       showToast("success", t("add_comment_success"));
     } catch (err) {
@@ -612,6 +614,9 @@ export default function PostCreation({ onSuccess }) {
           onLike={handleLikeClick}
           onAddComment={addComment}
           formatName={formatName}
+          BASE_URL={BASE_URL}
+          accessToken={accessToken}
+          apiRequest={apiRequest}
         />
       )}
     </motion.section>

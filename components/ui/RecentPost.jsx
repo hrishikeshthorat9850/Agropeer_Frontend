@@ -20,6 +20,9 @@ export default function RecentPost({
   onLike,
   onAddComment,
   formatName,
+  BASE_URL = "",
+  accessToken = null,
+  apiRequest = null,
 }) {
   const [showCommentsSection, setShowCommentsSection] = useState(false);
   const [commentText, setCommentText] = useState("");
@@ -305,18 +308,52 @@ export default function RecentPost({
     if (!replyingTo) return;
 
     try {
-      const { data, error } = await supabase
-        .from("post_comments")
-        .insert([
+      if (BASE_URL && accessToken && apiRequest) {
+        const { data, error: apiError } = await apiRequest(
+          `${BASE_URL}/api/post-comment`,
           {
-            post_id: post.id,
-            user_id: user.id,
-            comment: replyText,
-            parent_comment_id: replyingTo,
+            method: "POST",
+            headers: { Authorization: `Bearer ${accessToken}` },
+            body: JSON.stringify({
+              post_id: post.id,
+              comment: replyText.trim(),
+              user_id: user.id,
+              parent_comment_id: replyingTo,
+            }),
           },
-        ])
-        .select(
-          `
+        );
+        if (apiError) {
+          console.error("Error sending reply:", apiError.message);
+          return;
+        }
+        const newReply = data?.data;
+        if (newReply) {
+          const isReplyingToComment = commentInfo.some((c) => c.id === replyingTo);
+          if (isReplyingToComment) {
+            setCommentReplies((prev) => ({
+              ...prev,
+              [replyingTo]: [...(prev[replyingTo] || []), newReply],
+            }));
+          } else {
+            setNestedReplies((prev) => ({
+              ...prev,
+              [replyingTo]: [...(prev[replyingTo] || []), newReply],
+            }));
+          }
+        }
+      } else {
+        const { data, error } = await supabase
+          .from("post_comments")
+          .insert([
+            {
+              post_id: post.id,
+              user_id: user.id,
+              comment: replyText,
+              parent_comment_id: replyingTo,
+            },
+          ])
+          .select(
+            `
           id,
           comment,
           created_at,
@@ -325,25 +362,22 @@ export default function RecentPost({
           parent_comment_id,
           userinfo(id, firstName, lastName, display_name, profile_url, avatar_url)
         `,
-        )
-        .single();
-
-      if (error) throw error;
-
-      const isReplyingToComment = commentInfo.some((c) => c.id === replyingTo);
-
-      if (isReplyingToComment) {
-        setCommentReplies((prev) => ({
-          ...prev,
-          [replyingTo]: [...(prev[replyingTo] || []), data],
-        }));
-      } else {
-        setNestedReplies((prev) => ({
-          ...prev,
-          [replyingTo]: [...(prev[replyingTo] || []), data],
-        }));
+          )
+          .single();
+        if (error) throw error;
+        const isReplyingToComment = commentInfo.some((c) => c.id === replyingTo);
+        if (isReplyingToComment) {
+          setCommentReplies((prev) => ({
+            ...prev,
+            [replyingTo]: [...(prev[replyingTo] || []), data],
+          }));
+        } else {
+          setNestedReplies((prev) => ({
+            ...prev,
+            [replyingTo]: [...(prev[replyingTo] || []), data],
+          }));
+        }
       }
-
       setReplyText("");
       setShowReplyBox(null);
       setReplyingTo(null);
@@ -360,29 +394,37 @@ export default function RecentPost({
     }
 
     try {
-      const { data: existingLike, error: fetchError } = await supabase
-        .from("comment_likes")
-        .select("id")
-        .eq("comment_id", commentId)
-        .eq("user_id", user.id)
-        .maybeSingle();
-
-      if (fetchError) throw fetchError;
-
-      if (existingLike) {
-        const { error: deleteError } = await supabase
-          .from("comment_likes")
-          .delete()
-          .eq("id", existingLike.id);
-
-        if (deleteError) throw deleteError;
+      if (BASE_URL && accessToken && apiRequest) {
+        const { error: apiError } = await apiRequest(
+          `${BASE_URL}/api/comments/${commentId}/like`,
+          {
+            method: "POST",
+            headers: { Authorization: `Bearer ${accessToken}` },
+            body: JSON.stringify({ user_id: user.id }),
+          },
+        );
+        if (apiError) throw apiError;
         await refreshComments();
       } else {
-        const { error: insertError } = await supabase
+        const { data: existingLike, error: fetchError } = await supabase
           .from("comment_likes")
-          .insert([{ comment_id: commentId }]);
-
-        if (insertError) throw insertError;
+          .select("id")
+          .eq("comment_id", commentId)
+          .eq("user_id", user.id)
+          .maybeSingle();
+        if (fetchError) throw fetchError;
+        if (existingLike) {
+          const { error: deleteError } = await supabase
+            .from("comment_likes")
+            .delete()
+            .eq("id", existingLike.id);
+          if (deleteError) throw deleteError;
+        } else {
+          const { error: insertError } = await supabase
+            .from("comment_likes")
+            .insert([{ comment_id: commentId, user_id: user.id }]);
+          if (insertError) throw insertError;
+        }
         await refreshComments();
       }
     } catch (err) {

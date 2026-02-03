@@ -29,6 +29,7 @@ import MobilePageContainer from "@/components/mobile/MobilePageContainer";
 import { Capacitor } from "@capacitor/core";
 import { shareContent } from "@/utils/shareHandler";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
+import { apiRequest } from "@/utils/apiHelpers";
 // Lazy load heavy components that are only shown on user interaction or below the fold
 const SellForm = dynamic(() => import("@/components/SellForm"), {
   loading: () => <LoadingSpinner />,
@@ -75,7 +76,7 @@ const RelatedProducts = dynamic(
 export default function AgriMarket() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user, userinfo, loading, error } = useLogin();
+  const { user, userinfo, loading, error, accessToken } = useLogin();
   const { t } = useLanguage();
   const [products, setProducts] = useState([]);
   const [allProducts, setAllProducts] = useState([]); // Store all fetched products
@@ -370,22 +371,48 @@ export default function AgriMarket() {
     const isFav = favorites.includes(product.id);
 
     try {
-      if (isFav) {
-        const { data, error } = await supabase
-          .from("user_favorites")
-          .delete()
-          .eq("user_id", user?.id)
-          .eq("product_id", product.id);
-        setFavorites((prev) => prev.filter((id) => id !== product.id));
-        showToast("error", t("removed_from_favorites"));
+      if (BASE_URL && accessToken) {
+        const { data, error: apiError } = await apiRequest(
+          `${BASE_URL}/api/products/favorite`,
+          {
+            method: "POST",
+            headers: { Authorization: `Bearer ${accessToken}` },
+            body: JSON.stringify({
+              product_id: product.id,
+              user_id: user.id,
+            }),
+          },
+        );
+        if (apiError) {
+          showToast("error", apiError.message || t("generic_error"));
+          return;
+        }
+        const nowFav = data?.is_favorite ?? !isFav;
+        if (nowFav) {
+          setFavorites((prev) => [...prev, product.id]);
+          showToast("success", t("added_to_favorites"));
+        } else {
+          setFavorites((prev) => prev.filter((id) => id !== product.id));
+          showToast("error", t("removed_from_favorites"));
+        }
       } else {
-        console.log("Product id is :", product?.id);
-        console.log("Type of product id is :", typeof product?.id);
-        const { data, error } = await supabase
-          .from("user_favorites")
-          .insert({ user_id: user?.id, product_id: product?.id });
-        setFavorites((prev) => [...prev, product.id]);
-        showToast("success", t("added_to_favorites"));
+        if (isFav) {
+          const { error } = await supabase
+            .from("user_favorites")
+            .delete()
+            .eq("user_id", user?.id)
+            .eq("product_id", product.id);
+          if (error) throw error;
+          setFavorites((prev) => prev.filter((id) => id !== product.id));
+          showToast("error", t("removed_from_favorites"));
+        } else {
+          const { error } = await supabase
+            .from("user_favorites")
+            .insert({ user_id: user?.id, product_id: product?.id });
+          if (error) throw error;
+          setFavorites((prev) => [...prev, product.id]);
+          showToast("success", t("added_to_favorites"));
+        }
       }
     } catch (err) {
       console.error(err);

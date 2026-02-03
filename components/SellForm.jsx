@@ -13,6 +13,9 @@ import { useLanguage } from "@/Context/languagecontext";
 import useToast from "@/hooks/useToast";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ImageUploadBox from "./ui/ImageUploadBox";
+import { apiRequest } from "@/utils/apiHelpers";
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
 function Toast({ message, show, onClose, color = "bg-red-700" }) {
   if (!show) return null;
@@ -328,7 +331,7 @@ export default function SellForm({
   const router = useRouter();
   const fileInputRef = useRef(null);
   const fields = CATEGORY_FIELDS[category] || CATEGORY_FIELDS["others"];
-  const { user } = useLogin();
+  const { user, accessToken } = useLogin();
   const [resetKey, setResetKey] = useState(0);
   const [form, setForm] = useState(
     fields.reduce((acc, f) => {
@@ -538,17 +541,41 @@ export default function SellForm({
           ),
         ),
       };
-      if (productData && productData.id) {
-        const { error } = await supabase
-          .from("agri_products")
-          .update(listingPayload)
-          .eq("id", productData.id);
-        if (error) throw error;
+      if (BASE_URL && accessToken) {
+        if (productData && productData.id) {
+          const { error: apiError } = await apiRequest(
+            `${BASE_URL}/api/products/${productData.id}`,
+            {
+              method: "PUT",
+              headers: { Authorization: `Bearer ${accessToken}` },
+              body: JSON.stringify(listingPayload),
+            },
+          );
+          if (apiError) throw new Error(apiError.message);
+        } else {
+          const { error: apiError } = await apiRequest(
+            `${BASE_URL}/api/products`,
+            {
+              method: "POST",
+              headers: { Authorization: `Bearer ${accessToken}` },
+              body: JSON.stringify(listingPayload),
+            },
+          );
+          if (apiError) throw new Error(apiError.message);
+        }
       } else {
-        const { error } = await supabase
-          .from("agri_products")
-          .insert([listingPayload]);
-        if (error) throw error;
+        if (productData && productData.id) {
+          const { error } = await supabase
+            .from("agri_products")
+            .update(listingPayload)
+            .eq("id", productData.id);
+          if (error) throw error;
+        } else {
+          const { error } = await supabase
+            .from("agri_products")
+            .insert([listingPayload]);
+          if (error) throw error;
+        }
       }
       showToast("success", t("toast_submit_success"));
       if (onClose) onClose();
