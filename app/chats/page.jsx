@@ -8,7 +8,7 @@ import { useSocket } from "@/Context/SocketContext";
 import { ChatSkeleton } from "@/components/skeletons";
 import { Capacitor } from "@capacitor/core";
 import Router from "next/router";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useLanguage } from "@/Context/languagecontext";
 
 export default function ChatsPage() {
@@ -16,6 +16,8 @@ export default function ChatsPage() {
   const { t } = useLanguage();
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const conversationIdFromUrl = searchParams.get("conversationId") || searchParams.get("conversation");
   const {
     socket,
     joinConversation,
@@ -35,6 +37,8 @@ export default function ChatsPage() {
   const isChatOpenRef = useRef(false);
   const [unreadMessagesCount, setunreadMessagesCount] = useState(0);
   const conversationsRef = useRef([]);
+  const openedFromNotificationRef = useRef(null);
+  const loadingConversationIdRef = useRef(null);
   const isNative = Capacitor.isNativePlatform();
 
   const fetchMessages = useCallback(async () => {
@@ -284,6 +288,65 @@ export default function ChatsPage() {
       }
     },
     [loggedInUser?.id, fetchMessages]
+  );
+
+  // Load a conversation by id and add to contacts (e.g. when opening from notification deep link)
+  const loadConversationById = useCallback(
+    async (convId) => {
+      if (!convId || !loggedInUser?.id) return false;
+      try {
+        const { data: conv, error } = await supabase
+          .from("conversations")
+          .select(
+            `
+            id,
+            user1:user1_id(id, firstName, lastName, profile_url, display_name, avatar_url),
+            user2:user2_id(id, firstName, lastName, profile_url, display_name, avatar_url),
+            last_message_at
+          `
+          )
+          .eq("id", convId)
+          .is("deleted_at", null)
+          .single();
+
+        if (error || !conv) return false;
+
+        const isUser1 = conv.user1?.id === loggedInUser.id;
+        const otherUser = isUser1 ? conv.user2 : conv.user1;
+        if (!otherUser?.id) return false;
+
+        const newContact = {
+          id: otherUser.id,
+          displayName: otherUser?.display_name,
+          firstName: otherUser?.firstName || "",
+          lastName: otherUser?.lastName || "",
+          profile_url: otherUser?.profile_url || otherUser?.avatar_url,
+          last_message: "",
+          last_message_at: conv.last_message_at || new Date().toISOString(),
+          conversation_id: conv.id,
+          unread_count: 0,
+          all_conversation_ids: [conv.id],
+        };
+
+        setConversations((prev) => (prev?.some((c) => c?.id === conv.id) ? prev : [...(prev || []), conv]));
+        setContactToConversationMap((prev) => ({ ...prev, [otherUser.id]: conv }));
+        setContacts((prev) => {
+          const list = Array.isArray(prev) ? prev : [];
+          const existingIndex = list.findIndex((c) => c?.id === otherUser.id);
+          if (existingIndex >= 0) {
+            const next = list.slice();
+            next[existingIndex] = { ...next[existingIndex], ...newContact, all_conversation_ids: [...new Set([...(next[existingIndex].all_conversation_ids || []), conv.id])] };
+            return next.sort((a, b) => new Date(b.last_message_at || 0).getTime() - new Date(a.last_message_at || 0).getTime());
+          }
+          return [newContact, ...list].sort((a, b) => new Date(b.last_message_at || 0).getTime() - new Date(a.last_message_at || 0).getTime());
+        });
+        return true;
+      } catch (err) {
+        console.error("❌ loadConversationById:", err);
+        return false;
+      }
+    },
+    [loggedInUser?.id]
   );
 
   useEffect(() => {
@@ -788,6 +851,34 @@ export default function ChatsPage() {
     document.addEventListener("visibilitychange", onVisible);
     return () => document.removeEventListener("visibilitychange", onVisible);
   }, [pathname, loggedInUser?.id, fetchMessages]);
+
+  // When opening from notification: /chats?conversationId=XXX — load conversation if needed and open that chat
+  useEffect(() => {
+    if (!conversationIdFromUrl || pathname !== "/chats" || !loggedInUser?.id) return;
+    const cid = String(conversationIdFromUrl);
+
+    const contact = contacts.find(
+      (c) =>
+        c &&
+        (String(c.conversation_id) === cid ||
+          (Array.isArray(c.all_conversation_ids) && c.all_conversation_ids.some((id) => String(id) === cid)))
+    );
+
+    if (contact) {
+      if (openedFromNotificationRef.current !== cid) {
+        openedFromNotificationRef.current = cid;
+        handleSelectUser(contact);
+        router.replace("/chats");
+      }
+      return;
+    }
+
+    if (loadingConversationIdRef.current === cid) return;
+    loadingConversationIdRef.current = cid;
+    loadConversationById(conversationIdFromUrl).then((ok) => {
+      if (!ok) loadingConversationIdRef.current = null;
+    });
+  }, [pathname, conversationIdFromUrl, contacts, loggedInUser?.id, handleSelectUser, loadConversationById, router]);
 
   const handleFaTimesClick = () => {
     setShowContacts(false);

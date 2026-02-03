@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { useAndroidNotifications } from "@/hooks/useAndroidNotifications";
 import useNativeFcmToken from "@/hooks/useNativeFcmToken";
 import { useLogin } from "@/Context/logincontext";
 import { useLanguage } from "@/Context/languagecontext";
 
 export default function AndroidNotificationHandler() {
+  const router = useRouter();
   const { user } = useLogin();
   const { isAndroid, isReady } = useAndroidNotifications();
   const { t } = useLanguage();
@@ -43,16 +45,19 @@ export default function AndroidNotificationHandler() {
     [t]
   );
 
-  const handlePushAction = useCallback((notification) => {
-    const data = notification.notification?.data ?? notification.data ?? {};
-    if (data.url) {
-      window.location.href = data.url;
-      return;
-    }
-    if (data.conversationId) {
-      window.location.href = `/chats?conversation=${data.conversationId}`;
-    }
-  }, []);
+  const handlePushAction = useCallback(
+    (notification) => {
+      const data = notification.notification?.data ?? notification.data ?? {};
+      if (data.url) {
+        router.push(data.url);
+        return;
+      }
+      if (data.conversationId) {
+        router.push(`/chats?conversationId=${data.conversationId}`);
+      }
+    },
+    [router]
+  );
 
   const { token: nativeToken, permission } = useNativeFcmToken({
     onMessage: handleForegroundPush,
@@ -72,11 +77,14 @@ export default function AndroidNotificationHandler() {
         LocalNotifications.addListener(
           "localNotificationActionPerformed",
           (notification) => {
-            const data = notification.notification.data;
+            const data =
+              notification?.notification?.data ??
+              notification?.data ??
+              {};
             if (data?.url) {
-              window.location.href = data.url;
+              router.push(data.url);
             } else if (data?.conversationId) {
-              window.location.href = `/chats?conversation=${data.conversationId}`;
+              router.push(`/chats?conversationId=${data.conversationId}`);
             }
           }
         );
@@ -96,7 +104,7 @@ export default function AndroidNotificationHandler() {
     }
 
     setupAndroidListeners();
-  }, [isAndroid, isReady]);
+  }, [isAndroid, isReady, router]);
 
   useEffect(() => {
     if (!nativeToken) return;
