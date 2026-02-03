@@ -302,30 +302,30 @@ export default function ChatsPage() {
     const handleReceiveMessage = (msgg) => {
       if (!msgg || !msgg.conversation_id || !msgg.sender_id) return;
 
-      // 🧠 Check if this is my message
+      const msgConvId = String(msgg.conversation_id);
       const isMyMessage = msgg.sender_id === loggedInUser.id;
 
       // 🧩 Always update sidebar for both users
       setContacts((prevContacts) => {
         if (!Array.isArray(prevContacts)) return prevContacts;
 
-        // Find the contact by checking if conversation_id matches any of their conversations
+        // Find the contact by checking if conversation_id matches any of their conversations (string-normalized)
         const updatedContacts = prevContacts.map((contact) => {
           if (!contact || !contact.id) return contact;
 
-          // Check if this message belongs to any conversation with this user
+          const contactConvId = contact.conversation_id != null ? String(contact.conversation_id) : null;
           const belongsToThisUser =
             (contact.all_conversation_ids &&
               Array.isArray(contact.all_conversation_ids) &&
-              contact.all_conversation_ids.includes(msgg.conversation_id)) ||
-            contact.conversation_id === msgg.conversation_id;
+              contact.all_conversation_ids.some((id) => String(id) === msgConvId)) ||
+            contactConvId === msgConvId;
 
           if (belongsToThisUser) {
             const currentSelected = selectedConversationRef.current;
+            const currentConvId = currentSelected?.conversation_id != null ? String(currentSelected.conversation_id) : null;
             const isCurrentConversation =
               currentSelected &&
-              (currentSelected.conversation_id === msgg.conversation_id ||
-                currentSelected.id === contact.id);
+              (currentConvId === msgConvId || currentSelected.id === contact.id);
 
             // Increment unread count if message is from someone else and conversation is not currently selected
             const shouldIncrementUnread =
@@ -350,10 +350,10 @@ export default function ChatsPage() {
                 : contact.unread_count || 0,
             };
 
-            // Update conversation IDs list if needed
-            if (msgg.conversation_id) {
+            // Update conversation IDs list if needed (string-normalized)
+            if (msgg.conversation_id != null) {
               const existingIds = contact.all_conversation_ids || [];
-              if (!existingIds.includes(msgg.conversation_id)) {
+              if (!existingIds.some((id) => String(id) === msgConvId)) {
                 updatedContact.all_conversation_ids = [
                   ...existingIds,
                   msgg.conversation_id,
@@ -412,12 +412,10 @@ export default function ChatsPage() {
         });
       });
 
-      // 🧠 Update chat window if conversation is open
+      // 🧠 Update chat window if conversation is open (string-normalized)
       const currentSelected = selectedConversationRef.current;
-      if (
-        currentSelected &&
-        msgg.conversation_id === currentSelected?.conversation_id
-      ) {
+      const currentConvIdForMsg = currentSelected?.conversation_id != null ? String(currentSelected.conversation_id) : null;
+      if (currentSelected && currentConvIdForMsg === msgConvId) {
         setMessages((prev) => {
           if (!Array.isArray(prev)) return prev;
 
@@ -485,9 +483,11 @@ export default function ChatsPage() {
     }) => {
       if (!conversation_id || !reader_id || !Array.isArray(seen_message_ids))
         return;
+      const cidSeen = String(conversation_id);
       const currentSelected = selectedConversationRef.current;
+      const currentConvIdSeen = currentSelected?.conversation_id != null ? String(currentSelected.conversation_id) : null;
       const isCurrentConversation =
-        currentSelected && currentSelected.conversation_id === conversation_id;
+        currentSelected && currentConvIdSeen === cidSeen;
 
       // Update unread count if I'm the one who read the messages
       if (reader_id === loggedInUser?.id) {
@@ -497,12 +497,12 @@ export default function ChatsPage() {
           return prevContacts.map((contact) => {
             if (!contact) return contact;
 
-            // Check if this conversation belongs to this contact
+            const contactCidSeen = contact.conversation_id != null ? String(contact.conversation_id) : null;
             const belongsToContact =
               (contact.all_conversation_ids &&
                 Array.isArray(contact.all_conversation_ids) &&
-                contact.all_conversation_ids.includes(conversation_id)) ||
-              contact.conversation_id === conversation_id;
+                contact.all_conversation_ids.some((id) => String(id) === cidSeen)) ||
+              contactCidSeen === cidSeen;
 
             if (belongsToContact) {
               // Safely subtract unread count
@@ -546,24 +546,24 @@ export default function ChatsPage() {
     socket.on("messagesSeen", handleMessagesSeen);
 
     const handleConversationCleared = ({ conversation_id }) => {
-      if (!conversation_id) return;
+      if (conversation_id == null) return;
+      const cidClear = String(conversation_id);
 
       // Clear messages for the open conversation
-      if (
-        selectedConversationRef.current &&
-        selectedConversationRef.current.conversation_id === conversation_id
-      ) {
+      const currentClear = selectedConversationRef.current;
+      if (currentClear?.conversation_id != null && String(currentClear.conversation_id) === cidClear) {
         setMessages([]);
       }
 
-      // Update contacts sidebar: clear last message text for affected contacts
+      // Update contacts sidebar: clear last message text for affected contacts (string-normalized)
       setContacts((prev) => {
         if (!Array.isArray(prev)) return prev;
         return prev.map((contact) => {
           if (!contact) return contact;
+          const contactCidClear = contact.conversation_id != null ? String(contact.conversation_id) : null;
           const belongs =
-            (Array.isArray(contact.all_conversation_ids) && contact.all_conversation_ids.includes(conversation_id)) ||
-            contact.conversation_id === conversation_id;
+            (Array.isArray(contact.all_conversation_ids) && contact.all_conversation_ids.some((id) => String(id) === cidClear)) ||
+            contactCidClear === cidClear;
           if (belongs) {
             return { ...contact, last_message: "", last_message_at: new Date().toISOString() };
           }

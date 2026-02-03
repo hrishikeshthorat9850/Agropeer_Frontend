@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { FaUsers, FaPlus, FaArrowLeft } from "react-icons/fa";
@@ -51,6 +51,9 @@ export default function PostsPage() {
   const [selectedPost, setSelectedPost] = useState(null);
   const [postLoading, setPostLoading] = useState(false);
   const [postError, setPostError] = useState(null);
+
+  // Only scroll to deep-linked post once per postId; avoid re-scrolling when posts update (e.g. load more)
+  const lastScrolledPostIdRef = useRef(null);
 
   const handlePageChange = (page) => {
     pagination.goToPage(page);
@@ -149,27 +152,39 @@ export default function PostsPage() {
     }
   };
 
-  // 🟢 Deep link fix: Check if post exists in current page, scroll if found
+  // 🟢 Deep link fix: Scroll to post only once when opening via ?id= — do not re-run when posts updates (load more)
   useEffect(() => {
     if (!postId || posts.length === 0) return;
 
-    // Check if postId exists in current posts array
-    const postExistsInList = posts.some((post) => post.id === postId);
+    // Already scrolled to this postId (e.g. user scrolled down and load more ran — don't jump back)
+    if (lastScrolledPostIdRef.current === postId) return;
 
-    if (postExistsInList) {
-      // Post is in current page, scroll to it
-      const target = document.getElementById(`post-${postId}`);
-      if (target) {
-        // Small delay to ensure DOM is ready
-        setTimeout(() => {
-          target.scrollIntoView({ behavior: "smooth", block: "center" });
-          target.style.outline = "3px solid #4ade80"; // highlight
-          setTimeout(() => (target.style.outline = "none"), 2000);
-        }, 100);
-      }
+    const postExistsInList = posts.some((post) => post.id === postId);
+    if (!postExistsInList) return;
+
+    const target = document.getElementById(`post-${postId}`);
+    if (!target) return;
+
+    // Skip if user has already scrolled down (prevents jump when effect runs after load more)
+    if (typeof window !== "undefined" && window.scrollY > 300) {
+      lastScrolledPostIdRef.current = postId;
+      return;
     }
-    // If post is NOT in list, selectedPost will be rendered above (handled in render)
+
+    lastScrolledPostIdRef.current = postId;
+    const t = setTimeout(() => {
+      target.scrollIntoView({ behavior: "smooth", block: "center" });
+      target.style.outline = "3px solid #4ade80";
+      setTimeout(() => (target.style.outline = "none"), 2000);
+    }, 100);
+
+    return () => clearTimeout(t);
   }, [postId, posts]);
+
+  // Reset scroll flag when postId is cleared so a new deep link can scroll again
+  useEffect(() => {
+    if (!postId) lastScrolledPostIdRef.current = null;
+  }, [postId]);
 
   const postExistsInList = posts?.some((post) => post.id === postId);
   const shouldShowSelectedPostAbove = selectedPost && !postExistsInList;
@@ -363,10 +378,10 @@ export default function PostsPage() {
                     </motion.div>
                   ))}
 
-                  {/* Infinite Scroll Sentinel */}
+                  {/* Infinite Scroll Sentinel - only observe when there are more posts */}
                   <div
                     ref={loadMoreRef}
-                    className="h-16 flex justify-center items-center"
+                    className="min-h-[80px] flex flex-col justify-center items-center py-6"
                   >
                     {isFetchingMore && hasMore && (
                       <div className="flex flex-col items-center gap-2">
@@ -377,8 +392,8 @@ export default function PostsPage() {
                       </div>
                     )}
                     {!hasMore && posts.length > 0 && (
-                      <p className="text-gray-500 text-sm">
-                        {t("reached_end_posts")}
+                      <p className="text-gray-500 dark:text-gray-400 text-sm font-medium py-2">
+                        {t("no_more_posts")}
                       </p>
                     )}
                   </div>

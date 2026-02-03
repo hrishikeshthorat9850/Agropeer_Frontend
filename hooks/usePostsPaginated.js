@@ -88,10 +88,14 @@ export function usePostsPaginated({
   }, [pagination.page, fetchPosts]);
 
   const refreshPosts = useCallback(() => {
-    // Reset to page 1 for refresh
+    // If already on page 1, refetch directly to avoid no-op from setPage(1)
+    if (pagination.page === 1) {
+      fetchPosts(1, true);
+      return;
+    }
+    // Otherwise set page to 1; useEffect will run and fetch page 1 (single fetch)
     setPageRef.current(1);
-    fetchPosts(1, true);
-  }, [fetchPosts]);
+  }, [fetchPosts, pagination.page]);
 
   const goToPage = useCallback((page) => {
     setPageRef.current(page);

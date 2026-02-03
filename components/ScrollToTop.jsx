@@ -9,6 +9,9 @@ function normalizePath(path) {
   return path.endsWith("/") && path.length > 1 ? path.slice(0, -1) : path;
 }
 
+// Persists across remounts so we only scroll when route *actually* changed (not on remount with same route)
+let lastPathnameScrolled = null;
+
 // Only scroll when pathname *changed* (not on remount with same route) — prevents posts/infinite-scroll jump
 export default function ScrollToTop() {
   const pathname = usePathname();
@@ -22,22 +25,28 @@ export default function ScrollToTop() {
   }, []);
 
   useEffect(() => {
-    // 1. Immediate scroll (optional, but good for "instant" feel if transition allows)
+    // Never scroll to top on /posts — infinite scroll page; prevents jump when loading more / reaching end
+    if (stablePathname === "/posts") {
+      lastPathnameScrolled = stablePathname;
+      return;
+    }
+    // Skip if we're still on the same route (e.g. component remounted)
+    if (lastPathnameScrolled === stablePathname) return;
+    lastPathnameScrolled = stablePathname;
+
     window.scrollTo(0, 0);
 
-    // 2. Delayed scroll to ensure we hit AFTER PageTransition (mode="wait" takes ~200ms)
-    //    and after new content renders.
     const t = setTimeout(() => {
       window.scrollTo({
         top: 0,
         left: 0,
         behavior: "instant",
       });
-    }, 100); // Small delay to catch post-render
+    }, 100);
 
     const t2 = setTimeout(() => {
       window.scrollTo(0, 0);
-    }, 300); // Longer delay to match transition end
+    }, 300);
 
     return () => {
       clearTimeout(t);

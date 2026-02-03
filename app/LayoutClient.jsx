@@ -97,7 +97,8 @@ export default function ClientLayout({ children }) {
         }}
       />
       <AppProviders>
-        <ScrollToTop />
+        {/* Do not mount ScrollToTop on /posts — prevents any scroll-to-top when loading more / reaching end */}
+        {normalizePath(pathname) !== "/posts" && <ScrollToTop />}
         <StatusBarManager />
         <TopLoader />
         <OfflineBanner />
