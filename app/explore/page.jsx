@@ -65,6 +65,7 @@ export default function ExplorePage() {
   ];
 
   // ✅ Default category auto-sync with language
+  // Reset to "all" when locale changes since category names are translated
   const [categoryFilter, setCategoryFilter] = useState(t("categories_all"));
   useEffect(() => {
     setCategoryFilter(t("categories_all"));

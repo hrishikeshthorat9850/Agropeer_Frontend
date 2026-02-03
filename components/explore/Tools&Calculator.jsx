@@ -152,7 +152,28 @@ export default function ToolsSection({
     setTool(null);
     setToolResult(null);
     setErrors({});
+    // Clear all form inputs when closing tool
+    setSelectedToolCrop("");
+    setAreaInput("");
+    setSoilN("");
+    setSoilP("");
+    setSoilK("");
+    setMarketPrice("");
   };
+
+  // Clear form inputs when tool changes to null (e.g., external close)
+  useEffect(() => {
+    if (!tool) {
+      setSelectedToolCrop("");
+      setAreaInput("");
+      setSoilN("");
+      setSoilP("");
+      setSoilK("");
+      setMarketPrice("");
+      setToolResult(null);
+      setErrors({});
+    }
+  }, [tool, setSelectedToolCrop, setAreaInput, setSoilN, setSoilP, setSoilK, setMarketPrice, setToolResult, setErrors]);
 
   // ✅ Label with color-changing *
   const Label = ({ text, fieldKey }) => (

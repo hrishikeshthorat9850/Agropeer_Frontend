@@ -95,19 +95,26 @@ export default function MarketFilters({
   const [prevMarket, setPrevMarket] = useState("");
 
   // Auto-trigger search when state is selected (so results show immediately)
+  // Pass current filter values directly to avoid race condition with parent state update
   useEffect(() => {
     if (selectedState && selectedState !== prevState && onSearch) {
       setPrevState(selectedState);
-      // Small delay to ensure state is set
+      // Pass current filter values directly to avoid reading stale parent state
       const timer = setTimeout(() => {
-        onSearch();
-      }, 150);
+        onSearch({
+          state: selectedState,
+          district: selectedDistrict,
+          market: selectedMarket,
+          search: searchQuery,
+        });
+      }, 100);
       return () => clearTimeout(timer);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedState]);
 
   // Auto-trigger search when district or market changes (if state is already selected)
+  // Pass current filter values directly to avoid race condition with parent state update
   useEffect(() => {
     if (
       selectedState &&
@@ -117,9 +124,15 @@ export default function MarketFilters({
     ) {
       if (selectedDistrict !== prevDistrict) setPrevDistrict(selectedDistrict);
       if (selectedMarket !== prevMarket) setPrevMarket(selectedMarket);
+      // Pass current filter values directly to avoid reading stale parent state
       const timer = setTimeout(() => {
-        onSearch();
-      }, 150);
+        onSearch({
+          state: selectedState,
+          district: selectedDistrict,
+          market: selectedMarket,
+          search: searchQuery,
+        });
+      }, 100);
       return () => clearTimeout(timer);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -232,7 +245,7 @@ export default function MarketFilters({
         </div>
 
         {/* Clear Button (Only visible if filters active) */}
-        {(selectedState || searchQuery) && (
+        {(selectedState || selectedDistrict || selectedMarket || searchQuery) && (
           <button
             onClick={handleClearFilters}
             className="flex-shrink-0 px-3 py-1.5 rounded-full bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 text-md font-bold border border-red-100 dark:border-red-800/30 whitespace-nowrap active:scale-95 transition-transform"

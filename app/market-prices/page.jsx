@@ -46,8 +46,6 @@ export default function MarketPricesPage() {
     district: "",
     market: "",
     search: "",
-    commodity: "",
-    arrival_date: "",
   });
 
   // Active filters for API query (only applied when search is triggered)
@@ -142,15 +140,18 @@ export default function MarketPricesPage() {
 
   const handleFilterChange = (newFilters) => {
     setFilters((prev) => ({ ...prev, ...newFilters }));
+    // Reset to page 1 when filters change (user hasn't searched yet, but if they do, start fresh)
+    // Note: Actual search happens in handleSearch, which also resets page
   };
 
-  // Handle search button click
-  const handleSearch = () => {
+  // Handle search button click - accepts optional filter values to avoid race conditions
+  const handleSearch = (filterValues) => {
+    const filtersToUse = filterValues || filters;
     setActiveFilters({
-      state: filters.state,
-      district: filters.district,
-      market: filters.market,
-      search: filters.search,
+      state: filtersToUse.state || "",
+      district: filtersToUse.district || "",
+      market: filtersToUse.market || "",
+      search: filtersToUse.search || "",
     });
     setSearchTriggered(true);
     setAllRecords([]); // Clear current list
@@ -164,8 +165,6 @@ export default function MarketPricesPage() {
       district: "",
       market: "",
       search: "",
-      commodity: "",
-      arrival_date: "",
     });
     setActiveFilters({
       state: "",
@@ -177,8 +176,6 @@ export default function MarketPricesPage() {
     setAllRecords([]); // Clear list
     setPage(1);
   };
-
-  const filteredRecords = displayRecords;
 
   // Infinite scroll handler
   const loadMore = useCallback(() => {
@@ -252,10 +249,14 @@ export default function MarketPricesPage() {
           {/* Full Screen Loading - REMOVED, using Skeleton now */}
 
           {/* 📄 Market List Feed */}
-          {displayRecords.length > 0 && (
+          {isLoading && searchTriggered && displayRecords.length === 0 ? (
+            <div className="py-12 text-center">
+              <LoadingSpinner size="sm" text={t("loading_list") || "Loading..."} />
+            </div>
+          ) : displayRecords.length > 0 ? (
             <div className="animate-fade-in-up">
-              {!error && filteredRecords.length > 0 && (
-                <MarketList data={filteredRecords} />
+              {!error && displayRecords.length > 0 && (
+                <MarketList data={displayRecords} />
               )}
 
               {/* Infinite Scroll Sentinel */}
@@ -268,14 +269,20 @@ export default function MarketPricesPage() {
                     <LoadingSpinner size="xxs" text="" />
                   </div>
                 )}
-                {!hasMore && (
+                {!hasMore && displayRecords.length > 0 && (
                   <p className="text-gray-300 dark:text-gray-600 text-[10px] uppercase font-bold tracking-widest">
                     {t("no_more_records")}
                   </p>
                 )}
               </div>
             </div>
-          )}
+          ) : searchTriggered && !isLoading && !error ? (
+            <div className="py-12 text-center">
+              <p className="text-gray-500 dark:text-gray-400 text-sm">
+                {t("no_results_found") || "No results found for the selected filters."}
+              </p>
+            </div>
+          ) : null}
         </div>
       </div>
     </div>

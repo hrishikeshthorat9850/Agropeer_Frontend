@@ -14,15 +14,8 @@ export default function CropDiscoverySection({
 }) {
   const { t, locale } = useLanguage();
 
-  // 🌐 Map crop.category correctly according to language
-  const visibleCrops =
-    categoryFilter === t("categories_all")
-      ? filteredCrops
-      : filteredCrops.filter(
-          (crop) =>
-            crop.category?.trim()?.toLowerCase() ===
-            categoryFilter.trim().toLowerCase(),
-        );
+  // Parent already filters by category and search, so use filteredCrops directly
+  const visibleCrops = filteredCrops;
 
   return (
     <section className="mb-8">
@@ -71,9 +64,9 @@ export default function CropDiscoverySection({
         className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4"
       >
         {(showAllCrops ? visibleCrops : visibleCrops.slice(0, 5)).map(
-          (crop, idx) => (
+          (crop) => (
             <motion.div
-              key={idx}
+              key={crop.id || crop.name}
               layout
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
