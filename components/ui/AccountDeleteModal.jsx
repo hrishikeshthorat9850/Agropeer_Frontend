@@ -95,7 +95,7 @@ export default function AccountDeleteModal({ isOpen, onClose }) {
   //       method: "POST",
   //       headers: {
   //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${accessToken}`, // Production standard: Bearer token in header
+  //         ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}), // Production standard: Bearer token in header
   //       },
   //       credentials: "include", // Include cookies as backup
   //     });
@@ -154,7 +154,7 @@ export default function AccountDeleteModal({ isOpen, onClose }) {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
+            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
           },
         }
       );

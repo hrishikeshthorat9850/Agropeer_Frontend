@@ -295,7 +295,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
         {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
           },
           body: JSON.stringify({
             post_id: post.id,
@@ -376,7 +376,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
         {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
           },
           body: JSON.stringify({
             user_id: user.id,
@@ -430,7 +430,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
         {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
           },
           body: JSON.stringify({ user_id: user.id }),
         },
@@ -515,7 +515,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
         {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
           },
           body: JSON.stringify({
             post_id: post.id,
@@ -569,7 +569,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
           {
             method: "POST",
             headers: {
-              Authorization: `Bearer ${accessToken}`,
+              ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
             },
             body: JSON.stringify({ user_id: user.id }),
           },
@@ -630,7 +630,7 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
           {
             method: "POST",
             headers: {
-              Authorization: `Bearer ${accessToken}`,
+              ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
             },
             body: JSON.stringify({ user_id: user.id }),
           },

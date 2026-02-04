@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FaSearch, FaFilter } from "react-icons/fa";
 import useSWR from "swr";
 import { useLanguage } from "@/Context/languagecontext";
 import BottomSelect from "../ui/BottomSelect";
+import debounce from "lodash.debounce";
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
@@ -78,73 +79,154 @@ export default function MarketFilters({
     }
   }, [selectedState, selectedDistrict]);
 
-  // Notify parent component of filter changes
+  // Track if component has mounted to avoid initial mount triggers
+  const isInitialMount = useRef(true);
+  const searchTimeoutRef = useRef(null);
+  const prevFiltersRef = useRef({ state: "", district: "", market: "", search: "" });
+  const onSearchRef = useRef(onSearch);
+  const onFilterChangeRef = useRef(onFilterChange);
+  const prevFilterChangeRef = useRef({ state: "", district: "", market: "", search: "" });
+
+  // Keep refs updated
   useEffect(() => {
-    onFilterChange({
+    onSearchRef.current = onSearch;
+    onFilterChangeRef.current = onFilterChange;
+  }, [onSearch, onFilterChange]);
+
+  // Notify parent component of filter changes (only when values actually change)
+  useEffect(() => {
+    // Skip on initial mount
+    if (isInitialMount.current) {
+      prevFilterChangeRef.current = {
+        state: selectedState,
+        district: selectedDistrict,
+        market: selectedMarket,
+        search: searchQuery,
+      };
+      return;
+    }
+
+    // Check if values actually changed
+    const valuesChanged =
+      prevFilterChangeRef.current.state !== selectedState ||
+      prevFilterChangeRef.current.district !== selectedDistrict ||
+      prevFilterChangeRef.current.market !== selectedMarket ||
+      prevFilterChangeRef.current.search !== searchQuery;
+
+    if (valuesChanged && onFilterChangeRef.current) {
+      prevFilterChangeRef.current = {
+        state: selectedState,
+        district: selectedDistrict,
+        market: selectedMarket,
+        search: searchQuery,
+      };
+      onFilterChangeRef.current({
+        state: selectedState,
+        district: selectedDistrict,
+        market: selectedMarket,
+        search: searchQuery,
+      });
+    }
+  }, [selectedState, selectedDistrict, selectedMarket, searchQuery]);
+
+  // Trigger search when filters change (but not on initial mount)
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      prevFiltersRef.current = {
+        state: selectedState,
+        district: selectedDistrict,
+        market: selectedMarket,
+        search: searchQuery,
+      };
+      return;
+    }
+
+    // Check if filters actually changed
+    const filtersChanged =
+      prevFiltersRef.current.state !== selectedState ||
+      prevFiltersRef.current.district !== selectedDistrict ||
+      prevFiltersRef.current.market !== selectedMarket ||
+      prevFiltersRef.current.search !== searchQuery;
+
+    if (!filtersChanged) {
+      return;
+    }
+
+    // Update previous filters
+    prevFiltersRef.current = {
       state: selectedState,
       district: selectedDistrict,
       market: selectedMarket,
       search: searchQuery,
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    };
+
+    // Clear any pending search
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    // Trigger search with debounce
+    searchTimeoutRef.current = setTimeout(() => {
+      if (onSearchRef.current) {
+        onSearchRef.current({
+          state: selectedState,
+          district: selectedDistrict,
+          market: selectedMarket,
+          search: searchQuery,
+        });
+      }
+    }, 500);
+
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
   }, [selectedState, selectedDistrict, selectedMarket, searchQuery]);
 
-  // Track previous values to detect actual changes (not initial mount)
-  const [prevState, setPrevState] = useState("");
-  const [prevDistrict, setPrevDistrict] = useState("");
-  const [prevMarket, setPrevMarket] = useState("");
-
-  // Auto-trigger search when state is selected (so results show immediately)
-  // Pass current filter values directly to avoid race condition with parent state update
+  // Sync with external filter changes (e.g., when clear is called from parent)
+  // Only update if filters prop actually changed and differs from current state
   useEffect(() => {
-    if (selectedState && selectedState !== prevState && onSearch) {
-      setPrevState(selectedState);
-      // Pass current filter values directly to avoid reading stale parent state
-      const timer = setTimeout(() => {
-        onSearch({
-          state: selectedState,
-          district: selectedDistrict,
-          market: selectedMarket,
-          search: searchQuery,
-        });
-      }, 100);
-      return () => clearTimeout(timer);
+    let shouldUpdate = false;
+    const updates = {};
+
+    if (filters.state !== undefined && filters.state !== selectedState) {
+      updates.state = filters.state || "";
+      shouldUpdate = true;
+    }
+    if (filters.district !== undefined && filters.district !== selectedDistrict) {
+      updates.district = filters.district || "";
+      shouldUpdate = true;
+    }
+    if (filters.market !== undefined && filters.market !== selectedMarket) {
+      updates.market = filters.market || "";
+      shouldUpdate = true;
+    }
+    if (filters.search !== undefined && filters.search !== searchQuery) {
+      updates.search = filters.search || "";
+      shouldUpdate = true;
+    }
+
+    if (shouldUpdate) {
+      const newState = {
+        state: updates.state !== undefined ? updates.state : selectedState,
+        district: updates.district !== undefined ? updates.district : selectedDistrict,
+        market: updates.market !== undefined ? updates.market : selectedMarket,
+        search: updates.search !== undefined ? updates.search : searchQuery,
+      };
+
+      // Batch updates to avoid multiple re-renders
+      if (updates.state !== undefined) setSelectedState(updates.state);
+      if (updates.district !== undefined) setSelectedDistrict(updates.district);
+      if (updates.market !== undefined) setSelectedMarket(updates.market);
+      if (updates.search !== undefined) setSearchQuery(updates.search);
+      
+      // Update both refs to prevent search and onFilterChange triggers
+      prevFiltersRef.current = newState;
+      prevFilterChangeRef.current = newState;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedState]);
-
-  // Auto-trigger search when district or market changes (if state is already selected)
-  // Pass current filter values directly to avoid race condition with parent state update
-  useEffect(() => {
-    if (
-      selectedState &&
-      ((selectedDistrict && selectedDistrict !== prevDistrict) ||
-        (selectedMarket && selectedMarket !== prevMarket)) &&
-      onSearch
-    ) {
-      if (selectedDistrict !== prevDistrict) setPrevDistrict(selectedDistrict);
-      if (selectedMarket !== prevMarket) setPrevMarket(selectedMarket);
-      // Pass current filter values directly to avoid reading stale parent state
-      const timer = setTimeout(() => {
-        onSearch({
-          state: selectedState,
-          district: selectedDistrict,
-          market: selectedMarket,
-          search: searchQuery,
-        });
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedDistrict, selectedMarket]);
-
-  // Sync with external filter changes
-  useEffect(() => {
-    if (filters.state !== undefined) setSelectedState(filters.state || "");
-    if (filters.district !== undefined)
-      setSelectedDistrict(filters.district || "");
-    if (filters.market !== undefined) setSelectedMarket(filters.market || "");
-    if (filters.search !== undefined) setSearchQuery(filters.search || "");
   }, [filters]);
 
   const handleSearchClick = () => {
@@ -154,13 +236,25 @@ export default function MarketFilters({
   };
 
   const handleClearFilters = () => {
+    // Clear local state
     setSelectedState("");
     setSelectedDistrict("");
     setSelectedMarket("");
     setSearchQuery("");
-    setPrevState("");
-    setPrevDistrict("");
-    setPrevMarket("");
+    // Clear any pending searches
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+    // Trigger search with empty filters to show all results
+    if (onSearch) {
+      debouncedSearch({
+        state: "",
+        district: "",
+        market: "",
+        search: "",
+      });
+    }
+    // Call parent clear handler
     if (onClear) {
       onClear();
     }
