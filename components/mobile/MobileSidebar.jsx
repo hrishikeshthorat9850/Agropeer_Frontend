@@ -220,7 +220,7 @@ export default function MobileSidebar() {
               <div className="space-y-4 pt-2 border-t border-gray-100 dark:border-[#2C2C2E]">
                 <div className="px-2">
                   <h4 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">
-                    Quick Access
+                    {t("quick_access")}
                   </h4>
                 </div>
 
@@ -228,8 +228,8 @@ export default function MobileSidebar() {
                   <SidebarCard
                     href="/favorites"
                     icon={<FaHeart />}
-                    label="Favorites"
-                    sub="Saved Items"
+                    label={t("sidebar_favorites")}
+                    sub={t("sidebar_favorites_sub")}
                     color="from-rose-500 to-pink-600"
                     iconColor="text-white"
                     setOpen={setOpen}
@@ -238,8 +238,8 @@ export default function MobileSidebar() {
                   <SidebarCard
                     href="/settings"
                     icon={<FaCog />}
-                    label="Settings"
-                    sub="App Preferences"
+                    label={t("sidebar_settings")}
+                    sub={t("sidebar_settings_sub")}
                     color="from-indigo-500 to-violet-600"
                     iconColor="text-white"
                     setOpen={setOpen}
@@ -248,8 +248,8 @@ export default function MobileSidebar() {
                   <SidebarCard
                     href="/profile"
                     icon={<FaUser />}
-                    label="Profile"
-                    sub="My Account"
+                    label={t("sidebar_profile")}
+                    sub={t("sidebar_profile_sub")}
                     color="from-emerald-500 to-teal-600"
                     iconColor="text-white"
                     setOpen={setOpen}
@@ -289,7 +289,7 @@ export default function MobileSidebar() {
               </div>
               <div className="text-center mt-4">
                 <p className="text-[10px] text-gray-400 dark:text-gray-500 font-medium">
-                  Made with ❤️ for Farmers
+                  {t("made_with_love")}
                 </p>
               </div>
             </div>

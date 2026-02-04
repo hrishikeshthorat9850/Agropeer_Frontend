@@ -115,7 +115,11 @@ export default function MarketPricesPage() {
   // Update accumulated records when data changes
   useEffect(() => {
     if (data?.data) {
-      console.log(`📊 Market prices data received: ${data.data.length} records (page ${page}, total: ${data.total || 0})`);
+      console.log(
+        `📊 Market prices data received: ${
+          data.data.length
+        } records (page ${page}, total: ${data.total || 0})`,
+      );
       setAllRecords((prev) => {
         if (page === 1) {
           return data.data;
@@ -128,7 +132,10 @@ export default function MarketPricesPage() {
 
       setHasMore(data.data.length === limit);
     } else if (data && !data.data) {
-      console.warn("⚠️ Market prices API returned data but no data.data field:", data);
+      console.warn(
+        "⚠️ Market prices API returned data but no data.data field:",
+        data,
+      );
       // Handle case where API returns success but empty data array
       if (page === 1) {
         setAllRecords([]);
@@ -280,12 +287,12 @@ export default function MarketPricesPage() {
             </div>
           ) : !isLoading && !error ? (
             <div className="py-12 text-center">
-              <p className="text-gray-500 dark:tex
-              t-gray-400 text-sm">
-                {searchTriggered 
-                  ? (t("no_results_found") || "No results found for the selected filters.")
-                  : (t("no_data_available") || "No market prices data available. Please try again later.")
-                }
+              <p className="text-gray-500 dark:text-gray-400 text-sm">
+                {searchTriggered
+                  ? t("no_results_found") ||
+                    "No results found for the selected filters."
+                  : t("no_data_available") ||
+                    "No market prices data available. Please try again later."}
               </p>
             </div>
           ) : null}

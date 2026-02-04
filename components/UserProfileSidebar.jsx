@@ -263,7 +263,7 @@ export default function UserSidebar({ onClose } = {}) {
               <div className="mt-8 px-4 space-y-3">
                 <div className="p-4 bg-green-50 dark:bg-green-900/10 rounded-xl border border-green-100 dark:border-green-900/20 text-center mb-6">
                   <p className="text-sm text-green-800 dark:text-green-400 mb-3 font-medium">
-                    Join our community of farmers today!
+                    {t("join_community")}
                   </p>
                 </div>
                 <Link
