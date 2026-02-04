@@ -376,7 +376,7 @@ export default function AgriMarket() {
           `${BASE_URL}/api/products/favorite`,
           {
             method: "POST",
-            headers: { Authorization: `Bearer ${accessToken}` },
+            headers: { ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
             body: JSON.stringify({
               product_id: product.id,
               user_id: user.id,

@@ -31,7 +31,16 @@ const MarketList = dynamic(
   },
 );
 
-const fetcher = (url) => fetch(url).then((res) => res.json());
+const fetcher = async (url) => {
+  const res = await fetch(url);
+  const data = await res.json();
+  if (!res.ok || !data.success) {
+    const error = new Error(data.error || `API error: ${res.status}`);
+    error.status = res.status;
+    throw error;
+  }
+  return data;
+};
 
 export default function MarketPricesPage() {
   const { t } = useLanguage();
@@ -89,20 +98,13 @@ export default function MarketPricesPage() {
       limit: limit.toString(),
     });
 
-    // Only add filters if search has been triggered or if no filters are set (initial load)
-    if (
-      searchTriggered ||
-      (!activeFilters.state &&
-        !activeFilters.district &&
-        !activeFilters.market &&
-        !activeFilters.search)
-    ) {
-      if (activeFilters.state) params.append("state", activeFilters.state);
-      if (activeFilters.district)
-        params.append("district", activeFilters.district);
-      if (activeFilters.market) params.append("market", activeFilters.market);
-      if (activeFilters.search) params.append("search", activeFilters.search);
-    }
+    // Always add filters if they are set (whether searchTriggered or initial load)
+    // This ensures filters are applied correctly
+    if (activeFilters.state) params.append("state", activeFilters.state);
+    if (activeFilters.district)
+      params.append("district", activeFilters.district);
+    if (activeFilters.market) params.append("market", activeFilters.market);
+    if (activeFilters.search) params.append("search", activeFilters.search);
 
     return `${BASE_URL}/api/get-market-prices?${params.toString()}`;
   };
@@ -122,6 +124,7 @@ export default function MarketPricesPage() {
   // Update accumulated records when data changes
   useEffect(() => {
     if (data?.data) {
+      console.log(`📊 Market prices data received: ${data.data.length} records (page ${page}, total: ${data.total || 0})`);
       setAllRecords((prev) => {
         if (page === 1) {
           return data.data;
@@ -133,6 +136,13 @@ export default function MarketPricesPage() {
       });
 
       setHasMore(data.data.length === limit);
+    } else if (data && !data.data) {
+      console.warn("⚠️ Market prices API returned data but no data.data field:", data);
+      // Handle case where API returns success but empty data array
+      if (page === 1) {
+        setAllRecords([]);
+      }
+      setHasMore(false);
     }
   }, [data, page, limit]);
 
@@ -249,7 +259,7 @@ export default function MarketPricesPage() {
           {/* Full Screen Loading - REMOVED, using Skeleton now */}
 
           {/* 📄 Market List Feed */}
-          {isLoading && searchTriggered && displayRecords.length === 0 ? (
+          {isLoading && displayRecords.length === 0 ? (
             <div className="py-12 text-center">
               <LoadingSpinner size="sm" text={t("loading_list") || "Loading..."} />
             </div>
@@ -276,10 +286,13 @@ export default function MarketPricesPage() {
                 )}
               </div>
             </div>
-          ) : searchTriggered && !isLoading && !error ? (
+          ) : !isLoading && !error ? (
             <div className="py-12 text-center">
               <p className="text-gray-500 dark:text-gray-400 text-sm">
-                {t("no_results_found") || "No results found for the selected filters."}
+                {searchTriggered 
+                  ? (t("no_results_found") || "No results found for the selected filters.")
+                  : (t("no_data_available") || "No market prices data available. Please try again later.")
+                }
               </p>
             </div>
           ) : null}

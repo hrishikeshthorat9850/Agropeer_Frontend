@@ -3,14 +3,14 @@ import { useEffect, useState } from "react";
 import { useLogin } from "@/Context/logincontext";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
-async function registerNativeToken(token, userId) {
+async function registerNativeToken(token, userId, accessToken) {
   if (!token) return;
   try {
     const response = await fetch(`${BASE_URL}/api/register-fcm-token`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
       },
       body: JSON.stringify({
         token,
@@ -77,7 +77,7 @@ export default function useNativeFcmToken(options = {}) {
             const nativeToken = tokenResult.value;
             console.log("🔍 TEST_TRACE [useNativeFcmToken]: Received Token", nativeToken);
             setToken(nativeToken);
-            await registerNativeToken(nativeToken, user?.id);
+            await registerNativeToken(nativeToken, user?.id, accessToken);
           })
         );
 
@@ -130,12 +130,13 @@ export default function useNativeFcmToken(options = {}) {
         }
       });
     };
-  }, [user?.id, onMessage, onAction]);
+  }, [user?.id, accessToken, onMessage, onAction]);
 
+  // Re-register when token + user + accessToken are available (e.g. after login on Android)
   useEffect(() => {
-    if (!token || !user?.id) return;
-    registerNativeToken(token, user.id);
-  }, [token, user?.id]);
+    if (!token || !user?.id || !accessToken) return;
+    registerNativeToken(token, user.id, accessToken);
+  }, [token, user?.id, accessToken]);
 
   return { token, permission };
 }

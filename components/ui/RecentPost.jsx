@@ -313,7 +313,7 @@ export default function RecentPost({
           `${BASE_URL}/api/post-comment`,
           {
             method: "POST",
-            headers: { Authorization: `Bearer ${accessToken}` },
+            headers: { ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
             body: JSON.stringify({
               post_id: post.id,
               comment: replyText.trim(),
@@ -399,7 +399,7 @@ export default function RecentPost({
           `${BASE_URL}/api/comments/${commentId}/like`,
           {
             method: "POST",
-            headers: { Authorization: `Bearer ${accessToken}` },
+            headers: { ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
             body: JSON.stringify({ user_id: user.id }),
           },
         );

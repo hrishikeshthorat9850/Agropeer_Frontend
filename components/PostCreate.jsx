@@ -272,7 +272,7 @@ export default function PostCreation({ onSuccess }) {
         `${BASE_URL}/api/posts/${postId}/like`,
         {
           method: "POST",
-          headers: { Authorization: `Bearer ${accessToken}` },
+          headers: { ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
           body: JSON.stringify({ user_id: user.id }),
         },
       );
@@ -295,7 +295,7 @@ export default function PostCreation({ onSuccess }) {
         `${BASE_URL}/api/posts/${postId}/like`,
         {
           method: "POST",
-          headers: { Authorization: `Bearer ${accessToken}` },
+          headers: { ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
           body: JSON.stringify({ user_id: user.id }),
         },
       );
@@ -324,7 +324,7 @@ export default function PostCreation({ onSuccess }) {
         `${BASE_URL}/api/post-comment`,
         {
           method: "POST",
-          headers: { Authorization: `Bearer ${accessToken}` },
+          headers: { ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
           body: JSON.stringify({
             post_id: postId,
             comment: text.trim(),

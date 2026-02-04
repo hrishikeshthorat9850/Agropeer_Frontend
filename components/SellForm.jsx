@@ -547,7 +547,7 @@ export default function SellForm({
             `${BASE_URL}/api/products/${productData.id}`,
             {
               method: "PUT",
-              headers: { Authorization: `Bearer ${accessToken}` },
+              headers: { ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
               body: JSON.stringify(listingPayload),
             },
           );
@@ -557,7 +557,7 @@ export default function SellForm({
             `${BASE_URL}/api/products`,
             {
               method: "POST",
-              headers: { Authorization: `Bearer ${accessToken}` },
+              headers: { ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
               body: JSON.stringify(listingPayload),
             },
           );
