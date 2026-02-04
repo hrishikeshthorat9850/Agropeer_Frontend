@@ -261,25 +261,27 @@ export default function MarketFilters({
   };
 
   return (
-    <div className="w-full bg-white dark:bg-[#121212] pb-2 transition-colors duration-300">
-      {/* Search Bar - Minimalist & Modern */}
-      <div className="px-4 pt-2 pb-3">
-        <div className="relative group">
-          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-            <FaSearch className="text-gray-400 group-focus-within:text-emerald-500 transition-colors" />
+    <>
+      <div className="w-full bg-white dark:bg-[#121212] transition-colors duration-300">
+        {/* Search Bar - Minimalist & Modern */}
+        <div className="px-4 pt-2 pb-3">
+          <div className="relative group">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+              <FaSearch className="text-gray-400 group-focus-within:text-emerald-500 transition-colors" />
+            </div>
+            <input
+              type="text"
+              placeholder={t("search_placeholder_commodity")}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="block w-full pl-10 pr-4 py-2.5 bg-gray-100 dark:bg-[#1e1e1e] border-none rounded-2xl text-sm font-medium text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-emerald-500/50 transition-all shadow-inner"
+            />
           </div>
-          <input
-            type="text"
-            placeholder={t("search_placeholder_commodity")}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="block w-full pl-10 pr-4 py-2.5 bg-gray-100 dark:bg-[#1e1e1e] border-none rounded-2xl text-sm font-medium text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-emerald-500/50 transition-all shadow-inner"
-          />
         </div>
       </div>
 
       {/* Horizontal Scrollable Chips Filter Row - STICKY NOW */}
-      <div className="sticky top-[60px] z-30 bg-white/95 dark:bg-[#121212]/95 backdrop-blur-sm px-4 py-2 flex items-center gap-2 overflow-x-auto no-scrollbar">
+      <div className="sticky top-[60px] z-30 bg-white dark:bg-[#121212] backdrop-blur-sm px-4 py-2 flex items-center gap-2 overflow-x-auto no-scrollbar">
         {/* Filter Icon Label (Static) */}
         <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10">
           <FaFilter className="text-gray-400 text-xs" />
@@ -339,7 +341,10 @@ export default function MarketFilters({
         </div>
 
         {/* Clear Button (Only visible if filters active) */}
-        {(selectedState || selectedDistrict || selectedMarket || searchQuery) && (
+        {(selectedState ||
+          selectedDistrict ||
+          selectedMarket ||
+          searchQuery) && (
           <button
             onClick={handleClearFilters}
             className="flex-shrink-0 px-3 py-1.5 rounded-full bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 text-md font-bold border border-red-100 dark:border-red-800/30 whitespace-nowrap active:scale-95 transition-transform"
@@ -348,6 +353,6 @@ export default function MarketFilters({
           </button>
         )}
       </div>
-    </div>
+    </>
   );
 }

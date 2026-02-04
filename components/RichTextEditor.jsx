@@ -154,7 +154,7 @@ export default function RichTextEditor({ value = "", onChange, placeholder = "Wr
         contentEditable
         onInput={notifyChange}
         onPaste={handlePastePlain}
-        className="min-h-[220px] p-3 focus:outline-none rounded-b-xl text-sm text-farm-700"
+        className="min-h-[220px] p-3 focus:outline-none rounded-b-xl text-sm text-black dark:text-white"
         data-placeholder={placeholder}
         style={{ whiteSpace: "pre-wrap" }}
       />

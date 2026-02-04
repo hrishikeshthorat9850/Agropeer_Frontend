@@ -24,8 +24,11 @@ import { StatusBar, Style } from "@capacitor/status-bar";
 import { Capacitor } from "@capacitor/core";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 
+import { useLanguage } from "@/Context/languagecontext";
+
 export default function MobileSidebar() {
   const [open, setOpen] = useState(false);
+  const { t } = useLanguage();
 
   const { theme } = useTheme();
 
@@ -135,15 +138,15 @@ export default function MobileSidebar() {
   }, [open, theme]);
 
   const MENU_ITEMS = [
-    { href: "/about-us", label: "About Us", icon: <FaLeaf /> },
+    { href: "/about-us", label: t("about_us"), icon: <FaLeaf /> },
     {
       href: "/how-it-works",
-      label: "How AgroPeer Works",
+      label: t("how_it_works"),
       icon: <FaSeedling />,
     },
-    { href: "/help", label: "Help Center", icon: <FaQuestionCircle /> },
-    { href: "/farming-tips", label: "Farming Tips", icon: <FaLeaf /> },
-    { href: "/expert-advice", label: "Expert Advice", icon: <FaComments /> },
+    { href: "/help", label: t("help_center"), icon: <FaQuestionCircle /> },
+    { href: "/farming-tips", label: t("farming_tips"), icon: <FaLeaf /> },
+    { href: "/expert-advice", label: t("expert_advice"), icon: <FaComments /> },
     // { href: "/reviews", label: "Reviews", icon: <FaStar /> },
   ];
 
@@ -174,7 +177,7 @@ export default function MobileSidebar() {
               <div>
                 <h2 className="text-2xl font-bold text-white">AgroPeer</h2>
                 <p className="text-xs text-green-100/80 tracking-wider uppercase mt-1">
-                  Farming Companion
+                  {t("sidebar_subtitle")}
                 </p>
               </div>
             </div>
@@ -217,7 +220,7 @@ export default function MobileSidebar() {
               <div className="space-y-4 pt-2 border-t border-gray-100 dark:border-[#2C2C2E]">
                 <div className="px-2">
                   <h4 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">
-                    Quick Access
+                    {t("quick_access")}
                   </h4>
                 </div>
 
@@ -225,8 +228,8 @@ export default function MobileSidebar() {
                   <SidebarCard
                     href="/favorites"
                     icon={<FaHeart />}
-                    label="Favorites"
-                    sub="Saved Items"
+                    label={t("sidebar_favorites")}
+                    sub={t("sidebar_favorites_sub")}
                     color="from-rose-500 to-pink-600"
                     iconColor="text-white"
                     setOpen={setOpen}
@@ -235,8 +238,8 @@ export default function MobileSidebar() {
                   <SidebarCard
                     href="/settings"
                     icon={<FaCog />}
-                    label="Settings"
-                    sub="App Preferences"
+                    label={t("sidebar_settings")}
+                    sub={t("sidebar_settings_sub")}
                     color="from-indigo-500 to-violet-600"
                     iconColor="text-white"
                     setOpen={setOpen}
@@ -245,8 +248,8 @@ export default function MobileSidebar() {
                   <SidebarCard
                     href="/profile"
                     icon={<FaUser />}
-                    label="Profile"
-                    sub="My Account"
+                    label={t("sidebar_profile")}
+                    sub={t("sidebar_profile_sub")}
                     color="from-emerald-500 to-teal-600"
                     iconColor="text-white"
                     setOpen={setOpen}
@@ -286,7 +289,7 @@ export default function MobileSidebar() {
               </div>
               <div className="text-center mt-4">
                 <p className="text-[10px] text-gray-400 dark:text-gray-500 font-medium">
-                  Made with ❤️ for Farmers
+                  {t("made_with_love")}
                 </p>
               </div>
             </div>

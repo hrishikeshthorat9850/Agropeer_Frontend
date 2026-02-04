@@ -19,15 +19,6 @@ const MarketList = dynamic(
   () => import("@/components/market-prices/MarketList"),
   {
     ssr: false,
-    loading: () => {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      const { t } = useLanguage();
-      return (
-        <div className="flex justify-center items-center py-20">
-          <LoadingSpinner size="sm" text={t("loading_list")} />
-        </div>
-      );
-    },
   },
 );
 
@@ -124,7 +115,11 @@ export default function MarketPricesPage() {
   // Update accumulated records when data changes
   useEffect(() => {
     if (data?.data) {
-      console.log(`📊 Market prices data received: ${data.data.length} records (page ${page}, total: ${data.total || 0})`);
+      console.log(
+        `📊 Market prices data received: ${
+          data.data.length
+        } records (page ${page}, total: ${data.total || 0})`,
+      );
       setAllRecords((prev) => {
         if (page === 1) {
           return data.data;
@@ -137,7 +132,10 @@ export default function MarketPricesPage() {
 
       setHasMore(data.data.length === limit);
     } else if (data && !data.data) {
-      console.warn("⚠️ Market prices API returned data but no data.data field:", data);
+      console.warn(
+        "⚠️ Market prices API returned data but no data.data field:",
+        data,
+      );
       // Handle case where API returns success but empty data array
       if (page === 1) {
         setAllRecords([]);
@@ -224,16 +222,14 @@ export default function MarketPricesPage() {
       {/* 🟢 Main Content Area */}
       <div className="max-w-lg mx-auto w-full">
         {/* Market Filters (Internal Sticky) */}
-        <div>
-          <MarketFilters
-            data={displayRecords}
-            onFilterChange={handleFilterChange}
-            allStates={allStates}
-            onSearch={handleSearch}
-            onClear={handleClearFilters}
-            filters={filters}
-          />
-        </div>
+        <MarketFilters
+          data={displayRecords}
+          onFilterChange={handleFilterChange}
+          allStates={allStates}
+          onSearch={handleSearch}
+          onClear={handleClearFilters}
+          filters={filters}
+        />
 
         {/* Content Padding */}
         <div className="px-4 py-2">
@@ -261,7 +257,10 @@ export default function MarketPricesPage() {
           {/* 📄 Market List Feed */}
           {isLoading && displayRecords.length === 0 ? (
             <div className="py-12 text-center">
-              <LoadingSpinner size="sm" text={t("loading_list") || "Loading..."} />
+              <LoadingSpinner
+                size="sm"
+                text={t("loading_list") || "Loading..."}
+              />
             </div>
           ) : displayRecords.length > 0 ? (
             <div className="animate-fade-in-up">
@@ -289,10 +288,11 @@ export default function MarketPricesPage() {
           ) : !isLoading && !error ? (
             <div className="py-12 text-center">
               <p className="text-gray-500 dark:text-gray-400 text-sm">
-                {searchTriggered 
-                  ? (t("no_results_found") || "No results found for the selected filters.")
-                  : (t("no_data_available") || "No market prices data available. Please try again later.")
-                }
+                {searchTriggered
+                  ? t("no_results_found") ||
+                    "No results found for the selected filters."
+                  : t("no_data_available") ||
+                    "No market prices data available. Please try again later."}
               </p>
             </div>
           ) : null}

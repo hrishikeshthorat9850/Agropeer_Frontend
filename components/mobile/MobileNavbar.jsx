@@ -199,7 +199,7 @@ export default function MobileNavbar() {
     window.dispatchEvent(new CustomEvent("open-mobile-sidebar"));
 
   return (
-    <div className="fixed top-0 left-0 right-0 pt-safe-top w-full z-[999] bg-white dark:bg-black backdrop-blur-md shadow-sm transition-all border-b border-zinc-100 dark:border-zinc-800">
+    <div className="fixed top-0 left-0 right-0 pt-safe-top w-full z-[999] bg-white dark:bg-black backdrop-blur-md shadow-sm transition-all border-zinc-100">
       <div className="flex items-center justify-between py-1.5 px-3 h-[56px] flex-shrink-0 gap-3">
         {/* MENU / SIDEBAR BUTTON */}
         <button

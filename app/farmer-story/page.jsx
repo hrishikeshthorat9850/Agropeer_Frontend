@@ -109,7 +109,7 @@ export default function FarmerStoryPage() {
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-3">
         <div className="flex items-center gap-2">
           <FaBookReader className="text-green-600 text-xl sm:text-2xl" />
-          <h1 className="text-2xl sm:text-3xl font-bold text-green-800">
+          <h1 className="text-2xl sm:text-3xl font-bold text-green-800 dark:text-green-500">
             {t("farmer_stories_title")}
           </h1>
         </div>
@@ -122,10 +122,10 @@ export default function FarmerStoryPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white p-4 border shadow-md overflow-x-auto dark:bg-[#272727] dark:border-white/20">
-        <table className="w-full table-auto border-collapse border border-gray-200 rounded-xl">
-          <thead className="bg-green-50 rounded-t-xl">
-            <tr className="text-left text-sm text-gray-600 border-b border-gray-200 dark:bg-[#0a0a0a]">
+      <div className="bg-white p-4 border shadow-md overflow-x-auto rounded-xl dark:bg-[#1E1E1E] dark:border-[#333]">
+        <table className="w-full table-auto border-collapse border border-gray-200 rounded-xl dark:border-[#333]">
+          <thead className="bg-green-50 rounded-t-xl dark:bg-[#2C2C2C]">
+            <tr className="text-left text-sm text-gray-600 border-b border-gray-200 dark:border-[#333] dark:text-gray-300">
               <th className="py-3 px-2 w-12">{t("table_hash")}</th>
               <th className="py-3 px-2">{t("table_story_title")}</th>
               <th className="py-3 px-2">{t("table_description")}</th>
@@ -136,7 +136,10 @@ export default function FarmerStoryPage() {
           <tbody>
             {stories.length === 0 && (
               <tr>
-                <td colSpan={5} className="py-6 text-center text-gray-500">
+                <td
+                  colSpan={5}
+                  className="py-6 text-center text-gray-500 dark:text-gray-400"
+                >
                   {t("no_stories_msg")}
                 </td>
               </tr>
@@ -144,32 +147,34 @@ export default function FarmerStoryPage() {
             {stories.map((s, idx) => (
               <tr
                 key={s.id}
-                className="border-b border border-gray-200 hover:bg-gray-50 text-gray-700 transition-colors dark:hover:bg-[#1E1E1E]"
+                className="border-b border-gray-200 hover:bg-gray-50 text-gray-700 transition-colors dark:bg-[#1E1E1E] dark:hover:bg-[#252525] dark:border-[#333] dark:text-gray-300"
               >
                 <td className="py-3 px-2 align-middle">{idx + 1}</td>
                 <td className="py-3 px-2 font-medium">{s.title}</td>
-                <td className="py-3 px-2 text-sm text-gray-700">
+                <td className="py-3 px-2 text-sm text-gray-700 dark:text-gray-400">
                   {truncate(s.contentHTML, 120)}
                 </td>
-                <td className="py-3 px-2 text-sm text-gray-700">{s.author}</td>
+                <td className="py-3 px-2 text-sm text-gray-700 dark:text-gray-300">
+                  {s.author}
+                </td>
                 <td className="py-3 px-2 flex gap-2">
                   <button
-                    className="p-2 rounded-md hover:bg-green-100 transition transform hover:scale-110"
+                    className="p-2 rounded-md hover:bg-green-100 transition transform hover:scale-110 dark:hover:bg-green-900/30"
                     onClick={() => openStory(s)}
                   >
-                    <FaEye className="text-yellow-700" />
+                    <FaEye className="text-yellow-700 dark:text-yellow-500" />
                   </button>
                   <button
-                    className="p-2 rounded-md hover:bg-yellow-100 transition transform hover:scale-110"
+                    className="p-2 rounded-md hover:bg-yellow-100 transition transform hover:scale-110 dark:hover:bg-yellow-900/30"
                     onClick={() => openForm(s)}
                   >
-                    <FaEdit className="text-green-700" />
+                    <FaEdit className="text-green-700 dark:text-green-500" />
                   </button>
                   <button
-                    className="p-2 rounded-md hover:bg-red-100 transition transform hover:scale-110"
+                    className="p-2 rounded-md hover:bg-red-100 transition transform hover:scale-110 dark:hover:bg-red-900/30"
                     onClick={() => handleDelete(s.id)}
                   >
-                    <FaTrash className="text-red-700" />
+                    <FaTrash className="text-red-700 dark:text-red-500" />
                   </button>
                 </td>
               </tr>
@@ -183,23 +188,23 @@ export default function FarmerStoryPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pt-[64px] pb-[70px] overflow-hidden">
           {/* Overlay */}
           <div
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={closeView}
           />
 
           {/* Modal */}
-          <div className="relative z-10 max-w-3xl w-full bg-white rounded-2xl shadow-xl animate-slide-down max-h-full overflow-y-auto border border-green-100 dark:bg-[#272727] dark:border-gray-600">
+          <div className="relative z-10 max-w-3xl w-full bg-white rounded-2xl shadow-xl animate-slide-down max-h-full overflow-y-auto border border-green-100 dark:bg-[#1E1E1E] dark:border-[#333]">
             {/* Header */}
-            <div className="flex justify-between items-center p-5 border-b dark:border-gray-700">
+            <div className="flex justify-between items-center p-5 border-b border-gray-100 dark:border-[#333] bg-white dark:bg-[#1E1E1E]">
               <div className="flex items-center gap-2">
-                <FaBookReader className="text-green-700 text-2xl" />
-                <h2 className="text-xl sm:text-2xl font-bold text-green-900">
+                <FaBookReader className="text-green-700 text-2xl dark:text-green-500" />
+                <h2 className="text-xl sm:text-2xl font-bold text-green-900 dark:text-green-400">
                   {view.title}
                 </h2>
               </div>
 
               {/* ✅ Date & Time inline */}
-              <div className="text-xs sm:text-sm text-gray-500 whitespace-nowrap">
+              <div className="text-xs sm:text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
                 {(() => {
                   const fmt = formatDateTime(view.createdAt);
                   return `${fmt.date} | ${fmt.time}`;
@@ -209,14 +214,14 @@ export default function FarmerStoryPage() {
 
             {/* Content */}
             <div
-              className="px-5 py-4 text-gray-700 prose max-w-none leading-relaxed"
+              className="px-5 py-4 text-gray-700 prose max-w-none leading-relaxed dark:text-gray-300 dark:prose-invert"
               dangerouslySetInnerHTML={{ __html: view.contentHTML }}
             />
 
             {/* Footer */}
-            <div className="flex justify-between items-center px-5 py-4 border-t bg-gray-50 rounded-b-2xl dark:bg-[#272727] dark:border-gray-700">
-              <div className="text-sm font-medium text-gray-700">
-                <span className="text-green-700 font-semibold">
+            <div className="flex justify-between items-center px-5 py-4 border-t border-gray-100 bg-gray-50 rounded-b-2xl dark:bg-[#121212] dark:border-[#333]">
+              <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <span className="text-green-700 font-semibold dark:text-green-500">
                   {t("author_label")}{" "}
                 </span>
                 {view.author}

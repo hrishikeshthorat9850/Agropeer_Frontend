@@ -19,7 +19,18 @@ import { Haptics, ImpactStyle } from "@capacitor/haptics";
  * - Haptic Snap on Threshold
  * - Fluid Icon Morphs
  */
+import { useLanguage } from "@/Context/languagecontext";
+
+/**
+ * Modern "Pill" PullToRefresh
+ * Features:
+ * - Glassmorphic Pill Design
+ * - Smooth "Rubbery" Resistance
+ * - Haptic Snap on Threshold
+ * - Fluid Icon Morphs
+ */
 export default function PullToRefresh({ onRefresh, children }) {
+  const { t } = useLanguage();
   const [pullY, setPullY] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
   const [thresholdReached, setThresholdReached] = useState(false);
@@ -175,10 +186,10 @@ export default function PullToRefresh({ onRefresh, children }) {
             {/* Text Label (Optional, adds to the "Premium" pill feel) */}
             <span className="text-sm font-semibold tracking-wide">
               {refreshing
-                ? "Updating..."
+                ? t("pull_updating")
                 : thresholdReached
-                ? "Release"
-                : "Pull"}
+                ? t("pull_release")
+                : t("pull_pull")}
             </span>
           </div>
         </motion.div>
