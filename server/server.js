@@ -203,7 +203,8 @@ io.on("connection", (socket) => {
         const activity = userActivity.get(recipientId) || {};
 
         const isInChatsPage = activity.page === "chats";
-        const isReadingConversation = activity.activeConversation === conversation_id;
+        // Normalize both to strings for comparison to handle type mismatches (string vs UUID/number)
+        const isReadingConversation = String(activity.activeConversation) === String(conversation_id);
 
         const shouldSendNotification =
           !recipientOnline ||       // User offline
