@@ -5,6 +5,7 @@ import { useEffect, useState, useRef } from "react";
 import { Toast } from "@capacitor/toast"; // Import Toast
 // import ExitConfirmModal from "./ExitConfirmModal"; // Removed
 import useToast from "@/hooks/useToast";
+import { useLanguage } from "@/Context/languagecontext";
 
 // Define the timeout duration for the double-tap (e.g., 2 seconds)
 const DOUBLE_BACK_TIMEOUT = 2000;
@@ -14,6 +15,7 @@ export default function AppShell({ children }) {
   const backButtonTimer = useRef(null);
 
   const { showToast } = useToast();
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
@@ -33,7 +35,7 @@ export default function AppShell({ children }) {
 
       // Show native toast "Press back again to exit"
       Toast.show({
-        text: "Press back again to exit",
+        text: t("press_back_exit"),
         duration: "short",
         position: "bottom",
       }).catch((e) => console.error("Toast error", e));
@@ -56,7 +58,7 @@ export default function AppShell({ children }) {
         clearTimeout(backButtonTimer.current);
       }
     };
-  }, [showToast]);
+  }, [showToast, t]);
 
   return <>{children}</>;
 }

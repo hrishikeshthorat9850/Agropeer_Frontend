@@ -1,12 +1,15 @@
 "use client";
 
+import { useLanguage } from "@/Context/languagecontext";
+
 export default function ExitConfirmModal({ open, onCancel, onConfirm }) {
+  const { t } = useLanguage();
+
   if (!open) return null;
 
   return (
     <div className="fixed inset-0 bg-green-900/40 backdrop-blur-sm flex items-center justify-center z-[9999]">
       <div className="bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-2xl w-80 p-6 shadow-xl relative">
-
         {/* Decorative Leaf Icon */}
         <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-green-600 p-2 rounded-full shadow-md">
           <svg
@@ -26,26 +29,24 @@ export default function ExitConfirmModal({ open, onCancel, onConfirm }) {
         </div>
 
         <h2 className="text-xl font-semibold text-green-800 text-center mt-2">
-          Exit App?
+          {t("exit_app_title")}
         </h2>
 
-        <p className="text-green-700 text-center mt-2">
-          Are you sure you want to close Agropeer?
-        </p>
+        <p className="text-green-700 text-center mt-2">{t("exit_app_desc")}</p>
 
         <div className="flex justify-center gap-4 mt-6">
           <button
             onClick={onCancel}
             className="px-4 py-2 rounded-xl border border-green-300 text-green-700 bg-white hover:bg-green-50 transition"
           >
-            Cancel
+            {t("cancel_btn")}
           </button>
 
           <button
             onClick={onConfirm}
             className="px-4 py-2 rounded-xl bg-green-700 text-white hover:bg-green-800 transition shadow-sm"
           >
-            Exit
+            {t("exit_btn")}
           </button>
         </div>
       </div>

@@ -7,31 +7,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 
-import { Keyboard } from "@capacitor/keyboard";
-import { Capacitor } from "@capacitor/core";
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function MobileBottomNav({ onAI }) {
   const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false); // New state
+  const { t } = useLanguage();
 
   const safeBottom = "env(safe-area-inset-bottom, 0px)";
-
-  // Keyboard Listeners
-  useEffect(() => {
-    if (!Capacitor.isNativePlatform()) return;
-
-    const onShow = () => setIsKeyboardOpen(true);
-    const onHide = () => setIsKeyboardOpen(false);
-
-    Keyboard.addListener("keyboardWillShow", onShow);
-    Keyboard.addListener("keyboardWillHide", onHide);
-
-    return () => {
-      Keyboard.removeAllListeners();
-    };
-  }, []);
 
   const openAI = () => {
     // ... existing openAI code
@@ -52,14 +36,6 @@ export default function MobileBottomNav({ onAI }) {
     document.addEventListener("click", closePopButtons);
     return () => document.removeEventListener("click", closePopButtons);
   }, [open]);
-
-  const navItems = [
-    { label: "Home", icon: FaHome, route: "/" },
-    { label: "AI", icon: Sparkles, action: openAI, isActive: false }, // Action item
-  ];
-
-  // Logic: Hide if keyboard is open
-  if (isKeyboardOpen) return null;
 
   return (
     <>
@@ -86,7 +62,7 @@ export default function MobileBottomNav({ onAI }) {
               <FaTractor size={20} />
             </div>
             <span className="text-xs font-semibold text-white bg-black/50 px-2 py-1 rounded-md backdrop-blur-md">
-              Sell
+              {t("nav_sell")}
             </span>
           </motion.button>
         )}
@@ -115,7 +91,7 @@ export default function MobileBottomNav({ onAI }) {
               <FaImages size={20} />
             </div>
             <span className="text-xs font-semibold text-white bg-black/50 px-2 py-1 rounded-md backdrop-blur-md">
-              Post
+              {t("nav_post")}
             </span>
           </motion.button>
         )}
@@ -170,7 +146,7 @@ export default function MobileBottomNav({ onAI }) {
                   : "text-surface-600 dark:text-surface-400"
               }`}
             >
-              Home
+              {t("nav_home")}
             </span>
           </button>
 
@@ -208,7 +184,7 @@ export default function MobileBottomNav({ onAI }) {
               <Sparkles size={24} className="opacity-70 text-earth-500" />
             </div>
             <span className="text-xs font-medium text-surface-600 dark:text-surface-400">
-              Ask AI
+              {t("nav_ask_ai")}
             </span>
           </button>
         </div>

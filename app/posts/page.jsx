@@ -344,7 +344,7 @@ export default function PostsPage() {
           )}
 
           {/* Posts List */}
-          {!loading && !error && (
+          {(posts.length > 0 || !loading) && !error && (
             <>
               {posts.length === 0 ? (
                 <motion.div

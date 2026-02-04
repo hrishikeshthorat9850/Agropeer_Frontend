@@ -4,49 +4,52 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 
-const SLIDE_INTERVAL = 5500;
+import { useLanguage } from "@/Context/languagecontext";
 
-const slides = [
-  {
-    id: 1,
-    img: "/banners/FarmFamily.jpg",
-    title: "Add Farm Posts",
-    desc: "Share your farm photos, updates, and experiences with the community.",
-    btn: "Add Post",
-    btnLink: "/posts",
-  },
-  {
-    id: 2,
-    img: "/banners/Tractor.jpg",
-    title: "Sell Your Farm Products",
-    desc: "Reach more buyers and get better prices for your harvest.",
-    btn: "Farm Product",
-    btnLink: "/market",
-  },
-  {
-    id: 3,
-    img: "/banners/Calculator.jpg",
-    title: "Smart Farm Tools & Calculators",
-    desc: "Plan smarter using seed, fertilizer, water & yield calculators.",
-    btn: "Try Tools",
-    btnLink: "/explore",
-  },
-  {
-    id: 4,
-    img: "/banners/AgroPeerLight.jpg",
-    title: "Live Market Prices",
-    desc: "Stay updated with crop rates before you sell.",
-    btn: "View Markets",
-    btnLink: "/market-prices",
-  },
-];
+const SLIDE_INTERVAL = 5500;
 
 export default function HomeBanner() {
   const router = useRouter();
+  const { t } = useLanguage();
+
+  const slides = [
+    {
+      id: 1,
+      img: "/banners/FarmFamily.jpg",
+      title: t("banner_farm_posts_title"),
+      desc: t("banner_farm_posts_desc"),
+      btn: t("banner_farm_posts_btn"),
+      btnLink: "/posts",
+    },
+    {
+      id: 2,
+      img: "/banners/Tractor.jpg",
+      title: t("banner_sell_title"),
+      desc: t("banner_sell_desc"),
+      btn: t("banner_sell_btn"),
+      btnLink: "/market",
+    },
+    {
+      id: 3,
+      img: "/banners/Calculator.jpg",
+      title: t("banner_tools_title"),
+      desc: t("banner_tools_desc"),
+      btn: t("banner_tools_btn"),
+      btnLink: "/explore",
+    },
+    {
+      id: 4,
+      img: "/banners/AgroPeerLight.jpg",
+      title: t("banner_prices_title"),
+      desc: t("banner_prices_desc"),
+      btn: t("banner_prices_btn"),
+      btnLink: "/market-prices",
+    },
+  ];
 
   const [index, setIndex] = useState(0);
-  const freezeRef = useRef(false);      // freeze slider for tap
-  const touchMoved = useRef(false);     // detect swipe vs tap
+  const freezeRef = useRef(false); // freeze slider for tap
+  const touchMoved = useRef(false); // detect swipe vs tap
   const timer = useRef(null);
 
   // Restart Auto Slide
@@ -62,7 +65,7 @@ export default function HomeBanner() {
   useEffect(() => {
     startAutoSlide();
     return () => clearInterval(timer.current);
-  }, []);
+  }, [slides.length]); // Added dependency
 
   // ---------------------------------------------
   // TOUCH / SWIPE HANDLING (JioKrishi Style)

@@ -24,8 +24,11 @@ import { StatusBar, Style } from "@capacitor/status-bar";
 import { Capacitor } from "@capacitor/core";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 
+import { useLanguage } from "@/Context/languagecontext";
+
 export default function MobileSidebar() {
   const [open, setOpen] = useState(false);
+  const { t } = useLanguage();
 
   const { theme } = useTheme();
 
@@ -135,15 +138,15 @@ export default function MobileSidebar() {
   }, [open, theme]);
 
   const MENU_ITEMS = [
-    { href: "/about-us", label: "About Us", icon: <FaLeaf /> },
+    { href: "/about-us", label: t("about_us"), icon: <FaLeaf /> },
     {
       href: "/how-it-works",
-      label: "How AgroPeer Works",
+      label: t("how_it_works"),
       icon: <FaSeedling />,
     },
-    { href: "/help", label: "Help Center", icon: <FaQuestionCircle /> },
-    { href: "/farming-tips", label: "Farming Tips", icon: <FaLeaf /> },
-    { href: "/expert-advice", label: "Expert Advice", icon: <FaComments /> },
+    { href: "/help", label: t("help_center"), icon: <FaQuestionCircle /> },
+    { href: "/farming-tips", label: t("farming_tips"), icon: <FaLeaf /> },
+    { href: "/expert-advice", label: t("expert_advice"), icon: <FaComments /> },
     // { href: "/reviews", label: "Reviews", icon: <FaStar /> },
   ];
 
@@ -174,7 +177,7 @@ export default function MobileSidebar() {
               <div>
                 <h2 className="text-2xl font-bold text-white">AgroPeer</h2>
                 <p className="text-xs text-green-100/80 tracking-wider uppercase mt-1">
-                  Farming Companion
+                  {t("sidebar_subtitle")}
                 </p>
               </div>
             </div>

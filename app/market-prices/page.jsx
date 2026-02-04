@@ -19,15 +19,6 @@ const MarketList = dynamic(
   () => import("@/components/market-prices/MarketList"),
   {
     ssr: false,
-    loading: () => {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      const { t } = useLanguage();
-      return (
-        <div className="flex justify-center items-center py-20">
-          <LoadingSpinner size="sm" text={t("loading_list")} />
-        </div>
-      );
-    },
   },
 );
 
@@ -214,16 +205,14 @@ export default function MarketPricesPage() {
       {/* 🟢 Main Content Area */}
       <div className="max-w-lg mx-auto w-full">
         {/* Market Filters (Internal Sticky) */}
-        <div>
-          <MarketFilters
-            data={displayRecords}
-            onFilterChange={handleFilterChange}
-            allStates={allStates}
-            onSearch={handleSearch}
-            onClear={handleClearFilters}
-            filters={filters}
-          />
-        </div>
+        <MarketFilters
+          data={displayRecords}
+          onFilterChange={handleFilterChange}
+          allStates={allStates}
+          onSearch={handleSearch}
+          onClear={handleClearFilters}
+          filters={filters}
+        />
 
         {/* Content Padding */}
         <div className="px-4 py-2">
@@ -251,7 +240,10 @@ export default function MarketPricesPage() {
           {/* 📄 Market List Feed */}
           {isLoading && searchTriggered && displayRecords.length === 0 ? (
             <div className="py-12 text-center">
-              <LoadingSpinner size="sm" text={t("loading_list") || "Loading..."} />
+              <LoadingSpinner
+                size="sm"
+                text={t("loading_list") || "Loading..."}
+              />
             </div>
           ) : displayRecords.length > 0 ? (
             <div className="animate-fade-in-up">
@@ -279,7 +271,8 @@ export default function MarketPricesPage() {
           ) : searchTriggered && !isLoading && !error ? (
             <div className="py-12 text-center">
               <p className="text-gray-500 dark:text-gray-400 text-sm">
-                {t("no_results_found") || "No results found for the selected filters."}
+                {t("no_results_found") ||
+                  "No results found for the selected filters."}
               </p>
             </div>
           ) : null}

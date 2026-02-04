@@ -23,7 +23,10 @@ import { openAppSettings } from "./utils/openAppSettings";
 import HomeBanner from "./HomeBanner";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 
+import { useLanguage } from "@/Context/languagecontext";
+
 export default function MobileHome() {
+  const { t } = useLanguage();
   const {
     weather,
     loading: weatherLoading,
@@ -122,12 +125,12 @@ export default function MobileHome() {
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-2">
                 <h2 className="text-base font-medium text-blue-50 dark:text-gray-300 tracking-wide opacity-90">
-                  Today’s Weather
+                  {t("weather_card_title")}
                 </h2>
                 <div className="flex items-center gap-2">
                   {status === LOCATION.LOADING && (
                     <span className="text-xs bg-white/20 px-2 py-1 rounded-full animate-pulse">
-                      Locating...
+                      {t("locating")}
                     </span>
                   )}
                   {status === LOCATION.DENIED && (
@@ -138,7 +141,7 @@ export default function MobileHome() {
                       }}
                       className="text-xs bg-red-500/90 hover:bg-red-500 px-3 py-1 rounded-full text-white font-medium transition-colors"
                     >
-                      Enable Location
+                      {t("enable_location")}
                     </button>
                   )}
                   {status === LOCATION.GPS_OFF && (
@@ -149,7 +152,7 @@ export default function MobileHome() {
                       }}
                       className="text-xs bg-orange-500/90 hover:bg-orange-500 px-3 py-1 rounded-full text-white font-medium transition-colors"
                     >
-                      Turn On GPS
+                      {t("turn_on_gps")}
                     </button>
                   )}
                   {!weatherLoading && !weatherError && (
@@ -164,14 +167,23 @@ export default function MobileHome() {
                     {cleanTemp}°
                   </h3>
                   <span className="text-sm text-blue-100 font-medium mt-1">
-                    Mostly Sunny
+                    {t("mostly_sunny")}
                   </span>
                 </div>
 
                 <div className="flex flex-col items-end space-y-1.5 min-w-[100px]">
-                  <WeatherDetailRow label="Humidity" value={`${humidity} %`} />
-                  <WeatherDetailRow label="Rain" value={`${rainChance} %`} />
-                  <WeatherDetailRow label="Wind" value={`${windSpeed} km/h`} />
+                  <WeatherDetailRow
+                    label={t("weather_humidity")}
+                    value={`${humidity} %`}
+                  />
+                  <WeatherDetailRow
+                    label={t("weather_rain")}
+                    value={`${rainChance} %`}
+                  />
+                  <WeatherDetailRow
+                    label={t("weather_wind")}
+                    value={`${windSpeed} km/h`}
+                  />
                 </div>
               </div>
 
@@ -184,7 +196,7 @@ export default function MobileHome() {
                   flex items-center gap-2 transition-colors
                 "
                 >
-                  See 7-Day Forecast <span className="opacity-70">→</span>
+                  {t("see_forecast")} <span className="opacity-70">→</span>
                 </Link>
               </div>
             </div>
@@ -198,13 +210,13 @@ export default function MobileHome() {
         <div className="relative mt-6 px-4 mb-4">
           <div className="text-center flex flex-col items-center space-y-2">
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white leading-tight">
-              Welcome to{" "}
+              {t("welcome_agropeer")}{" "}
               <span className="text-green-600 dark:text-green-400">
                 AgroPeer
               </span>
             </h1>
             <p className="text-sm text-slate-500 dark:text-gray-400 max-w-[90%] leading-relaxed">
-              Your smart farming companion. Connect, grow, and explore.
+              {t("welcome_desc")}
             </p>
           </div>
         </div>
@@ -222,20 +234,23 @@ export default function MobileHome() {
         {/* ================================================================= */}
 
         <div className="mt-8 px-4">
-          <SectionHeader title="Community" subtitle="What's happening now" />
+          <SectionHeader
+            title={t("community_title")}
+            subtitle={t("community_subtitle")}
+          />
           <div className="mt-3 grid grid-cols-2 gap-3">
             <ActionCard
               href="/recents"
-              title="Recent Posts"
-              subtitle="Live updates"
+              title={t("card_recent_posts")}
+              subtitle={t("card_recent_subtitle")}
               icon={<FaUserClock className="text-white text-lg" />}
               gradient="bg-gradient-to-br from-indigo-500 to-purple-600"
               onHaptic={triggerHaptic}
             />
             <ActionCard
               href="/trending"
-              title="Trending"
-              subtitle="Most liked"
+              title={t("card_trending")}
+              subtitle={t("card_trending_subtitle")}
               icon={
                 <svg width="18" height="18" fill="white" viewBox="0 0 24 24">
                   <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 6 4 4 6.5 4c1.74 0 3.41 1 4.13 2.44h.74C13.09 5 14.76 4 16.5 4 19 4 21 6 21 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
@@ -300,67 +315,68 @@ const ActionCard = ({ href, title, subtitle, icon, gradient, onHaptic }) => (
 /* ================================================================= */
 
 function FeatureGrid({ onHaptic }) {
+  const { t } = useLanguage();
   const cards = [
     {
       href: "/farmer-dashboard",
       icon: <FaLeaf className="text-white text-xl" />,
       bg: "bg-green-500",
-      label: "Dashboard",
+      label: t("feature_dashboard"),
     },
     {
       href: "/market",
       icon: <FaTractor className="text-white text-xl" />,
       bg: "bg-orange-500",
-      label: "Market",
+      label: t("feature_market"),
     },
     {
       href: "/market-prices",
       icon: <FaIndianRupeeSign className="text-white text-xl" />,
       bg: "bg-emerald-500",
-      label: "Prices",
+      label: t("feature_prices"),
     },
     {
       href: "/posts",
       icon: <FaImages className="text-white text-xl" />,
       bg: "bg-blue-500",
-      label: "Posts",
+      label: t("feature_posts"),
     },
     {
       href: "/weather",
       icon: <FaCloudSun className="text-white text-xl" />,
       bg: "bg-yellow-500",
-      label: "Weather",
+      label: t("feature_weather"),
     },
     {
       href: "/explore",
       icon: <FaLeaf className="text-white text-xl" />,
       bg: "bg-pink-500",
-      label: "Explore",
+      label: t("feature_explore"),
     },
     {
       href: "/government-schemes",
       icon: <FaBullhorn className="text-white text-xl" />,
       bg: "bg-purple-500",
-      label: "Schemes",
+      label: t("feature_schemes"),
     },
-    {
-      href: "/news",
-      icon: <FaNewspaper className="text-white text-xl" />,
-      bg: "bg-red-500",
-      label: "News",
-    },
-    {
-      href: "/milk-rate-calculator",
-      icon: <FaGlobe className="text-white text-xl" />,
-      bg: "bg-teal-500",
-      label: "Milk Rate",
-    },
-    {
-      href: "/reels",
-      icon: <FaVideo className="text-white text-xl" />,
-      bg: "bg-indigo-500",
-      label: "Reels",
-    },
+    // {
+    //   href: "/news",
+    //   icon: <FaNewspaper className="text-white text-xl" />,
+    //   bg: "bg-red-500",
+    //   label: "News",
+    // },
+    // {
+    //   href: "/milk-rate-calculator",
+    //   icon: <FaGlobe className="text-white text-xl" />,
+    //   bg: "bg-teal-500",
+    //   label: "Milk Rate",
+    // },
+    // {
+    //   href: "/reels",
+    //   icon: <FaVideo className="text-white text-xl" />,
+    //   bg: "bg-indigo-500",
+    //   label: "Reels",
+    // },
   ];
 
   return (
