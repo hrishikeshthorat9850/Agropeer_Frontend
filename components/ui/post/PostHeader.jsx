@@ -199,7 +199,13 @@ export default function PostHeader({
                   undefined
                 }
                 alt={formatName(post?.userinfo)}
-                onClick={() => router.push("/profile")}
+                onClick={() =>
+                  router.push(
+                    post?.userinfo?.id
+                      ? `/profile?id=${post.userinfo.id}`
+                      : "/profile",
+                  )
+                }
                 sx={{
                   width: 48,
                   height: 48,
@@ -214,7 +220,13 @@ export default function PostHeader({
             <div>
               <h3
                 className="font-display font-bold text-gray-900 dark:text-gray-100 text-[0.95rem] cursor-pointer hover:underline"
-                onClick={() => router.push("/profile")}
+                onClick={() =>
+                  router.push(
+                    post?.userinfo?.id
+                      ? `/profile?id=${post.userinfo.id}`
+                      : "/profile",
+                  )
+                }
               >
                 {post?.userinfo?.display_name
                   ? post?.userinfo?.display_name
