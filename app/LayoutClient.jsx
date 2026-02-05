@@ -67,7 +67,6 @@ export default function ClientLayout({ children }) {
     }
   }, []);
 
-
   // Body padding adjustments for mobile no-padding routes
   useEffect(() => {
     const noMobilePaddingRoutes = [
@@ -115,14 +114,8 @@ export default function ClientLayout({ children }) {
           {showNavbar && <MobileNavbar onOpenAI={() => setAiOpen(true)} />}
 
           {/* 2. MIDDLE: Content Area */}
-          <main
-            className={`
-              w-full min-h-screen 
-              ${showNavbar ? "pt-mobile-layout" : ""} 
-              ${showNavbar && !keyboardOpen ? "pb-mobile-layout" : ""}
-            `}
-          >
-            <PageTransition>
+          <main className="w-full h-[100dvh] overflow-hidden relative">
+            <PageTransition showNavbar={showNavbar} keyboardOpen={keyboardOpen}>
               {/* MobilePageLayout provides consistent logic but NO extra padding if navbar/bottomnav are outside */}
               <MobilePageLayout hasNavbar={showNavbar}>
                 {children}

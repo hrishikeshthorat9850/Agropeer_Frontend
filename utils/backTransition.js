@@ -219,13 +219,21 @@ export async function playBackAnimation(navigationCallback, options = {}) {
     await Promise.all(callbackPromises);
 
     // Play exit animation
-    await playExitAnimation();
+    // MODIFIED: We delegate animation to Framer Motion in PageTransition.jsx
+    // We only need to wait a tiny bit to ensure the React State 'direction' updates
+    // before the route change occurs.
+    // await playExitAnimation();
+
+    // Short delay to allow React state propagation (setDirection)
+    await new Promise((resolve) => setTimeout(resolve, 50));
 
     // Execute the original navigation callback
     // This preserves existing behavior exactly
     navigationCallback();
 
     // Play enter animation after navigation (if not skipped)
+    // MODIFIED: Framer motion handles enter animation too.
+    /*
     if (!options.skipEnterAnimation) {
       // Use requestAnimationFrame to ensure DOM has updated
       requestAnimationFrame(() => {
@@ -234,6 +242,7 @@ export async function playBackAnimation(navigationCallback, options = {}) {
         });
       });
     }
+    */
   } catch (error) {
     console.error("[backTransition] Error during transition:", error);
     // Ensure navigation still happens even if transition fails
@@ -242,7 +251,7 @@ export async function playBackAnimation(navigationCallback, options = {}) {
     // Reset transition state after a short delay
     setTimeout(() => {
       isTransitioning = false;
-    }, TRANSITION_DURATION);
+    }, 300); // Keep this to prevent double taps
   }
 }
 

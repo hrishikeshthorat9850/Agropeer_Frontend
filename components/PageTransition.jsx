@@ -1,7 +1,16 @@
 "use client";
 import React, { useRef, useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { usePathname } from "next/navigation";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValue,
+  useTransform,
+  LayoutGroup,
+} from "framer-motion";
+import { usePathname, useRouter } from "next/navigation";
+import { Haptics, ImpactStyle } from "@capacitor/haptics";
+import { Capacitor } from "@capacitor/core";
+import { playBackAnimation } from "@/utils/backTransition";
 
 // Normalize path so "/posts" and "/posts/" are the same key
 function normalizePath(path) {
@@ -9,59 +18,98 @@ function normalizePath(path) {
   return path.endsWith("/") && path.length > 1 ? path.slice(0, -1) : path;
 }
 
+// IOS-STYLE VERTICAL MODAL (Sheet/Card) VARIANTS
+// - Forward:
+//   New Page (Enter): Slides Up from Bottom (100% -> 0%). zIndex 3.
+//   Old Page (Exit): Scales down (1 -> 0.93). zIndex 1. (Overlay handles dimming).
+// - Back:
+//   New Page (Enter - background): Scales up (0.93 -> 1). zIndex 1. (Overlay fade out).
+//   Old Page (Exit - foreground): Slides Down to Bottom (0% -> 100%). zIndex 3.
+
 const variants = {
   enter: (direction) => ({
-    x: direction === "forward" ? "100%" : "-30%", // Slide in from right (forward) or left (back)
-    opacity: direction === "forward" ? 1 : 0.5,
-    scale: direction === "forward" ? 1 : 0.95,
-    zIndex: direction === "forward" ? 2 : 1,
-    boxShadow:
-      direction === "forward" ? "0px 0px 40px rgba(0,0,0,0.1)" : "none",
+    y: direction === "forward" ? "100%" : "0%",
+    scale: direction === "forward" ? 1 : 0.93,
+    // filter: REMOVED for performance, using Overlay instead
+    zIndex: direction === "forward" ? 3 : 1,
+    borderRadius: direction === "forward" ? "0px" : "20px",
   }),
   center: {
-    x: 0,
-    opacity: 1,
+    y: 0,
     scale: 1,
     zIndex: 2,
-    boxShadow: "none",
+    borderRadius: "0px",
+    transition: {
+      type: "spring",
+      stiffness: 180,
+      damping: 25,
+      mass: 0.8,
+    },
   },
   exit: (direction) => ({
-    x: direction === "forward" ? "-30%" : "100%", // Slide out to left (forward) or right (back)
-    opacity: direction === "forward" ? 0.5 : 1,
-    scale: direction === "forward" ? 0.95 : 1,
-    zIndex: direction === "forward" ? 1 : 2, // The exiting page (if going back) stays on top
-    boxShadow:
-      direction === "forward" ? "none" : "0px 0px 40px rgba(0,0,0,0.1)",
+    y: direction === "forward" ? "0%" : "100%",
+    scale: direction === "forward" ? 0.93 : 1,
+    // filter: REMOVED for performance
+
+    zIndex: direction === "forward" ? 1 : 3,
+    borderRadius: direction === "forward" ? "20px" : "0px",
+    transition: {
+      type: "spring",
+      stiffness: 180,
+      damping: 25,
+      mass: 0.8,
+    },
   }),
 };
 
-// "Springy" but controlled transition
-const transition = {
-  type: "spring",
-  stiffness: 300,
-  damping: 30,
-  mass: 1,
+// Overlay Variants for Performance (Opacity fade is cheaper than Filter brightness)
+const overlayVariants = {
+  enter: (direction) => ({
+    opacity: direction === "forward" ? 0 : 0.3, // If entering forward (new page), no overlay. If entering back (bg page), it's dark.
+  }),
+  center: {
+    opacity: 0, // Foreground is bright
+    transition: { duration: 0.3 },
+  },
+  exit: (direction) => ({
+    opacity: direction === "forward" ? 0.3 : 0, // If exiting forward (becomes bg), dim it. If exiting back, clear it.
+    transition: { duration: 0.3 },
+  }),
 };
 
-export default function PageTransition({ children }) {
+export default function PageTransition({ children, showNavbar, keyboardOpen }) {
   const path = usePathname();
   const stablePath = normalizePath(path);
+  const router = useRouter();
 
-  // Directions: 'forward' (default for new pages), 'back' (for returning)
+  // Directions: 'forward' (push), 'back' (pop)
   const [direction, setDirection] = useState("forward");
-
-  // Track previous path to prevent same-route animations if needed
   const prevPath = useRef(stablePath);
 
+  // Drag State
+  const containerRef = useRef(null);
+  const [canDrag, setCanDrag] = useState(true);
+
+  // Check scroll position to enable/disable drag
   useEffect(() => {
-    // Listener for Back Transition Utility
+    const el = containerRef.current;
+    if (!el) return;
+
+    const handleScroll = () => {
+      // Only allow drag-to-dismiss if we are at the very top
+      setCanDrag(el.scrollTop <= 0);
+    };
+
+    el.addEventListener("scroll", handleScroll);
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, [stablePath]); // Re-attach on path change (new ref)
+
+  useEffect(() => {
     const handleNavDirection = (e) => {
       if (e.detail?.direction) {
         setDirection(e.detail.direction);
       }
     };
-
-    // Listener for browser back button (popstate)
     const handlePopState = () => {
       setDirection("back");
     };
@@ -75,45 +123,85 @@ export default function PageTransition({ children }) {
     };
   }, []);
 
-  // Reset to default 'forward' after animation completes (cleanup)
-  // This is tricky with React state, but the utility sends events *before* nav
-  // so the state should be correct when 'key' changes.
-  // We can default to 'forward' for generic clicks.
   useEffect(() => {
     if (stablePath !== prevPath.current) {
-      // Path changed, animation starts with current 'direction' state
       prevPath.current = stablePath;
     }
   }, [stablePath]);
 
+  // SCROLL RESET: Ensure new page always starts at top
+  // This is critical because we are reusing a window-height container
+  React.useLayoutEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = 0;
+    }
+  }, [stablePath]);
+
+  // Handle Drag End (Dismiss)
+  const handleDragEnd = async (event, info) => {
+    // Thresholds: Dragged down > 100px OR Velocity > 300
+    if (info.offset.y > 100 || info.velocity.y > 300) {
+      // Trigger Haptic
+      if (Capacitor.isNativePlatform()) {
+        await Haptics.impact({ style: ImpactStyle.Light });
+      }
+
+      // Trigger Back
+      playBackAnimation(() => {
+        router.back();
+      });
+    }
+  };
+
   return (
-    <div className="w-full min-h-screen overflow-hidden relative bg-white dark:bg-black">
-      <AnimatePresence
-        mode="popLayout" // Allows overlapping for the "stack" feel
-        initial={false} // Don't animate on first load
-        custom={direction}
-        onExitComplete={() => {
-          if (typeof window !== "undefined") {
-            window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-          }
-          // Reset direction to forward (default) for next interaction
-          // slight delay to ensure we don't flip mid-animation if re-renders happen
-          setTimeout(() => setDirection("forward"), 500);
-        }}
-      >
-        <motion.div
-          key={stablePath}
+    <div className="w-full h-full relative overflow-hidden bg-white dark:bg-black">
+      <LayoutGroup>
+        {" "}
+        {/* Enables Shared Layout Animations if we use layoutId later */}
+        <AnimatePresence
+          mode="popLayout"
+          initial={false}
           custom={direction}
-          variants={variants}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          transition={transition}
-          className="w-full min-h-screen absolute top-0 left-0 bg-white dark:bg-black"
+          onExitComplete={() => {
+            setTimeout(() => setDirection("forward"), 500);
+          }}
         >
-          {children}
-        </motion.div>
-      </AnimatePresence>
+          <motion.div
+            key={stablePath}
+            custom={direction}
+            variants={variants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            // DRAG PROPERTIES
+            drag={canDrag ? "y" : false}
+            dragConstraints={{ top: 0, bottom: 0 }} // Snap back to 0
+            dragElastic={{ top: 0.05, bottom: 0.8 }} // Hard stop on top, stretchy on bottom
+            onDragEnd={handleDragEnd}
+            dragListener={canDrag}
+            //
+            className={`
+              absolute inset-0 w-full h-full bg-white dark:bg-black overflow-y-auto overflow-x-hidden touch-pan-y
+              ${showNavbar ? "pt-mobile-layout" : ""} 
+              ${showNavbar && !keyboardOpen ? "pb-mobile-layout" : ""}
+            `}
+            // Ref for scroll checking
+            ref={containerRef}
+          >
+            {/* PERFORMANCE OVERLAY (Fades in/out to dim background) */}
+            <motion.div
+              variants={overlayVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              className="absolute inset-0 bg-black pointer-events-none z-10"
+              // Removed display: none so opacity variants can work
+            />
+
+            {children}
+          </motion.div>
+        </AnimatePresence>
+      </LayoutGroup>
     </div>
   );
 }
