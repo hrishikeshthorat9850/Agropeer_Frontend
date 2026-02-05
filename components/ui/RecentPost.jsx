@@ -313,7 +313,11 @@ export default function RecentPost({
           `${BASE_URL}/api/post-comment`,
           {
             method: "POST",
-            headers: { ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
+            headers: {
+              ...(accessToken
+                ? { Authorization: `Bearer ${accessToken}` }
+                : {}),
+            },
             body: JSON.stringify({
               post_id: post.id,
               comment: replyText.trim(),
@@ -328,7 +332,9 @@ export default function RecentPost({
         }
         const newReply = data?.data;
         if (newReply) {
-          const isReplyingToComment = commentInfo.some((c) => c.id === replyingTo);
+          const isReplyingToComment = commentInfo.some(
+            (c) => c.id === replyingTo,
+          );
           if (isReplyingToComment) {
             setCommentReplies((prev) => ({
               ...prev,
@@ -365,7 +371,9 @@ export default function RecentPost({
           )
           .single();
         if (error) throw error;
-        const isReplyingToComment = commentInfo.some((c) => c.id === replyingTo);
+        const isReplyingToComment = commentInfo.some(
+          (c) => c.id === replyingTo,
+        );
         if (isReplyingToComment) {
           setCommentReplies((prev) => ({
             ...prev,
@@ -399,7 +407,11 @@ export default function RecentPost({
           `${BASE_URL}/api/comments/${commentId}/like`,
           {
             method: "POST",
-            headers: { ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
+            headers: {
+              ...(accessToken
+                ? { Authorization: `Bearer ${accessToken}` }
+                : {}),
+            },
             body: JSON.stringify({ user_id: user.id }),
           },
         );
@@ -531,7 +543,7 @@ export default function RecentPost({
           <div className="px-3 pb-2 pt-1 dark:bg-black">
             <div className="text-sm">
               <span className="font-bold text-gray-900 dark:text-white mr-2">
-                {post?.userinfo?.display_name || "User"}
+                {post?.userinfo?.display_name || t("default_user")}
               </span>
               <span className="text-gray-800 dark:text-gray-200">
                 <TextClamp text={post.caption} lines={2} className="inline" />

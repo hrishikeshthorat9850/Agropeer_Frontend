@@ -14,7 +14,6 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { PostSkeleton } from "@/components/skeletons";
 import { supabase } from "@/lib/supabaseClient";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
-import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { useLanguage } from "@/Context/languagecontext";
 
 const ClientModalWrapper = dynamic(
@@ -32,16 +31,8 @@ export default function PostsPage() {
   const { posts, loading, error, pagination, refreshPosts, hasMore, loadMore } =
     usePostsPaginated({
       initialPage: 1,
-      limit: 10,
+      limit: 1000,
     });
-
-  const loadMoreRef = useIntersectionObserver({
-    onIntersect: loadMore,
-    enabled: !!hasMore,
-  });
-
-  // Track if we are fetching subsequent pages
-  const isFetchingMore = loading && posts.length > 0;
 
   const [isCreating, setIsCreating] = useState(false);
 
@@ -377,26 +368,6 @@ export default function PostsPage() {
                       />
                     </motion.div>
                   ))}
-
-                  {/* Infinite Scroll Sentinel - only observe when there are more posts */}
-                  <div
-                    ref={loadMoreRef}
-                    className="min-h-[80px] flex flex-col justify-center items-center py-6"
-                  >
-                    {isFetchingMore && hasMore && (
-                      <div className="flex flex-col items-center gap-2">
-                        <LoadingSpinner size="sm" color="green" text="" />
-                        <span className="text-sm text-gray-500">
-                          {t("loading_more_posts")}
-                        </span>
-                      </div>
-                    )}
-                    {!hasMore && posts.length > 0 && (
-                      <p className="text-gray-500 dark:text-gray-400 text-sm font-medium py-2">
-                        {t("no_more_posts")}
-                      </p>
-                    )}
-                  </div>
                 </div>
               )}
             </>

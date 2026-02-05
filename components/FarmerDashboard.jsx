@@ -88,7 +88,9 @@ const FarmerDashboard = () => {
             signal: controller.signal,
             cache: "no-store",
             headers: {
-              ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+              ...(accessToken
+                ? { Authorization: `Bearer ${accessToken}` }
+                : {}),
             },
           },
         );

@@ -82,10 +82,20 @@ export default function MarketFilters({
   // Track if component has mounted to avoid initial mount triggers
   const isInitialMount = useRef(true);
   const searchTimeoutRef = useRef(null);
-  const prevFiltersRef = useRef({ state: "", district: "", market: "", search: "" });
+  const prevFiltersRef = useRef({
+    state: "",
+    district: "",
+    market: "",
+    search: "",
+  });
   const onSearchRef = useRef(onSearch);
   const onFilterChangeRef = useRef(onFilterChange);
-  const prevFilterChangeRef = useRef({ state: "", district: "", market: "", search: "" });
+  const prevFilterChangeRef = useRef({
+    state: "",
+    district: "",
+    market: "",
+    search: "",
+  });
 
   // Keep refs updated
   useEffect(() => {
@@ -195,7 +205,10 @@ export default function MarketFilters({
       updates.state = filters.state || "";
       shouldUpdate = true;
     }
-    if (filters.district !== undefined && filters.district !== selectedDistrict) {
+    if (
+      filters.district !== undefined &&
+      filters.district !== selectedDistrict
+    ) {
       updates.district = filters.district || "";
       shouldUpdate = true;
     }
@@ -211,7 +224,8 @@ export default function MarketFilters({
     if (shouldUpdate) {
       const newState = {
         state: updates.state !== undefined ? updates.state : selectedState,
-        district: updates.district !== undefined ? updates.district : selectedDistrict,
+        district:
+          updates.district !== undefined ? updates.district : selectedDistrict,
         market: updates.market !== undefined ? updates.market : selectedMarket,
         search: updates.search !== undefined ? updates.search : searchQuery,
       };
@@ -221,7 +235,7 @@ export default function MarketFilters({
       if (updates.district !== undefined) setSelectedDistrict(updates.district);
       if (updates.market !== undefined) setSelectedMarket(updates.market);
       if (updates.search !== undefined) setSearchQuery(updates.search);
-      
+
       // Update both refs to prevent search and onFilterChange triggers
       prevFiltersRef.current = newState;
       prevFilterChangeRef.current = newState;
@@ -281,7 +295,7 @@ export default function MarketFilters({
       </div>
 
       {/* Horizontal Scrollable Chips Filter Row - STICKY NOW */}
-      <div className="sticky top-[60px] z-30 bg-white dark:bg-[#121212] backdrop-blur-sm px-4 py-2 flex items-center gap-2 overflow-x-auto no-scrollbar">
+      <div className="sticky top-mobile-navbar-height z-30 bg-white dark:bg-[#121212] backdrop-blur-sm px-4 py-2 flex items-center gap-2 overflow-x-auto no-scrollbar">
         {/* Filter Icon Label (Static) */}
         <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10">
           <FaFilter className="text-gray-400 text-xs" />

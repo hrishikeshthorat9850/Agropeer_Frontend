@@ -4,6 +4,7 @@ import { FaTools, FaTimes } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/Context/languagecontext";
 import { createPortal } from "react-dom";
+import BottomSelect from "@/components/ui/BottomSelect";
 
 export default function ToolsSection({
   tool,
@@ -173,7 +174,17 @@ export default function ToolsSection({
       setToolResult(null);
       setErrors({});
     }
-  }, [tool, setSelectedToolCrop, setAreaInput, setSoilN, setSoilP, setSoilK, setMarketPrice, setToolResult, setErrors]);
+  }, [
+    tool,
+    setSelectedToolCrop,
+    setAreaInput,
+    setSoilN,
+    setSoilP,
+    setSoilK,
+    setMarketPrice,
+    setToolResult,
+    setErrors,
+  ]);
 
   // ✅ Label with color-changing *
   const Label = ({ text, fieldKey }) => (
@@ -303,26 +314,18 @@ export default function ToolsSection({
                     <div className="flex flex-col gap-5">
                       {/* Crop Select */}
                       <div className="flex flex-col gap-1.5">
-                        <Label
-                          text={t("select_crop")}
-                          fieldKey="selectedToolCrop"
-                        />
-                        <select
-                          className={`w-full p-4 bg-gray-50 dark:bg-gray-800 border rounded-xl outline-none focus:ring-2 focus:ring-green-500/20 text-gray-900 dark:text-white text-base ${
-                            errors.selectedToolCrop
-                              ? "border-red-500"
-                              : "border-gray-200 dark:border-gray-700"
-                          }`}
+                        <BottomSelect
+                          label={t("select_crop")}
                           value={selectedToolCrop}
-                          onChange={(e) => setSelectedToolCrop(e.target.value)}
-                        >
-                          <option value="">{t("select_crop")}</option>
-                          {uniqueCrops.map((c) => (
-                            <option key={c.id} value={c.name}>
-                              {c.name}
-                            </option>
-                          ))}
-                        </select>
+                          onChange={(val) => setSelectedToolCrop(val)}
+                          options={uniqueCrops.map((c) => ({
+                            label: c.name,
+                            value: c.name,
+                          }))}
+                          placeholder={t("select_crop")}
+                          zIndex={100000}
+                          error={errors.selectedToolCrop ? true : ""}
+                        />
                       </div>
                       {/* Area Input */}
                       <div className="flex flex-col gap-1.5">

@@ -1,23 +1,30 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useDragControls } from "framer-motion";
 import { ChevronDown, Search, X, Check } from "lucide-react";
 import { createPortal } from "react-dom";
+import { useLanguage } from "@/Context/languagecontext";
 
 export default function BottomSelect({
   label,
   value,
   onChange,
   options = [],
-  placeholder = "Select an option",
-  searchPlaceholder = "Search...",
+  placeholder,
+  searchPlaceholder,
   disabled = false,
   loading = false,
   error = "",
   className = "",
   triggerClassName = "",
+  zIndex = 9998,
 }) {
+  const { t } = useLanguage();
+  const displayPlaceholder = placeholder || t("select_option");
+  const displaySearchPlaceholder = searchPlaceholder || t("search_placeholder");
+  const dragControls = useDragControls();
+
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [mounted, setMounted] = useState(false);
@@ -119,7 +126,7 @@ export default function BottomSelect({
         `}
       >
         <span className={`block truncate ${!value ? "text-gray-400" : ""}`}>
-          {loading ? "Loading..." : displayValue || placeholder}
+          {loading ? "Loading..." : displayValue || displayPlaceholder}
         </span>
         <ChevronDown
           className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${
@@ -142,34 +149,49 @@ export default function BottomSelect({
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   onClick={() => setIsOpen(false)}
-                  className="fixed inset-0 z-[9998] bg-black/40 backdrop-blur-sm"
+                  style={{ zIndex: zIndex }}
+                  className="fixed inset-0 bg-black/40 backdrop-blur-sm"
                 />
 
                 {/* Sheet */}
                 <motion.div
+                  drag="y"
+                  dragControls={dragControls}
+                  dragListener={false}
+                  dragConstraints={{ top: 0, bottom: 0 }}
+                  dragElastic={0.2}
+                  onDragEnd={(event, info) => {
+                    if (info.offset.y > 100 || info.velocity.y > 500) {
+                      setIsOpen(false);
+                    }
+                  }}
                   initial={{ y: "100%" }}
                   animate={{ y: 0 }}
                   exit={{ y: "100%" }}
                   transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                  className="fixed bottom-0 left-0 right-0 z-[9999] 
+                  style={{ zIndex: zIndex + 1 }}
+                  className="fixed bottom-0 left-0 right-0
                            bg-white dark:bg-gray-900 
                            rounded-t-[32px] shadow-2xl 
                            max-h-[85vh] flex flex-col
                            overscroll-contain"
                 >
-                  {/* Drag Handle */}
+                  {/* Drag Handle Area - Draggable */}
                   <div
-                    className="w-full flex justify-center pt-3 pb-1 cursor-grab active:cursor-grabbing"
-                    onClick={() => setIsOpen(false)}
+                    className="w-full flex justify-center pt-3 pb-1 cursor-grab active:cursor-grabbing touch-none"
+                    onPointerDown={(e) => dragControls.start(e)}
                   >
                     <div className="w-12 h-1.5 bg-gray-300 dark:bg-gray-700 rounded-full" />
                   </div>
 
-                  {/* Header */}
-                  <div className="px-6 pb-4 pt-2 border-b border-gray-100 dark:border-gray-800">
+                  {/* Header - Also Draggable for easier access */}
+                  <div
+                    className="px-6 pb-4 pt-2 border-b border-gray-100 dark:border-gray-800 touch-none"
+                    onPointerDown={(e) => dragControls.start(e)}
+                  >
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                        {label || placeholder}
+                        {label || displayPlaceholder}
                       </h3>
                       <button
                         onClick={() => setIsOpen(false)}
@@ -179,12 +201,20 @@ export default function BottomSelect({
                       </button>
                     </div>
 
-                    {/* Search Bar */}
-                    <div className="relative">
+                    {/* Search Bar - stop propagation to allow typing/clicking but dragging around it works if not focused? Actually input needs focus. 
+                        If we put drag listener on parent, text selection might be tricky.
+                        Usually inputs should stop propagation of drag start if we want to interact.
+                        But here we assume header drag is for closing.
+                    */}
+                    <div
+                      className="relative"
+                      onPointerDown={(e) => e.stopPropagation()}
+                    >
+                      {/* Explicitly stop propagation on input container so user can select text/focus without dragging */}
                       <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                       <input
                         type="text"
-                        placeholder={searchPlaceholder}
+                        placeholder={displaySearchPlaceholder}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full pl-9 pr-4 py-3 bg-gray-50 dark:bg-gray-800 
