@@ -159,7 +159,7 @@ export default function SettingsPage() {
 
           {/* Preferences Section */}
           <h3 className="px-4 py-2 mt-6 text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
-            {t("preferences") || "Preferences"}
+            {t("preferences")}
           </h3>
           <div className="overflow-hidden bg-white dark:bg-[#1C1C1E] sm:rounded-xl shadow-sm">
             {/* Notifications */}
@@ -224,8 +224,8 @@ export default function SettingsPage() {
                         value: code,
                         label: LOCALE_NAMES[code] || code,
                       }))}
-                      placeholder="Language"
-                      searchPlaceholder="Search..."
+                      placeholder={t("language")}
+                      searchPlaceholder={t("search_language")}
                     />
                   </div>
                 </div>
@@ -235,7 +235,7 @@ export default function SettingsPage() {
 
           {/* Privacy & Security Section */}
           <h3 className="px-4 py-2 mt-6 text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
-            {t("privacy") || "Privacy"}
+            {t("privacy")}
           </h3>
           <div className="overflow-hidden bg-white dark:bg-[#1C1C1E] sm:rounded-xl shadow-sm">
             <div
@@ -252,7 +252,7 @@ export default function SettingsPage() {
                   </div>
                   <div className="flex flex-col">
                     <span className="text-base font-medium text-gray-900 dark:text-white truncate">
-                      {t("privacy_settings") || "Privacy Settings"}
+                      {t("privacy_settings")}
                     </span>
                     <span className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1">
                       {t("privacy_desc")}
@@ -268,7 +268,7 @@ export default function SettingsPage() {
 
           {/* Legal & Policies */}
           <h3 className="px-4 py-2 mt-6 text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
-            {t("legal") || "Legal & Policies"}
+            {t("legal")}
           </h3>
           <div className="overflow-hidden bg-white dark:bg-[#1C1C1E] sm:rounded-xl shadow-sm">
             <div className="flex flex-col bg-white dark:bg-[#1C1C1E]">
@@ -286,7 +286,7 @@ export default function SettingsPage() {
                   </div>
                   <div className="flex flex-col">
                     <span className="text-base font-medium text-gray-900 dark:text-white truncate">
-                      Privacy Policy
+                      {t("privacy_policy")}
                     </span>
                   </div>
                 </div>
@@ -307,7 +307,7 @@ export default function SettingsPage() {
                   </div>
                   <div className="flex flex-col">
                     <span className="text-base font-medium text-gray-900 dark:text-white truncate">
-                      Terms of Service
+                      {t("terms_of_service")}
                     </span>
                   </div>
                 </div>
@@ -328,7 +328,7 @@ export default function SettingsPage() {
                   </div>
                   <div className="flex flex-col">
                     <span className="text-base font-medium text-gray-900 dark:text-white truncate">
-                      Cookie Policy
+                      {t("cookie_policy")}
                     </span>
                   </div>
                 </div>

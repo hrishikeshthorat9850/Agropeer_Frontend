@@ -36,19 +36,19 @@ function formatBio(text) {
   formatted = formatted.replace(
     urlRegex,
     (url) =>
-      `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-500 dark:text-blue-400 font-medium hover:underline">${url}</a>`
+      `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-500 dark:text-blue-400 font-medium hover:underline">${url}</a>`,
   );
 
   // mentions
   formatted = formatted.replace(
     /@([a-zA-Z0-9_]+)/g,
-    `<span class="text-green-600 dark:text-green-400 font-medium">@$1</span>`
+    `<span class="text-green-600 dark:text-green-400 font-medium">@$1</span>`,
   );
 
   // hashtags
   formatted = formatted.replace(
     /#([a-zA-Z0-9_]+)/g,
-    `<span class="text-blue-600 dark:text-blue-400 font-medium">#$1</span>`
+    `<span class="text-blue-600 dark:text-blue-400 font-medium">#$1</span>`,
   );
 
   return formatted;
@@ -150,7 +150,7 @@ export default function ProfilePage() {
     }
 
     const displayName =
-      formatName(visitorInfo) || visitorInfo?.display_name || "User";
+      formatName(visitorInfo) || visitorInfo?.display_name || t("default_user");
     const avatarUrl =
       visitorInfo?.profile_url || visitorInfo?.avatar_url || null;
     const bioRaw = visitorInfo?.bio || "";
@@ -164,7 +164,7 @@ export default function ProfilePage() {
 
     return (
       <MobilePageContainer noPadding>
-        <div className="bg-white dark:bg-black pb-6">
+        <div className="bg-white dark:bg-black pb-4">
           {/* Header */}
           <div className="sticky top-0 z-40 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-100 dark:border-[#2C2C2E] px-4 h-14 flex items-center justify-between">
             <button
@@ -210,12 +210,10 @@ export default function ProfilePage() {
 
               <h1 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-1">
                 {displayName}
-                {/* Example Verification Badge if needed later */}
-                {/* <CheckBadge size={16} className="text-blue-500 fill-blue-500 text-white" /> */}
               </h1>
 
               <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
-                {visitorInfo?.title || "Farming Enthusiast"}
+                {visitorInfo?.title || t("default_role")}
               </p>
 
               {/* Bio Section */}
@@ -260,10 +258,10 @@ export default function ProfilePage() {
                 ) : (
                   <>
                     <button className="flex-1 h-10 bg-green-600 rounded-lg font-semibold text-sm text-white active:scale-[0.98] transition-transform shadow-lg shadow-green-600/20">
-                      Follow
+                      {t("follow")}
                     </button>
                     <button className="flex-1 h-10 bg-gray-100 dark:bg-[#1C1C1E] rounded-lg font-semibold text-sm text-gray-900 dark:text-white active:scale-[0.98] transition-transform">
-                      Message
+                      {t("message_btn")}
                     </button>
                   </>
                 )}
@@ -370,42 +368,39 @@ export default function ProfilePage() {
   const shortRaw = bioRaw.slice(0, shortLimit);
   const shortFormatted = formatBio(shortRaw);
 
-  const handleProfileShare = async ()=>{
+  const handleProfileShare = async () => {
     const result = await shareContent({
-      title : "Checkout this user...",
-      id : user?.id,
-      text : "See this users profile , how he used Agropeer",
-      route : "profile"
+      title: t("share_profile_title"),
+      id: user?.id,
+      text: t("share_profile_text"),
+      route: "profile",
     });
-      if (result.platform === "native") {
-        console.log("✔ Shared via native bottom sheet");
-      }
+    if (result.platform === "native") {
+      console.log("✔ Shared via native bottom sheet");
+    }
 
-      if (result.platform === "web") {
-        console.log("🌍 Shared via browser share dialog");
-      }
+    if (result.platform === "web") {
+      console.log("🌍 Shared via browser share dialog");
+    }
 
-      if (result.platform === "copy") {
-        showToast("info", "📋 Link copied to clipboard!");
-      }
+    if (result.platform === "copy") {
+      showToast("info", `📋 ${t("share_copy_success")}`);
+    }
 
-      if (!result.success) {
-        return;
-      }
-    console.log("Share response is :",share);
-  }
+    if (!result.success) {
+      return;
+    }
+    console.log("Share response is :", share);
+  };
 
   return (
     <MobilePageContainer noPadding>
-      <div className="bg-white dark:bg-black pb-6">
+      <div className="bg-white dark:bg-black pb-4">
         {/* Sticky Header */}
         <div className="sticky top-0 z-40 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-100 dark:border-[#2C2C2E] px-4 h-14 flex items-center justify-between">
           <span className="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
-            {user?.email ? user.email.split("@")[0] : "Profile"}
-            <BadgeCheck
-              size={16}
-              className=" fill-green-500 text-white"
-            />
+            {user?.email ? user.email.split("@")[0] : t("profile")}
+            <BadgeCheck size={16} className=" fill-green-500 text-white" />
           </span>
           <div className="flex items-center gap-2">
             <button
@@ -449,7 +444,7 @@ export default function ProfilePage() {
 
             <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
               {/* Placeholder for role/title if available later */}
-              Community Member
+              {t("community_member")}
             </p>
 
             {/* Stats Row (Optional Instagram style feel) */}
@@ -496,7 +491,7 @@ export default function ProfilePage() {
                   onClick={() => router.push("/profile/edit")}
                   className="text-gray-400 italic hover:text-green-600 w-full text-center"
                 >
-                  {t("not_added") || "Add a bio to your profile"}
+                  {t("add_bio_placeholder") || "Add a bio to your profile"}
                 </button>
               )}
             </div>
@@ -509,11 +504,11 @@ export default function ProfilePage() {
               >
                 {t("edit_profile")}
               </button>
-              <button 
+              <button
                 className="flex-1 h-10 bg-gray-100 dark:bg-[#1C1C1E] rounded-lg font-semibold text-sm text-gray-900 dark:text-white active:scale-[0.98] transition-transform"
                 onClick={handleProfileShare}
               >
-                Share Profile
+                {t("share_profile")}
               </button>
             </div>
           </div>

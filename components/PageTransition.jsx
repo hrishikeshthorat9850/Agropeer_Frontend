@@ -14,7 +14,14 @@ export default function PageTransition({ children }) {
   const stablePath = normalizePath(path);
 
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence
+      mode="wait"
+      onExitComplete={() => {
+        if (typeof window !== "undefined") {
+          window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+        }
+      }}
+    >
       <motion.div
         key={stablePath}
         initial={{ opacity: 0 }}

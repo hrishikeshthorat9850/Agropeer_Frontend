@@ -64,7 +64,7 @@ export default function PostHeader({
     // Filter out large files
     const validFiles = files.filter((file) => {
       if (file.size > MAX_SIZE) {
-        alert(`File "${file.name}" is too large! Maximum size is 5MB.`);
+        showToast("error", t("file_too_large_error"));
         return false;
       }
       return true;
@@ -76,11 +76,7 @@ export default function PostHeader({
     const total = currentCount + validFiles.length;
 
     if (total > 12) {
-      alert(
-        `You can only upload up to 12 images. You can add ${
-          12 - currentCount
-        } more.`,
-      );
+      showToast("error", t("max_images_error"));
       return;
     }
     setEditImages((prev) => [...prev, ...validFiles]);
@@ -148,15 +144,12 @@ export default function PostHeader({
       // Close options if open (handled by parent usually, but we can try)
       if (showOptions && onOptionsClick) onOptionsClick();
 
-      showToast(
-        "success",
-        t("post_updated_success") || "Post updated successfully",
-      );
+      showToast("success", t("post_updated_success"));
 
       // Force refresh if needed, but onPostUpdated should handle local UI
     } catch (err) {
       console.error(err);
-      showToast("error", t("edit_post_error") + " " + (err.message || ""));
+      showToast("error", t("edit_post_error"));
     } finally {
       setUploading(false);
     }
@@ -177,7 +170,7 @@ export default function PostHeader({
     if (error) {
       showToast("error", t("report_post_error"));
     } else {
-      showToast("success", t("post_reported_success") || "Report submitted");
+      showToast("success", t("post_reported_success"));
     }
 
     setModal(null);
@@ -212,11 +205,13 @@ export default function PostHeader({
                   undefined
                 }
                 alt={formatName(post?.userinfo)}
-                onClick={() => {
-                  // ENHANCED: Use push() with smooth transition instead of router.push()
-                  // PRESERVED: All other behavior unchanged
-                  push("/profile");
-                }}
+                onClick={() =>
+                  push(
+                    post?.userinfo?.id
+                      ? `/profile?id=${post.userinfo.id}`
+                      : "/profile",
+                  )
+                }
                 sx={{
                   width: 48,
                   height: 48,
@@ -231,11 +226,13 @@ export default function PostHeader({
             <div>
               <h3
                 className="font-display font-bold text-gray-900 dark:text-gray-100 text-[0.95rem] cursor-pointer hover:underline"
-                onClick={() => {
-                  // ENHANCED: Use push() with smooth transition instead of router.push()
-                  // PRESERVED: All other behavior unchanged
-                  push("/profile");
-                }}
+                onClick={() =>
+                  push(
+                    post?.userinfo?.id
+                      ? `/profile?id=${post.userinfo.id}`
+                      : "/profile",
+                  )
+                }
               >
                 {post?.userinfo?.display_name
                   ? post?.userinfo?.display_name

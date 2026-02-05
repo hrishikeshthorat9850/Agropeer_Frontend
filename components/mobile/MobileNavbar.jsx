@@ -19,6 +19,7 @@ export default function MobileNavbar() {
   const [notificationsUnreadCount, setNotificationsUnreadCount] = useState(0);
   const { locale, setLocale, LOCALE_NAMES, SUPPORTED_LOCALES } = useLanguage();
   const [langOpen, setLangOpen] = useState(false);
+  const { t } = useLanguage();
 
   const langRef = useRef(null);
 
@@ -208,7 +209,7 @@ export default function MobileNavbar() {
             openSidebar();
           }}
           className="p-2 active:scale-95 transition flex-shrink-0 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800"
-          aria-label="Open menu"
+          aria-label={t("open_menu") || "Open menu"}
         >
           <FaBars className="text-[24px] text-zinc-800 dark:text-zinc-100" />
         </button>
@@ -271,12 +272,9 @@ export default function MobileNavbar() {
                   exit={{ opacity: 0, y: -8, scale: 0.96 }}
                   transition={{ duration: 0.2, ease: "easeOut" }}
                   className="
-                    absolute right-0 mt-3 w-48 p-2 
-                    rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border 
-                    bg-white/90 dark:bg-[#1a1a1a]/95 
-                    backdrop-blur-2xl 
-                    border-zinc-100 dark:border-zinc-800
-                    overflow-hidden origin-top-right z-50
+                    absolute right-0 mt-3 w-48 p-2 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border 
+                    bg-white dark:bg-[#1a1a1a] backdrop-blur-2xl 
+                    border-zinc-100 dark:border-zinc-800 overflow-hidden origin-top-right z-50
                   "
                 >
                   {locales.map((l) => (

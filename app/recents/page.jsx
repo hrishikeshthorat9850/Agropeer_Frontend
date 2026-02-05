@@ -28,13 +28,13 @@ export default function RecentsPage() {
       try {
         const params = new URLSearchParams({
           userId: user.id,
-          limit: "20",
+          limit: "1000",
           orderBy: "created_at",
           order: "desc",
         });
 
         const response = await fetch(
-          `${BASE_URL}/api/posts?${params.toString()}`
+          `${BASE_URL}/api/posts?${params.toString()}`,
         );
         const result = await response.json();
 
@@ -45,7 +45,7 @@ export default function RecentsPage() {
               userinfo: post.userinfo || {},
               post_comments: post.post_comments || [],
               post_likes: post.post_likes || [],
-            }))
+            })),
           );
         } else {
           setAllPosts([]);
