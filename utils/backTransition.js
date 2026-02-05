@@ -28,7 +28,7 @@
 // CONFIGURATION
 // ============================================================================
 
-const TRANSITION_DURATION = 300; // ms - matches CSS animation duration
+const TRANSITION_DURATION = 200; // ms - Material Design 3 standard (180-200ms for native feel)
 const TRANSITION_CLASS_EXIT = 'back-transition-exit';
 const TRANSITION_CLASS_ENTER = 'back-transition-enter';
 
@@ -47,6 +47,12 @@ const beforeBackCallbacks = new Set();
  * @type {boolean}
  */
 let isTransitioning = false;
+
+/**
+ * Whether enter animation is already playing (prevents duplicate animations)
+ * @type {boolean}
+ */
+let isEnterAnimationPlaying = false;
 
 /**
  * The main content container element (usually body or #__next)
@@ -97,6 +103,10 @@ function playExitAnimation() {
       return;
     }
 
+    // Force GPU acceleration for smooth animation
+    container.style.transform = 'translateZ(0)';
+    container.style.willChange = 'transform, opacity';
+
     // Add exit class
     container.classList.add(TRANSITION_CLASS_EXIT);
     
@@ -111,11 +121,11 @@ function playExitAnimation() {
 
     container.addEventListener('animationend', handleAnimationEnd);
     
-    // Fallback timeout (safety net)
+    // Fallback timeout (safety net) - shorter for faster feel
     setTimeout(() => {
       container.removeEventListener('animationend', handleAnimationEnd);
       resolve();
-    }, TRANSITION_DURATION + 50);
+    }, TRANSITION_DURATION + 20);
   });
 }
 
@@ -124,10 +134,22 @@ function playExitAnimation() {
  * This is called after navigation completes
  */
 function playEnterAnimation() {
+  // Prevent duplicate enter animations
+  if (isEnterAnimationPlaying) {
+    return;
+  }
+
   if (typeof window === 'undefined' || !document) return;
 
   const container = getContentContainer();
   if (!container) return;
+
+  // Mark as playing to prevent duplicates
+  isEnterAnimationPlaying = true;
+
+  // Force GPU acceleration for smooth animation
+  container.style.transform = 'translateZ(0)';
+  container.style.willChange = 'transform, opacity';
 
   // Remove exit class if present
   container.classList.remove(TRANSITION_CLASS_EXIT);
@@ -138,7 +160,11 @@ function playEnterAnimation() {
   // Remove enter class after animation completes
   const handleAnimationEnd = () => {
     container.classList.remove(TRANSITION_CLASS_ENTER);
+    // Remove will-change for better performance after animation
+    container.style.willChange = '';
     container.removeEventListener('animationend', handleAnimationEnd);
+    // Reset flag after animation completes
+    isEnterAnimationPlaying = false;
   };
 
   container.addEventListener('animationend', handleAnimationEnd);
@@ -146,8 +172,11 @@ function playEnterAnimation() {
   // Fallback cleanup
   setTimeout(() => {
     container.classList.remove(TRANSITION_CLASS_ENTER);
+    container.style.willChange = '';
     container.removeEventListener('animationend', handleAnimationEnd);
-  }, TRANSITION_DURATION + 50);
+    // Reset flag
+    isEnterAnimationPlaying = false;
+  }, TRANSITION_DURATION + 20);
 }
 
 /**
@@ -161,6 +190,11 @@ function cleanupTransitionClasses() {
   
   container.classList.remove(TRANSITION_CLASS_EXIT);
   container.classList.remove(TRANSITION_CLASS_ENTER);
+  // Remove will-change for better performance
+  container.style.willChange = '';
+  // Reset flags
+  isEnterAnimationPlaying = false;
+  isTransitioning = false;
 }
 
 // ============================================================================
@@ -209,20 +243,46 @@ export async function playBackAnimation(navigationCallback, options = {}) {
     });
     await Promise.all(callbackPromises);
 
-    // Play exit animation
-    await playExitAnimation();
+    // Save scroll position before navigating back
+    if (typeof window !== 'undefined') {
+      const currentPath = window.location.pathname;
+      const scrollY = window.scrollY || window.pageYOffset || 0;
+      // Store in sessionStorage for persistence across navigation
+      if (scrollY > 0) {
+        sessionStorage.setItem(`scroll_${currentPath}`, scrollY.toString());
+      }
+    }
 
-    // Execute the original navigation callback
-    // This preserves existing behavior exactly
+    // Start exit animation immediately (non-blocking)
+    playExitAnimation();
+
+    // Execute navigation immediately for instant response (native Android feel)
     navigationCallback();
 
-    // Play enter animation after navigation (if not skipped)
+    // Play enter animation immediately after navigation (simultaneous with exit)
     if (!options.skipEnterAnimation) {
-      // Use requestAnimationFrame to ensure DOM has updated
+      // Use requestAnimationFrame to ensure DOM has updated, but don't wait
       requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          playEnterAnimation();
-        });
+        playEnterAnimation();
+        
+        // Restore scroll position after navigation completes (native Android behavior)
+        if (typeof window !== "undefined") {
+          const currentPath = window.location.pathname;
+          const savedScroll = sessionStorage.getItem(`scroll_${currentPath}`);
+          if (savedScroll) {
+            const scrollY = parseInt(savedScroll);
+            if (scrollY > 0) {
+              // Small delay to ensure DOM is ready
+              setTimeout(() => {
+                window.scrollTo({
+                  top: scrollY,
+                  left: 0,
+                  behavior: "instant",
+                });
+              }, 50);
+            }
+          }
+        }
       });
     }
   } catch (error) {
@@ -233,7 +293,9 @@ export async function playBackAnimation(navigationCallback, options = {}) {
     // Reset transition state after a short delay
     setTimeout(() => {
       isTransitioning = false;
-    }, TRANSITION_DURATION);
+      // Also reset enter animation flag in case it got stuck
+      isEnterAnimationPlaying = false;
+    }, TRANSITION_DURATION + 50);
   }
 }
 
@@ -354,6 +416,7 @@ export function routerBackWithTransition(router) {
 export function resetBackTransition() {
   beforeBackCallbacks.clear();
   isTransitioning = false;
+  isEnterAnimationPlaying = false;
   contentContainer = null;
   cleanupTransitionClasses();
 }
@@ -374,16 +437,11 @@ export function initBackTransition() {
   // Clean up on page unload
   window.addEventListener('beforeunload', cleanupTransitionClasses);
   
-  // Handle popstate (browser back/forward buttons)
-  // This ensures transitions work for browser navigation too
-  window.addEventListener('popstate', () => {
-    // Small delay to let navigation complete
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        playEnterAnimation();
-      });
-    });
-  });
+  // NOTE: Removed popstate listener here because:
+  // 1. playBackAnimation() already handles enter animation after navigation
+  // 2. Having both causes duplicate animations and shaking
+  // 3. The popstate listener was causing the enter animation to fire twice
+  // If needed for browser back button (non-Capacitor), handle it separately
 
   console.log('[backTransition] Initialized');
 }

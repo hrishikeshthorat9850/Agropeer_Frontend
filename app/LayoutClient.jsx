@@ -3,7 +3,6 @@ import { usePathname } from "next/navigation";
 import AppProviders from "./AppProviders";
 import TopLoader from "../components/TopLoader";
 import OfflineBanner from "../components/OfflineBanner";
-import PageTransition from "../components/PageTransition";
 import AIChatbotButton from "@/components/chatbot/AIChatbotButton";
 import AIChatWindow from "@/components/chatbot/AIChatWindow";
 import AndroidNotificationHandler from "@/components/AndroidNotificationHandler";
@@ -114,20 +113,21 @@ export default function ClientLayout({ children }) {
           {/* 1. TOP: Mobile Navbar (Fixed) */}
           {showNavbar && <MobileNavbar onOpenAI={() => setAiOpen(true)} />}
 
-          {/* 2. MIDDLE: Content Area */}
+          {/* 2. MIDDLE: Content Area - padding ensures every page starts below navbar and above bottom nav */}
           <main
+            id="main-content"
+            role="main"
             className={`
               w-full min-h-screen 
               ${showNavbar ? "pt-mobile-layout" : ""} 
               ${showNavbar && !keyboardOpen ? "pb-mobile-layout" : ""}
             `}
+            style={showNavbar ? { minHeight: '100dvh' } : undefined}
           >
-            <PageTransition>
-              {/* MobilePageLayout provides consistent logic but NO extra padding if navbar/bottomnav are outside */}
-              <MobilePageLayout hasNavbar={showNavbar}>
-                {children}
-              </MobilePageLayout>
-            </PageTransition>
+            {/* MobilePageLayout provides consistent logic but NO extra padding if navbar/bottomnav are outside */}
+            <MobilePageLayout hasNavbar={showNavbar}>
+              {children}
+            </MobilePageLayout>
           </main>
 
           {/* 3. BOTTOM: Mobile Bottom Nav (Fixed) */}

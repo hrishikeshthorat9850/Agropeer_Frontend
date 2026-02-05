@@ -163,6 +163,8 @@ function playEnterAnimation(type = TRANSITION_TYPES.SLIDE_LEFT) {
   const handleAnimationEnd = () => {
     container.classList.remove(TRANSITION_CLASS_ENTER_FORWARD);
     container.removeAttribute('data-transition-type');
+    // Remove will-change for better performance after animation
+    container.style.willChange = '';
     container.removeEventListener('animationend', handleAnimationEnd);
   };
 
@@ -172,6 +174,7 @@ function playEnterAnimation(type = TRANSITION_TYPES.SLIDE_LEFT) {
   setTimeout(() => {
     container.classList.remove(TRANSITION_CLASS_ENTER_FORWARD);
     container.removeAttribute('data-transition-type');
+    container.style.willChange = '';
     container.removeEventListener('animationend', handleAnimationEnd);
   }, TRANSITION_DURATION + 50);
 }
@@ -188,6 +191,8 @@ function cleanupTransitionClasses() {
   container.classList.remove(TRANSITION_CLASS_EXIT_FORWARD);
   container.classList.remove(TRANSITION_CLASS_ENTER_FORWARD);
   container.removeAttribute('data-transition-type');
+  // Remove will-change for better performance
+  container.style.willChange = '';
 }
 
 // ============================================================================
@@ -250,9 +255,7 @@ export async function navigateWithTransition(navigationCallback, options = {}) {
     if (!skipEnterAnimation) {
       // Use requestAnimationFrame to ensure DOM has updated
       requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          playEnterAnimation(type);
-        });
+        playEnterAnimation(type);
       });
     }
   } catch (error) {
@@ -376,13 +379,14 @@ export function initPageTransition() {
     const handleRouteChange = () => {
       // Small delay to let navigation complete
       requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          // Only play enter animation if we're not in a back transition
-          const container = getContentContainer();
-          if (container && !container.classList.contains('back-transition-exit')) {
-            playEnterAnimation(currentTransitionType);
-          }
-        });
+        // Only play enter animation if we're not in a back transition
+        // Check for both exit and enter classes to avoid conflicts
+        const container = getContentContainer();
+        if (container && 
+            !container.classList.contains('back-transition-exit') &&
+            !container.classList.contains('back-transition-enter')) {
+          playEnterAnimation(currentTransitionType);
+        }
       });
     };
 
