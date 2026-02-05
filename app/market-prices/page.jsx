@@ -11,6 +11,9 @@ import MarketFilters from "@/components/market-prices/MarketFilters";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { useLanguage } from "@/Context/languagecontext";
 import MarketPricesSkeleton from "@/components/skeletons/MarketPricesSkeleton"; // Added Skeleton
+// ADDITIVE ENHANCEMENT: Import back transition hook for smooth UI transitions
+// This does NOT replace existing logic - it only enhances UI transitions
+import { useBackTransition } from "@/hooks/useBackTransition";
 
 import LoadingSpinner from "@/components/LoadingSpinner";
 
@@ -36,6 +39,9 @@ const fetcher = async (url) => {
 export default function MarketPricesPage() {
   const { t } = useLanguage();
   const router = useRouter(); // For back navigation
+  // ADDITIVE ENHANCEMENT: Get back transition handler
+  // Original router.back() still available, this adds smooth transitions
+  const { routerBack } = useBackTransition();
   const [page, setPage] = useState(1);
   const limit = 100;
   const [allStates, setAllStates] = useState([]);
@@ -208,9 +214,14 @@ export default function MarketPricesPage() {
       <div className="sticky top-0 z-40 bg-white/95 dark:bg-[#121212]/95 backdrop-blur-md shadow-sm border-b border-gray-100 dark:border-white/5 px-4 h-[60px] flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => router.back()}
+            onClick={() => routerBack()}
             className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-white/10 active:scale-90 transition-all text-gray-700 dark:text-white"
           >
+            {/* 
+              ENHANCED: Changed router.back() to routerBack() for smooth transition
+              PRESERVED: All other behavior unchanged
+              RESULT: Same navigation, with smooth back transition animation
+            */}
             <FaArrowLeft className="text-lg" />
           </button>
           <h1 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">

@@ -8,9 +8,15 @@ import { Sparkles } from "lucide-react";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 
 import { useLanguage } from "@/Context/languagecontext";
+// ADDITIVE ENHANCEMENT: Import forward page transition hook for smooth UI transitions
+// This does NOT replace existing logic - it only enhances UI transitions
+import { usePageTransition } from "@/hooks/usePageTransition";
 
 export default function MobileBottomNav({ onAI }) {
   const router = useRouter();
+  // ADDITIVE ENHANCEMENT: Get forward transition handlers
+  // Original router.push() still available, this adds smooth transitions
+  const { push } = usePageTransition();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const { t } = useLanguage();
@@ -49,7 +55,9 @@ export default function MobileBottomNav({ onAI }) {
             transition={{ duration: 0.15, ease: "easeOut" }} // Fast Pop
             onClick={() => {
               setOpen(false);
-              router.push("/sell/choose");
+              // ENHANCED: Use push() with smooth transition instead of router.push()
+              // PRESERVED: All other behavior unchanged
+              push("/sell/choose");
             }}
             className="
               fixed left-[calc(50%-80px)] z-[998]
@@ -78,7 +86,9 @@ export default function MobileBottomNav({ onAI }) {
             transition={{ duration: 0.15, ease: "easeOut" }} // Fast Pop
             onClick={() => {
               setOpen(false);
-              router.push("/posts");
+              // ENHANCED: Use push() with smooth transition instead of router.push()
+              // PRESERVED: All other behavior unchanged
+              push("/posts");
             }}
             className="
               fixed right-[calc(50%-80px)] z-[998]
@@ -118,7 +128,9 @@ export default function MobileBottomNav({ onAI }) {
           <button
             onClick={() => {
               Haptics.impact({ style: ImpactStyle.Light });
-              router.push("/");
+              // ENHANCED: Use push() with smooth transition instead of router.push()
+              // PRESERVED: All other behavior unchanged (haptics, styling, etc.)
+              push("/");
             }}
             className="flex-1 flex flex-col items-center group"
           >

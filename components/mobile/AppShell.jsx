@@ -6,6 +6,9 @@ import { Toast } from "@capacitor/toast"; // Import Toast
 // import ExitConfirmModal from "./ExitConfirmModal"; // Removed
 import useToast from "@/hooks/useToast";
 import { useLanguage } from "@/Context/languagecontext";
+// ADDITIVE ENHANCEMENT: Import smooth back transition utility
+// This does NOT replace existing logic - it only enhances UI transitions
+import { playBackAnimation } from "@/utils/backTransition";
 
 // Define the timeout duration for the double-tap (e.g., 2 seconds)
 const DOUBLE_BACK_TIMEOUT = 2000;
@@ -20,12 +23,34 @@ export default function AppShell({ children }) {
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
 
+    /**
+     * EXISTING BACK BUTTON HANDLER (PRESERVED)
+     * 
+     * Original logic remains unchanged:
+     * - Checks canGoBack flag
+     * - Implements double-tap-to-exit
+     * - Shows toast for exit confirmation
+     * - Manages timer state
+     * 
+     * ENHANCEMENT (Additive):
+     * - Wraps window.history.back() with smooth transition
+     * - Does NOT modify decision logic
+     * - Does NOT change exit app behavior
+     * - Does NOT affect double-tap timing
+     */
     const listener = App.addListener("backButton", ({ canGoBack }) => {
       if (canGoBack) {
-        window.history.back();
+        // ENHANCED: Wrap existing navigation with smooth transition
+        // Original behavior: window.history.back()
+        // Enhanced behavior: playBackAnimation(() => window.history.back())
+        // This preserves ALL existing logic while adding UI transitions
+        playBackAnimation(() => {
+          window.history.back();
+        });
         return;
       }
 
+      // EXIT APP LOGIC (Unchanged - no transition needed for immediate exit)
       if (backPressedOnce.current) {
         App.exitApp();
         return;

@@ -6,6 +6,9 @@ import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import LoadingSpinner from "@/components/LoadingSpinner";
+// ADDITIVE ENHANCEMENT: Import forward page transition hook for smooth UI transitions
+// This does NOT replace existing logic - it only enhances UI transitions
+import { usePageTransition } from "@/hooks/usePageTransition";
 
 // Lazy load RichTextEditor - heavy editor component, browser-only
 const RichTextEditor = dynamic(() => import("@/components/RichTextEditor"), {
@@ -19,6 +22,9 @@ const RichTextEditor = dynamic(() => import("@/components/RichTextEditor"), {
 
 export default function StoryFormModal({ open, onClose, story }) {
   const router = useRouter();
+  // ADDITIVE ENHANCEMENT: Get forward transition handlers
+  // Original router.push() still available, this adds smooth transitions
+  const { push } = usePageTransition();
   const { t } = useLanguage();
   const [author, setAuthor] = useState("");
   const [title, setTitle] = useState("");
@@ -94,7 +100,9 @@ export default function StoryFormModal({ open, onClose, story }) {
 
     localStorage.setItem("farmer_stories", JSON.stringify(updatedStories));
     onClose();
-    router.push("/farmer-story");
+    // ENHANCED: Use push() with smooth transition instead of router.push()
+    // PRESERVED: All other behavior unchanged (localStorage, onClose, etc.)
+    push("/farmer-story");
   };
 
   // Stagger container variants

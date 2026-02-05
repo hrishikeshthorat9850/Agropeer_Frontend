@@ -10,11 +10,17 @@ import { Capacitor } from "@capacitor/core";
 import Router from "next/router";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useLanguage } from "@/Context/languagecontext";
+// ADDITIVE ENHANCEMENT: Import forward page transition hook for smooth UI transitions
+// This does NOT replace existing logic - it only enhances UI transitions
+import { usePageTransition } from "@/hooks/usePageTransition";
 
 export default function ChatsPage() {
   const { user: loggedInUser, loading } = useLogin();
   const { t } = useLanguage();
   const router = useRouter();
+  // ADDITIVE ENHANCEMENT: Get forward transition handlers
+  // Original router.push() still available, this adds smooth transitions
+  const { push } = usePageTransition();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const conversationIdFromUrl = searchParams.get("conversationId") || searchParams.get("conversation");
@@ -807,7 +813,9 @@ export default function ChatsPage() {
         conversation_id: conversationId,
         id: contact.id, // Ensure ID is set for matching
       });
-      router.push(`/selected-chat?conversationId=${contact.conversation_id}`);
+      // ENHANCED: Use push() with smooth transition instead of router.push()
+      // PRESERVED: All other behavior unchanged (state updates, refs, etc.)
+      push(`/selected-chat?conversationId=${contact.conversation_id}`);
       // Optimistically reset unread count when selecting conversation
       setContacts((prevContacts) => {
         if (!Array.isArray(prevContacts)) return prevContacts;

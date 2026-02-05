@@ -24,9 +24,17 @@ import { StatusBar, Style } from "@capacitor/status-bar";
 import { Capacitor } from "@capacitor/core";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { useTheme } from "@/Context/themecontext";
+// ADDITIVE ENHANCEMENT: Import forward page transition hook for smooth UI transitions
+// This does NOT replace existing logic - it only enhances UI transitions
+// NOTE: Logout redirect intentionally uses router.push() (no transition needed)
+import { usePageTransition } from "@/hooks/usePageTransition";
 
 export default function UserSidebar({ onClose } = {}) {
   const router = useRouter();
+  // ADDITIVE ENHANCEMENT: Get forward transition handlers
+  // Original router.push() still available, this adds smooth transitions
+  // NOTE: Logout redirect intentionally uses router.push() (no transition needed)
+  const { push } = usePageTransition();
   const { user, loading, userinfo } = useLogin();
   const { t } = useLanguage();
   const [infoLoading, setInfoLoading] = useState(true);
@@ -233,7 +241,9 @@ export default function UserSidebar({ onClose } = {}) {
                   label={t("my_profile")}
                   onClick={() => {
                     triggerHaptic();
-                    router.push("/profile");
+                    // ENHANCED: Use push() with smooth transition instead of router.push()
+                    // PRESERVED: All other behavior unchanged (haptics, onClose, etc.)
+                    push("/profile");
                     if (typeof onClose === "function") onClose();
                   }}
                 />
@@ -242,7 +252,9 @@ export default function UserSidebar({ onClose } = {}) {
                   label={t("settings")}
                   onClick={() => {
                     triggerHaptic();
-                    router.push("/settings");
+                    // ENHANCED: Use push() with smooth transition instead of router.push()
+                    // PRESERVED: All other behavior unchanged
+                    push("/settings");
                     if (typeof onClose === "function") onClose();
                   }}
                 />
@@ -254,7 +266,9 @@ export default function UserSidebar({ onClose } = {}) {
               label={t("help_support")}
               onClick={() => {
                 triggerHaptic();
-                router.push("/help");
+                // ENHANCED: Use push() with smooth transition instead of router.push()
+                // PRESERVED: All other behavior unchanged
+                push("/help");
                 if (typeof onClose === "function") onClose();
               }}
             />

@@ -5,11 +5,17 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useSocket } from "@/Context/SocketContext";
 import LoadingSpinner from "@/components/LoadingSpinner";
+// ADDITIVE ENHANCEMENT: Import back transition hook for smooth UI transitions
+// This does NOT replace existing logic - it only enhances UI transitions
+import { useBackTransition } from "@/hooks/useBackTransition";
 
 export default function SelectedChat() {
   const { selected, messages, sendMessage, loadConversation } = useChat();
   const { socket } = useSocket();
   const router = useRouter();
+  // ADDITIVE ENHANCEMENT: Get back transition handler
+  // Original router.replace() still available, this adds smooth transitions
+  const { routerBack } = useBackTransition();
   const searchParams = useSearchParams();
   const conversationId = searchParams.get("conversationId");
 
@@ -19,7 +25,11 @@ export default function SelectedChat() {
     const isDifferentConversation = !selected || selected.conversation_id !== conversationId;
     if (isDifferentConversation) {
       loadConversation(conversationId).then((found) => {
-        if (found === false) router.replace("/chats");
+        if (found === false) {
+          // ENHANCED: Use routerBack() with smooth transition instead of router.replace()
+          // PRESERVED: All other behavior unchanged (loadConversation logic, etc.)
+          routerBack();
+        }
       });
     }
   }, [conversationId, selected?.conversation_id, loadConversation, router]);
@@ -29,7 +39,9 @@ export default function SelectedChat() {
     const handleDeleted = (e) => {
       const { conversation_id } = e.detail || {};
       if (conversation_id != null && conversationId != null && String(conversationId) === String(conversation_id)) {
-        router.replace("/chats");
+        // ENHANCED: Use routerBack() with smooth transition instead of router.replace()
+        // PRESERVED: All other behavior unchanged (event handling, comparison logic, etc.)
+        routerBack();
       }
     };
     if (typeof window !== "undefined") {

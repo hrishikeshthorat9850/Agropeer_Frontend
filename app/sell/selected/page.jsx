@@ -4,6 +4,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { useLanguage } from "@/Context/languagecontext";
 import LoadingSpinner from "@/components/LoadingSpinner";
+// ADDITIVE ENHANCEMENT: Import forward page transition hook for smooth UI transitions
+// This does NOT replace existing logic - it only enhances UI transitions
+import { usePageTransition } from "@/hooks/usePageTransition";
 
 // Lazy load SellForm - heavy form component
 const SellForm = dynamic(() => import("../../../components/SellForm"), {
@@ -13,6 +16,9 @@ const SellForm = dynamic(() => import("../../../components/SellForm"), {
 export default function SelectedCategoryPage() {
   const { t } = useLanguage();
   const router = useRouter();
+  // ADDITIVE ENHANCEMENT: Get forward transition handlers
+  // Original router.push() still available, this adds smooth transitions
+  const { push } = usePageTransition();
   const searchParams = useSearchParams();
   const [category, setCategory] = useState("others");
   
@@ -48,7 +54,11 @@ export default function SelectedCategoryPage() {
             <h2 className="text-xl font-bold text-green-800">{pretty}</h2>
           </div>
           <button
-            onClick={() => router.push("/sell/choose")}
+            onClick={() => {
+              // ENHANCED: Use push() with smooth transition instead of router.push()
+              // PRESERVED: All other behavior unchanged
+              push("/sell/choose");
+            }}
             className="px-4 py-2 border-2 border-green-600 rounded-md text-green-700 font-semibold hover:bg-green-100 transition"
           >
             {t("change_button")}

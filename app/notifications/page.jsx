@@ -15,10 +15,16 @@ import useToast from "@/hooks/useToast";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
 import { useLanguage } from "@/Context/languagecontext";
 import LoadingSpinner from "@/components/LoadingSpinner";
+// ADDITIVE ENHANCEMENT: Import forward page transition hook for smooth UI transitions
+// This does NOT replace existing logic - it only enhances UI transitions
+import { usePageTransition } from "@/hooks/usePageTransition";
 
 export default function NotificationsPage() {
   const { t } = useLanguage();
   const router = useRouter();
+  // ADDITIVE ENHANCEMENT: Get forward transition handlers
+  // Original router.push() still available, this adds smooth transitions
+  const { push } = usePageTransition();
   const { user, loading: authLoading, accessToken } = useLogin();
   const {
     notifications,
@@ -139,7 +145,9 @@ export default function NotificationsPage() {
 
   const handleNotificationClick = (notification) => {
     if (notification.link) {
-      router.push(notification.link);
+      // ENHANCED: Use push() with smooth transition instead of router.push()
+      // PRESERVED: All other behavior unchanged (link validation, etc.)
+      push(notification.link);
     }
   };
 

@@ -19,6 +19,9 @@ import OptionsPopup from "@/components/ui/menu/OptionsPopup";
 import { supabase } from "@/lib/supabaseClient";
 import { useLanguage } from "@/Context/languagecontext";
 import ImageUploadBox from "@/components/ui/ImageUploadBox";
+// ADDITIVE ENHANCEMENT: Import forward page transition hook for smooth UI transitions
+// This does NOT replace existing logic - it only enhances UI transitions
+import { usePageTransition } from "@/hooks/usePageTransition";
 
 export default function PostHeader({
   post,
@@ -36,6 +39,9 @@ export default function PostHeader({
   const { user } = useLogin();
   const { t } = useLanguage();
   const router = useRouter();
+  // ADDITIVE ENHANCEMENT: Get forward transition handlers
+  // Original router.push() still available, this adds smooth transitions
+  const { push } = usePageTransition();
 
   // Modal States
   const [modal, setModal] = useState(null); // "edit" | "report" | "delete"
@@ -206,7 +212,11 @@ export default function PostHeader({
                   undefined
                 }
                 alt={formatName(post?.userinfo)}
-                onClick={() => router.push("/profile")}
+                onClick={() => {
+                  // ENHANCED: Use push() with smooth transition instead of router.push()
+                  // PRESERVED: All other behavior unchanged
+                  push("/profile");
+                }}
                 sx={{
                   width: 48,
                   height: 48,
@@ -221,7 +231,11 @@ export default function PostHeader({
             <div>
               <h3
                 className="font-display font-bold text-gray-900 dark:text-gray-100 text-[0.95rem] cursor-pointer hover:underline"
-                onClick={() => router.push("/profile")}
+                onClick={() => {
+                  // ENHANCED: Use push() with smooth transition instead of router.push()
+                  // PRESERVED: All other behavior unchanged
+                  push("/profile");
+                }}
               >
                 {post?.userinfo?.display_name
                   ? post?.userinfo?.display_name

@@ -13,10 +13,16 @@ import {
 import { useLanguage } from "@/Context/languagecontext";
 import { useRouter } from "next/navigation";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
+// ADDITIVE ENHANCEMENT: Import back transition hook for smooth UI transitions
+// This does NOT replace existing logic - it only enhances UI transitions
+import { useBackTransition } from "@/hooks/useBackTransition";
 
 export default function HelpSupport() {
   const { t } = useLanguage();
   const router = useRouter();
+  // ADDITIVE ENHANCEMENT: Get back transition handler
+  // Original router.back() still available, this adds smooth transitions
+  const { routerBack } = useBackTransition();
 
   const faqs = [
     {
@@ -56,9 +62,13 @@ export default function HelpSupport() {
         <div className="sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-100 dark:border-[#2C2C2E]">
           <div className="flex items-center gap-3 px-4 h-14">
             <button
-              onClick={() => router.back()}
+              onClick={() => routerBack()}
               className="p-2 -ml-2 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-neutral-800 rounded-full transition-colors"
             >
+              {/* 
+                ENHANCED: Changed router.back() to routerBack() for smooth transition
+                PRESERVED: All other behavior unchanged
+              */}
               <ArrowLeft size={24} />
             </button>
             <h1 className="text-lg font-bold text-gray-900 dark:text-white">

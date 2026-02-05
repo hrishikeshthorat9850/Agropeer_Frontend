@@ -21,6 +21,9 @@ import { ProfileSkeleton } from "@/components/skeletons";
 import { supabase } from "@/lib/supabaseClient";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
 import {shareContent} from "@/utils/shareHandler"
+// ADDITIVE ENHANCEMENT: Import back transition hook for smooth UI transitions
+// This does NOT replace existing logic - it only enhances UI transitions
+import { useBackTransition } from "@/hooks/useBackTransition";
 // Formatter: links, mentions, hashtags, line breaks
 function formatBio(text) {
   if (!text) return "";
@@ -54,6 +57,9 @@ function formatBio(text) {
 export default function ProfilePage() {
   const { user, loading, userinfo } = useLogin();
   const router = useRouter();
+  // ADDITIVE ENHANCEMENT: Get back transition handler
+  // Original router.back() still available, this adds smooth transitions
+  const { routerBack } = useBackTransition();
   const searchParams = useSearchParams();
   const { t } = useLanguage();
 
@@ -130,9 +136,13 @@ export default function ProfilePage() {
               "The user you are looking for might have removed their profile."}
           </p>
           <button
-            onClick={() => router.back()}
+            onClick={() => routerBack()}
             className="px-6 py-3 bg-white dark:bg-[#1C1C1E] text-gray-900 dark:text-white font-medium rounded-xl shadow-sm border border-gray-200 dark:border-[#2C2C2E]"
           >
+            {/* 
+              ENHANCED: Changed router.back() to routerBack() for smooth transition
+              PRESERVED: All other behavior unchanged
+            */}
             {t("go_back")}
           </button>
         </div>
@@ -158,9 +168,13 @@ export default function ProfilePage() {
           {/* Header */}
           <div className="sticky top-0 z-40 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-100 dark:border-[#2C2C2E] px-4 h-14 flex items-center justify-between">
             <button
-              onClick={() => router.back()}
+              onClick={() => routerBack()}
               className="p-2 -ml-2 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-neutral-800 rounded-full transition-colors"
             >
+              {/* 
+                ENHANCED: Changed router.back() to routerBack() for smooth transition
+                PRESERVED: All other behavior unchanged
+              */}
               <ArrowLeft size={24} />
             </button>
             <span className="font-bold text-lg text-gray-900 dark:text-white truncate max-w-[200px]">

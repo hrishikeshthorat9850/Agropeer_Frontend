@@ -374,6 +374,235 @@ body.capacitor-platform-ios .sidebar-panel-position {
 }
 
 /* ------------------------------------------------------ */
+/* 🔙 SMOOTH BACK TRANSITIONS (Additive Enhancement)      */
+/* ------------------------------------------------------ */
+
+/**
+ * Back Transition Animations
+ * 
+ * PURPOSE:
+ * Provides smooth UI transitions when navigating back.
+ * These animations are ADDITIVE and do NOT interfere with
+ * existing navigation logic.
+ * 
+ * USAGE:
+ * Applied automatically by utils/backTransition.js
+ * Classes: .back-transition-exit, .back-transition-enter
+ * 
+ * INTEGRATION:
+ * - Works with existing AppShell.jsx back button handler
+ * - Enhances window.history.back() calls
+ * - Compatible with Next.js router.back()
+ * - Non-invasive: preserves all existing behavior
+ */
+
+/* Exit animation: Slide out to the right (like going back) */
+@keyframes back-exit {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0.7;
+    transform: translateX(20px);
+  }
+}
+
+/* Enter animation: Slide in from the left (like coming back) */
+@keyframes back-enter {
+  0% {
+    opacity: 0.7;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Apply exit animation */
+.back-transition-exit {
+  animation: back-exit 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  /* Preserve 3D transforms for better performance */
+  will-change: transform, opacity;
+}
+
+/* Apply enter animation */
+.back-transition-enter {
+  animation: back-enter 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  will-change: transform, opacity;
+}
+
+/* Reduce motion preference: disable animations for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .back-transition-exit,
+  .back-transition-enter {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Ensure smooth transitions on mobile */
+@media (max-width: 768px) {
+  .back-transition-exit,
+  .back-transition-enter {
+    /* Slightly faster on mobile for snappier feel */
+    animation-duration: 0.25s;
+  }
+}
+
+/* ------------------------------------------------------ */
+/* ➡️ SMOOTH FORWARD PAGE TRANSITIONS (Additive)         */
+/* ------------------------------------------------------ */
+
+/**
+ * Forward Page Navigation Transitions
+ * 
+ * PURPOSE:
+ * Provides smooth UI transitions when navigating forward to new pages.
+ * These animations are ADDITIVE and do NOT interfere with existing
+ * navigation logic or back transitions.
+ * 
+ * COORDINATION:
+ * - Uses distinct classes: page-transition-* (vs back-transition-*)
+ * - Prevents conflicts with back transition utility
+ * - Both can run independently
+ * 
+ * USAGE:
+ * Applied automatically by utils/pageTransition.js
+ * Classes: .page-transition-exit-forward, .page-transition-enter-forward
+ * 
+ * INTEGRATION:
+ * - Works with existing router.push() calls
+ * - Works with existing router.replace() calls
+ * - Compatible with Next.js Link components
+ * - Non-invasive: preserves all existing behavior
+ */
+
+/* Exit animation: Slide out to the left (Android forward navigation feel) */
+@keyframes page-exit-forward {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0.7;
+    transform: translateX(-20px);
+  }
+}
+
+/* Enter animation: Slide in from the right (like coming forward) */
+@keyframes page-enter-forward {
+  0% {
+    opacity: 0.7;
+    transform: translateX(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Fade animation variant */
+@keyframes page-exit-forward-fade {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes page-enter-forward-fade {
+  0% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Scale animation variant */
+@keyframes page-exit-forward-scale {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0.7;
+    transform: scale(0.98);
+  }
+}
+
+@keyframes page-enter-forward-scale {
+  0% {
+    opacity: 0.7;
+    transform: scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Apply exit animation (default: slide-left) */
+.page-transition-exit-forward {
+  animation: page-exit-forward 0.28s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  will-change: transform, opacity;
+}
+
+/* Apply enter animation (default: slide-left) */
+.page-transition-enter-forward {
+  animation: page-enter-forward 0.28s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  will-change: transform, opacity;
+}
+
+/* Fade variant */
+.page-transition-exit-forward[data-transition-type="fade"] {
+  animation: page-exit-forward-fade 0.28s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.page-transition-enter-forward[data-transition-type="fade"] {
+  animation: page-enter-forward-fade 0.28s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Scale variant */
+.page-transition-exit-forward[data-transition-type="scale"] {
+  animation: page-exit-forward-scale 0.28s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.page-transition-enter-forward[data-transition-type="scale"] {
+  animation: page-enter-forward-scale 0.28s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Reduce motion preference: disable animations for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .page-transition-exit-forward,
+  .page-transition-enter-forward {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Ensure smooth transitions on mobile */
+@media (max-width: 768px) {
+  .page-transition-exit-forward,
+  .page-transition-enter-forward {
+    /* Slightly faster on mobile for snappier feel */
+    animation-duration: 0.25s;
+  }
+}
+
+/* Prevent conflicts: ensure back and forward transitions don't overlap */
+.page-transition-exit-forward.back-transition-exit,
+.page-transition-enter-forward.back-transition-enter {
+  /* If both classes are present, prioritize back transition */
+  animation: none !important;
+}
+
+/* ------------------------------------------------------ */
 /* 🌑 PREMIUM DARK MODE                                   */
 /* ------------------------------------------------------ */
 

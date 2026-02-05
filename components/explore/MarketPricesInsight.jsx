@@ -1,14 +1,24 @@
 "use client";
 import { FaChartLine, FaEye } from "react-icons/fa";
 import { useLanguage } from "@/Context/languagecontext";
+// ADDITIVE ENHANCEMENT: Import forward page transition hook for smooth UI transitions
+// This does NOT replace existing logic - it only enhances UI transitions
+import { usePageTransition } from "@/hooks/usePageTransition";
 
 export default function MarketSection({ router }) {
   const { t } = useLanguage();
+  // ADDITIVE ENHANCEMENT: Get forward transition handlers
+  // Original router.push() still available, this adds smooth transitions
+  const { push } = usePageTransition();
 
   return (
     <section className="mb-8">
       <div
-        onClick={() => router.push("/market-prices")}
+        onClick={() => {
+          // ENHANCED: Use push() with smooth transition instead of router.push()
+          // PRESERVED: All other behavior unchanged
+          push("/market-prices");
+        }}
         className="
           relative overflow-hidden bg-gradient-to-br from-gray-900 to-gray-800 dark:from-black dark:to-gray-900 
           rounded-3xl p-6 shadow-xl shadow-gray-200 dark:shadow-none cursor-pointer group

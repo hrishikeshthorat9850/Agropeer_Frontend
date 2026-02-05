@@ -5,11 +5,17 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 
 import { useLanguage } from "@/Context/languagecontext";
+// ADDITIVE ENHANCEMENT: Import forward page transition hook for smooth UI transitions
+// This does NOT replace existing logic - it only enhances UI transitions
+import { usePageTransition } from "@/hooks/usePageTransition";
 
 const SLIDE_INTERVAL = 5500;
 
 export default function HomeBanner() {
   const router = useRouter();
+  // ADDITIVE ENHANCEMENT: Get forward transition handlers
+  // Original router.push() still available, this adds smooth transitions
+  const { push } = usePageTransition();
   const { t } = useLanguage();
 
   const slides = [
@@ -116,7 +122,9 @@ export default function HomeBanner() {
     clearInterval(timer.current);
 
     // open exact slide
-    router.push(slides[index].btnLink);
+    // ENHANCED: Use push() with smooth transition instead of router.push()
+    // PRESERVED: All other behavior unchanged
+    push(slides[index].btnLink);
 
     // resume after 2 seconds like JioKrishi
     setTimeout(() => {

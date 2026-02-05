@@ -14,6 +14,9 @@ import useToast from "@/hooks/useToast";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ImageUploadBox from "./ui/ImageUploadBox";
 import { apiRequest } from "@/utils/apiHelpers";
+// ADDITIVE ENHANCEMENT: Import forward page transition hook for smooth UI transitions
+// This does NOT replace existing logic - it only enhances UI transitions
+import { usePageTransition } from "@/hooks/usePageTransition";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
@@ -329,6 +332,9 @@ export default function SellForm({
 
   const { position, error, loading } = useGeolocation();
   const router = useRouter();
+  // ADDITIVE ENHANCEMENT: Get forward transition handlers
+  // Original router.push() still available, this adds smooth transitions
+  const { push } = usePageTransition();
   const fileInputRef = useRef(null);
   const fields = CATEGORY_FIELDS[category] || CATEGORY_FIELDS["others"];
   const { user, accessToken } = useLogin();
@@ -579,7 +585,9 @@ export default function SellForm({
       }
       showToast("success", t("toast_submit_success"));
       if (onClose) onClose();
-      router.push("/market");
+      // ENHANCED: Use push() with smooth transition instead of router.push()
+      // PRESERVED: All other behavior unchanged (toast, onClose, form reset, etc.)
+      push("/market");
 
       // ⬇⬇ RESET FORM AFTER SUCCESS
       setForm(

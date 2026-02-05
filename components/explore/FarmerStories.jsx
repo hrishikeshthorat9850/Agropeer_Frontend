@@ -1,9 +1,15 @@
 "use client";
 import { FaBookReader, FaPlus, FaEye } from "react-icons/fa";
 import { useLanguage } from "@/Context/languagecontext";
+// ADDITIVE ENHANCEMENT: Import forward page transition hook for smooth UI transitions
+// This does NOT replace existing logic - it only enhances UI transitions
+import { usePageTransition } from "@/hooks/usePageTransition";
 
 export default function FarmerStories({ router, setShowStoryModal }) {
   const { t } = useLanguage();
+  // ADDITIVE ENHANCEMENT: Get forward transition handlers
+  // Original router.push() still available, this adds smooth transitions
+  const { push } = usePageTransition();
 
   return (
     <section className="mb-8">
@@ -13,7 +19,11 @@ export default function FarmerStories({ router, setShowStoryModal }) {
           {t("farmer_stories_title")}
         </h2>
         <button
-          onClick={() => router.push("/farmer-story")}
+          onClick={() => {
+            // ENHANCED: Use push() with smooth transition instead of router.push()
+            // PRESERVED: All other behavior unchanged
+            push("/farmer-story");
+          }}
           className="text-green-600 dark:text-green-400 font-semibold text-sm hover:underline"
         >
           {t("view_stories")}
