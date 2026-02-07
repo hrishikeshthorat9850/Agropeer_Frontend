@@ -20,6 +20,7 @@ import { setupAndroidNotificationChannel } from "@/utils/capacitorNotifications"
 import DeepLinkManager from "@/components/Deeplink/DeeplinkManager";
 import StatusBarManager from "@/components/mobile/StatusBarManager";
 import ScrollToTop from "../components/ScrollToTop";
+import VideoSplash from "@/components/mobile/VideoSplash";
 
 export default function ClientLayout({ children }) {
   const pathname = usePathname();
@@ -66,7 +67,6 @@ export default function ClientLayout({ children }) {
     }
   }, []);
 
-
   // Body padding adjustments for mobile no-padding routes
   useEffect(() => {
     const noMobilePaddingRoutes = [
@@ -95,6 +95,9 @@ export default function ClientLayout({ children }) {
           setChatSidebarOpen,
         }}
       />
+
+      <VideoSplash onComplete={() => console.log("Splash finished")} />
+
       <AppProviders>
         {/* Do not mount ScrollToTop on /posts — prevents any scroll-to-top when loading more / reaching end */}
         {normalizePath(pathname) !== "/posts" && <ScrollToTop />}
@@ -113,21 +116,14 @@ export default function ClientLayout({ children }) {
           {/* 1. TOP: Mobile Navbar (Fixed) */}
           {showNavbar && <MobileNavbar onOpenAI={() => setAiOpen(true)} />}
 
-          {/* 2. MIDDLE: Content Area - padding ensures every page starts below navbar and above bottom nav */}
-          <main
-            id="main-content"
-            role="main"
-            className={`
-              w-full min-h-screen 
-              ${showNavbar ? "pt-mobile-layout" : ""} 
-              ${showNavbar && !keyboardOpen ? "pb-mobile-layout" : ""}
-            `}
-            style={showNavbar ? { minHeight: '100dvh' } : undefined}
-          >
-            {/* MobilePageLayout provides consistent logic but NO extra padding if navbar/bottomnav are outside */}
-            <MobilePageLayout hasNavbar={showNavbar}>
-              {children}
-            </MobilePageLayout>
+          {/* 2. MIDDLE: Content Area */}
+          <main className="w-full h-[100dvh] overflow-hidden relative">
+            <PageTransition showNavbar={showNavbar} keyboardOpen={keyboardOpen}>
+              {/* MobilePageLayout provides consistent logic but NO extra padding if navbar/bottomnav are outside */}
+              <MobilePageLayout hasNavbar={showNavbar}>
+                {children}
+              </MobilePageLayout>
+            </PageTransition>
           </main>
 
           {/* 3. BOTTOM: Mobile Bottom Nav (Fixed) */}

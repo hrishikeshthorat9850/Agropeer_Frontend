@@ -36,8 +36,7 @@
 
 html {
   scroll-behavior: smooth;
-  /* Content starts below navbar: scroll padding so first content is not under fixed navbar */
-  scroll-padding-top: var(--mobile-navbar-height, calc(56px + env(safe-area-inset-top, 0px)));
+  overflow-x: hidden; /* Prevent horizontal scroll during page transitions */
 }
 
 body {
@@ -593,7 +592,8 @@ html.capacitor-platform-android .back-transition-enter {
 }
 
 .page-transition-enter-forward[data-transition-type="scale"] {
-  animation: page-enter-forward-scale 0.28s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: page-enter-forward-scale 0.28s cubic-bezier(0.4, 0, 0.2, 1)
+    forwards;
 }
 
 /* Reduce motion preference: disable animations for accessibility */
