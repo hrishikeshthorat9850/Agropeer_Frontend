@@ -274,7 +274,7 @@ export default function ProfilePage() {
 
           {/* Details Grid */}
           <div className="px-4 mt-2 grid grid-cols-1 gap-4">
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider ml-1 mt-4 mb-2">
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider ml-1 mt-2 mb-2">
               {t("about") || "About"}
             </h3>
 
@@ -516,7 +516,7 @@ export default function ProfilePage() {
 
         {/* Details Section */}
         <div className="px-4 mt-2">
-          <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider ml-1 mt-4 mb-2">
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider ml-1 mt-2 mb-2">
             {t("details") || "Details"}
           </h3>
           <div className="bg-gray-50 dark:bg-[#1C1C1E] rounded-2xl overflow-hidden divide-y divide-gray-100 dark:divide-[#2C2C2E]">

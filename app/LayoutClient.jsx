@@ -21,6 +21,7 @@ import { setupAndroidNotificationChannel } from "@/utils/capacitorNotifications"
 import DeepLinkManager from "@/components/Deeplink/DeeplinkManager";
 import StatusBarManager from "@/components/mobile/StatusBarManager";
 import ScrollToTop from "../components/ScrollToTop";
+import VideoSplash from "@/components/mobile/VideoSplash";
 
 export default function ClientLayout({ children }) {
   const pathname = usePathname();
@@ -95,6 +96,9 @@ export default function ClientLayout({ children }) {
           setChatSidebarOpen,
         }}
       />
+
+      <VideoSplash onComplete={() => console.log("Splash finished")} />
+
       <AppProviders>
         {/* Do not mount ScrollToTop on /posts — prevents any scroll-to-top when loading more / reaching end */}
         {normalizePath(pathname) !== "/posts" && <ScrollToTop />}
