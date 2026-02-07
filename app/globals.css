@@ -399,45 +399,42 @@ body.capacitor-platform-ios .sidebar-panel-position {
  * - Non-invasive: preserves all existing behavior
  */
 
-/* Exit animation: Slide out to the right (like going back) - Material Design 3 style */
+/* Exit animation: Slide right + slight scale down (smooth “going back” feel) */
 @keyframes back-exit {
   0% {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateX(0) scale(1);
   }
   100% {
-    opacity: 0.8;
-    transform: translateX(30%);
+    opacity: 0.88;
+    transform: translateX(22%) scale(0.98);
   }
 }
 
-/* Enter animation: Slide in from the left (like coming back) - Material Design 3 style */
+/* Enter animation: Slide in from left + scale up (smooth “returning” feel) */
 @keyframes back-enter {
   0% {
-    opacity: 0.9;
-    transform: translateX(-30%);
+    opacity: 0.92;
+    transform: translateX(-18%) scale(0.98);
   }
   100% {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateX(0) scale(1);
   }
 }
 
-/* Apply exit animation - Material Design 3 timing and easing */
+/* Apply exit animation – smooth decelerate easing */
 .back-transition-exit {
-  animation: back-exit 200ms cubic-bezier(0.2, 0, 0, 1) forwards;
-  /* Preserve 3D transforms for better performance */
+  animation: back-exit 220ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
   will-change: transform, opacity;
-  /* Use GPU acceleration */
   transform: translateZ(0);
   backface-visibility: hidden;
 }
 
-/* Apply enter animation - Material Design 3 timing and easing */
+/* Apply enter animation – smooth decelerate easing */
 .back-transition-enter {
-  animation: back-enter 200ms cubic-bezier(0.2, 0, 0, 1) forwards;
+  animation: back-enter 220ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
   will-change: transform, opacity;
-  /* Use GPU acceleration */
   transform: translateZ(0);
   backface-visibility: hidden;
 }
@@ -470,10 +467,8 @@ html.capacitor-platform-android .back-transition-enter {
 @media (max-width: 768px) {
   .back-transition-exit,
   .back-transition-enter {
-    /* Native Android speed - instant and responsive */
-    animation-duration: 180ms;
-    /* Material Design 3 decelerate easing for native feel */
-    animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
+    animation-duration: 200ms;
+    animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
   }
 }
 

@@ -136,6 +136,11 @@ const IrrigationTab = ({ selectedCrop, data, loading, error }) => {
               <div className="text-xs text-farm-600 dark:text-gray-400 mt-2">
                 <div>{t("last_irrigated")}: {field.lastIrrigated}</div>
                 <div>{t("next_irrigation")}: {field.nextIrrigation}</div>
+                {field.weatherNote && (
+                  <div className="mt-1.5 text-sky-600 dark:text-sky-400 font-medium">
+                    {field.weatherNote}
+                  </div>
+                )}
               </div>
             </div>
           </motion.div>

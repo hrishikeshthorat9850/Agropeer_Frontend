@@ -24,7 +24,7 @@ import PestControlTab from "./farmer-dashboard/PestControlTab";
 import ScheduleTab from "./farmer-dashboard/ScheduleTab";
 
 const FarmerDashboard = () => {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const {
     weather,
     loading: weatherLoading,
@@ -82,8 +82,16 @@ const FarmerDashboard = () => {
       setInsightsLoading(true);
       setInsightsError(null);
       try {
+        const params = new URLSearchParams({ farmerId: user.id });
+        if (position?.latitude != null && position?.longitude != null) {
+          params.set("latitude", position.latitude);
+          params.set("longitude", position.longitude);
+        }
+        params.set("language", locale || "en");
+        params.set("summary", "1");
+
         const response = await fetch(
-          `${BASE_URL}/api/smart-farm/insights?farmerId=${user.id}`,
+          `${BASE_URL}/api/smart-farm/insights?${params.toString()}`,
           {
             signal: controller.signal,
             cache: "no-store",
@@ -114,7 +122,7 @@ const FarmerDashboard = () => {
 
     fetchInsights();
     return () => controller.abort();
-  }, [user?.id, authLoading]);
+  }, [user?.id, authLoading, position?.latitude, position?.longitude]);
 
   // Old nav visibility observer
   useEffect(() => {
@@ -273,6 +281,17 @@ const FarmerDashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* AI Daily Summary (weather + insights) */}
+      {insightsData?.dailySummary && (
+        <div className="max-w-lg mx-auto px-4 pb-3">
+          <div className="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/30 rounded-xl p-4">
+            <p className="text-sm font-medium text-emerald-900 dark:text-emerald-100 leading-relaxed">
+              {insightsData.dailySummary}
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* 📱 STICKY TABS */}
       <div className="sticky top-[60px] z-40 bg-gray-50 dark:bg-black pb-2">

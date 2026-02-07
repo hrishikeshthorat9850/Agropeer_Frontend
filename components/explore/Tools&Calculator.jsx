@@ -33,7 +33,7 @@ export default function ToolsSection({
   const { t } = useLanguage();
   const formRef = useRef(null);
   const [mounted, setMounted] = useState(false);
-  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   useEffect(() => {
     setMounted(true);

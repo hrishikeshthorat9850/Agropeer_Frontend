@@ -8,6 +8,7 @@ import {
 } from "react-icons/fa";
 import AILanguageSelector from "./AILanguageSelector";
 import { FaBrain, FaCloud, FaChartLine } from "react-icons/fa";
+import { useLogin } from "@/Context/logincontext";
 
 export default function AIChatWindow({ open, setOpen }) {
   const [messages, setMessages] = useState([]);
@@ -18,6 +19,9 @@ export default function AIChatWindow({ open, setOpen }) {
   const scrollContainerRef = useRef(null);
   const [languageModalOpen, setlanguageModalOpen] = useState(false);
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+  
+  // ✅ Get access token from login context
+  const { accessToken } = useLogin();
 
   const languages = [
     { code: "en", label: "English" },
@@ -75,19 +79,77 @@ export default function AIChatWindow({ open, setOpen }) {
         content: msg.content
       }));
 
+      // ✅ Build headers with Authorization if accessToken exists
+      const headers = {
+        "Content-Type": "application/json",
+      };
+      
+      if (accessToken) {
+        headers["Authorization"] = `Bearer ${accessToken}`;
+      }
+
       const response = await fetch(`${BASE_URL}/api/chat`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: headers,
         body: JSON.stringify({ message: userMessage, history, currentLanguage })
       });
 
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Failed to get response");
 
+      // Last-assistant from messages array (common after function calling)
+      const lastAssistantContent = (() => {
+        const arr = data.messages ?? data.message_history ?? data.chat_history;
+        if (!Array.isArray(arr) || arr.length === 0) return null;
+        for (let i = arr.length - 1; i >= 0; i--) {
+          const m = arr[i];
+          if (m?.role === "assistant" && (m.content ?? m.text)) return m.content ?? m.text;
+        }
+        return null;
+      })();
+
+      // Support both plain chat and function-calling responses: backend may put final text in different keys
+      const rawContent =
+        data.response ??
+        data.content ??
+        data.message ??
+        data.text ??
+        data.output ??
+        data.answer ??
+        data.reply ??
+        data.assistant ??
+        data.assistant_message ??
+        data.final_response ??
+        (data.choices?.[0]?.message?.content) ??
+        (typeof data.result === "string" ? data.result : data.result?.content ?? data.result?.text ?? data.result?.message) ??
+        (data.data?.response ?? data.data?.content ?? data.data?.message) ??
+        (data.message?.content ?? (typeof data.message === "string" ? data.message : null)) ??
+        lastAssistantContent ??
+        "";
+      const content =
+        typeof rawContent === "string"
+          ? rawContent
+          : typeof rawContent === "object" && rawContent !== null
+            ? JSON.stringify(rawContent)
+            : String(rawContent ?? "");
+
+      // If still empty, log full payload as JSON so structure is visible in Android logcat
+      if (!content || !content.trim()) {
+        try {
+          console.warn("[AIChat] Empty content from /api/chat. Full response (JSON):", JSON.stringify(data, null, 2));
+        } catch (_) {
+          console.warn("[AIChat] Empty content from /api/chat. Full response:", data);
+        }
+      }
+
+      const displayContent =
+        content.trim() ||
+        "Response received but could not be displayed. Open DevTools (F12) → Console and look for [AIChat] to see the raw response.";
+
       const botMessage = {
         id: Date.now() + 1,
         role: "assistant",
-        content: data.response,
+        content: displayContent,
         timestamp: new Date().toISOString()
       };
 

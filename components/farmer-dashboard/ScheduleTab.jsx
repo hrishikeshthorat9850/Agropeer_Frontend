@@ -17,8 +17,9 @@ import { useLanguage } from "@/Context/languagecontext";
 
 const typeMeta = {
   irrigation: { icon: FaTint, color: "from-cyan-400 to-cyan-600" },
-  pest_control: { icon: FaSprayCan, color: "from-orange-400 to-orange-600" },
   fertilization: { icon: FaSeedling, color: "from-green-400 to-green-600" },
+  scouting: { icon: FaBug, color: "from-orange-400 to-orange-600" },
+  pest_control: { icon: FaSprayCan, color: "from-orange-400 to-orange-600" },
   harvest: { icon: FaSeedling, color: "from-yellow-400 to-yellow-600" },
   monitoring: { icon: FaBug, color: "from-red-400 to-red-600" },
   maintenance: { icon: FaTasks, color: "from-purple-400 to-purple-600" },
@@ -265,6 +266,9 @@ const ScheduleTab = ({ data, loading, error }) => {
                             </div>
                           </div>
                           <p className="text-sm text-farm-700 dark:text-gray-300 mb-3">{task.description}</p>
+                          {task.weatherNote && (
+                            <p className="text-sm text-sky-600 dark:text-sky-400 font-medium mb-3">{task.weatherNote}</p>
+                          )}
                           <div className="flex flex-wrap items-center gap-4 text-sm">
                             <div className="flex items-center gap-2 text-farm-600 dark:text-gray-400">
                               <FaClock className="w-4 h-4" />
