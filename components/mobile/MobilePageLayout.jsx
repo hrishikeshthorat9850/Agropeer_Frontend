@@ -3,6 +3,9 @@
 import { usePathname } from "next/navigation";
 import { Capacitor } from "@capacitor/core";
 
+import { useRouter } from "next/navigation";
+import PullToRefresh from "./PullToRefresh";
+
 /**
  * MobilePageLayout - Clean layout wrapper for all Android app pages
  *
@@ -12,9 +15,11 @@ import { Capacitor } from "@capacitor/core";
  * - Scrollable content area
  * - No padding for auth pages
  * - Automatic background colors
+ * - Global Pull-to-Refresh
  */
 export default function MobilePageLayout({ children, className = "" }) {
   const pathname = usePathname();
+  const router = useRouter(); // Use router for refresh
   const isNative = Capacitor.isNativePlatform();
 
   // Routes that should have no padding (full screen)
@@ -74,15 +79,31 @@ export default function MobilePageLayout({ children, className = "" }) {
     return "bg-gray-50 dark:bg-black";
   };
 
+  // Global Refresh Logic
+  const handleRefresh = async () => {
+    // 1. Trigger Next.js Data Refresh (Server Components / SWR)
+    router.refresh();
+
+    // 2. Dispatch Custom Event for Component-Specific Refreshes (like Weather)
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("app-refresh"));
+    }
+
+    // 3. Optional: Artificial delay for feel (if router refesh is instant)
+    await new Promise((resolve) => setTimeout(resolve, 800));
+  };
+
   return (
-    <div
-      className={`
-        ${getBackgroundColor()}
-        ${getPaddingClasses()}
-        ${className}
-      `}
-    >
-      <div className="w-full h-full">{children}</div>
-    </div>
+    <PullToRefresh onRefresh={handleRefresh}>
+      <div
+        className={`
+          ${getBackgroundColor()}
+          ${getPaddingClasses()}
+          ${className}
+        `}
+      >
+        <div className="w-full h-full">{children}</div>
+      </div>
+    </PullToRefresh>
   );
 }

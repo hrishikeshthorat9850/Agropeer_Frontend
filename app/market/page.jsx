@@ -70,7 +70,7 @@ const RelatedProducts = dynamic(
         </div>
       </div>
     ),
-  }
+  },
 );
 
 export default function AgriMarket() {
@@ -241,7 +241,7 @@ export default function AgriMarket() {
       }
 
       const response = await fetch(
-        `${BASE_URL}/api/products?${params.toString()}`
+        `${BASE_URL}/api/products?${params.toString()}`,
       );
       const result = await response.json();
 
@@ -259,7 +259,7 @@ export default function AgriMarket() {
           // Avoid duplicates by ID if possible
           const existingIds = new Set(prev.map((p) => p.id));
           const newUnique = productsWithPhotos.filter(
-            (p) => !existingIds.has(p.id)
+            (p) => !existingIds.has(p.id),
           );
           return [...prev, ...newUnique];
         });
@@ -336,8 +336,8 @@ export default function AgriMarket() {
       allProducts
         .map((p) => p.location?.district)
         .filter(Boolean)
-        .sort()
-    )
+        .sort(),
+    ),
   );
 
   const fetchFavorites = async () => {
@@ -369,6 +369,16 @@ export default function AgriMarket() {
     if (!user?.id) return showToast(t("login_to_favorite_error"), "error");
 
     const isFav = favorites.includes(product.id);
+    const newStatus = !isFav;
+
+    // Optimistic update
+    if (newStatus) {
+      setFavorites((prev) => [...prev, product.id]);
+      showToast("success", t("added_to_favorites"));
+    } else {
+      setFavorites((prev) => prev.filter((id) => id !== product.id));
+      showToast("error", t("removed_from_favorites"));
+    }
 
     try {
       if (BASE_URL && accessToken) {
@@ -376,7 +386,11 @@ export default function AgriMarket() {
           `${BASE_URL}/api/products/favorite`,
           {
             method: "POST",
-            headers: { ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
+            headers: {
+              ...(accessToken
+                ? { Authorization: `Bearer ${accessToken}` }
+                : {}),
+            },
             body: JSON.stringify({
               product_id: product.id,
               user_id: user.id,
@@ -384,38 +398,68 @@ export default function AgriMarket() {
           },
         );
         if (apiError) {
-          showToast("error", apiError.message || t("generic_error"));
-          return;
+          throw apiError;
         }
-        const nowFav = data?.is_favorite ?? !isFav;
-        if (nowFav) {
-          setFavorites((prev) => [...prev, product.id]);
-          showToast("success", t("added_to_favorites"));
-        } else {
-          setFavorites((prev) => prev.filter((id) => id !== product.id));
-          showToast("error", t("removed_from_favorites"));
+        // Reconciliation (optional)
+        const nowFav = data?.is_favorite;
+        if (nowFav !== undefined && nowFav !== newStatus) {
+          // Server disagrees, revert to server state
+          if (nowFav) {
+            setFavorites((prev) => [...prev, product.id]);
+          } else {
+            setFavorites((prev) => prev.filter((id) => id !== product.id));
+          }
         }
       } else {
+        // Supabase direct fallback
         if (isFav) {
-          const { error } = await supabase
-            .from("user_favorites")
-            .delete()
-            .eq("user_id", user?.id)
-            .eq("product_id", product.id);
-          if (error) throw error;
-          setFavorites((prev) => prev.filter((id) => id !== product.id));
-          showToast("error", t("removed_from_favorites"));
+          // Was favorite, now removing (match optimistic) -> wait, logic above was toggle
+          // We already updated UI to newStatus.
+          // newStatus is !isFav.
+          // if isFav was true, newStatus is false (remove).
+          // if isFav was false, newStatus is true (add).
+
+          if (newStatus) {
+            const { error } = await supabase
+              .from("user_favorites")
+              .insert({ user_id: user?.id, product_id: product?.id });
+            if (error) throw error;
+          } else {
+            const { error } = await supabase
+              .from("user_favorites")
+              .delete()
+              .eq("user_id", user?.id)
+              .eq("product_id", product.id);
+            if (error) throw error;
+          }
         } else {
-          const { error } = await supabase
-            .from("user_favorites")
-            .insert({ user_id: user?.id, product_id: product?.id });
-          if (error) throw error;
-          setFavorites((prev) => [...prev, product.id]);
-          showToast("success", t("added_to_favorites"));
+          // Logic error in my thinking above for direct supabase fallback?
+          // isFav is current state BEFORE toggle.
+          // newStatus is TARGET state.
+
+          if (newStatus) {
+            const { error } = await supabase
+              .from("user_favorites")
+              .insert({ user_id: user?.id, product_id: product?.id });
+            if (error) throw error;
+          } else {
+            const { error } = await supabase
+              .from("user_favorites")
+              .delete()
+              .eq("user_id", user?.id)
+              .eq("product_id", product.id);
+            if (error) throw error;
+          }
         }
       }
     } catch (err) {
       console.error(err);
+      // Revert on error
+      if (isFav) {
+        setFavorites((prev) => [...prev, product.id]); // Re-add if we removed
+      } else {
+        setFavorites((prev) => prev.filter((id) => id !== product.id)); // Remove if we added
+      }
       showToast("error", t("generic_error"));
     }
   };
@@ -615,7 +659,6 @@ export default function AgriMarket() {
   if (productId) {
     if (productLoading) {
       return (
-
         <div className="fixed inset-0 flex items-center justify-center w-full h-full bg-white/80 dark:bg-black/80 backdrop-blur-sm z-50">
           <PlantLoader
             size="lg"
@@ -653,8 +696,8 @@ export default function AgriMarket() {
         allProducts
           .map((p) => p.location?.district)
           .filter(Boolean)
-          .sort()
-      )
+          .sort(),
+      ),
     );
 
     return (

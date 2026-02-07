@@ -420,8 +420,16 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
 
     if (loadingBookmark) return; // Prevent double clicks
 
-    const originalStatus = isBookmarked;
-    setIsBookmarked(!isBookmarked);
+    // Optimistic update
+    const previousStatus = isBookmarked;
+    const newStatus = !previousStatus;
+
+    setIsBookmarked(newStatus);
+    showToast(
+      newStatus ? "success" : "info",
+      newStatus ? t("bookmark_added") : t("bookmark_removed"),
+    );
+
     setLoadingBookmark(true);
 
     try {
@@ -437,22 +445,16 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
       );
 
       if (apiError) {
-        // Rollback on error
-        setIsBookmarked(originalStatus);
-        showToast("error", apiError.message || t("network_error"));
-        return;
+        throw apiError;
       }
 
+      // Reconciliation (optional, usually trust optimistic unless error)
       if (data) {
         setIsBookmarked(data.bookmarked);
-        showToast(
-          data.bookmarked ? "success" : "info",
-          data.bookmarked ? t("bookmark_added") : t("bookmark_removed"),
-        );
       }
     } catch (err) {
-      // Rollback on error
-      setIsBookmarked(originalStatus);
+      // Revert on error
+      setIsBookmarked(previousStatus);
       showToast("error", t("network_error"));
       console.error("Error while bookmarking:", err);
     } finally {
@@ -569,7 +571,9 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
           {
             method: "POST",
             headers: {
-              ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+              ...(accessToken
+                ? { Authorization: `Bearer ${accessToken}` }
+                : {}),
             },
             body: JSON.stringify({ user_id: user.id }),
           },
@@ -630,7 +634,9 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
           {
             method: "POST",
             headers: {
-              ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+              ...(accessToken
+                ? { Authorization: `Bearer ${accessToken}` }
+                : {}),
             },
             body: JSON.stringify({ user_id: user.id }),
           },
