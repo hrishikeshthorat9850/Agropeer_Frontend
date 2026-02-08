@@ -16,13 +16,14 @@ import {
   FaChartLine,
   FaBug,
   FaClock,
-  FaWater
+  FaWater,
 } from "react-icons/fa";
 import { CROP_DATABASE } from "../data/CROP_DATABASE";
 import Select from "react-select";
 import { supabase } from "@/lib/supabaseClient";
 import useToast from "@/hooks/useToast";
 import { useLanguage } from "@/Context/languagecontext";
+import BottomSelect from "./ui/BottomSelect";
 
 const priceLookup = {
   Cereal: 22,
@@ -58,14 +59,15 @@ const formatDateForDisplay = (dateString) => {
 
 const findCropInfo = (cropName) => {
   if (!cropName) return null;
-  return (Array.isArray(CROP_DATABASE) ? CROP_DATABASE : Object.values(CROP_DATABASE)).find(
-    (crop) => crop.name === cropName,
-  );
+  return (
+    Array.isArray(CROP_DATABASE) ? CROP_DATABASE : Object.values(CROP_DATABASE)
+  ).find((crop) => crop.name === cropName);
 };
 
 const deriveAutoValues = (formState, cropInfoOverride) => {
   const cropInfo = cropInfoOverride || findCropInfo(formState.cropType);
-  const areaAcres = parseFloat(formState.area) > 0 ? parseFloat(formState.area) : 1;
+  const areaAcres =
+    parseFloat(formState.area) > 0 ? parseFloat(formState.area) : 1;
   const wateringMin = cropInfo?.watering?.min ?? 350;
   const wateringMax = cropInfo?.watering?.max ?? 600;
 
@@ -76,7 +78,11 @@ const deriveAutoValues = (formState, cropInfoOverride) => {
   const moistureThresholdMax =
     formState.moistureMax !== ""
       ? Number(formState.moistureMax)
-      : clamp(Math.round(moistureThresholdMin + 15 + wateringMax / 40), moistureThresholdMin + 5, 90);
+      : clamp(
+          Math.round(moistureThresholdMin + 15 + wateringMax / 40),
+          moistureThresholdMin + 5,
+          90,
+        );
 
   const irrigationFrequencyDays =
     formState.irrigationFrequency !== ""
@@ -85,27 +91,41 @@ const deriveAutoValues = (formState, cropInfoOverride) => {
 
   const irrigationMethod =
     formState.irrigationMethod ||
-    (areaAcres > 3 ? "Sprinkler System" : wateringMax > 900 ? "Flood Irrigation" : "Drip Irrigation");
+    (areaAcres > 3
+      ? "Sprinkler System"
+      : wateringMax > 900
+      ? "Flood Irrigation"
+      : "Drip Irrigation");
 
   const preferredIrrigationTime =
-    formState.preferredIrrigationTime || (wateringMax > 800 ? "05:30" : "18:30");
+    formState.preferredIrrigationTime ||
+    (wateringMax > 800 ? "05:30" : "18:30");
 
   const waterSource =
-    formState.waterSource || (areaAcres > 5 ? "Canal" : areaAcres > 2 ? "Tube Well" : "Rainwater Harvesting");
+    formState.waterSource ||
+    (areaAcres > 5
+      ? "Canal"
+      : areaAcres > 2
+      ? "Tube Well"
+      : "Rainwater Harvesting");
 
   const defaultWaterAmountLiters =
     formState.waterAmount !== ""
       ? Number(formState.waterAmount)
       : Math.round(areaAcres * wateringMin * 8);
 
-  const soilType = formState.soilType || cropInfo?.soilType || "Well-drained loamy soil";
+  const soilType =
+    formState.soilType || cropInfo?.soilType || "Well-drained loamy soil";
 
   const growthDays = cropInfo?.growthDays ?? 110;
-  const expectedHarvest = formState.expectedHarvest || addDays(formState.plantingDate, growthDays);
+  const expectedHarvest =
+    formState.expectedHarvest || addDays(formState.plantingDate, growthDays);
   const harvestWindowStart =
-    formState.harvestWindowStart || (expectedHarvest ? addDays(expectedHarvest, -5) : null);
+    formState.harvestWindowStart ||
+    (expectedHarvest ? addDays(expectedHarvest, -5) : null);
   const harvestWindowEnd =
-    formState.harvestWindowEnd || (expectedHarvest ? addDays(expectedHarvest, 5) : null);
+    formState.harvestWindowEnd ||
+    (expectedHarvest ? addDays(expectedHarvest, 5) : null);
 
   const expectedYieldKg =
     formState.expectedYield !== ""
@@ -123,18 +143,22 @@ const deriveAutoValues = (formState, cropInfoOverride) => {
       : Math.round(9000 + areaAcres * 350);
 
   const nextFertilizationDate =
-    formState.nextFertilizationDate || addDays(formState.plantingDate, 25) || null;
+    formState.nextFertilizationDate ||
+    addDays(formState.plantingDate, 25) ||
+    null;
 
   const scoutingFrequencyDays =
     formState.scoutingFrequency !== ""
       ? Number(formState.scoutingFrequency)
       : expectedYieldKg > 2000
-        ? 5
-        : 7;
+      ? 5
+      : 7;
 
   const pestRiskLevel =
     formState.pestRiskLevel ||
-    (cropInfo?.pests && cropInfo.pests.split(",").length > 1 ? "high" : "medium");
+    (cropInfo?.pests && cropInfo.pests.split(",").length > 1
+      ? "high"
+      : "medium");
 
   const lastPestInspection =
     formState.lastPestInspection || addDays(formState.plantingDate, 14) || null;
@@ -188,7 +212,7 @@ const defaultFormState = {
   scoutingFrequency: "",
   pestRiskLevel: "",
   lastPestInspection: "",
-  notes: ""
+  notes: "",
 };
 
 const createInitialFormState = () => ({ ...defaultFormState });
@@ -231,7 +255,12 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
 
   // Auto-calculate when required fields change
   useEffect(() => {
-    if (!formData.cropType || !formData.plantingDate || !formData.area || !formData.fieldName) {
+    if (
+      !formData.cropType ||
+      !formData.plantingDate ||
+      !formData.area ||
+      !formData.fieldName
+    ) {
       setCalculatedData(null);
       return;
     }
@@ -248,9 +277,13 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
             planting_date: formData.plantingDate,
             area_acres: Number(formData.area) || 1,
             soil_type: formData.soilType || null,
-            coordinates: formData.latitude && formData.longitude
-              ? { lat: Number(formData.latitude), lng: Number(formData.longitude) }
-              : null,
+            coordinates:
+              formData.latitude && formData.longitude
+                ? {
+                    lat: Number(formData.latitude),
+                    lng: Number(formData.longitude),
+                  }
+                : null,
             field_name: formData.fieldName,
             location: formData.location || null,
           }),
@@ -268,10 +301,21 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
     }, 500); // Debounce 500ms
 
     return () => clearTimeout(timer);
-  }, [formData.cropType, formData.plantingDate, formData.area, formData.fieldName, formData.variety, formData.soilType, formData.latitude, formData.longitude, formData.location]);
+  }, [
+    formData.cropType,
+    formData.plantingDate,
+    formData.area,
+    formData.fieldName,
+    formData.variety,
+    formData.soilType,
+    formData.latitude,
+    formData.longitude,
+    formData.location,
+  ]);
 
   // Use calculated data or fallback to derived values for display
-  const displayData = calculatedData || (formData.cropType ? deriveAutoValues(formData) : {});
+  const displayData =
+    calculatedData || (formData.cropType ? deriveAutoValues(formData) : {});
 
   const resetFormState = () => {
     setFormData(createInitialFormState());
@@ -294,7 +338,9 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
   };
 
   const formatDisplayValue = (value, fallback = "—") => {
-    return value === null || value === undefined || value === "" ? fallback : value;
+    return value === null || value === undefined || value === ""
+      ? fallback
+      : value;
   };
 
   const pickNumberOrFallback = (value, fallback) => {
@@ -305,9 +351,9 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -316,16 +362,24 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
 
     const planted = new Date(plantingDate);
     const now = new Date();
-    const daysSincePlanting = Math.floor((now - planted) / (1000 * 60 * 60 * 24));
+    const daysSincePlanting = Math.floor(
+      (now - planted) / (1000 * 60 * 60 * 24),
+    );
 
     const cropInfo = Array.isArray(CROP_DATABASE)
-      ? CROP_DATABASE.find(c => c.name === cropType)
-      : Object.values(CROP_DATABASE).find(c => c.name === cropType);
+      ? CROP_DATABASE.find((c) => c.name === cropType)
+      : Object.values(CROP_DATABASE).find((c) => c.name === cropType);
 
     if (!cropInfo) return { stage: "Unknown", progress: 0 };
 
     const totalDays = cropInfo.growthDays || 100;
-    const stages = cropInfo.stages || ["Sowing", "Germination", "Vegetative", "Flowering", "Harvest"];
+    const stages = cropInfo.stages || [
+      "Sowing",
+      "Germination",
+      "Vegetative",
+      "Flowering",
+      "Harvest",
+    ];
 
     const progress = daysSincePlanting / totalDays;
 
@@ -334,7 +388,7 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
 
     return {
       stage,
-      progress: Math.min(progress * 100, 100).toFixed(1)  // percent
+      progress: Math.min(progress * 100, 100).toFixed(1), // percent
     };
   };
 
@@ -355,7 +409,7 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${accessToken}`
+          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
           user_id: currentUserId,
@@ -364,9 +418,13 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
           planting_date: formData.plantingDate,
           area_acres: Number(formData.area) || 1,
           soil_type: formData.soilType || null,
-          coordinates: formData.latitude && formData.longitude
-            ? { lat: Number(formData.latitude), lng: Number(formData.longitude) }
-            : null,
+          coordinates:
+            formData.latitude && formData.longitude
+              ? {
+                  lat: Number(formData.latitude),
+                  lng: Number(formData.longitude),
+                }
+              : null,
           field_name: formData.fieldName,
           location: formData.location || null,
           notes: formData.notes || null,
@@ -384,17 +442,25 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
 
       // Update UI state
       if (editingCrop) {
-        setCrops(prev => prev.map(c => (c.id === savedRecord.id ? savedRecord : c)));
+        setCrops((prev) =>
+          prev.map((c) => (c.id === savedRecord.id ? savedRecord : c)),
+        );
       } else {
-        setCrops(prev => [savedRecord, ...prev]);
+        setCrops((prev) => [savedRecord, ...prev]);
       }
 
       // Reset form
       resetFormState();
-      showToast("success", editingCrop ? t("crop_updated_success") : t("crop_saved_success"));
+      showToast(
+        "success",
+        editingCrop ? t("crop_updated_success") : t("crop_saved_success"),
+      );
     } catch (error) {
       console.error("Save error:", error);
-      showToast("error", error.message || "Failed to save crop. Please try again.");
+      showToast(
+        "error",
+        error.message || "Failed to save crop. Please try again.",
+      );
     } finally {
       setLoading(false);
     }
@@ -404,33 +470,97 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
     setEditingCrop(crop);
     const coordinates = crop?.coordinates || null;
     setFormData({
-      fieldName: pickCropValue(crop, "field_name", "fieldName", "location") || "",
+      fieldName:
+        pickCropValue(crop, "field_name", "fieldName", "location") || "",
       location: pickCropValue(crop, "location", "fieldLocation", "") || "",
-      latitude: coordinates?.lat !== undefined ? toInputValue(coordinates.lat) : "",
-      longitude: coordinates?.lng !== undefined ? toInputValue(coordinates.lng) : "",
+      latitude:
+        coordinates?.lat !== undefined ? toInputValue(coordinates.lat) : "",
+      longitude:
+        coordinates?.lng !== undefined ? toInputValue(coordinates.lng) : "",
       soilType: pickCropValue(crop, "soil_type", "soilType", ""),
-      irrigationMethod: pickCropValue(crop, "irrigation_method", "irrigationMethod", ""),
+      irrigationMethod: pickCropValue(
+        crop,
+        "irrigation_method",
+        "irrigationMethod",
+        "",
+      ),
       waterSource: pickCropValue(crop, "water_source", "waterSource", ""),
-      moistureMin: toInputValue(pickCropValue(crop, "moisture_threshold_min", "moistureMin", "")),
-      moistureMax: toInputValue(pickCropValue(crop, "moisture_threshold_max", "moistureMax", "")),
-      irrigationFrequency: toInputValue(pickCropValue(crop, "irrigation_frequency_days", "irrigationFrequency", "")),
-      preferredIrrigationTime: pickCropValue(crop, "preferred_irrigation_time", "preferredIrrigationTime", ""),
-      waterAmount: toInputValue(pickCropValue(crop, "default_water_amount_liters", "waterAmount", "")),
+      moistureMin: toInputValue(
+        pickCropValue(crop, "moisture_threshold_min", "moistureMin", ""),
+      ),
+      moistureMax: toInputValue(
+        pickCropValue(crop, "moisture_threshold_max", "moistureMax", ""),
+      ),
+      irrigationFrequency: toInputValue(
+        pickCropValue(
+          crop,
+          "irrigation_frequency_days",
+          "irrigationFrequency",
+          "",
+        ),
+      ),
+      preferredIrrigationTime: pickCropValue(
+        crop,
+        "preferred_irrigation_time",
+        "preferredIrrigationTime",
+        "",
+      ),
+      waterAmount: toInputValue(
+        pickCropValue(crop, "default_water_amount_liters", "waterAmount", ""),
+      ),
       cropType: pickCropValue(crop, "crop_type", "cropType", ""),
       variety: pickCropValue(crop, "variety", "cropVariety", ""),
       plantingDate: pickCropValue(crop, "planting_date", "plantingDate", ""),
       area: toInputValue(pickCropValue(crop, "area_acres", "area", "")),
-      expectedYield: toInputValue(pickCropValue(crop, "expected_yield_kg", "expectedYield", "")),
-      expectedPrice: toInputValue(pickCropValue(crop, "expected_price_per_kg", "expectedPrice", "")),
-      costPerAcre: toInputValue(pickCropValue(crop, "estimated_cost_per_acre", "costPerAcre", "")),
-      expectedHarvest: pickCropValue(crop, "expected_harvest", "expectedHarvest", ""),
-      harvestWindowStart: pickCropValue(crop, "harvest_window_start", "harvestWindowStart", ""),
-      harvestWindowEnd: pickCropValue(crop, "harvest_window_end", "harvestWindowEnd", ""),
-      nextFertilizationDate: pickCropValue(crop, "next_fertilization_date", "nextFertilizationDate", ""),
-      scoutingFrequency: toInputValue(pickCropValue(crop, "scouting_frequency_days", "scoutingFrequency", "")),
-      pestRiskLevel: pickCropValue(crop, "pest_risk_level", "pestRiskLevel", ""),
-      lastPestInspection: pickCropValue(crop, "last_pest_inspection", "lastPestInspection", ""),
-      notes: pickCropValue(crop, "notes", "notes", "")
+      expectedYield: toInputValue(
+        pickCropValue(crop, "expected_yield_kg", "expectedYield", ""),
+      ),
+      expectedPrice: toInputValue(
+        pickCropValue(crop, "expected_price_per_kg", "expectedPrice", ""),
+      ),
+      costPerAcre: toInputValue(
+        pickCropValue(crop, "estimated_cost_per_acre", "costPerAcre", ""),
+      ),
+      expectedHarvest: pickCropValue(
+        crop,
+        "expected_harvest",
+        "expectedHarvest",
+        "",
+      ),
+      harvestWindowStart: pickCropValue(
+        crop,
+        "harvest_window_start",
+        "harvestWindowStart",
+        "",
+      ),
+      harvestWindowEnd: pickCropValue(
+        crop,
+        "harvest_window_end",
+        "harvestWindowEnd",
+        "",
+      ),
+      nextFertilizationDate: pickCropValue(
+        crop,
+        "next_fertilization_date",
+        "nextFertilizationDate",
+        "",
+      ),
+      scoutingFrequency: toInputValue(
+        pickCropValue(crop, "scouting_frequency_days", "scoutingFrequency", ""),
+      ),
+      pestRiskLevel: pickCropValue(
+        crop,
+        "pest_risk_level",
+        "pestRiskLevel",
+        "",
+      ),
+      lastPestInspection: pickCropValue(
+        crop,
+        "last_pest_inspection",
+        "lastPestInspection",
+        "",
+      ),
+      notes: pickCropValue(crop, "notes", "notes", ""),
     });
     setShowAddForm(true);
   };
@@ -444,15 +574,15 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${accessToken}`
-        }
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
       const data = await res.json();
       if (!res.ok) {
         showToast("error", "Failed to delete crop");
         return;
       }
-      setCrops(prev => prev.filter(crop => crop.id !== cropId));
+      setCrops((prev) => prev.filter((crop) => crop.id !== cropId));
       showToast("success", t("delete_success"));
     } catch (e) {
       console.log("Error is :", e);
@@ -463,28 +593,41 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
   };
 
   const getCropIcon = (cropType) => {
-    const crop = Object.values(CROP_DATABASE).find(c => c.name === cropType);
+    const crop = Object.values(CROP_DATABASE).find((c) => c.name === cropType);
     return crop?.icon || "🌱";
   };
 
   const getCropName = (cropType) => {
-    const crop = Object.values(CROP_DATABASE).find(c => c.name === cropType);
+    const crop = Object.values(CROP_DATABASE).find((c) => c.name === cropType);
     return crop?.name || cropType;
   };
 
   const cropOptions = Object.values(CROP_DATABASE)
-    .filter((crop, index, self) =>
-      index === self.findIndex(c => c.name === crop.name)
+    .filter(
+      (crop, index, self) =>
+        index === self.findIndex((c) => c.name === crop.name),
     )
-    .map(crop => ({
+    .map((crop) => ({
       value: crop.name,
-      label: `${crop.icon} ${crop.name}`
+      label: `${crop.icon} ${crop.name}`,
     }))
     .sort((a, b) => {
       const nameA = a.label.replace(/^[^\w]+/, "").toLowerCase();
       const nameB = b.label.replace(/^[^\w]+/, "").toLowerCase();
       return nameA.localeCompare(nameB);
     });
+
+  const soilOptions = [
+    { value: "Well-drained loamy soil", label: t("soil_well_drained") },
+    { value: "Clay soil", label: t("soil_clay") },
+    { value: "Sandy soil", label: t("soil_sandy") },
+    { value: "Sandy loam", label: t("soil_sandy_loam") },
+    { value: "Clay loam", label: t("soil_clay_loam") },
+    { value: "Silt loam", label: t("soil_silt_loam") },
+    { value: "Red soil", label: t("soil_red") },
+    { value: "Black soil", label: t("soil_black") },
+    { value: "Alluvial soil", label: t("soil_alluvial") },
+  ];
 
   return (
     <div className="w-full max-w-6xl mx-auto">
@@ -527,7 +670,10 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                 </button>
               </div>
 
-              <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <form
+                onSubmit={handleSubmit}
+                className="grid grid-cols-1 md:grid-cols-2 gap-4"
+              >
                 <div className="md:col-span-2 pt-2">
                   <p className="text-xs font-semibold uppercase tracking-wide text-farm-500 dark:text-emerald-400">
                     {t("essential_details")}
@@ -567,27 +713,15 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-farm-700 dark:text-gray-300 mb-2">
-                    {t("soil_type_label")}
-                  </label>
-                  <select
-                    name="soilType"
+                  <BottomSelect
+                    label={t("soil_type_label")}
                     value={formData.soilType}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full p-3 rounded-xl border text-farm-500 dark:text-gray-100 border-farm-200 dark:border-gray-700 bg-white dark:bg-[#2C2C2C] focus:outline-none focus:ring-2 focus:ring-farm-400 dark:focus:ring-emerald-500/50"
-                  >
-                    <option value="">{t("select_soil_placeholder")}</option>
-                    <option value="Well-drained loamy soil">{t("soil_well_drained")}</option>
-                    <option value="Clay soil">{t("soil_clay")}</option>
-                    <option value="Sandy soil">{t("soil_sandy")}</option>
-                    <option value="Sandy loam">{t("soil_sandy_loam")}</option>
-                    <option value="Clay loam">{t("soil_clay_loam")}</option>
-                    <option value="Silt loam">{t("soil_silt_loam")}</option>
-                    <option value="Red soil">{t("soil_red")}</option>
-                    <option value="Black soil">{t("soil_black")}</option>
-                    <option value="Alluvial soil">{t("soil_alluvial")}</option>
-                  </select>
+                    onChange={(value) =>
+                      handleInputChange({ target: { name: "soilType", value } })
+                    }
+                    options={soilOptions}
+                    placeholder={t("select_soil_placeholder")}
+                  />
                 </div>
 
                 {/* <div>
@@ -657,9 +791,14 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                   </label>
                   <Select
                     options={cropOptions}
-                    value={cropOptions.find(option => option.value === formData.cropType)}
+                    value={cropOptions.find(
+                      (option) => option.value === formData.cropType,
+                    )}
                     onChange={(selectedOption) =>
-                      setFormData(prev => ({ ...prev, cropType: selectedOption.value }))
+                      setFormData((prev) => ({
+                        ...prev,
+                        cropType: selectedOption.value,
+                      }))
                     }
                     placeholder={t("select_crop_placeholder")}
                     isSearchable={true}
@@ -667,9 +806,13 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                     styles={{
                       control: (base, state) => ({
                         ...base,
-                        backgroundColor: state.selectProps.isDark ? "#1a1a1a" : "white",
+                        backgroundColor: state.selectProps.isDark
+                          ? "#1a1a1a"
+                          : "white",
                         border: "1px solid",
-                        borderColor: state.selectProps.isDark ? "#3f3f46" : "#e5e7eb",
+                        borderColor: state.selectProps.isDark
+                          ? "#3f3f46"
+                          : "#e5e7eb",
                         boxShadow: state.isFocused
                           ? state.selectProps.isDark
                             ? "0 0 0 2px #22c55e55"
@@ -690,7 +833,9 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
 
                       menuList: (base, state) => ({
                         ...base,
-                        backgroundColor: state.selectProps.isDark ? "#1a1a1a" : "white",
+                        backgroundColor: state.selectProps.isDark
+                          ? "#1a1a1a"
+                          : "white",
                         padding: 0,
                       }),
 
@@ -705,20 +850,23 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                         color: state.selectProps.isDark ? "#9ca3af" : "#9ca3af",
                       }),
 
-                      option: (base, { isFocused, isSelected, selectProps }) => ({
+                      option: (
+                        base,
+                        { isFocused, isSelected, selectProps },
+                      ) => ({
                         ...base,
                         backgroundColor: isSelected
                           ? "#16a34a"
                           : isFocused
-                            ? selectProps.isDark
-                              ? "#262626"
-                              : "#dcfce7"
-                            : "transparent",
+                          ? selectProps.isDark
+                            ? "#262626"
+                            : "#dcfce7"
+                          : "transparent",
                         color: isSelected
                           ? "white"
                           : selectProps.isDark
-                            ? "#d4d4d8"
-                            : "#14532d",
+                          ? "#d4d4d8"
+                          : "#14532d",
                         cursor: "pointer",
                         padding: "10px 12px",
                       }),
@@ -727,12 +875,17 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                         ...base,
                         color: state.selectProps.isDark ? "#86efac" : "#16a34a",
                         ":hover": {
-                          color: state.selectProps.isDark ? "#4ade80" : "#166534",
+                          color: state.selectProps.isDark
+                            ? "#4ade80"
+                            : "#166534",
                         },
                       }),
                     }}
                     // Pass dark mode value to styles
-                    isDark={typeof window !== "undefined" && document.documentElement.classList.contains("dark")}
+                    isDark={
+                      typeof window !== "undefined" &&
+                      document.documentElement.classList.contains("dark")
+                    }
                   />
                 </div>
 
@@ -779,7 +932,9 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
 
                 {calculating && (
                   <div className="md:col-span-2 text-center py-4">
-                    <p className="text-farm-600 dark:text-gray-400">{t("calculating_data")}</p>
+                    <p className="text-farm-600 dark:text-gray-400">
+                      {t("calculating_data")}
+                    </p>
                   </div>
                 )}
 
@@ -793,17 +948,29 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                       },
                       {
                         label: t("irrigation_method_label"),
-                        value: calculatedData.irrigation_method || displayData.irrigationMethod,
+                        value:
+                          calculatedData.irrigation_method ||
+                          displayData.irrigationMethod,
                         icon: FaTint,
                       },
                       {
                         label: t("moisture_range_label"),
-                        value: `${calculatedData.moisture_threshold_min || displayData.moistureThresholdMin}% – ${calculatedData.moisture_threshold_max || displayData.moistureThresholdMax}%`,
+                        value: `${
+                          calculatedData.moisture_threshold_min ||
+                          displayData.moistureThresholdMin
+                        }% – ${
+                          calculatedData.moisture_threshold_max ||
+                          displayData.moistureThresholdMax
+                        }%`,
                         icon: FaWater,
                       },
                       {
                         label: t("water_per_cycle"),
-                        value: `${numberFormatter.format(calculatedData.default_water_amount_liters || displayData.defaultWaterAmountLiters || 0)} L`,
+                        value: `${numberFormatter.format(
+                          calculatedData.default_water_amount_liters ||
+                            displayData.defaultWaterAmountLiters ||
+                            0,
+                        )} L`,
                         icon: FaSun,
                       },
                     ].map(({ label, value, icon: Icon }) => (
@@ -815,7 +982,9 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                           <Icon className="w-4 h-4 text-farm-600 dark:text-emerald-400" />
                         </div>
                         <div>
-                          <p className="text-xs uppercase tracking-wider text-farm-500 dark:text-gray-400">{label}</p>
+                          <p className="text-xs uppercase tracking-wider text-farm-500 dark:text-gray-400">
+                            {label}
+                          </p>
                           <p className="text-base font-semibold text-farm-900 dark:text-white">
                             {formatDisplayValue(value)}
                           </p>
@@ -830,19 +999,32 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                     {[
                       {
                         label: t("est_yield_label"),
-                        value: `${numberFormatter.format(calculatedData.expected_yield_kg || displayData.expectedYieldKg || 0)} kg`,
+                        value: `${numberFormatter.format(
+                          calculatedData.expected_yield_kg ||
+                            displayData.expectedYieldKg ||
+                            0,
+                        )} kg`,
                         icon: FaChartLine,
                       },
                       {
                         label: t("market_price_label"),
-                        value: calculatedData.expected_price_per_kg || displayData.expectedPricePerKg
-                          ? `₹${numberFormatter.format(calculatedData.expected_price_per_kg || displayData.expectedPricePerKg)} / kg`
-                          : "₹— / kg",
+                        value:
+                          calculatedData.expected_price_per_kg ||
+                          displayData.expectedPricePerKg
+                            ? `₹${numberFormatter.format(
+                                calculatedData.expected_price_per_kg ||
+                                  displayData.expectedPricePerKg,
+                              )} / kg`
+                            : "₹— / kg",
                         icon: FaSeedling,
                       },
                       {
                         label: t("est_cost_label"),
-                        value: `₹${numberFormatter.format(calculatedData.estimated_cost_per_acre || displayData.estimatedCostPerAcre || 0)}`,
+                        value: `₹${numberFormatter.format(
+                          calculatedData.estimated_cost_per_acre ||
+                            displayData.estimatedCostPerAcre ||
+                            0,
+                        )}`,
                         icon: FaSun,
                       },
                     ].map(({ label, value, icon: Icon }) => (
@@ -854,7 +1036,9 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                           <Icon className="w-4 h-4 text-farm-600" />
                         </div>
                         <div>
-                          <p className="text-xs uppercase tracking-wider text-farm-500">{label}</p>
+                          <p className="text-xs uppercase tracking-wider text-farm-500">
+                            {label}
+                          </p>
                           <p className="text-base font-semibold text-farm-900">
                             {formatDisplayValue(value)}
                           </p>
@@ -869,22 +1053,35 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                     {[
                       {
                         label: t("expected_harvest_label"),
-                        value: formatDateForDisplay(calculatedData.expected_harvest || displayData.expectedHarvest),
+                        value: formatDateForDisplay(
+                          calculatedData.expected_harvest ||
+                            displayData.expectedHarvest,
+                        ),
                         icon: FaCalendarAlt,
                       },
                       {
                         label: t("fertilization_label"),
-                        value: formatDateForDisplay(calculatedData.next_fertilization_date || displayData.nextFertilizationDate),
+                        value: formatDateForDisplay(
+                          calculatedData.next_fertilization_date ||
+                            displayData.nextFertilizationDate,
+                        ),
                         icon: FaClock,
                       },
                       {
                         label: t("scouting_cycle_label"),
-                        value: `${formatDisplayValue(calculatedData.scouting_frequency_days || displayData.scoutingFrequencyDays)} ${t("days")}`,
+                        value: `${formatDisplayValue(
+                          calculatedData.scouting_frequency_days ||
+                            displayData.scoutingFrequencyDays,
+                        )} ${t("days")}`,
                         icon: FaBug,
                       },
                       {
                         label: t("pest_risk_label"),
-                        value: (calculatedData.pest_risk_level || displayData.pestRiskLevel || "medium").toUpperCase(),
+                        value: (
+                          calculatedData.pest_risk_level ||
+                          displayData.pestRiskLevel ||
+                          "medium"
+                        ).toUpperCase(),
                         icon: FaBug,
                       },
                     ].map(({ label, value, icon: Icon }) => (
@@ -896,7 +1093,9 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                           <Icon className="w-4 h-4 text-farm-600" />
                         </div>
                         <div>
-                          <p className="text-xs uppercase tracking-wider text-farm-500">{label}</p>
+                          <p className="text-xs uppercase tracking-wider text-farm-500">
+                            {label}
+                          </p>
                           <p className="text-base font-semibold text-farm-900">
                             {formatDisplayValue(value)}
                           </p>
@@ -933,18 +1132,65 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
       {/* Crops Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {crops.map((crop, index) => {
-          const cropTypeValue = pickCropValue(crop, "crop_type", "cropType", "");
-          const fieldName = pickCropValue(crop, "field_name", "fieldName", "") || getCropName(cropTypeValue);
-          const locationDisplay = pickCropValue(crop, "location", "fieldLocation", "No location set");
+          const cropTypeValue = pickCropValue(
+            crop,
+            "crop_type",
+            "cropType",
+            "",
+          );
+          const fieldName =
+            pickCropValue(crop, "field_name", "fieldName", "") ||
+            getCropName(cropTypeValue);
+          const locationDisplay = pickCropValue(
+            crop,
+            "location",
+            "fieldLocation",
+            "No location set",
+          );
           const areaDisplay = pickCropValue(crop, "area_acres", "area", "");
           const soilType = pickCropValue(crop, "soil_type", "soilType", "");
-          const irrigationMethod = pickCropValue(crop, "irrigation_method", "irrigationMethod", "");
-          const moistureMin = pickCropValue(crop, "moisture_threshold_min", "moistureMin", "");
-          const moistureMax = pickCropValue(crop, "moisture_threshold_max", "moistureMax", "");
-          const expectedYield = pickCropValue(crop, "expected_yield_kg", "expectedYield", "");
-          const pestRisk = pickCropValue(crop, "pest_risk_level", "pestRiskLevel", "");
-          const nextFertilization = pickCropValue(crop, "next_fertilization_date", "nextFertilizationDate", "");
-          const plantingDate = pickCropValue(crop, "planting_date", "plantingDate", "");
+          const irrigationMethod = pickCropValue(
+            crop,
+            "irrigation_method",
+            "irrigationMethod",
+            "",
+          );
+          const moistureMin = pickCropValue(
+            crop,
+            "moisture_threshold_min",
+            "moistureMin",
+            "",
+          );
+          const moistureMax = pickCropValue(
+            crop,
+            "moisture_threshold_max",
+            "moistureMax",
+            "",
+          );
+          const expectedYield = pickCropValue(
+            crop,
+            "expected_yield_kg",
+            "expectedYield",
+            "",
+          );
+          const pestRisk = pickCropValue(
+            crop,
+            "pest_risk_level",
+            "pestRiskLevel",
+            "",
+          );
+          const nextFertilization = pickCropValue(
+            crop,
+            "next_fertilization_date",
+            "nextFertilizationDate",
+            "",
+          );
+          const plantingDate = pickCropValue(
+            crop,
+            "planting_date",
+            "plantingDate",
+            "",
+          );
 
           return (
             <motion.div
@@ -989,7 +1235,9 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                   <FaCalendarAlt className="w-4 h-4 text-gray-400 dark:text-gray-500" />
                   <span>
                     {t("planted_label")}{" "}
-                    {plantingDate ? new Date(plantingDate).toLocaleDateString() : "—"}
+                    {plantingDate
+                      ? new Date(plantingDate).toLocaleDateString()
+                      : "—"}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -999,33 +1247,44 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                 {areaDisplay && (
                   <div className="flex items-center gap-2">
                     <FaSun className="w-4 h-4 text-gray-400 dark:text-gray-500" />
-                    <span>{t("area_label")} {formatDisplayValue(areaDisplay)} acres</span>
+                    <span>
+                      {t("area_label")} {formatDisplayValue(areaDisplay)} acres
+                    </span>
                   </div>
                 )}
                 {soilType && (
                   <div className="flex items-center gap-2">
                     <FaSeedling className="w-4 h-4 text-gray-400 dark:text-gray-500" />
-                    <span>{t("soil_label")} {soilType}</span>
+                    <span>
+                      {t("soil_label")} {soilType}
+                    </span>
                   </div>
                 )}
                 {irrigationMethod && (
                   <div className="flex items-center gap-2">
                     <FaTint className="w-4 h-4 text-gray-400 dark:text-gray-500" />
-                    <span>{t("irrigation_label")} {irrigationMethod}</span>
+                    <span>
+                      {t("irrigation_label")} {irrigationMethod}
+                    </span>
                   </div>
                 )}
                 {(moistureMin || moistureMax) && (
                   <div className="flex items-center gap-2">
                     <FaWater className="w-4 h-4 text-gray-400 dark:text-gray-500" />
                     <span>
-                      {t("moisture_range_label_short")} {formatDisplayValue(moistureMin)}% - {formatDisplayValue(moistureMax)}%
+                      {t("moisture_range_label_short")}{" "}
+                      {formatDisplayValue(moistureMin)}% -{" "}
+                      {formatDisplayValue(moistureMax)}%
                     </span>
                   </div>
                 )}
                 {expectedYield && (
                   <div className="flex items-center gap-2">
                     <FaChartLine className="w-4 h-4 text-gray-400 dark:text-gray-500" />
-                    <span>{t("expected_yield_label_short")} {formatDisplayValue(expectedYield)} kg</span>
+                    <span>
+                      {t("expected_yield_label_short")}{" "}
+                      {formatDisplayValue(expectedYield)} kg
+                    </span>
                   </div>
                 )}
                 {nextFertilization && (
@@ -1040,7 +1299,9 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                 {pestRisk && (
                   <div className="flex items-center gap-2">
                     <FaBug className="w-4 h-4 text-gray-400 dark:text-gray-500" />
-                    <span>{t("pest_risk_label_short")} {pestRisk}</span>
+                    <span>
+                      {t("pest_risk_label_short")} {pestRisk}
+                    </span>
                   </div>
                 )}
               </div>
@@ -1055,12 +1316,15 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                     onSelectCrop(crop);
                   }
                 }}
-                className={`w-full mt-4 py-2 rounded-xl font-semibold transition-all duration-300 ${selectedCrop && selectedCrop.id === crop.id
-                  ? "bg-gradient-to-r from-farm-500 to-farm-600 text-white shadow-lg"
-                  : "bg-farm-100 text-farm-700 hover:bg-farm-200"
-                  }`}
+                className={`w-full mt-4 py-2 rounded-xl font-semibold transition-all duration-300 ${
+                  selectedCrop && selectedCrop.id === crop.id
+                    ? "bg-gradient-to-r from-farm-500 to-farm-600 text-white shadow-lg"
+                    : "bg-farm-100 text-farm-700 hover:bg-farm-200"
+                }`}
               >
-                {selectedCrop && selectedCrop.id === crop.id ? t("selected_status") : t("select_for_guidance")}
+                {selectedCrop && selectedCrop.id === crop.id
+                  ? t("selected_status")
+                  : t("select_for_guidance")}
               </motion.button>
             </motion.div>
           );
@@ -1077,7 +1341,9 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
           <div className="w-24 h-24 bg-farm-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <FaSeedling className="w-12 h-12 text-farm-600" />
           </div>
-          <h3 className="text-xl font-bold text-farm-900 dark:text-white mb-2">{t("no_crops_added_title")}</h3>
+          <h3 className="text-xl font-bold text-farm-900 dark:text-white mb-2">
+            {t("no_crops_added_title")}
+          </h3>
           <p className="text-farm-700 dark:text-gray-400 mb-6">
             {t("add_first_crop_desc")}
           </p>

@@ -11248,7 +11248,8 @@ export const CROP_DATABASE = [
     description:
       "Asafoetida (Hing) is a dried latex (gum oleoresin) exuded from the rhizome or tap root of several species of Ferula, perennial herbs growing 1 to 1.5 m (3.3 to 4.9 ft) tall. It is a crucial spice crop. It thrives in temperate climates with temperatures between 20-30°C and requires low to moderate rainfall. The crop prefers well-drained loamy to sandy loam soil. Proper irrigation is needed during establishment but it is drought tolerant once established. Farmers should watch for localized pests and root rot diseases. It is typically harvested after 4-5 years of growth.",
     diseases: ["Root Rot", "Soft Rot"],
-    diseaseManagement: "Ensure good drainage to prevent rot. Use fungicides if necessary.",
+    diseaseManagement:
+      "Ensure good drainage to prevent rot. Use fungicides if necessary.",
     varieties: ["Local Selection", "Exotic Varieties"],
     climate: {
       temperature: "20-30°C",
@@ -11285,4 +11286,5 @@ export const CROP_DATABASE = [
       updated_fields: [],
       note: "Manually added entry for Asafoetida (Hing). Verify agronomic data.",
     },
-  },];
+  },
+];

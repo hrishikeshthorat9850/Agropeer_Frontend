@@ -32,7 +32,7 @@ export default function CropDiscoverySection({
       </div>
 
       {/* 🌾 Category Chips (Horizontal Scroll) - STICKY */}
-      <div className="sticky top-0 z-30 bg-white/95 dark:bg-[#0a0a0a]/95 backdrop-blur-sm -mx-4 px-4 pb-3 mb-4 border-b border-gray-100 dark:border-gray-800 transition-all">
+      <div className="sticky top-[var(--mobile-navbar-height)] z-30 bg-white/95 dark:bg-[#0a0a0a]/95 backdrop-blur-sm -mx-4 px-4 pb-3 mb-4 border-b border-gray-100 dark:border-gray-800 transition-all">
         <div className="flex overflow-x-auto gap-2 scrollbar-hide snap-x">
           {categories.map((cat) => (
             <motion.button

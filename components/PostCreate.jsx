@@ -105,7 +105,7 @@ export default function PostCreation({ onSuccess }) {
     }));
 
     const total = [...files, ...selected];
-    if (total.length > 12) {
+    if (total.length > 5) {
       setAlertMessage(t("upload_limit_error"));
       setShowAlert(true);
       showToast("error", t("upload_limit_error"));
@@ -272,7 +272,9 @@ export default function PostCreation({ onSuccess }) {
         `${BASE_URL}/api/posts/${postId}/like`,
         {
           method: "POST",
-          headers: { ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
+          headers: {
+            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+          },
           body: JSON.stringify({ user_id: user.id }),
         },
       );
@@ -295,12 +297,19 @@ export default function PostCreation({ onSuccess }) {
         `${BASE_URL}/api/posts/${postId}/like`,
         {
           method: "POST",
-          headers: { ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
+          headers: {
+            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+          },
           body: JSON.stringify({ user_id: user.id }),
         },
       );
       if (apiError) throw apiError;
-      setLiked(data?.liked ?? !posts.find((p) => p.id === postId)?.post_likes?.some((l) => l.user_id === user.id));
+      setLiked(
+        data?.liked ??
+          !posts
+            .find((p) => p.id === postId)
+            ?.post_likes?.some((l) => l.user_id === user.id),
+      );
       setPosts((prev) =>
         prev.map((p) => {
           if (p.id !== postId) return p;
@@ -324,7 +333,9 @@ export default function PostCreation({ onSuccess }) {
         `${BASE_URL}/api/post-comment`,
         {
           method: "POST",
-          headers: { ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
+          headers: {
+            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+          },
           body: JSON.stringify({
             post_id: postId,
             comment: text.trim(),

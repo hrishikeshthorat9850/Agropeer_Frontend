@@ -20,21 +20,6 @@ import { usePageTransition } from "@/hooks/usePageTransition";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
-function Toast({ message, show, onClose, color = "bg-red-700" }) {
-  if (!show) return null;
-  return (
-    <div
-      className={`fixed top-10 left-1/2 transform -translate-x-1/2 ${color} 
-                  text-white px-6 py-3 rounded-lg shadow-lg z-[9999] flex items-center space-x-3 animate-fade-in`}
-    >
-      {message}
-      <button className="ml-3 font-bold" onClick={onClose}>
-        ✕
-      </button>
-    </div>
-  );
-}
-
 export default function SellForm({
   category = "others",
   productData = null,
@@ -359,11 +344,6 @@ export default function SellForm({
   const [lloading, setLLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [previewLoading, setPreviewLoading] = useState(false);
-  const [toast, setToast] = useState({
-    show: false,
-    message: "",
-    color: "bg-red-700",
-  });
 
   useEffect(() => {
     if (loading) return;
@@ -405,11 +385,6 @@ export default function SellForm({
       ? "error"
       : "info";
     showToastUnified(type, msg);
-    setToast({ show: true, message: msg, color });
-    setTimeout(
-      () => setToast({ show: false, message: "", color: "bg-red-700" }),
-      3000,
-    );
   }
 
   function onChange(e) {
@@ -429,7 +404,7 @@ export default function SellForm({
   async function onFileChange(e) {
     const pickedFiles = Array.from(e.target.files || []);
     if (!pickedFiles.length) return;
-    if (photos.length + pickedFiles.length > 6) {
+    if (photos.length + pickedFiles.length > 5) {
       showToast(t("toast_max_photos"));
       return;
     }
@@ -520,7 +495,7 @@ export default function SellForm({
     return await Promise.all(uploadTasks);
   }
 
-  async function onSubmit(e) {
+  async function gi (e) {
     e.preventDefault();
     if (!validateForm()) return;
     setLLoading(true);
@@ -553,7 +528,11 @@ export default function SellForm({
             `${BASE_URL}/api/products/${productData.id}`,
             {
               method: "PUT",
-              headers: { ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
+              headers: {
+                ...(accessToken
+                  ? { Authorization: `Bearer ${accessToken}` }
+                  : {}),
+              },
               body: JSON.stringify(listingPayload),
             },
           );
@@ -563,7 +542,11 @@ export default function SellForm({
             `${BASE_URL}/api/products`,
             {
               method: "POST",
-              headers: { ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
+              headers: {
+                ...(accessToken
+                  ? { Authorization: `Bearer ${accessToken}` }
+                  : {}),
+              },
               body: JSON.stringify(listingPayload),
             },
           );
@@ -609,7 +592,6 @@ export default function SellForm({
       setPreviews([]);
       setSelectedCount(0);
       setResetKey((prev) => prev + 1);
-      
       // fileInputRef reset removed, handled by resetKey remounting the component
     } catch (err) {
       console.error("Submit error:", err);
@@ -705,15 +687,15 @@ export default function SellForm({
           <label className="text-gray-800 font-semibold mb-2 dark:text-white">
             {t("photos_label")} <span className="text-red-600">*</span>
           </label>
-          
+
           <ImageUploadBox
-              onFileChange={onFileChange}
-              multiple={true}
-              error={!!errors.photos}
-              label={t("photos_label") || "Tap to select photos"}
-              subLabel={`${selectedCount} ${t("photos_selected") || "selected"}`}
-            />
-            {/* Native input removed as it is handled by ImageUploadBox */}
+            onFileChange={onFileChange}
+            multiple={true}
+            error={!!errors.photos}
+            label={t("photos_label") || "Tap to select photos"}
+            subLabel={`${selectedCount} ${t("photos_selected") || "selected"}`}
+          />
+          {/* Native input removed as it is handled by ImageUploadBox */}
 
           {selectedCount > 0 && (
             <p className="text-gray-600 mt-1">
@@ -796,15 +778,6 @@ export default function SellForm({
           </button>
         </div>
       </form>
-
-      <Toast
-        show={toast.show}
-        message={toast.message}
-        color={toast.color}
-        onClose={() =>
-          setToast({ show: false, message: "", color: "bg-red-700" })
-        }
-      />
     </>
   );
 }
