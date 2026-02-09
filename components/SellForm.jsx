@@ -495,7 +495,7 @@ export default function SellForm({
     return await Promise.all(uploadTasks);
   }
 
-  async function gi (e) {
+  async function onSubmit(e) {
     e.preventDefault();
     if (!validateForm()) return;
     setLLoading(true);

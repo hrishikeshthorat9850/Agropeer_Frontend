@@ -35,17 +35,17 @@ const SellForm = dynamic(() => import("@/components/SellForm"), {
   loading: () => <LoadingSpinner />,
 });
 
-const AdPost = dynamic(() => import("@/components/AdPost"), {
-  loading: () => (
-    <div className="w-full h-64 bg-gray-100 animate-pulse rounded-xl" />
-  ),
-});
+// const AdPost = dynamic(() => import("@/components/AdPost"), {
+//   loading: () => (
+//     <div className="w-full h-64 bg-gray-100 animate-pulse rounded-xl" />
+//   ),
+// });
 
-const AdBanner = dynamic(() => import("@/components/AdBanner"), {
-  loading: () => (
-    <div className="w-full h-32 bg-gray-100 animate-pulse rounded-xl mb-6" />
-  ),
-});
+// const AdBanner = dynamic(() => import("@/components/AdBanner"), {
+//   loading: () => (
+//     <div className="w-full h-32 bg-gray-100 animate-pulse rounded-xl mb-6" />
+//   ),
+// });
 
 const ChatModal = dynamic(() => import("@/components/ChatModal"), {
   ssr: false, // Browser-only component with socket connections
@@ -905,7 +905,7 @@ export default function AgriMarket() {
                 <div className="w-full h-32 bg-gray-100 animate-pulse rounded-xl mb-6" />
               }
             >
-              <AdBanner ads={ads} />
+              {/* <AdBanner ads={ads} /> */}
             </Suspense>
           )}
 
@@ -928,7 +928,7 @@ export default function AgriMarket() {
                         <div className="w-full h-64 bg-gray-100 animate-pulse rounded-xl" />
                       }
                     >
-                      <AdPost ad={item.ad} />
+                      {/* <AdPost ad={item.ad} /> */}
                     </Suspense>
                   );
                 }

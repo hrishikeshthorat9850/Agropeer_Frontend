@@ -243,15 +243,8 @@ export async function playBackAnimation(navigationCallback, options = {}) {
     });
     await Promise.all(callbackPromises);
 
-    // Save scroll position before navigating back
-    if (typeof window !== "undefined") {
-      const currentPath = window.location.pathname;
-      const scrollY = window.scrollY || window.pageYOffset || 0;
-      // Store in sessionStorage for persistence across navigation
-      if (scrollY > 0) {
-        sessionStorage.setItem(`scroll_${currentPath}`, scrollY.toString());
-      }
-    }
+    // Scroll saving disabled to force "always open at top"
+    // if (typeof window !== 'undefined') { ... }
 
     // Start exit animation immediately (non-blocking)
     playExitAnimation();
@@ -265,24 +258,13 @@ export async function playBackAnimation(navigationCallback, options = {}) {
       requestAnimationFrame(() => {
         playEnterAnimation();
 
-        // Restore scroll position after navigation completes (native Android behavior)
+        // Scroll restoration disabled to force "always open at top"
+        /* 
         if (typeof window !== "undefined") {
           const currentPath = window.location.pathname;
-          const savedScroll = sessionStorage.getItem(`scroll_${currentPath}`);
-          if (savedScroll) {
-            const scrollY = parseInt(savedScroll);
-            if (scrollY > 0) {
-              // Small delay to ensure DOM is ready
-              setTimeout(() => {
-                window.scrollTo({
-                  top: scrollY,
-                  left: 0,
-                  behavior: "instant",
-                });
-              }, 50);
-            }
-          }
+          ...
         }
+        */
       });
     }
   } catch (error) {
