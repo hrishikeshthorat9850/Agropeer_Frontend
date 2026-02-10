@@ -294,7 +294,7 @@ const FarmerDashboard = () => {
       )}
 
       {/* 📱 STICKY TABS */}
-      <div className="sticky top-[60px] z-40 bg-gray-50 dark:bg-black pb-2">
+      <div className="sticky top-mobile-navbar-height z-40 bg-gray-50 dark:bg-black pb-2">
         <div className="max-w-lg mx-auto px-4">
           {/* Tabs Container with proper background to mask content behind */}
           <div className="bg-white dark:bg-[#121212] border border-gray-100 dark:border-[#333] rounded-2xl p-1 shadow-sm">
