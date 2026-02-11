@@ -122,7 +122,7 @@ const FarmerDashboard = () => {
 
     fetchInsights();
     return () => controller.abort();
-  }, [user?.id, authLoading, position?.latitude, position?.longitude]);
+  }, [user?.id, authLoading, position?.latitude, position?.longitude, locale]);
 
   // Old nav visibility observer
   useEffect(() => {
