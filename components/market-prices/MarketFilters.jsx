@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { FaSearch, FaFilter } from "react-icons/fa";
 import useSWR from "swr";
 import { useLanguage } from "@/Context/languagecontext";
+import { CROP_TRANSLATIONS } from "@/lib/cropTranslations";
 import BottomSelect from "../ui/BottomSelect";
 import debounce from "lodash.debounce";
 
@@ -17,7 +18,39 @@ export default function MarketFilters({
   onClear,
   filters = {},
 }) {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
+
+  // Helper for dynamic market data translation
+  const tCrop = (key) => {
+    if (!key) return "";
+
+    // 1. Try exact match first
+    const exactMatch = CROP_TRANSLATIONS[locale]?.[key];
+    if (exactMatch) return exactMatch;
+
+    // 2. If no exact match, try smart splitting
+    // Split by common separators: space, hyphen, comma, parentheses
+    const parts = key.split(/([ \-\,\(\)]+)/);
+
+    // Translate each part that is a word, keep separators as is
+    const translatedParts = parts.map((part) => {
+      // Skip empty strings or just whitespace/separators
+      if (!part.trim() || /^[ \-\,\(\)]+$/.test(part)) return part;
+
+      // Try to translate the word
+      // Check case-insensitive match logic if needed, but for now direct lookup
+      // also try trimming just in case
+      const cleanPart = part.trim();
+      return (
+        CROP_TRANSLATIONS[locale]?.[cleanPart] ??
+        CROP_TRANSLATIONS[locale]?.[cleanPart.toLowerCase()] ??
+        CROP_TRANSLATIONS[locale]?.[cleanPart.toUpperCase()] ??
+        part
+      );
+    });
+
+    return translatedParts.join("");
+  };
   const [selectedState, setSelectedState] = useState(filters.state || "");
   const [selectedDistrict, setSelectedDistrict] = useState(
     filters.district || "",
@@ -30,12 +63,16 @@ export default function MarketFilters({
   const states =
     allStates.length > 0
       ? allStates
+          .map((state) => ({ label: tCrop(state), value: state }))
+          .sort((a, b) => a.label.localeCompare(b.label))
       : data && Array.isArray(data)
       ? [
           ...new Set(
             data.filter((item) => item && item.state).map((item) => item.state),
           ),
-        ].sort()
+        ]
+          .map((state) => ({ label: tCrop(state), value: state }))
+          .sort((a, b) => a.label.localeCompare(b.label))
       : [];
 
   // Fetch districts from database when state is selected
@@ -49,7 +86,9 @@ export default function MarketFilters({
     { revalidateOnFocus: false },
   );
 
-  const districts = districtsData?.districts || [];
+  const districts = (districtsData?.districts || [])
+    .map((district) => ({ label: tCrop(district), value: district }))
+    .sort((a, b) => a.label.localeCompare(b.label));
 
   // Fetch markets from database when state and optionally district are selected
   const { data: marketsData } = useSWR(
@@ -66,7 +105,9 @@ export default function MarketFilters({
     { revalidateOnFocus: false },
   );
 
-  const markets = marketsData?.markets || [];
+  const markets = (marketsData?.markets || [])
+    .map((market) => ({ label: tCrop(market), value: market }))
+    .sort((a, b) => a.label.localeCompare(b.label));
 
   // Reset cascading dropdowns
   useEffect(() => {
