@@ -702,7 +702,7 @@ export default function AgriMarket() {
 
     return (
       <MobilePageContainer noPadding>
-        <div className="w-full min-h-screen flex flex-col items-center justify-start dark:bg-[#0a0a0a] py-6">
+        <div className="w-full flex flex-col items-center justify-start dark:bg-[#0a0a0a] py-6">
           <div className="w-full px-1">
             <div className="flex items-center justify-center gap-3 mb-6">
               <svg

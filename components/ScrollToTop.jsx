@@ -48,18 +48,35 @@ export default function ScrollToTop() {
   useEffect(() => {
     // FORCE SCROLL TO TOP on every navigation
     // This satisfies the requirement: "always page open on top"
-    window.scrollTo(0, 0);
 
-    // Safety timeout to ensure it happens after layout shifts
-    const t = setTimeout(() => {
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: "instant",
-      });
-    }, 100);
+    const scrollToTop = () => {
+      // 1. Window
+      window.scrollTo(0, 0);
 
-    return () => clearTimeout(t);
+      // 2. Document Body / HTML
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+
+      // 3. Main Content Wrapper (if it exists and has overflow)
+      const mainContent = document.getElementById("main-content");
+      if (mainContent) {
+        mainContent.scrollTop = 0;
+      }
+    };
+
+    // Immediate
+    scrollToTop();
+
+    // Safety timeouts to ensure it happens after layout shifts/rendering
+    const t1 = setTimeout(scrollToTop, 10);
+    const t2 = setTimeout(scrollToTop, 100);
+    const t3 = setTimeout(scrollToTop, 300); // For slower mobile devices
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+    };
 
     // Update tracking
     lastPathnameScrolled = stablePathname;

@@ -66,7 +66,6 @@ export default function ClientLayout({ children }) {
     }
   }, []);
 
-
   // Body padding adjustments for mobile no-padding routes
   useEffect(() => {
     const noMobilePaddingRoutes = [
@@ -96,8 +95,7 @@ export default function ClientLayout({ children }) {
         }}
       />
       <AppProviders>
-        {/* Do not mount ScrollToTop on /posts — prevents any scroll-to-top when loading more / reaching end */}
-        {normalizePath(pathname) !== "/posts" && <ScrollToTop />}
+        <ScrollToTop />
         <StatusBarManager />
         <TopLoader />
         <OfflineBanner />
@@ -122,7 +120,7 @@ export default function ClientLayout({ children }) {
               ${showNavbar ? "pt-mobile-layout" : ""} 
               ${showNavbar && !keyboardOpen ? "pb-mobile-layout" : ""}
             `}
-            style={showNavbar ? { minHeight: '100dvh' } : undefined}
+            style={showNavbar ? { minHeight: "100dvh" } : undefined}
           >
             {/* MobilePageLayout provides consistent logic but NO extra padding if navbar/bottomnav are outside */}
             <MobilePageLayout hasNavbar={showNavbar}>

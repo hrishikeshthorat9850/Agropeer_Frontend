@@ -212,7 +212,7 @@ export default function MobileHome() {
         <div className="text-center flex flex-col items-center space-y-2">
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white leading-tight">
             {t("welcome_agropeer")}{" "}
-            <span className="text-green-600 dark:text-green-400">AgroPeer</span>
+            <span className="text-green-600 dark:text-green-400">{t("name_agropeer")}</span>
           </h1>
           <p className="text-sm text-slate-500 dark:text-gray-400 max-w-[90%] leading-relaxed">
             {t("welcome_desc")}
