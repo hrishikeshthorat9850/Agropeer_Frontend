@@ -29,7 +29,7 @@ import {
 import { useLanguage } from "@/Context/languagecontext";
 import { useLocation, LOCATION } from "./mobile/hooks/useLocation";
 import { openAppSettings } from "./mobile/utils/openAppSettings";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import WeatherSkeleton from "@/components/skeletons/WeatherSkeleton";
 
 export default function WeatherForecast() {
   const { t, currentLanguage } = useLanguage();
@@ -249,19 +249,14 @@ export default function WeatherForecast() {
 
   // Render loading/error states or the main UI
   if (!weather) {
+    if (status === LOCATION.LOADING) {
+      return <WeatherSkeleton />;
+    }
+
     return (
       <div className="w-full max-w-6xl mx-auto mt-8 px-4 text-center">
         {/* Location Status Controls for missing weather/location */}
         <div className="flex flex-col items-center justify-center gap-4 p-8 bg-white dark:bg-[#1E1E1E] rounded-3xl shadow-sm border border-gray-100 dark:border-[#333]">
-          {status === LOCATION.LOADING && (
-            <div className="flex flex-col items-center gap-2">
-              <LoadingSpinner size="sm" color="green" text="" />
-              <p className="text-gray-500">
-                {t("loading_location") || "Locating..."}
-              </p>
-            </div>
-          )}
-
           {status === LOCATION.DENIED && (
             <div className="flex flex-col items-center gap-3">
               <p className="text-red-500 font-medium">

@@ -21,7 +21,7 @@ export default function SelectedCategoryPage() {
   const { push } = usePageTransition();
   const searchParams = useSearchParams();
   const [category, setCategory] = useState("others");
-  
+
   const LABELS = {
     seeds: t("category_seeds"),
     fertilizers: t("category_fertilizers"),
@@ -45,13 +45,17 @@ export default function SelectedCategoryPage() {
   const pretty = LABELS[category] || t("selected_category_fallback");
 
   return (
-    <div className="min-h-screen flex justify-center font-sans">
-      <div className="w-full max-w-3xl bg-white shadow-2xl p-4 flex flex-col gap-6 dark:bg-[#272727]">
+    <div className="min-h-screen flex justify-center font-sans bg-farm-50 dark:bg-black transition-colors duration-300">
+      <div className="w-full max-w-3xl bg-white shadow-2xl p-4 flex flex-col gap-6 dark:bg-[#1e1e1e] border-x border-gray-100 dark:border-white/5 min-h-screen">
         {/* Header */}
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex justify-between items-center mb-4 pt-2">
           <div>
-            <p className="text-sm text-green-600 font-medium">{t("sell_selected_title")}</p>
-            <h2 className="text-xl font-bold text-green-800">{pretty}</h2>
+            <p className="text-sm text-farm-600 dark:text-farm-400 font-medium tracking-wide uppercase">
+              {t("sell_selected_title")}
+            </p>
+            <h2 className="text-xl font-bold text-farm-900 dark:text-white mt-0.5">
+              {pretty}
+            </h2>
           </div>
           <button
             onClick={() => {
@@ -59,7 +63,7 @@ export default function SelectedCategoryPage() {
               // PRESERVED: All other behavior unchanged
               push("/sell/choose");
             }}
-            className="px-4 py-2 border-2 border-green-600 rounded-md text-green-700 font-semibold hover:bg-green-100 transition"
+            className="px-4 py-2 border border-farm-600 dark:border-farm-500 rounded-xl text-farm-700 dark:text-farm-400 font-semibold hover:bg-farm-50 dark:hover:bg-farm-900/20 transition-colors"
           >
             {t("change_button")}
           </button>
@@ -73,4 +77,3 @@ export default function SelectedCategoryPage() {
     </div>
   );
 }
-

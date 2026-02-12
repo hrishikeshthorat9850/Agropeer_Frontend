@@ -220,7 +220,6 @@ export default function BottomSelect({
                         className="w-full pl-9 pr-4 py-3 bg-gray-50 dark:bg-gray-800 
                                  border-none rounded-xl text-gray-900 dark:text-white 
                                  placeholder-gray-400 focus:ring-2 focus:ring-green-500/20"
-                        autoFocus
                       />
                     </div>
                   </div>

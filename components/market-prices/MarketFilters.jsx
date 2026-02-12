@@ -109,16 +109,7 @@ export default function MarketFilters({
     .map((market) => ({ label: tCrop(market), value: market }))
     .sort((a, b) => a.label.localeCompare(b.label));
 
-  // Reset cascading dropdowns
-  useEffect(() => {
-    if (!selectedState) {
-      setSelectedDistrict("");
-      setSelectedMarket("");
-    }
-    if (!selectedDistrict) {
-      setSelectedMarket("");
-    }
-  }, [selectedState, selectedDistrict]);
+  // Reset cascading dropdowns (Removed - handled in onChange now)
 
   // Track if component has mounted to avoid initial mount triggers
   const isInitialMount = useRef(true);
@@ -346,7 +337,11 @@ export default function MarketFilters({
         <div className="relative flex-shrink-0 min-w-[120px]">
           <BottomSelect
             value={selectedState}
-            onChange={(val) => setSelectedState(val)}
+            onChange={(val) => {
+              setSelectedState(val);
+              setSelectedDistrict(""); // Reset district
+              setSelectedMarket(""); // Reset market
+            }}
             options={states}
             placeholder={t("all_states")}
             searchPlaceholder="Search State"
@@ -363,7 +358,10 @@ export default function MarketFilters({
         <div className="relative flex-shrink-0 min-w-[140px]">
           <BottomSelect
             value={selectedDistrict}
-            onChange={(val) => setSelectedDistrict(val)}
+            onChange={(val) => {
+              setSelectedDistrict(val);
+              setSelectedMarket(""); // Reset market
+            }}
             options={districts}
             disabled={!selectedState}
             placeholder={t("all_districts")}
