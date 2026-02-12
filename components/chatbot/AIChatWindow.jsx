@@ -9,6 +9,10 @@ import {
 import AILanguageSelector from "./AILanguageSelector";
 import { FaBrain, FaCloud, FaChartLine } from "react-icons/fa";
 import { useLogin } from "@/Context/logincontext";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
+
 
 export default function AIChatWindow({ open, setOpen }) {
   const [messages, setMessages] = useState([]);
@@ -333,21 +337,25 @@ export default function AIChatWindow({ open, setOpen }) {
             <div className="space-y-4">
               {messages.map((message) => (
                 <div
-                  key={message.id}
-                  className={`flex ${message.role === "user" ? "justify-end" : "justify-start"
-                    }`}
-                >
-                  <div
-                    className={`max-w-[80%] rounded-2xl px-4 py-2 ${message.role === "user"
+                  className={`max-w-[80%] rounded-2xl px-4 py-2 ${
+                    message.role === "user"
                       ? "bg-gradient-to-br from-emerald-600 to-emerald-500 text-white shadow-lg"
                       : message.error
-                        ? "bg-red-500/20 border border-red-400/30 text-red-200 backdrop-blur-md"
-                        : "bg-white/10 border border-white/10 backdrop-blur-md text-white"
-                      }`}
-                  >
-                    <p className="text-sm whitespace-pre-wrap break-words">
-                      {message.content}
-                    </p>
+                      ? "bg-red-500/20 border border-red-400/30 text-red-200 backdrop-blur-md"
+                      : "bg-white/10 border border-white/10 backdrop-blur-md text-white"
+                  }`}
+                >
+                  <div className="text-sm prose prose-invert max-w-none break-words">
+                    {message.role === "assistant" ? (
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        rehypePlugins={[rehypeHighlight]}
+                      >
+                        {message.content}
+                      </ReactMarkdown>
+                    ) : (
+                      message.content
+                    )}
                   </div>
                 </div>
               ))}

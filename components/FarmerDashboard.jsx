@@ -42,6 +42,7 @@ const FarmerDashboard = () => {
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   const oldNavRef = useRef(null);
   const [showBottomNav, setShowBottomNav] = useState(false);
+  const hasDataRef = useRef(false); // Track if we have data (for error handling)
 
   /** 🔥 PREMIUM FAB MENU UI */
   const [fabOpen, setFabOpen] = useState(false);
@@ -65,7 +66,7 @@ const FarmerDashboard = () => {
     }
   }, [position, weather, weatherLoading, getWeather]);
 
-  // Insights fetch
+  // Insights fetch with request deduplication
   useEffect(() => {
     if (authLoading) return;
 
@@ -77,51 +78,100 @@ const FarmerDashboard = () => {
     }
 
     const controller = new AbortController();
+    let timeoutId = null;
 
     async function fetchInsights() {
-      setInsightsLoading(true);
-      setInsightsError(null);
-      try {
-        const params = new URLSearchParams({ farmerId: user.id });
-        if (position?.latitude != null && position?.longitude != null) {
-          params.set("latitude", position.latitude);
-          params.set("longitude", position.longitude);
-        }
-        params.set("language", locale || "en");
-        params.set("summary", "1");
-
-        const response = await fetch(
-          `${BASE_URL}/api/smart-farm/insights?${params.toString()}`,
-          {
-            signal: controller.signal,
-            cache: "no-store",
-            headers: {
-              ...(accessToken
-                ? { Authorization: `Bearer ${accessToken}` }
-                : {}),
-            },
-          },
-        );
-
-        if (!response.ok) {
-          const payload = await response.json().catch(() => ({}));
-          throw new Error(payload.error || "Failed to load dashboard data");
-        }
-
-        const data = await response.json();
-        setInsightsData(data);
-      } catch (error) {
-        if (error.name !== "AbortError") {
-          setInsightsError(error.message);
-          setInsightsData(null);
-        }
-      } finally {
-        setInsightsLoading(false);
+      // Debounce: wait 300ms before making request (prevents rapid successive calls)
+      if (timeoutId) {
+        clearTimeout(timeoutId);
       }
+
+      timeoutId = setTimeout(async () => {
+        setInsightsLoading(true);
+        setInsightsError(null);
+        try {
+          const params = new URLSearchParams({ farmerId: user.id });
+          if (position?.latitude != null && position?.longitude != null) {
+            // Validate coordinates
+            const lat = Number(position.latitude);
+            const lng = Number(position.longitude);
+            if (isNaN(lat) || isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+              console.warn("[FarmerDashboard] Invalid coordinates:", { lat, lng });
+              // Continue without coordinates - weather will be null
+            } else {
+              params.set("latitude", lat.toString());
+              params.set("longitude", lng.toString());
+            }
+          }
+          params.set("language", locale || "en");
+          params.set("summary", "1");
+
+          const response = await fetch(
+            `${BASE_URL}/api/smart-farm/insights?${params.toString()}`,
+            {
+              signal: controller.signal,
+              cache: "no-store",
+              headers: {
+                ...(accessToken
+                  ? { Authorization: `Bearer ${accessToken}` }
+                  : {}),
+              },
+            },
+          );
+
+          if (!response.ok) {
+            const payload = await response.json().catch(() => ({}));
+            
+            // Handle rate limiting gracefully
+            if (response.status === 429) {
+              const retryAfter = response.headers.get("Retry-After");
+              const waitTime = retryAfter ? Math.ceil(Number(retryAfter) / 60) : 1;
+              throw new Error(
+                payload.message || 
+                `Too many requests. Please wait ${waitTime} minute(s) before trying again.`
+              );
+            }
+            
+            throw new Error(payload.error || payload.message || "Failed to load dashboard data");
+          }
+
+          const data = await response.json();
+          
+          // Handle cached response
+          if (data._meta?.cached) {
+            console.log(`[FarmerDashboard] Cache hit (age: ${data._meta.cacheAge}s)`);
+            // Remove meta before setting state
+            delete data._meta;
+          }
+          
+          setInsightsData(data);
+          hasDataRef.current = true; // Mark that we have data
+        } catch (error) {
+          if (error.name !== "AbortError") {
+            // Don't show error for network failures if we have cached data
+            if (error.message.includes("Failed to fetch") && hasDataRef.current) {
+              console.warn("[FarmerDashboard] Network error, using cached data");
+              return; // Keep existing data
+            }
+            setInsightsError(error.message);
+            // Don't clear data on error - keep showing last successful response
+            if (!hasDataRef.current) {
+              setInsightsData(null); // Only clear if we never had data
+            }
+          }
+        } finally {
+          setInsightsLoading(false);
+        }
+      }, 300); // 300ms debounce
     }
 
     fetchInsights();
-    return () => controller.abort();
+    return () => {
+      controller.abort();
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, [user?.id, authLoading, position?.latitude, position?.longitude, locale]);
 
   // Old nav visibility observer
