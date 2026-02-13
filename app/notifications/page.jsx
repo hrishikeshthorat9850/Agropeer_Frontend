@@ -8,10 +8,11 @@ import {
   markSingleNotificationAsRead,
 } from "@/hooks/useNotifications";
 import { timeAgo } from "@/utils/timeConverter";
-import { FaBell, FaCheck, FaCheckDouble, FaTrashAlt } from "react-icons/fa";
+import { FaBell, FaComment, FaCheckDouble, FaTrashAlt } from "react-icons/fa";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import useToast from "@/hooks/useToast";
+import LoginPrompt from "@/components/LoginPrompt";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
 import { useLanguage } from "@/Context/languagecontext";
 import LoadingSpinner from "@/components/LoadingSpinner";
@@ -157,7 +158,7 @@ export default function NotificationsPage() {
   if (authLoading) {
     return (
       <MobilePageContainer>
-        <div className="min-h-screen flex items-center justify-center py-20">
+        <div className="min-h-screen flex items-center justify-center py-6">
           <div className="text-center">
             <LoadingSpinner size="md" color="green" />
             <p className="mt-4 text-farm-600 dark:text-farm-400">
@@ -173,27 +174,7 @@ export default function NotificationsPage() {
   // NO USER
   // -----------------------------------------------------
   if (!user) {
-    return (
-      <MobilePageContainer>
-        <div className="min-h-screen flex items-center justify-center py-20">
-          <div className="text-center max-w-md">
-            <FaBell className="text-6xl text-farm-400 dark:text-farm-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-farm-800 dark:text-farm-200 mb-2">
-              {t("login_title")}
-            </h2>
-            <p className="text-farm-600 dark:text-farm-400 mb-6">
-              {t("login_desc")}
-            </p>
-            <Link
-              href="/login"
-              className="inline-block px-6 py-3 bg-farm-600 dark:bg-farm-500 text-white rounded-xl hover:bg-farm-700 dark:hover:bg-farm-600 transition-colors font-semibold active:scale-95"
-            >
-              {t("go_to_login")}
-            </Link>
-          </div>
-        </div>
-      </MobilePageContainer>
-    );
+    return <LoginPrompt icon={FaBell} />;
   }
 
   // -----------------------------------------------------

@@ -11,7 +11,8 @@ import Router from "next/router";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useLanguage } from "@/Context/languagecontext";
 import Link from "next/link";
-import { FaComment} from "react-icons/fa";
+import { FaComment } from "react-icons/fa";
+import LoginPrompt from "@/components/LoginPrompt";
 
 // ADDITIVE ENHANCEMENT: Import forward page transition hook for smooth UI transitions
 // This does NOT replace existing logic - it only enhances UI transitions
@@ -26,7 +27,8 @@ export default function ChatsPage() {
   const { push } = usePageTransition();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const conversationIdFromUrl = searchParams.get("conversationId") || searchParams.get("conversation");
+  const conversationIdFromUrl =
+    searchParams.get("conversationId") || searchParams.get("conversation");
   const {
     socket,
     joinConversation,
@@ -104,7 +106,9 @@ export default function ChatsPage() {
           if (!otherUser || !otherUser.id) return null;
 
           // Filter out soft-deleted messages
-          const visibleMessages = (conv.messages || []).filter(m => !m.deleted_at);
+          const visibleMessages = (conv.messages || []).filter(
+            (m) => !m.deleted_at,
+          );
 
           const last_message =
             visibleMessages &&
@@ -237,7 +241,7 @@ export default function ChatsPage() {
             user1:user1_id(id, firstName, lastName, profile_url, display_name, avatar_url),
             user2:user2_id(id, firstName, lastName, profile_url, display_name, avatar_url),
             last_message_at
-          `
+          `,
           )
           .eq("id", msgg.conversation_id)
           .is("deleted_at", null)
@@ -262,7 +266,9 @@ export default function ChatsPage() {
           all_conversation_ids: [conv.id],
         };
 
-        setConversations((prev) => (prev?.some((c) => c?.id === conv.id) ? prev : [...(prev || []), conv]));
+        setConversations((prev) =>
+          prev?.some((c) => c?.id === conv.id) ? prev : [...(prev || []), conv],
+        );
         setContactToConversationMap((prev) => ({
           ...prev,
           [otherUser.id]: conv,
@@ -273,7 +279,9 @@ export default function ChatsPage() {
           let next;
           if (existingIndex >= 0) {
             const existing = list[existingIndex];
-            const existingTime = new Date(existing.last_message_at || 0).getTime();
+            const existingTime = new Date(
+              existing.last_message_at || 0,
+            ).getTime();
             const newTime = new Date(newContact.last_message_at || 0).getTime();
             if (newTime > existingTime) {
               next = list.slice();
@@ -282,21 +290,31 @@ export default function ChatsPage() {
                 last_message: newContact.last_message,
                 last_message_at: newContact.last_message_at,
                 conversation_id: newContact.conversation_id,
-                unread_count: (existing.unread_count || 0) + (isMyMessage ? 0 : 1),
-                all_conversation_ids: [...new Set([...(existing.all_conversation_ids || []), conv.id])],
+                unread_count:
+                  (existing.unread_count || 0) + (isMyMessage ? 0 : 1),
+                all_conversation_ids: [
+                  ...new Set([
+                    ...(existing.all_conversation_ids || []),
+                    conv.id,
+                  ]),
+                ],
               };
             } else return prev;
           } else {
             next = [newContact, ...list];
           }
-          return next.sort((a, b) => new Date(b.last_message_at || 0).getTime() - new Date(a.last_message_at || 0).getTime());
+          return next.sort(
+            (a, b) =>
+              new Date(b.last_message_at || 0).getTime() -
+              new Date(a.last_message_at || 0).getTime(),
+          );
         });
       } catch (err) {
         console.error("❌ addNewContactFromMessage:", err);
         fetchMessages();
       }
     },
-    [loggedInUser?.id, fetchMessages]
+    [loggedInUser?.id, fetchMessages],
   );
 
   // Load a conversation by id and add to contacts (e.g. when opening from notification deep link)
@@ -312,7 +330,7 @@ export default function ChatsPage() {
             user1:user1_id(id, firstName, lastName, profile_url, display_name, avatar_url),
             user2:user2_id(id, firstName, lastName, profile_url, display_name, avatar_url),
             last_message_at
-          `
+          `,
           )
           .eq("id", convId)
           .is("deleted_at", null)
@@ -337,17 +355,39 @@ export default function ChatsPage() {
           all_conversation_ids: [conv.id],
         };
 
-        setConversations((prev) => (prev?.some((c) => c?.id === conv.id) ? prev : [...(prev || []), conv]));
-        setContactToConversationMap((prev) => ({ ...prev, [otherUser.id]: conv }));
+        setConversations((prev) =>
+          prev?.some((c) => c?.id === conv.id) ? prev : [...(prev || []), conv],
+        );
+        setContactToConversationMap((prev) => ({
+          ...prev,
+          [otherUser.id]: conv,
+        }));
         setContacts((prev) => {
           const list = Array.isArray(prev) ? prev : [];
           const existingIndex = list.findIndex((c) => c?.id === otherUser.id);
           if (existingIndex >= 0) {
             const next = list.slice();
-            next[existingIndex] = { ...next[existingIndex], ...newContact, all_conversation_ids: [...new Set([...(next[existingIndex].all_conversation_ids || []), conv.id])] };
-            return next.sort((a, b) => new Date(b.last_message_at || 0).getTime() - new Date(a.last_message_at || 0).getTime());
+            next[existingIndex] = {
+              ...next[existingIndex],
+              ...newContact,
+              all_conversation_ids: [
+                ...new Set([
+                  ...(next[existingIndex].all_conversation_ids || []),
+                  conv.id,
+                ]),
+              ],
+            };
+            return next.sort(
+              (a, b) =>
+                new Date(b.last_message_at || 0).getTime() -
+                new Date(a.last_message_at || 0).getTime(),
+            );
           }
-          return [newContact, ...list].sort((a, b) => new Date(b.last_message_at || 0).getTime() - new Date(a.last_message_at || 0).getTime());
+          return [newContact, ...list].sort(
+            (a, b) =>
+              new Date(b.last_message_at || 0).getTime() -
+              new Date(a.last_message_at || 0).getTime(),
+          );
         });
         return true;
       } catch (err) {
@@ -355,7 +395,7 @@ export default function ChatsPage() {
         return false;
       }
     },
-    [loggedInUser?.id]
+    [loggedInUser?.id],
   );
 
   useEffect(() => {
@@ -385,19 +425,28 @@ export default function ChatsPage() {
         const updatedContacts = prevContacts.map((contact) => {
           if (!contact || !contact.id) return contact;
 
-          const contactConvId = contact.conversation_id != null ? String(contact.conversation_id) : null;
+          const contactConvId =
+            contact.conversation_id != null
+              ? String(contact.conversation_id)
+              : null;
           const belongsToThisUser =
             (contact.all_conversation_ids &&
               Array.isArray(contact.all_conversation_ids) &&
-              contact.all_conversation_ids.some((id) => String(id) === msgConvId)) ||
+              contact.all_conversation_ids.some(
+                (id) => String(id) === msgConvId,
+              )) ||
             contactConvId === msgConvId;
 
           if (belongsToThisUser) {
             const currentSelected = selectedConversationRef.current;
-            const currentConvId = currentSelected?.conversation_id != null ? String(currentSelected.conversation_id) : null;
+            const currentConvId =
+              currentSelected?.conversation_id != null
+                ? String(currentSelected.conversation_id)
+                : null;
             const isCurrentConversation =
               currentSelected &&
-              (currentConvId === msgConvId || currentSelected.id === contact.id);
+              (currentConvId === msgConvId ||
+                currentSelected.id === contact.id);
 
             // Increment unread count if message is from someone else and conversation is not currently selected
             const shouldIncrementUnread =
@@ -486,7 +535,10 @@ export default function ChatsPage() {
 
       // 🧠 Update chat window if conversation is open (string-normalized)
       const currentSelected = selectedConversationRef.current;
-      const currentConvIdForMsg = currentSelected?.conversation_id != null ? String(currentSelected.conversation_id) : null;
+      const currentConvIdForMsg =
+        currentSelected?.conversation_id != null
+          ? String(currentSelected.conversation_id)
+          : null;
       if (currentSelected && currentConvIdForMsg === msgConvId) {
         setMessages((prev) => {
           if (!Array.isArray(prev)) return prev;
@@ -539,7 +591,8 @@ export default function ChatsPage() {
       }
 
       // If this conversation isn't in the list yet (new chat), fetch it and add the contact so it appears
-      const convId = msgg.conversation_id != null ? String(msgg.conversation_id) : null;
+      const convId =
+        msgg.conversation_id != null ? String(msgg.conversation_id) : null;
       const conversationExists = conversationsRef.current?.some(
         (conv) => conv && conv.id != null && String(conv.id) === convId,
       );
@@ -557,7 +610,10 @@ export default function ChatsPage() {
         return;
       const cidSeen = String(conversation_id);
       const currentSelected = selectedConversationRef.current;
-      const currentConvIdSeen = currentSelected?.conversation_id != null ? String(currentSelected.conversation_id) : null;
+      const currentConvIdSeen =
+        currentSelected?.conversation_id != null
+          ? String(currentSelected.conversation_id)
+          : null;
       const isCurrentConversation =
         currentSelected && currentConvIdSeen === cidSeen;
 
@@ -569,11 +625,16 @@ export default function ChatsPage() {
           return prevContacts.map((contact) => {
             if (!contact) return contact;
 
-            const contactCidSeen = contact.conversation_id != null ? String(contact.conversation_id) : null;
+            const contactCidSeen =
+              contact.conversation_id != null
+                ? String(contact.conversation_id)
+                : null;
             const belongsToContact =
               (contact.all_conversation_ids &&
                 Array.isArray(contact.all_conversation_ids) &&
-                contact.all_conversation_ids.some((id) => String(id) === cidSeen)) ||
+                contact.all_conversation_ids.some(
+                  (id) => String(id) === cidSeen,
+                )) ||
               contactCidSeen === cidSeen;
 
             if (belongsToContact) {
@@ -623,7 +684,10 @@ export default function ChatsPage() {
 
       // Clear messages for the open conversation
       const currentClear = selectedConversationRef.current;
-      if (currentClear?.conversation_id != null && String(currentClear.conversation_id) === cidClear) {
+      if (
+        currentClear?.conversation_id != null &&
+        String(currentClear.conversation_id) === cidClear
+      ) {
         setMessages([]);
       }
 
@@ -632,12 +696,22 @@ export default function ChatsPage() {
         if (!Array.isArray(prev)) return prev;
         return prev.map((contact) => {
           if (!contact) return contact;
-          const contactCidClear = contact.conversation_id != null ? String(contact.conversation_id) : null;
+          const contactCidClear =
+            contact.conversation_id != null
+              ? String(contact.conversation_id)
+              : null;
           const belongs =
-            (Array.isArray(contact.all_conversation_ids) && contact.all_conversation_ids.some((id) => String(id) === cidClear)) ||
+            (Array.isArray(contact.all_conversation_ids) &&
+              contact.all_conversation_ids.some(
+                (id) => String(id) === cidClear,
+              )) ||
             contactCidClear === cidClear;
           if (belongs) {
-            return { ...contact, last_message: "", last_message_at: new Date().toISOString() };
+            return {
+              ...contact,
+              last_message: "",
+              last_message_at: new Date().toISOString(),
+            };
           }
           return contact;
         });
@@ -653,7 +727,11 @@ export default function ChatsPage() {
 
       // If the deleted conversation is currently selected, unselect and show contacts
       const current = selectedConversationRef.current;
-      if (current && current.conversation_id != null && String(current.conversation_id) === cid) {
+      if (
+        current &&
+        current.conversation_id != null &&
+        String(current.conversation_id) === cid
+      ) {
         setSelected(null);
         setShowContacts(true);
         isChatOpenRef.current = false;
@@ -662,23 +740,33 @@ export default function ChatsPage() {
       // Update or remove contacts that reference this conversation
       setContacts((prev) => {
         if (!Array.isArray(prev)) return prev;
-        return prev.map((contact) => {
-          if (!contact) return contact;
-          const contactCid = contact.conversation_id != null ? String(contact.conversation_id) : null;
-          const belongs =
-            (Array.isArray(contact.all_conversation_ids) && contact.all_conversation_ids.some((id) => String(id) === cid)) ||
-            contactCid === cid;
-          if (!belongs) return contact;
-          const remainingIds = Array.isArray(contact.all_conversation_ids)
-            ? contact.all_conversation_ids.filter((id) => String(id) !== cid)
-            : contactCid === cid ? [] : [contact.conversation_id];
-          if (remainingIds.length === 0) return null;
-          return {
-            ...contact,
-            conversation_id: remainingIds[0],
-            all_conversation_ids: remainingIds,
-          };
-        }).filter(Boolean);
+        return prev
+          .map((contact) => {
+            if (!contact) return contact;
+            const contactCid =
+              contact.conversation_id != null
+                ? String(contact.conversation_id)
+                : null;
+            const belongs =
+              (Array.isArray(contact.all_conversation_ids) &&
+                contact.all_conversation_ids.some(
+                  (id) => String(id) === cid,
+                )) ||
+              contactCid === cid;
+            if (!belongs) return contact;
+            const remainingIds = Array.isArray(contact.all_conversation_ids)
+              ? contact.all_conversation_ids.filter((id) => String(id) !== cid)
+              : contactCid === cid
+              ? []
+              : [contact.conversation_id];
+            if (remainingIds.length === 0) return null;
+            return {
+              ...contact,
+              conversation_id: remainingIds[0],
+              all_conversation_ids: remainingIds,
+            };
+          })
+          .filter(Boolean);
       });
 
       // If chat window shows this conversation, clear messages
@@ -704,8 +792,14 @@ export default function ChatsPage() {
       if (conversation_id) handleConversationDeleted({ conversation_id });
     };
     if (typeof window !== "undefined") {
-      window.addEventListener("conversationClearedLocal", handleConversationClearedLocal);
-      window.addEventListener("conversationDeletedLocal", handleConversationDeletedLocal);
+      window.addEventListener(
+        "conversationClearedLocal",
+        handleConversationClearedLocal,
+      );
+      window.addEventListener(
+        "conversationDeletedLocal",
+        handleConversationDeletedLocal,
+      );
     }
 
     return () => {
@@ -714,8 +808,14 @@ export default function ChatsPage() {
       socket.off("conversationCleared", handleConversationCleared);
       socket.off("conversationDeleted", handleConversationDeleted);
       if (typeof window !== "undefined") {
-        window.removeEventListener("conversationClearedLocal", handleConversationClearedLocal);
-        window.removeEventListener("conversationDeletedLocal", handleConversationDeletedLocal);
+        window.removeEventListener(
+          "conversationClearedLocal",
+          handleConversationClearedLocal,
+        );
+        window.removeEventListener(
+          "conversationDeletedLocal",
+          handleConversationDeletedLocal,
+        );
       }
     };
   }, [loggedInUser?.id, socket, fetchMessages, addNewContactFromMessage]);
@@ -865,14 +965,16 @@ export default function ChatsPage() {
 
   // When opening from notification: /chats?conversationId=XXX — load conversation if needed and open that chat
   useEffect(() => {
-    if (!conversationIdFromUrl || pathname !== "/chats" || !loggedInUser?.id) return;
+    if (!conversationIdFromUrl || pathname !== "/chats" || !loggedInUser?.id)
+      return;
     const cid = String(conversationIdFromUrl);
 
     const contact = contacts.find(
       (c) =>
         c &&
         (String(c.conversation_id) === cid ||
-          (Array.isArray(c.all_conversation_ids) && c.all_conversation_ids.some((id) => String(id) === cid)))
+          (Array.isArray(c.all_conversation_ids) &&
+            c.all_conversation_ids.some((id) => String(id) === cid))),
     );
 
     if (contact) {
@@ -889,7 +991,15 @@ export default function ChatsPage() {
     loadConversationById(conversationIdFromUrl).then((ok) => {
       if (!ok) loadingConversationIdRef.current = null;
     });
-  }, [pathname, conversationIdFromUrl, contacts, loggedInUser?.id, handleSelectUser, loadConversationById, router]);
+  }, [
+    pathname,
+    conversationIdFromUrl,
+    contacts,
+    loggedInUser?.id,
+    handleSelectUser,
+    loadConversationById,
+    router,
+  ]);
 
   const handleFaTimesClick = () => {
     setShowContacts(false);
@@ -1014,25 +1124,7 @@ export default function ChatsPage() {
   }
 
   if (!loggedInUser?.id) {
-    return (
-      <div className="flex justify-center items-center h-screen text-gray-500">
-          <div className="text-center max-w-md">
-            <FaComment className="text-6xl text-farm-400 dark:text-farm-500 mx-auto mb-4" />          
-            <h2 className="text-2xl font-bold text-farm-800 dark:text-farm-200 mb-2">
-              {t("login_title")}
-            </h2>
-            <p className="text-farm-600 dark:text-farm-400 mb-6">
-              {t("login_desc")}
-            </p>
-            <Link
-              href="/login"
-              className="inline-block px-6 py-3 bg-farm-600 dark:bg-farm-500 text-white rounded-xl hover:bg-farm-700 dark:hover:bg-farm-600 transition-colors font-semibold active:scale-95"
-            >
-              {t("go_to_login")}
-            </Link>
-          </div>
-      </div>
-    );
+    return <LoginPrompt icon={FaComment} />;
   }
 
   return (

@@ -84,14 +84,46 @@ export default function BottomSelect({
   }, [value, options]);
 
   // Prevent scrolling when open
+  // Prevent scrolling when open using robust lock to avoid jump
   useEffect(() => {
     if (isOpen) {
+      // Lock scroll
+      const scrollY = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
+      document.body.style.width = "100%";
       document.body.style.overflow = "hidden";
+      document.body.dataset.lockScrollY = scrollY;
     } else {
-      document.body.style.overflow = "unset";
+      // Unlock scroll
+      const scrollY = document.body.dataset.lockScrollY;
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || "0"));
+      }
+      delete document.body.dataset.lockScrollY;
     }
+
     return () => {
-      document.body.style.overflow = "unset";
+      // Ensure cleanup if unmounted while open
+      const scrollY = document.body.dataset.lockScrollY;
+      if (scrollY) {
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.left = "";
+        document.body.style.right = "";
+        document.body.style.width = "";
+        document.body.style.overflow = "";
+        window.scrollTo(0, parseInt(scrollY || "0"));
+        delete document.body.dataset.lockScrollY;
+      }
     };
   }, [isOpen]);
 
