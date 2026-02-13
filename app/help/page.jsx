@@ -223,19 +223,19 @@ export default function HelpSupport() {
               {t("other_support_title")}
             </h4>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-sm">
-              <a
+              {/* <a
                 href="tel:+919876543210"
                 className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-500 transition-colors bg-white dark:bg-[#2C2C2E] px-4 py-2 rounded-lg shadow-sm w-full sm:w-auto justify-center"
               >
                 <Phone size={16} />
                 +91 98765 43210
-              </a>
+              </a> */}
               <a
-                href="mailto:support@agroinsta.com"
+                href="mailto:infoagropeer@gmail.com"
                 className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-500 transition-colors bg-white dark:bg-[#2C2C2E] px-4 py-2 rounded-lg shadow-sm w-full sm:w-auto justify-center"
               >
                 <Mail size={16} />
-                support@agroinsta.com
+                infoagropeer@gmail.com
               </a>
             </div>
           </div>
