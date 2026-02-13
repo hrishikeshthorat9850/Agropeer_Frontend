@@ -157,11 +157,10 @@ export default function UserSidebar({ onClose } = {}) {
     userinfo?.display_name;
 
   const avatarUrl =
-    user?.identities[0]?.identity_data?.picture ||
-    user?.identities[0]?.identity_data?.avatar_url ||
     user?.user_metadata?.avatar_url ||
-    user?.user_metadata?.picture ||
-    "";
+    user?.user_metadata?.avatar ||
+    userinfo?.avatar_url ||
+    null;
 
   if (!mounted) return null;
 

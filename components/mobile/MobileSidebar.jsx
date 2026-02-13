@@ -23,7 +23,7 @@ import { useEffect, useState } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { Capacitor } from "@capacitor/core";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
-
+import { useLogin } from "@/Context/logincontext";
 import { useLanguage } from "@/Context/languagecontext";
 
 export default function MobileSidebar() {
@@ -31,7 +31,7 @@ export default function MobileSidebar() {
   const { t } = useLanguage();
 
   const { theme } = useTheme();
-
+  const {user} = useLogin();
   // Haptic Helper
   const triggerHaptic = async () => {
     try {
@@ -216,48 +216,51 @@ export default function MobileSidebar() {
                 ))}
               </nav>
 
-              {/* Access Hub Items */}
-              <div className="space-y-4 pt-2 border-t border-gray-100 dark:border-[#2C2C2E]">
-                <div className="px-2">
-                  <h4 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">
-                    {t("quick_access")}
-                  </h4>
-                </div>
+                {/* Access Hub Items */}
+                {user && (
+                  <div className="space-y-4 pt-2 border-t border-gray-100 dark:border-[#2C2C2E]">
+                    <div className="px-2">
+                      <h4 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">
+                        {t("quick_access")}
+                      </h4>
+                    </div>
 
-                <div className="grid gap-3">
-                  <SidebarCard
-                    href="/favorites"
-                    icon={<FaHeart />}
-                    label={t("sidebar_favorites")}
-                    sub={t("sidebar_favorites_sub")}
-                    color="from-rose-500 to-pink-600"
-                    iconColor="text-white"
-                    setOpen={setOpen}
-                    triggerHaptic={triggerHaptic}
-                  />
-                  <SidebarCard
-                    href="/settings"
-                    icon={<FaCog />}
-                    label={t("sidebar_settings")}
-                    sub={t("sidebar_settings_sub")}
-                    color="from-indigo-500 to-violet-600"
-                    iconColor="text-white"
-                    setOpen={setOpen}
-                    triggerHaptic={triggerHaptic}
-                  />
-                  <SidebarCard
-                    href="/profile"
-                    icon={<FaUser />}
-                    label={t("sidebar_profile")}
-                    sub={t("sidebar_profile_sub")}
-                    color="from-emerald-500 to-teal-600"
-                    iconColor="text-white"
-                    setOpen={setOpen}
-                    triggerHaptic={triggerHaptic}
-                  />
-                </div>
+                    <div className="grid gap-3">
+                      <SidebarCard
+                        href="/favorites"
+                        icon={<FaHeart />}
+                        label={t("sidebar_favorites")}
+                        sub={t("sidebar_favorites_sub")}
+                        color="from-rose-500 to-pink-600"
+                        iconColor="text-white"
+                        setOpen={setOpen}
+                        triggerHaptic={triggerHaptic}
+                      />
+                      <SidebarCard
+                        href="/settings"
+                        icon={<FaCog />}
+                        label={t("sidebar_settings")}
+                        sub={t("sidebar_settings_sub")}
+                        color="from-indigo-500 to-violet-600"
+                        iconColor="text-white"
+                        setOpen={setOpen}
+                        triggerHaptic={triggerHaptic}
+                      />
+                      <SidebarCard
+                        href="/profile"
+                        icon={<FaUser />}
+                        label={t("sidebar_profile")}
+                        sub={t("sidebar_profile_sub")}
+                        color="from-emerald-500 to-teal-600"
+                        iconColor="text-white"
+                        setOpen={setOpen}
+                        triggerHaptic={triggerHaptic}
+                      />
+                    </div>
+
+                  </div>
+                )}
               </div>
-            </div>
 
             {/* FOOTER SOCIALS */}
             <div className="px-8 py-6 border-t border-gray-100 dark:border-[#2C2C2E] bg-gray-50/50 dark:bg-black/20 z-10">

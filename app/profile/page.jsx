@@ -76,6 +76,7 @@ export default function ProfilePage() {
     if (!loading) setInfoLoading(false);
   }, [loading]);
 
+    
   // Fetch visitor profile when id query param is present
   useEffect(() => {
     const fetchVisitorProfile = async () => {
@@ -351,7 +352,7 @@ export default function ProfilePage() {
       </MobilePageContainer>
     );
 
-  const displayName = formatName(userinfo) || userinfo?.display_name;
+  const displayName =     user?.user_metadata?.full_name || formatName(userinfo) || userinfo?.display_name;
   const avatarUrl =
     user?.user_metadata?.avatar_url ||
     user?.user_metadata?.avatar ||
@@ -461,7 +462,7 @@ export default function ProfilePage() {
                         <span className="block font-bold text-gray-900 dark:text-white">0</span>
                         <span className="text-xs text-gray-500">Following</span>
                      </div>
-                 </div> */}
+            </div> */}
 
             {/* Bio Section */}
             <div className="mt-4 text-sm text-gray-700 dark:text-gray-300 max-w-md w-full text-left px-2">
@@ -515,6 +516,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Details Section */}
+
         <div className="px-4 mt-2">
           <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider ml-1 mt-4 mb-2">
             {t("details") || "Details"}
@@ -533,7 +535,6 @@ export default function ProfilePage() {
                 </p>
               </div>
             </div>
-
             <div className="flex items-center gap-4 p-4">
               <div className="w-10 h-10 rounded-full bg-white dark:bg-[#2C2C2E] flex items-center justify-center text-gray-500 dark:text-gray-400">
                 <Phone size={20} />
@@ -547,7 +548,6 @@ export default function ProfilePage() {
                 </p>
               </div>
             </div>
-
             <div className="flex items-center gap-4 p-4">
               <div className="w-10 h-10 rounded-full bg-white dark:bg-[#2C2C2E] flex items-center justify-center text-gray-500 dark:text-gray-400">
                 <MapPin size={20} />
@@ -561,7 +561,6 @@ export default function ProfilePage() {
                 </p>
               </div>
             </div>
-
             <div className="flex items-center gap-4 p-4">
               <div className="w-10 h-10 rounded-full bg-white dark:bg-[#2C2C2E] flex items-center justify-center text-gray-500 dark:text-gray-400">
                 <Calendar size={20} />
