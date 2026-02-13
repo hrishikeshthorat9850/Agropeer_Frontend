@@ -12,7 +12,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import SearchBar from "../SearchBar";
 import { supabase } from "@/lib/supabaseClient";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
-
 export default function MobileNavbar() {
   const { user } = useLogin();
   const unreadChats = useUnreadMessagesCount();
@@ -237,7 +236,6 @@ export default function MobileNavbar() {
           </Link>
 
           {/* Chats */}
-          {user && (
             <Link
               href="/chats"
               onClick={() => Haptics.impact({ style: ImpactStyle.Light })}
@@ -250,8 +248,6 @@ export default function MobileNavbar() {
                 </div>
               )}
             </Link>
-          )}
-
           {/* LANGUAGE DROPDOWN */}
           <div ref={langRef} className="relative">
             <button

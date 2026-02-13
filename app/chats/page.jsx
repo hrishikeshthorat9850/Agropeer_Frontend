@@ -10,10 +10,13 @@ import { Capacitor } from "@capacitor/core";
 import Router from "next/router";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useLanguage } from "@/Context/languagecontext";
+import Link from "next/link";
+import { FaComment} from "react-icons/fa";
+
 // ADDITIVE ENHANCEMENT: Import forward page transition hook for smooth UI transitions
 // This does NOT replace existing logic - it only enhances UI transitions
 import { usePageTransition } from "@/hooks/usePageTransition";
-
+import LoginForm from "@/components/login/LoginForm";
 export default function ChatsPage() {
   const { user: loggedInUser, loading } = useLogin();
   const { t } = useLanguage();
@@ -1013,7 +1016,21 @@ export default function ChatsPage() {
   if (!loggedInUser?.id) {
     return (
       <div className="flex justify-center items-center h-screen text-gray-500">
-        {t("no_user_logged_in")}
+          <div className="text-center max-w-md">
+            <FaComment className="text-6xl text-farm-400 dark:text-farm-500 mx-auto mb-4" />          
+            <h2 className="text-2xl font-bold text-farm-800 dark:text-farm-200 mb-2">
+              {t("login_title")}
+            </h2>
+            <p className="text-farm-600 dark:text-farm-400 mb-6">
+              {t("login_desc")}
+            </p>
+            <Link
+              href="/login"
+              className="inline-block px-6 py-3 bg-farm-600 dark:bg-farm-500 text-white rounded-xl hover:bg-farm-700 dark:hover:bg-farm-600 transition-colors font-semibold active:scale-95"
+            >
+              {t("go_to_login")}
+            </Link>
+          </div>
       </div>
     );
   }
