@@ -13,6 +13,7 @@ import MarketSection from "@/components/explore/MarketPricesInsight";
 import ToolsSection from "@/components/explore/Tools&Calculator";
 import FarmerStories from "@/components/explore/FarmerStories";
 import CropDiscoverySection from "@/components/explore/CropDiscoverySection";
+import AllCropsModal from "@/components/explore/AllCropsModal";
 import ExploreSkeleton from "@/components/skeletons/ExploreSkeleton"; // Added Skeleton
 import LoadingSpinner from "@/components/LoadingSpinner";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
@@ -233,6 +234,13 @@ export default function ExplorePage() {
           <CropDetailModal
             crop={selectedCrop}
             onClose={() => setSelectedCrop(null)}
+          />
+
+          <AllCropsModal
+            isOpen={showAllCrops}
+            onClose={() => setShowAllCrops(false)}
+            crops={filteredCrops}
+            onSelectCrop={setSelectedCrop}
           />
         </div>
       </div>

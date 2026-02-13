@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { Capacitor } from "@capacitor/core";
 
 import { useRouter } from "next/navigation";
-import PullToRefresh from "./PullToRefresh";
+// import PullToRefresh from "./PullToRefresh";
 
 /**
  * MobilePageLayout - Clean layout wrapper for all Android app pages
@@ -80,21 +80,21 @@ export default function MobilePageLayout({ children, className = "" }) {
   };
 
   // Global Refresh Logic
-  const handleRefresh = async () => {
-    // 1. Trigger Next.js Data Refresh (Server Components / SWR)
-    router.refresh();
+  // const handleRefresh = async () => {
+  //   // 1. Trigger Next.js Data Refresh (Server Components / SWR)
+  //   router.refresh();
 
-    // 2. Dispatch Custom Event for Component-Specific Refreshes (like Weather)
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(new CustomEvent("app-refresh"));
-    }
+  //   // 2. Dispatch Custom Event for Component-Specific Refreshes (like Weather)
+  //   if (typeof window !== "undefined") {
+  //     window.dispatchEvent(new CustomEvent("app-refresh"));
+  //   }
 
-    // 3. Optional: Artificial delay for feel (if router refesh is instant)
-    await new Promise((resolve) => setTimeout(resolve, 800));
-  };
+  //   // 3. Optional: Artificial delay for feel (if router refesh is instant)
+  //   await new Promise((resolve) => setTimeout(resolve, 800));
+  // };
 
   return (
-    <PullToRefresh onRefresh={handleRefresh}>
+    // <PullToRefresh onRefresh={handleRefresh}>
       <div
         className={`
           ${getBackgroundColor()}
@@ -104,6 +104,6 @@ export default function MobilePageLayout({ children, className = "" }) {
       >
         <div className="w-full h-full">{children}</div>
       </div>
-    </PullToRefresh>
+    // </PullToRefresh>
   );
 }
