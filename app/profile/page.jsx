@@ -353,7 +353,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Details Grid */}
-          {isOwnProfile && followed && 
+          {isOwnProfile && 
           <div className="px-4 mt-2 grid grid-cols-1 gap-4">
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider ml-1 mt-4 mb-2">
               {t("about") || "About"}
@@ -530,7 +530,7 @@ export default function ProfilePage() {
             </p>
 
             {/* Stats Row (Optional Instagram style feel) */}
-            <div className="flex items-center gap-8 mt-4 mb-2">
+            {/* <div className="flex items-center gap-8 mt-4 mb-2">
                      <div className="text-center">
                         <span className="block font-bold text-gray-900 dark:text-white">0</span>
                         <span className="text-xs text-gray-500">Posts</span>
@@ -543,7 +543,7 @@ export default function ProfilePage() {
                         <span className="block font-bold text-gray-900 dark:text-white">0</span>
                         <span className="text-xs text-gray-500">Following</span>
                      </div>
-            </div>
+            </div> */}
 
             {/* Bio Section */}
             <div className="mt-4 text-sm text-gray-700 dark:text-gray-300 max-w-md w-full text-left px-2">

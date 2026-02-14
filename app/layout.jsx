@@ -57,10 +57,10 @@ export const viewport = {
 };
 
 export default function RootLayout({ children }) {
-  if (Capacitor.isNativePlatform()) {
-    StatusBar.setStyle({ style: Style.Light });
-    StatusBar.setOverlaysWebView({ overlay: true });
-  }
+  // if (Capacitor.isNativePlatform()) {
+  //   StatusBar.setStyle({ style: Style.Light });
+  //   StatusBar.setOverlaysWebView({ overlay: true });
+  // }
 
   return (
     <html lang="en" suppressHydrationWarning>

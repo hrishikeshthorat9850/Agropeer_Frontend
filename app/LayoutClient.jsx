@@ -21,8 +21,10 @@ import DeepLinkManager from "@/components/Deeplink/DeeplinkManager";
 import StatusBarManager from "@/components/mobile/StatusBarManager";
 import ScrollToTop from "../components/ScrollToTop";
 import AppShell from "@/components/mobile/AppShell";
+import { useTheme } from "@/Context/themecontext";
 
 export default function ClientLayout({ children }) {
+  const { theme } = useTheme();
   const pathname = usePathname();
   const keyboardOpen = useKeyboardOpen();
 
@@ -30,6 +32,44 @@ export default function ClientLayout({ children }) {
   const [isChatSidebarOpen, setChatSidebarOpen] = useState(false);
   // 🔥 Popup State → Always show on fresh load
   const [showPopup, setShowPopup] = useState(true);
+
+//statusbar changes
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.Capacitor) {
+      StatusBar.setOverlaysWebView({ overlay: true });
+    }
+  }, []);
+
+  useEffect(() => {
+    // Only run on native platform
+    if (!Capacitor.isNativePlatform()) return;
+
+    const updateStatusBar = async () => {
+        try {
+          if (theme === "dark") {
+            // Dark Mode: Dark Background, White Icons (Style.Dark)
+            await StatusBar.setStyle({ style: Style.Dark });
+            if (Capacitor.getPlatform() === "android") {
+              await StatusBar.setBackgroundColor({ color: "#000000" }); // Black
+            }
+          } else {
+            // Light Mode: Light Background, Dark Icons (Style.Light)
+            await StatusBar.setStyle({ style: Style.Light });
+            if (Capacitor.getPlatform() === "android") {
+              await StatusBar.setBackgroundColor({ color: "#ffffff" }); // White
+            }
+          }
+        } catch (e) {
+          console.error("StatusBar close error:", e);
+        }  
+    };
+
+    updateStatusBar();
+  }, [theme]);
+
+ //statusbar changes end 
+
 
   const noUIRoutes = [
     "/login",

@@ -231,7 +231,6 @@ export default function MobileSidebar() {
               </nav>
 
               {/* Access Hub Items */}
-              {user && (
                 <div className="space-y-4 pt-2 border-t border-gray-100 dark:border-[#2C2C2E]">
                   <div className="px-2">
                     <h4 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">
@@ -240,6 +239,7 @@ export default function MobileSidebar() {
                   </div>
 
                   <div className="grid gap-3">
+                    {user && 
                     <SidebarCard
                       href="/favorites"
                       icon={<FaHeart />}
@@ -250,6 +250,7 @@ export default function MobileSidebar() {
                       setOpen={setOpen}
                       triggerHaptic={triggerHaptic}
                     />
+                    }
                     <SidebarCard
                       href="/settings"
                       icon={<FaCog />}
@@ -260,6 +261,7 @@ export default function MobileSidebar() {
                       setOpen={setOpen}
                       triggerHaptic={triggerHaptic}
                     />
+                    {user && 
                     <SidebarCard
                       href="/profile"
                       icon={<FaUser />}
@@ -269,10 +271,10 @@ export default function MobileSidebar() {
                       iconColor="text-white"
                       setOpen={setOpen}
                       triggerHaptic={triggerHaptic}
-                    />
+                    /> }
                   </div>
                 </div>
-              )}
+
             </div>
 
             {/* FOOTER SOCIALS */}
