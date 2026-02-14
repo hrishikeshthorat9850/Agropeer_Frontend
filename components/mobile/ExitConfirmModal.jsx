@@ -1,9 +1,22 @@
 "use client";
 
 import { useLanguage } from "@/Context/languagecontext";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function ExitConfirmModal({ open, onCancel, onConfirm }) {
   const { t } = useLanguage();
+
+  useBackPress(
+    () => {
+      if (open) {
+        onCancel();
+        return true;
+      }
+      return false;
+    },
+    20,
+    open,
+  );
 
   if (!open) return null;
 

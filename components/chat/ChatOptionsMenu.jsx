@@ -13,6 +13,7 @@ import { useLanguage } from "@/Context/languagecontext";
 import { useSocket } from "@/Context/SocketContext";
 import { useLogin } from "@/Context/logincontext";
 import useToast from "@/hooks/useToast";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 //
 // Confirm Modal - defined OUTSIDE so it is stable (not recreated on every render)
@@ -103,12 +104,30 @@ function ConfirmModal({
                   }
                 }}
                 disabled={confirmDisabled}
-                className={`px-4 py-2 rounded-md text-white ${color} hover:opacity-90 transition-colors flex items-center justify-center ${confirmDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
+                className={`px-4 py-2 rounded-md text-white ${color} hover:opacity-90 transition-colors flex items-center justify-center ${
+                  confirmDisabled ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               >
                 {confirmLoading ? (
-                  <svg className="w-4 h-4 animate-spin mr-2 text-white" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" opacity="0.25" />
-                    <path d="M22 12a10 10 0 00-10-10" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+                  <svg
+                    className="w-4 h-4 animate-spin mr-2 text-white"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      opacity="0.25"
+                    />
+                    <path
+                      d="M22 12a10 10 0 00-10-10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                    />
                   </svg>
                 ) : null}
                 <span>{confirmLabel}</span>
@@ -118,7 +137,7 @@ function ConfirmModal({
         </motion.div>
       )}
     </AnimatePresence>,
-    document.body
+    document.body,
   );
 }
 
@@ -133,18 +152,46 @@ export default function ChatOptionsMenu({ conversationId }) {
   const modalRef = useRef(null); // Track modal state with ref for reliable checking
   const isTransitioningRef = useRef(false); // Track if we're transitioning from dropdown to modal
 
-  const { clearConversation, deleteConversation, clearConversationLocal, deleteConversationLocal } = useSocket();
+  const {
+    clearConversation,
+    deleteConversation,
+    clearConversationLocal,
+    deleteConversationLocal,
+  } = useSocket();
   const { user } = useLogin();
   const { showToast } = useToast();
 
   const menuWidth = 176;
   const [coords, setCoords] = useState({ top: 0, left: 0 });
-  
+
   // Update modal ref when modal state changes
   useEffect(() => {
     modalRef.current = modal;
   }, [modal]);
-  
+
+  // ✅ Handle Android Back Press for Dropdown & Modals
+  useBackPress(
+    () => {
+      // 1. If a modal is open, close it
+      if (modal) {
+        setOpen(false);
+        setDeleteConfirmText("");
+        setModal(null);
+        setActionLoading(false);
+        isTransitioningRef.current = false;
+        return true;
+      }
+      // 2. If the dropdown is open, close it
+      if (open) {
+        setOpen(false);
+        return true;
+      }
+      return false;
+    },
+    20,
+    open || !!modal,
+  );
+
   // Memoize callbacks to prevent modal remounting
   const handleDeleteClose = useCallback(() => {
     setOpen(false);
@@ -159,7 +206,10 @@ export default function ChatOptionsMenu({ conversationId }) {
     const text = deleteConfirmTextRef.current.trim().toUpperCase();
     if (actionLoading || text !== "DELETE") return;
     if (!conversationId) {
-      showToast("error", t("no_conversation_selected") || "No conversation selected");
+      showToast(
+        "error",
+        t("no_conversation_selected") || "No conversation selected",
+      );
       setOpen(false);
       setModal(null);
       isTransitioningRef.current = false;
@@ -172,7 +222,11 @@ export default function ChatOptionsMenu({ conversationId }) {
     if (cid) {
       deleteConversationLocal(conversationId);
       if (typeof window !== "undefined") {
-        window.dispatchEvent(new CustomEvent("conversationDeletedLocal", { detail: { conversation_id: cid } }));
+        window.dispatchEvent(
+          new CustomEvent("conversationDeletedLocal", {
+            detail: { conversation_id: cid },
+          }),
+        );
       }
     }
     try {
@@ -183,12 +237,22 @@ export default function ChatOptionsMenu({ conversationId }) {
       isTransitioningRef.current = false;
     } catch (err) {
       console.error("Error deleting conversation:", err);
-      showToast("error", err?.message || t("delete_error") || "Failed to delete conversation");
+      showToast(
+        "error",
+        err?.message || t("delete_error") || "Failed to delete conversation",
+      );
       isTransitioningRef.current = false;
     } finally {
       setActionLoading(false);
     }
-  }, [actionLoading, conversationId, deleteConversation, deleteConversationLocal, showToast, t]);
+  }, [
+    actionLoading,
+    conversationId,
+    deleteConversation,
+    deleteConversationLocal,
+    showToast,
+    t,
+  ]);
 
   const handleDeleteInputChange = useCallback((e) => {
     setDeleteConfirmText(e.target.value);
@@ -223,48 +287,54 @@ export default function ChatOptionsMenu({ conversationId }) {
   useEffect(() => {
     // Don't attach handler if modal is open or we're transitioning
     if (modalRef.current || isTransitioningRef.current || modal) return;
-    
+
     const handler = (e) => {
       // Double-check refs and state in handler (defensive programming)
       if (modalRef.current || isTransitioningRef.current || modal) return;
-      
+
       // Also check if modal exists in DOM (more reliable than ref)
       const modalInDOM = document.querySelector('[class*="z-[999999]"]');
       if (modalInDOM) return;
-      
+
       const btn = btnRef.current;
       const dropdownEl = document.getElementById("dropdown-portal");
 
       // Don't close if clicking on button or dropdown
       if (btn?.contains(e.target)) return;
       if (dropdownEl?.contains(e.target)) return;
-      
+
       // Don't close if clicking on any input, textarea, select, or button elements
       // (these are form elements that shouldn't trigger dropdown close)
       const target = e.target;
-      if (target && (
-        target.tagName === 'INPUT' ||
-        target.tagName === 'TEXTAREA' ||
-        target.tagName === 'SELECT' ||
-        target.tagName === 'BUTTON' ||
-        target.closest('input') ||
-        target.closest('textarea') ||
-        target.closest('select') ||
-        target.closest('button')
-      )) {
+      if (
+        target &&
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.tagName === "SELECT" ||
+          target.tagName === "BUTTON" ||
+          target.closest("input") ||
+          target.closest("textarea") ||
+          target.closest("select") ||
+          target.closest("button"))
+      ) {
         return;
       }
-      
+
       // Check if click is on any modal backdrop (modals are portaled with z-[999999])
       // Also check if target is inside any element with z-[999999] class
       let element = e.target;
       while (element && element !== document.body) {
         // Check for modal backdrop class
-        if (element.classList && Array.from(element.classList).some(cls => cls.includes('z-[999999]'))) {
+        if (
+          element.classList &&
+          Array.from(element.classList).some((cls) =>
+            cls.includes("z-[999999]"),
+          )
+        ) {
           return; // Click is on modal, don't close dropdown
         }
         // Also check if element is inside a modal by checking parent elements
-        if (element.closest && typeof element.closest === 'function') {
+        if (element.closest && typeof element.closest === "function") {
           const modalParent = element.closest('[class*="z-[999999]"]');
           if (modalParent) {
             return; // Inside a modal, don't close dropdown
@@ -275,7 +345,7 @@ export default function ChatOptionsMenu({ conversationId }) {
 
       setOpen(false);
     };
-    
+
     // Use capture phase to catch events before other handlers
     // Only attach if dropdown is open AND modal is NOT open
     if (open && !modal && !modalRef.current && !isTransitioningRef.current) {
@@ -304,7 +374,10 @@ export default function ChatOptionsMenu({ conversationId }) {
           e.stopPropagation();
           e.preventDefault();
           if (!conversationId) {
-            showToast("error", t("no_conversation_selected") || "No conversation selected");
+            showToast(
+              "error",
+              t("no_conversation_selected") || "No conversation selected",
+            );
             setOpen(false);
             return;
           }
@@ -329,7 +402,10 @@ export default function ChatOptionsMenu({ conversationId }) {
           e.stopPropagation();
           e.preventDefault();
           if (!conversationId) {
-            showToast("error", t("no_conversation_selected") || "No conversation selected");
+            showToast(
+              "error",
+              t("no_conversation_selected") || "No conversation selected",
+            );
             setOpen(false);
             return;
           }
@@ -382,7 +458,7 @@ export default function ChatOptionsMenu({ conversationId }) {
               </motion.div>
             </AnimatePresence>
           </div>,
-          document.body
+          document.body,
         )}
 
       {/* Report Modal */}
@@ -415,7 +491,9 @@ export default function ChatOptionsMenu({ conversationId }) {
           icon={<FaBroom />}
           title={t("clear_chat")}
           message={t("clear_chat_message")}
-          confirmLabel={actionLoading ? t("processing") || "Processing..." : t("clear_btn")}
+          confirmLabel={
+            actionLoading ? t("processing") || "Processing..." : t("clear_btn")
+          }
           cancelLabel={t("cancel_btn") || "Cancel"}
           confirmDisabled={actionLoading}
           confirmLoading={actionLoading}
@@ -429,7 +507,10 @@ export default function ChatOptionsMenu({ conversationId }) {
           onConfirm={async () => {
             if (actionLoading) return;
             if (!conversationId) {
-              showToast("error", t("no_conversation_selected") || "No conversation selected");
+              showToast(
+                "error",
+                t("no_conversation_selected") || "No conversation selected",
+              );
               setOpen(false);
               setModal(null);
               isTransitioningRef.current = false;
@@ -442,17 +523,29 @@ export default function ChatOptionsMenu({ conversationId }) {
             if (cid) {
               clearConversationLocal(conversationId);
               if (typeof window !== "undefined") {
-                window.dispatchEvent(new CustomEvent("conversationClearedLocal", { detail: { conversation_id: cid } }));
+                window.dispatchEvent(
+                  new CustomEvent("conversationClearedLocal", {
+                    detail: { conversation_id: cid },
+                  }),
+                );
               }
             }
             try {
               await clearConversation(conversationId);
-              showToast("success", t("clear_success") || "Conversation cleared");
+              showToast(
+                "success",
+                t("clear_success") || "Conversation cleared",
+              );
               setModal(null);
               isTransitioningRef.current = false;
             } catch (err) {
               console.error("Error clearing conversation:", err);
-              showToast("error", err?.message || t("clear_error") || "Failed to clear conversation");
+              showToast(
+                "error",
+                err?.message ||
+                  t("clear_error") ||
+                  "Failed to clear conversation",
+              );
               isTransitioningRef.current = false;
             } finally {
               setActionLoading(false);
@@ -468,15 +561,19 @@ export default function ChatOptionsMenu({ conversationId }) {
         icon={<FaTrash />}
         title={t("delete_chat")}
         message={t("delete_chat_message")}
-        confirmLabel={actionLoading ? t("processing") || "Processing..." : t("delete_btn")}
+        confirmLabel={
+          actionLoading ? t("processing") || "Processing..." : t("delete_btn")
+        }
         cancelLabel={t("cancel_btn") || "Cancel"}
-        confirmDisabled={actionLoading || deleteConfirmText.trim().toUpperCase() !== "DELETE"}
+        confirmDisabled={
+          actionLoading || deleteConfirmText.trim().toUpperCase() !== "DELETE"
+        }
         confirmLoading={actionLoading}
         color="bg-red-600"
         onClose={handleDeleteClose}
         onConfirm={handleDeleteConfirm}
       >
-        <div 
+        <div
           className="mt-4"
           onClick={(e) => e.stopPropagation()}
           onMouseDown={(e) => e.stopPropagation()}
@@ -504,12 +601,20 @@ export default function ChatOptionsMenu({ conversationId }) {
               e.stopPropagation();
             }}
             onKeyDown={(e) => {
-              if (e.key === "Enter" && deleteConfirmText.trim().toUpperCase() === "DELETE" && !actionLoading) {
+              if (
+                e.key === "Enter" &&
+                deleteConfirmText.trim().toUpperCase() === "DELETE" &&
+                !actionLoading
+              ) {
                 e.preventDefault();
                 e.stopPropagation();
-                const modalContent = e.target.closest(".bg-white, .dark\\:bg-neutral-900");
+                const modalContent = e.target.closest(
+                  ".bg-white, .dark\\:bg-neutral-900",
+                );
                 if (modalContent) {
-                  const confirmBtn = modalContent.querySelector('button:not([class*="bg-gray"])');
+                  const confirmBtn = modalContent.querySelector(
+                    'button:not([class*="bg-gray"])',
+                  );
                   if (confirmBtn && !confirmBtn.disabled) {
                     confirmBtn.click();
                   }
@@ -521,7 +626,9 @@ export default function ChatOptionsMenu({ conversationId }) {
               e.stopPropagation();
             }}
             className="w-full mt-2 p-2 bg-gray-50 dark:bg-neutral-800 border dark:border-neutral-700 rounded-md text-gray-800 dark:text-gray-200"
-            placeholder={t("type_delete_placeholder") || "Type DELETE to confirm"}
+            placeholder={
+              t("type_delete_placeholder") || "Type DELETE to confirm"
+            }
             autoFocus={modal === "delete"}
           />
         </div>

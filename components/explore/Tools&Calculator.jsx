@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/Context/languagecontext";
 import { createPortal } from "react-dom";
 import BottomSelect from "@/components/ui/BottomSelect";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function ToolsSection({
   tool,
@@ -34,6 +35,18 @@ export default function ToolsSection({
   const formRef = useRef(null);
   const [mounted, setMounted] = useState(false);
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
+  useBackPress(
+    () => {
+      if (tool) {
+        handleCloseForm();
+        return true;
+      }
+      return false;
+    },
+    20,
+    !!tool,
+  );
 
   useEffect(() => {
     setMounted(true);

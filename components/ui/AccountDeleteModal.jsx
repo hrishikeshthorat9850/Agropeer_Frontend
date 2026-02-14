@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import useToast from "@/hooks/useToast";
 import { apiRequest } from "@/utils/apiHelpers";
+import { useBackPress } from "@/Context/BackHandlerContext";
+
 export default function AccountDeleteModal({ isOpen, onClose }) {
   const { t } = useLanguage();
   const router = useRouter();
@@ -15,6 +17,18 @@ export default function AccountDeleteModal({ isOpen, onClose }) {
   const [loading, setLoading] = useState(false);
   const [confirmText, setConfirmText] = useState("");
   const [step, setStep] = useState(1); // 1: warning, 2: confirmation
+
+  useBackPress(
+    () => {
+      if (isOpen) {
+        onClose();
+        return true;
+      }
+      return false;
+    },
+    20,
+    isOpen,
+  );
 
   // Required confirmation text (case-insensitive)
   const requiredText = "DELETE";
@@ -121,7 +135,7 @@ export default function AccountDeleteModal({ isOpen, onClose }) {
   //     setLoading(false);
   //   }
   // };
-  
+
   const handleDelete = async () => {
     if (step === 1) {
       setStep(2);
@@ -148,16 +162,13 @@ export default function AccountDeleteModal({ isOpen, onClose }) {
       const accessToken = session.access_token;
 
       // 2️⃣ CALL DELETE API
-      const response = await apiRequest(
-        `${BASE_URL}/api/user/delete-account`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-          },
-        }
-      );
+      const response = await apiRequest(`${BASE_URL}/api/user/delete-account`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        },
+      });
 
       if (![200, 401, 403].includes(response.status)) {
         throw new Error(t("delete_failed"));
@@ -190,8 +201,6 @@ export default function AccountDeleteModal({ isOpen, onClose }) {
       }, 300);
     }
   };
-
-
 
   if (!isOpen) return null;
 

@@ -4,12 +4,31 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabaseClient";
-import { FaTrash, FaEdit, FaToggleOn, FaToggleOff, FaPlus } from "react-icons/fa";
+import {
+  FaTrash,
+  FaEdit,
+  FaToggleOn,
+  FaToggleOff,
+  FaPlus,
+} from "react-icons/fa";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function AdDashboard() {
   const [ads, setAds] = useState([]);
   const [loading, setLoading] = useState(false);
   const [editAd, setEditAd] = useState(null);
+
+  useBackPress(
+    () => {
+      if (editAd) {
+        setEditAd(null);
+        return true;
+      }
+      return false;
+    },
+    20,
+    !!editAd,
+  );
 
   useEffect(() => {
     fetchAds();
@@ -38,7 +57,7 @@ export default function AdDashboard() {
   const toggleAd = async (id, active) => {
     await supabase.from("ads").update({ active: !active }).eq("id", id);
     setAds((prev) =>
-      prev.map((a) => (a.id === id ? { ...a, active: !a.active } : a))
+      prev.map((a) => (a.id === id ? { ...a, active: !a.active } : a)),
     );
   };
 
@@ -115,8 +134,8 @@ export default function AdDashboard() {
                       <span className="font-bold">Category:</span> {ad.category}
                     </p>
                     <p className="text-sm">
-                      <span className="font-bold">Duration:</span>{" "}
-                      {ad.duration} days
+                      <span className="font-bold">Duration:</span> {ad.duration}{" "}
+                      days
                     </p>
                   </div>
 
@@ -127,11 +146,13 @@ export default function AdDashboard() {
                     >
                       {ad.active ? (
                         <>
-                          <FaToggleOn className="text-green-600 text-xl" /> Active
+                          <FaToggleOn className="text-green-600 text-xl" />{" "}
+                          Active
                         </>
                       ) : (
                         <>
-                          <FaToggleOff className="text-gray-500 text-xl" /> Inactive
+                          <FaToggleOff className="text-gray-500 text-xl" />{" "}
+                          Inactive
                         </>
                       )}
                     </button>

@@ -1006,13 +1006,17 @@ export default function AgriMarket() {
           )}
 
           {/* Chat Modal */}
-          <ChatModal
-            isOpen={chatModal.isOpen}
-            onClose={handleChatClose}
-            product={chatModal.product}
-            sellerId={chatModal.sellerId}
-            sellerInfo={chatModal.sellerInfo}
-          />
+          {clientLoaded && chatModal.isOpen && (
+            <Suspense fallback={null}>
+              <ChatModal
+                isOpen={chatModal.isOpen}
+                onClose={handleChatClose}
+                product={chatModal.product}
+                sellerId={chatModal.sellerId}
+                sellerInfo={chatModal.sellerInfo}
+              />
+            </Suspense>
+          )}
         </div>
       </div>
     </MobilePageContainer>

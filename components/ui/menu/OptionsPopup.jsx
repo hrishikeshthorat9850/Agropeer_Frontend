@@ -12,6 +12,7 @@ import {
 import { styled } from "@mui/material/styles";
 import { FaEdit, FaTrashAlt, FaFlag } from "react-icons/fa";
 import { useLogin } from "@/Context/logincontext";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -22,11 +23,13 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiPaper-root": {
     borderRadius: 16,
     width: 260,
-    background: theme.palette.mode === "dark"
-      ? "linear-gradient(135deg, #1f2937, #111827)"
-      : "linear-gradient(135deg, #f9fafb, #f3f4f6)",
+    background:
+      theme.palette.mode === "dark"
+        ? "linear-gradient(135deg, #1f2937, #111827)"
+        : "linear-gradient(135deg, #f9fafb, #f3f4f6)",
     boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
-    border: theme.palette.mode === "dark" ? "1px solid #374151" : "1px solid #e5e7eb",
+    border:
+      theme.palette.mode === "dark" ? "1px solid #374151" : "1px solid #e5e7eb",
     padding: theme.spacing(0.5, 0),
   },
 }));
@@ -54,8 +57,23 @@ const StyledListItem = styled(ListItemButton)(({ theme }) => ({
   },
 }));
 
-export default function OptionsPopup({ open, onClose, onEdit, onDelete, onReport,post }) {
+export default function OptionsPopup({
+  open,
+  onClose,
+  onEdit,
+  onDelete,
+  onReport,
+  post,
+}) {
   const { user } = useLogin();
+
+  useBackPress(() => {
+    if (open) {
+      onClose();
+      return true;
+    }
+    return false;
+  }, 20, open);
 
   return (
     <>
@@ -69,7 +87,7 @@ export default function OptionsPopup({ open, onClose, onEdit, onDelete, onReport
         >
           <DialogContent sx={{ p: 0 }}>
             {/* ✏️ EDIT - Professional Blue */}
-            {post?.user_id === user?.id &&(
+            {post?.user_id === user?.id && (
               <StyledListItem
                 onClick={onEdit}
                 sx={{
@@ -88,7 +106,7 @@ export default function OptionsPopup({ open, onClose, onEdit, onDelete, onReport
             <Divider variant="middle" />
 
             {/* REPORT - Amber/Orange */}
-            {post?.user_id != user?.id && (          
+            {post?.user_id != user?.id && (
               <StyledListItem
                 onClick={onReport}
                 sx={{
@@ -97,17 +115,16 @@ export default function OptionsPopup({ open, onClose, onEdit, onDelete, onReport
                   "&:hover": { backgroundColor: "#fef3c7" }, // light amber hover
                 }}
               >
-              <ListItemIcon>
-                <FaFlag />
-              </ListItemIcon>
-              <ListItemText primary="Report Post" />
-            </StyledListItem>
+                <ListItemIcon>
+                  <FaFlag />
+                </ListItemIcon>
+                <ListItemText primary="Report Post" />
+              </StyledListItem>
             )}
-
 
             <Divider variant="middle" />
             {/* 🗑️ DELETE - Red (danger) */}
-            {post?.user_id === user?.id &&(       
+            {post?.user_id === user?.id && (
               <StyledListItem
                 onClick={onDelete}
                 sx={{

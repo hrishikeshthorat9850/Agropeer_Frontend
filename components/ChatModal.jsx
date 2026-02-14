@@ -11,6 +11,7 @@ import MessageInput from "./ui/market/chat/MesssageInput";
 import { FaCheck, FaCheckDouble } from "react-icons/fa";
 import useToast from "@/hooks/useToast";
 import { useLanguage } from "@/Context/languagecontext";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function ChatModal({
   isOpen,
@@ -44,6 +45,19 @@ export default function ChatModal({
   const conversationIdRef = useRef(null);
   const messageFallbackTimeoutRef = useRef(null);
   const { t } = useLanguage();
+
+  // ✅ Handle Android Back Press
+  useBackPress(
+    () => {
+      if (isOpen) {
+        onClose();
+        return true;
+      }
+      return false;
+    },
+    20,
+    isOpen,
+  );
 
   useEffect(() => {
     setMounted(true);
@@ -356,8 +370,14 @@ export default function ChatModal({
 
     // Local events in case socket event doesn't reach the client immediately
     if (typeof window !== "undefined") {
-      window.addEventListener("conversationClearedLocal", handleConversationClearedLocal);
-      window.addEventListener("conversationDeletedLocal", handleConversationDeletedLocal);
+      window.addEventListener(
+        "conversationClearedLocal",
+        handleConversationClearedLocal,
+      );
+      window.addEventListener(
+        "conversationDeletedLocal",
+        handleConversationDeletedLocal,
+      );
     }
 
     return () => {
@@ -367,8 +387,14 @@ export default function ChatModal({
       socket.off("conversationDeleted", handleConversationDeleted);
 
       if (typeof window !== "undefined") {
-        window.removeEventListener("conversationClearedLocal", handleConversationClearedLocal);
-        window.removeEventListener("conversationDeletedLocal", handleConversationDeletedLocal);
+        window.removeEventListener(
+          "conversationClearedLocal",
+          handleConversationClearedLocal,
+        );
+        window.removeEventListener(
+          "conversationDeletedLocal",
+          handleConversationDeletedLocal,
+        );
       }
     };
   }, [conversationId, user?.id, socket]);
@@ -553,7 +579,11 @@ export default function ChatModal({
         >
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-700 to-blue-500 text-white py-3 shadow-sm rounded-t-3xl">
-            <ChatHeader onClose={onClose} sellerUserInfo={sellerInfo} conversationId={conversationId} />
+            <ChatHeader
+              onClose={onClose}
+              sellerUserInfo={sellerInfo}
+              conversationId={conversationId}
+            />
           </div>
 
           {/* Product Info */}

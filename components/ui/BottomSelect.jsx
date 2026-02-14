@@ -5,6 +5,7 @@ import { motion, AnimatePresence, useDragControls } from "framer-motion";
 import { ChevronDown, Search, X, Check } from "lucide-react";
 import { createPortal } from "react-dom";
 import { useLanguage } from "@/Context/languagecontext";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function BottomSelect({
   label,
@@ -28,6 +29,18 @@ export default function BottomSelect({
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [mounted, setMounted] = useState(false);
+
+  useBackPress(
+    () => {
+      if (isOpen) {
+        setIsOpen(false);
+        return true;
+      }
+      return false;
+    },
+    20,
+    isOpen,
+  );
 
   useEffect(() => {
     setMounted(true);
