@@ -71,6 +71,8 @@ export default function ProfilePage() {
   const [visitorInfo, setVisitorInfo] = useState(null);
   const [visitorLoading, setVisitorLoading] = useState(false);
   const [visitorError, setVisitorError] = useState(null);
+  const [followClick,setFollowClick] = useState(false);
+  const [followLoading, setFollowLoading] = useState(false);
 
   useEffect(() => {
     if (!loading) setInfoLoading(false);
@@ -115,6 +117,56 @@ export default function ProfilePage() {
 
     fetchVisitorProfile();
   }, [visitorId]);
+
+  useEffect(() => {
+    const checkFollowStatus = async () => {
+      if (!user?.id || !visitorId) return;
+
+      const { data } = await supabase
+        .from("user_follows")
+        .select("id")
+        .eq("follower_id", user.id)
+        .eq("following_id", visitorId)
+        .maybeSingle();
+
+      setFollowClick(!!data);
+    };
+
+    checkFollowStatus();
+  }, [user?.id, visitorId]);
+
+  const handleFollowClick = async () => {
+    if (!user?.id || !visitorId) return;
+
+    setFollowLoading(true);
+
+    try {
+      if (followClick) {
+        await supabase
+          .from("user_follows")
+          .delete()
+          .eq("follower_id", user.id)
+          .eq("following_id", visitorId);
+
+        setFollowClick(false);
+      } else {
+        await supabase
+          .from("user_follows")
+          .insert({
+            follower_id: user.id,
+            following_id: visitorId
+          });
+
+        setFollowClick(true);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setFollowLoading(false);
+    }
+  };
+
+
 
   // Visitor profile view
   if (visitorId) {
@@ -182,7 +234,7 @@ export default function ProfilePage() {
               {visitorInfo?.username || displayName}
             </span>
             <button className="p-2 -mr-2 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-neutral-800 rounded-full transition-colors">
-              <MoreVertical size={24} />
+              {/* <MoreVertical size={24} /> */}
             </button>
           </div>
 
@@ -258,9 +310,24 @@ export default function ProfilePage() {
                   </button>
                 ) : (
                   <>
-                    <button className="flex-1 h-10 bg-green-600 rounded-lg font-semibold text-sm text-white active:scale-[0.98] transition-transform shadow-lg shadow-green-600/20">
-                      {t("follow")}
+                    <button
+                      className={`flex-1 h-10 rounded-lg font-semibold text-sm text-white transition-all active:scale-[0.98] ${
+                        followClick
+                          ? "bg-gray-400"
+                          : "bg-green-600 shadow-lg shadow-green-600/20"
+                      } ${followLoading ? "opacity-80 cursor-not-allowed" : ""}`}
+                      onClick={handleFollowClick}
+                      disabled={followLoading}
+                    >
+                      {followLoading ? (
+                        <div className="flex items-center justify-center">
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                      ) : (
+                        followClick ? t("following") : t("follow")
+                      )}
                     </button>
+
                     <button className="flex-1 h-10 bg-gray-100 dark:bg-[#1C1C1E] rounded-lg font-semibold text-sm text-gray-900 dark:text-white active:scale-[0.98] transition-transform">
                       {t("message_btn")}
                     </button>
@@ -274,7 +341,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Details Grid */}
-          <div className="px-4 mt-2 grid grid-cols-1 gap-4">
+          {/* <div className="px-4 mt-2 grid grid-cols-1 gap-4">
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider ml-1 mt-4 mb-2">
               {t("about") || "About"}
             </h3>
@@ -338,7 +405,7 @@ export default function ProfilePage() {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </MobilePageContainer>
     );
@@ -410,9 +477,9 @@ export default function ProfilePage() {
             >
               <Edit3 size={24} />
             </button>
-            <button className="p-2 -mr-2 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-neutral-800 rounded-full transition-colors">
+            {/* <button className="p-2 -mr-2 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-neutral-800 rounded-full transition-colors">
               <MoreVertical size={24} />
-            </button>
+            </button> */}
           </div>
         </div>
 
@@ -449,7 +516,7 @@ export default function ProfilePage() {
             </p>
 
             {/* Stats Row (Optional Instagram style feel) */}
-            {/* <div className="flex items-center gap-8 mt-4 mb-2">
+            <div className="flex items-center gap-8 mt-4 mb-2">
                      <div className="text-center">
                         <span className="block font-bold text-gray-900 dark:text-white">0</span>
                         <span className="text-xs text-gray-500">Posts</span>
@@ -462,7 +529,7 @@ export default function ProfilePage() {
                         <span className="block font-bold text-gray-900 dark:text-white">0</span>
                         <span className="text-xs text-gray-500">Following</span>
                      </div>
-            </div> */}
+            </div>
 
             {/* Bio Section */}
             <div className="mt-4 text-sm text-gray-700 dark:text-gray-300 max-w-md w-full text-left px-2">

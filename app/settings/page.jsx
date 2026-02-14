@@ -234,38 +234,41 @@ export default function SettingsPage() {
           </div>
 
           {/* Privacy & Security Section */}
-          <h3 className="px-4 py-2 mt-6 text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
-            {t("privacy")}
-          </h3>
-          <div className="overflow-hidden bg-white dark:bg-[#1C1C1E] sm:rounded-xl shadow-sm">
-            <div
-              onClick={() => {
-                triggerHaptic();
-                router.push("/settings/privacy");
-              }}
-              className="flex flex-col p-4 bg-white dark:bg-[#1C1C1E] active:bg-gray-50 dark:active:bg-[#2C2C2E] transition-colors cursor-pointer"
-            >
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3 flex-1 min-w-0">
-                  <div className="p-2 rounded-full bg-gray-100 dark:bg-[#2C2C2E] text-gray-600 dark:text-gray-300">
-                    <Lock size={20} strokeWidth={2} />
+          {user && ( 
+            <>
+              <h3 className="px-4 py-2 mt-6 text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
+                {t("privacy")}
+              </h3>
+              <div className="overflow-hidden bg-white dark:bg-[#1C1C1E] sm:rounded-xl shadow-sm">
+                <div
+                  onClick={() => {
+                    triggerHaptic();
+                    router.push("/settings/privacy");
+                  }}
+                  className="flex flex-col p-4 bg-white dark:bg-[#1C1C1E] active:bg-gray-50 dark:active:bg-[#2C2C2E] transition-colors cursor-pointer"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <div className="p-2 rounded-full bg-gray-100 dark:bg-[#2C2C2E] text-gray-600 dark:text-gray-300">
+                        <Lock size={20} strokeWidth={2} />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-base font-medium text-gray-900 dark:text-white truncate">
+                          {t("privacy_settings")}
+                        </span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1">
+                          {t("privacy_desc")}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex-shrink-0">
+                      <ChevronRight size={20} className="text-gray-400" />
+                    </div>
                   </div>
-                  <div className="flex flex-col">
-                    <span className="text-base font-medium text-gray-900 dark:text-white truncate">
-                      {t("privacy_settings")}
-                    </span>
-                    <span className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1">
-                      {t("privacy_desc")}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex-shrink-0">
-                  <ChevronRight size={20} className="text-gray-400" />
                 </div>
               </div>
-            </div>
-          </div>
-
+            </>
+          )}
           {/* Legal & Policies */}
           <h3 className="px-4 py-2 mt-6 text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
             {t("legal")}
@@ -338,37 +341,41 @@ export default function SettingsPage() {
           </div>
 
           {/* Danger Zone */}
-          <h3 className="px-4 py-2 mt-6 text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
-            {t("danger_zone")}
-          </h3>
-          <div className="overflow-hidden bg-white dark:bg-[#1C1C1E] sm:rounded-xl shadow-sm">
-            <div
-              onClick={() => {
-                triggerHaptic();
-                handleDeleteAccountClick();
-              }}
-              className="flex flex-col p-4 bg-white dark:bg-[#1C1C1E] active:bg-gray-50 dark:active:bg-[#2C2C2E] transition-colors cursor-pointer"
-            >
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3 flex-1 min-w-0">
-                  <div className="p-2 rounded-full bg-red-50 dark:bg-red-900/20 text-red-600">
-                    <Trash2 size={20} strokeWidth={2} />
+          {user && (
+          <>
+            <h3 className="px-4 py-2 mt-6 text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
+              {t("danger_zone")}
+            </h3>
+            <div className="overflow-hidden bg-white dark:bg-[#1C1C1E] sm:rounded-xl shadow-sm">
+              <div
+                onClick={() => {
+                  triggerHaptic();
+                  handleDeleteAccountClick();
+                }}
+                className="flex flex-col p-4 bg-white dark:bg-[#1C1C1E] active:bg-gray-50 dark:active:bg-[#2C2C2E] transition-colors cursor-pointer"
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <div className="p-2 rounded-full bg-red-50 dark:bg-red-900/20 text-red-600">
+                      <Trash2 size={20} strokeWidth={2} />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-base font-medium text-red-600 truncate">
+                        {t("delete_account")}
+                      </span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1">
+                        {t("delete_desc")}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex flex-col">
-                    <span className="text-base font-medium text-red-600 truncate">
-                      {t("delete_account")}
-                    </span>
-                    <span className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1">
-                      {t("delete_desc")}
-                    </span>
+                  <div className="flex-shrink-0">
+                    <ChevronRight size={20} className="text-red-400" />
                   </div>
-                </div>
-                <div className="flex-shrink-0">
-                  <ChevronRight size={20} className="text-red-400" />
                 </div>
               </div>
             </div>
-          </div>
+          </>
+          )}
         </main>
 
         <AccountDeleteModal

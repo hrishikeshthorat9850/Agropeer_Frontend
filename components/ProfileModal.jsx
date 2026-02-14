@@ -6,7 +6,6 @@ import UserSidebar from "./UserProfileSidebar";
 export default function ProfileModal({ className = "" }) {
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef(null);
-
   useEffect(() => {
     function onDocClick(e) {
       if (ref.current && !ref.current.contains(e.target)) {
