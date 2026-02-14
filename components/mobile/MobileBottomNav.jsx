@@ -11,6 +11,7 @@ import { useLanguage } from "@/Context/languagecontext";
 // ADDITIVE ENHANCEMENT: Import forward page transition hook for smooth UI transitions
 // This does NOT replace existing logic - it only enhances UI transitions
 import { usePageTransition } from "@/hooks/usePageTransition";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function MobileBottomNav({ onAI }) {
   const router = useRouter();
@@ -24,11 +25,19 @@ export default function MobileBottomNav({ onAI }) {
   const safeBottom = "env(safe-area-inset-bottom, 0px)";
 
   const openAI = () => {
-    // ... existing openAI code
 
     if (typeof onAI === "function") onAI();
     else window.dispatchEvent(new CustomEvent("open-ai"));
   };
+
+  // ✅ Handle Android Back Press for FAB Menu
+  useBackPress(() => {
+    if (open) {
+      setOpen(false);
+      return true;
+    }
+    return false;
+  }, 20, open);
 
   useEffect(() => {
     if (!open) return;

@@ -1,7 +1,7 @@
-"use client";
 import { useState, useRef, useEffect } from "react";
 import { CgProfile } from "react-icons/cg";
 import UserSidebar from "./UserProfileSidebar";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function ProfileModal({ className = "" }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,6 +15,19 @@ export default function ProfileModal({ className = "" }) {
     document.addEventListener("click", onDocClick);
     return () => document.removeEventListener("click", onDocClick);
   }, []);
+
+  // ✅ Handle Android Back Press
+  useBackPress(
+    () => {
+      if (isOpen) {
+        setIsOpen(false);
+        return true;
+      }
+      return false;
+    },
+    20,
+    isOpen,
+  );
 
   return (
     <div ref={ref} className="relative">

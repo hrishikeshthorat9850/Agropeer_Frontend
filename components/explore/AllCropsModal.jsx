@@ -4,6 +4,7 @@ import { Fragment } from "react";
 import { FaTimes, FaSeedling } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/Context/languagecontext";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function AllCropsModal({
   isOpen,
@@ -12,6 +13,19 @@ export default function AllCropsModal({
   onSelectCrop,
 }) {
   const { t } = useLanguage();
+
+  // ✅ Handle Android Back Press
+  useBackPress(
+    () => {
+      if (isOpen) {
+        onClose();
+        return true;
+      }
+      return false;
+    },
+    20,
+    isOpen,
+  );
 
   return (
     <Transition appear show={isOpen} as={Fragment}>

@@ -6,6 +6,7 @@ import { Toast } from "@capacitor/toast"; // Import Toast
 // import ExitConfirmModal from "./ExitConfirmModal"; // Removed
 import useToast from "@/hooks/useToast";
 import { useLanguage } from "@/Context/languagecontext";
+import { useBackHandler } from "@/Context/BackHandlerContext";
 // ADDITIVE ENHANCEMENT: Import smooth back transition utility
 // This does NOT replace existing logic - it only enhances UI transitions
 import { playBackAnimation } from "@/utils/backTransition";
@@ -19,26 +20,33 @@ export default function AppShell({ children }) {
 
   const { showToast } = useToast();
   const { t } = useLanguage();
+  const { handleBack } = useBackHandler();
 
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
 
     /**
      * EXISTING BACK BUTTON HANDLER (PRESERVED)
-     * 
+     *
      * Original logic remains unchanged:
      * - Checks canGoBack flag
      * - Implements double-tap-to-exit
      * - Shows toast for exit confirmation
      * - Manages timer state
-     * 
+     *
      * ENHANCEMENT (Additive):
      * - Wraps window.history.back() with smooth transition
      * - Does NOT modify decision logic
      * - Does NOT change exit app behavior
      * - Does NOT affect double-tap timing
      */
-    const listener = App.addListener("backButton", ({ canGoBack }) => {
+    const listener = App.addListener("backButton", async ({ canGoBack }) => {
+      // 1. Check if any components (modals, etc.) want to handle the back press
+      const handled = await handleBack();
+      if (handled) {
+        return;
+      }
+
       if (canGoBack) {
         // ENHANCED: Wrap existing navigation with smooth transition
         // Original behavior: window.history.back()
