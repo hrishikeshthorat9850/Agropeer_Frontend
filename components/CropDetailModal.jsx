@@ -11,9 +11,23 @@ import { motion } from "framer-motion";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { useLanguage } from "@/Context/languagecontext";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function CropDetailModal({ crop, onClose }) {
   const { t } = useLanguage();
+
+  // ✅ Handle Android Back Press
+  useBackPress(
+    () => {
+      if (crop) {
+        onClose();
+        return true;
+      }
+      return false;
+    },
+    20,
+    !!crop,
+  );
 
   return (
     <Transition appear show={!!crop} as={Fragment}>

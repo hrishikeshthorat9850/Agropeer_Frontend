@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaTimes } from "react-icons/fa";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function PopupModal() {
   const [show, setShow] = useState(false);
@@ -34,6 +35,19 @@ export default function PopupModal() {
     }
   };
 
+  // ✅ Handle Android Back Press
+  useBackPress(
+    () => {
+      if (show) {
+        setShow(false);
+        return true; // Handled
+      }
+      return false;
+    },
+    20,
+    show,
+  );
+
   if (!popupData) return null;
 
   return (
@@ -61,7 +75,9 @@ export default function PopupModal() {
               max-sm:w-[95vw] max-sm:h-[55vh]
             `}
             style={{
-              backgroundImage: `url(${popupData.bgImage || "/placeholder.jpg"})`,
+              backgroundImage: `url(${
+                popupData.bgImage || "/placeholder.jpg"
+              })`,
               filter: "brightness(1.15) contrast(1.05)",
             }}
           >
@@ -87,10 +103,26 @@ export default function PopupModal() {
             <div
               className={`absolute z-10 flex flex-col justify-start items-start p-8 md:p-12 transition-all duration-500
                 ${popupData.textPosition === "top-left" ? "top-0 left-0" : ""}
-                ${popupData.textPosition === "top-right" ? "top-0 right-0 items-end" : ""}
-                ${popupData.textPosition === "center" ? "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 items-center text-center" : ""}
-                ${popupData.textPosition === "bottom-left" ? "bottom-0 left-0" : ""}
-                ${popupData.textPosition === "bottom-right" ? "bottom-0 right-0 items-end" : ""}
+                ${
+                  popupData.textPosition === "top-right"
+                    ? "top-0 right-0 items-end"
+                    : ""
+                }
+                ${
+                  popupData.textPosition === "center"
+                    ? "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 items-center text-center"
+                    : ""
+                }
+                ${
+                  popupData.textPosition === "bottom-left"
+                    ? "bottom-0 left-0"
+                    : ""
+                }
+                ${
+                  popupData.textPosition === "bottom-right"
+                    ? "bottom-0 right-0 items-end"
+                    : ""
+                }
               `}
             >
               <motion.h2

@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useBackPress } from "@/Context/BackHandlerContext";
 import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
 import { Toast } from "@/components/ui/market";
@@ -41,6 +42,19 @@ export default function EditPostModal({
   }, [isOpen, post]);
 
   const close = useCallback(() => onOpenChange?.(false), [onOpenChange]);
+
+  // ✅ Handle Android Back Press
+  useBackPress(
+    () => {
+      if (isOpen) {
+        close();
+        return true; // Handled
+      }
+      return false;
+    },
+    20,
+    isOpen,
+  );
 
   const showToast = (message, type = "success", ms = 2200) => {
     setToast({ show: true, message, type });

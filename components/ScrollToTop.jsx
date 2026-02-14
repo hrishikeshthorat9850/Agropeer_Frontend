@@ -24,8 +24,9 @@ export default function ScrollToTop() {
 
   useEffect(() => {
     // Disable browser default scroll restoration
+    // Enable browser default scroll restoration for back/forward
     if (typeof window !== "undefined" && window.history) {
-      window.history.scrollRestoration = "manual";
+      window.history.scrollRestoration = "auto";
     }
 
     // Listen for popstate (back/forward navigation) to mark as back navigation
@@ -50,6 +51,12 @@ export default function ScrollToTop() {
     // This satisfies the requirement: "always page open on top"
 
     const scrollToTop = () => {
+      // ✅ If this is a back navigation, DO NOT scroll to top.
+      // Let the browser (scrollRestoration = 'auto') handle the position.
+      if (isBackNav) {
+        return;
+      }
+
       // 1. Window
       window.scrollTo(0, 0);
 

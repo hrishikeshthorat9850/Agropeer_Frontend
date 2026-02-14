@@ -5,6 +5,7 @@ import { FaEdit, FaTrashAlt, FaFlag } from "react-icons/fa";
 import { supabase } from "@/lib/supabaseClient";
 import { useLanguage } from "@/Context/languagecontext";
 import ImageUploadBox from "@/components/ui/ImageUploadBox";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function PostMenu({
   recentPost,
@@ -22,6 +23,25 @@ export default function PostMenu({
   const menuRef = useRef(null);
   const modalRef = useRef(null);
   const { t } = useLanguage();
+
+  // ✅ Handle Android Back Press for Menu & Modals
+  useBackPress(
+    () => {
+      // 1. If a modal is open, close it
+      if (modal) {
+        setModal(null);
+        return true;
+      }
+      // 2. If the menu dropdown is open, close it
+      if (menuOpen) {
+        setMenuOpen(false);
+        return true;
+      }
+      return false;
+    },
+    20,
+    menuOpen || !!modal,
+  );
 
   // Close menu when clicking outside
   useEffect(() => {

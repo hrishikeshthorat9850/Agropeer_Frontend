@@ -4,7 +4,7 @@ import {
   FaMicrophone,
   FaPaperPlane,
   FaTimes,
-  FaArrowLeft
+  FaArrowLeft,
 } from "react-icons/fa";
 import AILanguageSelector from "./AILanguageSelector";
 import { FaBrain, FaCloud, FaChartLine } from "react-icons/fa";
@@ -12,7 +12,7 @@ import { useLogin } from "@/Context/logincontext";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
-
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function AIChatWindow({ open, setOpen }) {
   const [messages, setMessages] = useState([]);
@@ -23,7 +23,7 @@ export default function AIChatWindow({ open, setOpen }) {
   const scrollContainerRef = useRef(null);
   const [languageModalOpen, setlanguageModalOpen] = useState(false);
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
-  
+
   // ✅ Get access token from login context
   const { accessToken } = useLogin();
 
@@ -33,10 +33,23 @@ export default function AIChatWindow({ open, setOpen }) {
     { code: "mr", label: "Marathi" },
   ];
 
+  // ✅ Handle Android Back Press
+  useBackPress(
+    () => {
+      if (open) {
+        setOpen(false);
+        return true;
+      }
+      return false;
+    },
+    20,
+    open,
+  );
+
   const handleLanguageChange = (l) => {
     setCurrentLanguage(l);
     setlanguageModalOpen(false);
-  }
+  };
   /* ================== BODY SCROLL LOCK ================== */
   useEffect(() => {
     if (open) {
@@ -71,7 +84,7 @@ export default function AIChatWindow({ open, setOpen }) {
       id: Date.now(),
       role: "user",
       content: userMessage,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     setMessages((prev) => [...prev, newUserMessage]);
@@ -80,14 +93,14 @@ export default function AIChatWindow({ open, setOpen }) {
     try {
       const history = messages.map((msg) => ({
         role: msg.role,
-        content: msg.content
+        content: msg.content,
       }));
 
       // ✅ Build headers with Authorization if accessToken exists
       const headers = {
         "Content-Type": "application/json",
       };
-      
+
       if (accessToken) {
         headers["Authorization"] = `Bearer ${accessToken}`;
       }
@@ -95,7 +108,11 @@ export default function AIChatWindow({ open, setOpen }) {
       const response = await fetch(`${BASE_URL}/api/chat`, {
         method: "POST",
         headers: headers,
-        body: JSON.stringify({ message: userMessage, history, currentLanguage })
+        body: JSON.stringify({
+          message: userMessage,
+          history,
+          currentLanguage,
+        }),
       });
 
       const data = await response.json();
@@ -107,7 +124,8 @@ export default function AIChatWindow({ open, setOpen }) {
         if (!Array.isArray(arr) || arr.length === 0) return null;
         for (let i = arr.length - 1; i >= 0; i--) {
           const m = arr[i];
-          if (m?.role === "assistant" && (m.content ?? m.text)) return m.content ?? m.text;
+          if (m?.role === "assistant" && (m.content ?? m.text))
+            return m.content ?? m.text;
         }
         return null;
       })();
@@ -124,25 +142,38 @@ export default function AIChatWindow({ open, setOpen }) {
         data.assistant ??
         data.assistant_message ??
         data.final_response ??
-        (data.choices?.[0]?.message?.content) ??
-        (typeof data.result === "string" ? data.result : data.result?.content ?? data.result?.text ?? data.result?.message) ??
-        (data.data?.response ?? data.data?.content ?? data.data?.message) ??
-        (data.message?.content ?? (typeof data.message === "string" ? data.message : null)) ??
+        data.choices?.[0]?.message?.content ??
+        (typeof data.result === "string"
+          ? data.result
+          : data.result?.content ??
+            data.result?.text ??
+            data.result?.message) ??
+        data.data?.response ??
+        data.data?.content ??
+        data.data?.message ??
+        data.message?.content ??
+        (typeof data.message === "string" ? data.message : null) ??
         lastAssistantContent ??
         "";
       const content =
         typeof rawContent === "string"
           ? rawContent
           : typeof rawContent === "object" && rawContent !== null
-            ? JSON.stringify(rawContent)
-            : String(rawContent ?? "");
+          ? JSON.stringify(rawContent)
+          : String(rawContent ?? "");
 
       // If still empty, log full payload as JSON so structure is visible in Android logcat
       if (!content || !content.trim()) {
         try {
-          console.warn("[AIChat] Empty content from /api/chat. Full response (JSON):", JSON.stringify(data, null, 2));
+          console.warn(
+            "[AIChat] Empty content from /api/chat. Full response (JSON):",
+            JSON.stringify(data, null, 2),
+          );
         } catch (_) {
-          console.warn("[AIChat] Empty content from /api/chat. Full response:", data);
+          console.warn(
+            "[AIChat] Empty content from /api/chat. Full response:",
+            data,
+          );
         }
       }
 
@@ -154,7 +185,7 @@ export default function AIChatWindow({ open, setOpen }) {
         id: Date.now() + 1,
         role: "assistant",
         content: displayContent,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
 
       setMessages((prev) => [...prev, botMessage]);
@@ -164,7 +195,7 @@ export default function AIChatWindow({ open, setOpen }) {
         role: "assistant",
         content: "Sorry, I encountered an error. Please try again.",
         timestamp: new Date().toISOString(),
-        error: true
+        error: true,
       };
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
@@ -210,34 +241,31 @@ export default function AIChatWindow({ open, setOpen }) {
 
           ...(typeof window !== "undefined" && window.innerWidth < 768
             ? {
-              left: "0",
-              right: "0",
-              top: "auto",
-              bottom: "0",
-              height:
-                "calc(100vh - (env(safe-area-inset-top) + 56px)",
-              borderTopLeftRadius: "20px",
-              borderTopRightRadius: "20px",
-            }
+                left: "0",
+                right: "0",
+                top: "auto",
+                bottom: "0",
+                height: "calc(100vh - (env(safe-area-inset-top) + 56px)",
+                borderTopLeftRadius: "20px",
+                borderTopRightRadius: "20px",
+              }
             : {}),
 
           ...(typeof window !== "undefined" && window.innerWidth >= 768
             ? {
-              top: "122px",
-              right: "1rem",
-              bottom: "1rem",
-              width: "440px",
-              left: "auto",
-              borderRadius: "20px",
-              transform: open ? "translateY(0)" : "translateY(120%)"
-            }
-            : {})
+                top: "122px",
+                right: "1rem",
+                bottom: "1rem",
+                width: "440px",
+                left: "auto",
+                borderRadius: "20px",
+                transform: open ? "translateY(0)" : "translateY(120%)",
+              }
+            : {}),
         }}
       >
-
         {/* ================== HEADER ================== */}
         <div className="flex items-center justify-between px-5">
-
           {/* LEFT — BACK BUTTON */}
           <div className="flex items-center gap-3">
             {messages.length > 0 && (
@@ -288,14 +316,18 @@ export default function AIChatWindow({ open, setOpen }) {
           {messages.length === 0 ? (
             <>
               {/* ASK AI */}
-              <div className="
+              <div
+                className="
                 bg-gradient-to-br from-emerald-900 to-emerald-950 
                 border border-white/10 backdrop-blur-xl 
                 p-5 rounded-2xl shadow-[0_4px_25px_rgba(0,0,0,0.3)]
                 flex flex-col items-center text-center mb-5
-              ">
+              "
+              >
                 <FaBrain size={36} className="text-white" />
-                <h2 className="text-xl font-semibold mt-2 text-white">Ask AI</h2>
+                <h2 className="text-xl font-semibold mt-2 text-white">
+                  Ask AI
+                </h2>
                 <p className="text-sm opacity-80 mt-1 text-white/80">
                   How can I assist you today?
                 </p>
@@ -306,7 +338,8 @@ export default function AIChatWindow({ open, setOpen }) {
                   Farming Assistance
                 </p>
                 <p className="text-sm text-center mt-1 text-white/75">
-                  Ask agriculture-related questions for quick, reliable, and expert guidance.
+                  Ask agriculture-related questions for quick, reliable, and
+                  expert guidance.
                 </p>
               </div>
 
