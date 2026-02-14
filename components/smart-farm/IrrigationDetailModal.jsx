@@ -1,8 +1,21 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaTimes, FaTint, FaLeaf, FaClock } from "react-icons/fa";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function IrrigationDetailModal({ irrigation, onClose }) {
+  useBackPress(
+    () => {
+      if (irrigation) {
+        onClose();
+        return true;
+      }
+      return false;
+    },
+    20,
+    !!irrigation,
+  );
+
   if (!irrigation) return null;
 
   const { variant, payload } = irrigation;
@@ -12,12 +25,16 @@ export default function IrrigationDetailModal({ irrigation, onClose }) {
     return (
       <div className="space-y-3">
         {fields.map((field) => (
-          <div key={field.fieldId || field.field} className="bg-green-50 border-l-4 border-green-500 p-4 rounded">
+          <div
+            key={field.fieldId || field.field}
+            className="bg-green-50 border-l-4 border-green-500 p-4 rounded"
+          >
             <div className="flex items-center justify-between">
               <div>
                 <p className="font-semibold text-gray-800">{field.field}</p>
                 <p className="text-sm text-gray-600">
-                  Soil moisture {field.soilMoisture}% · deficit {field.deficit}mm
+                  Soil moisture {field.soilMoisture}% · deficit {field.deficit}
+                  mm
                 </p>
               </div>
               <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm">
@@ -26,7 +43,9 @@ export default function IrrigationDetailModal({ irrigation, onClose }) {
             </div>
           </div>
         ))}
-        {fields.length === 0 && <p className="text-sm text-gray-500">All fields hydrated.</p>}
+        {fields.length === 0 && (
+          <p className="text-sm text-gray-500">All fields hydrated.</p>
+        )}
       </div>
     );
   };
@@ -43,15 +62,21 @@ export default function IrrigationDetailModal({ irrigation, onClose }) {
         </div>
         <div className="mt-4 grid grid-cols-3 gap-4 text-center">
           <div>
-            <p className="text-2xl font-bold text-gray-800">{stats.durationHours || "—"}</p>
+            <p className="text-2xl font-bold text-gray-800">
+              {stats.durationHours || "—"}
+            </p>
             <p className="text-sm text-gray-600">Hours</p>
           </div>
           <div>
-            <p className="text-2xl font-bold text-gray-800">{stats.flowRate || "—"}</p>
+            <p className="text-2xl font-bold text-gray-800">
+              {stats.flowRate || "—"}
+            </p>
             <p className="text-sm text-gray-600">L/min</p>
           </div>
           <div>
-            <p className="text-2xl font-bold text-gray-800">{stats.activeValves || "—"}</p>
+            <p className="text-2xl font-bold text-gray-800">
+              {stats.activeValves || "—"}
+            </p>
             <p className="text-sm text-gray-600">Active valves</p>
           </div>
         </div>
@@ -68,12 +93,19 @@ export default function IrrigationDetailModal({ irrigation, onClose }) {
     return (
       <div className="space-y-3">
         {slots.map((slot) => (
-          <div key={slot.fieldId || slot.field} className="bg-lime-50 border border-lime-200 p-4 rounded-lg">
+          <div
+            key={slot.fieldId || slot.field}
+            className="bg-lime-50 border border-lime-200 p-4 rounded-lg"
+          >
             <p className="font-semibold text-gray-800">{slot.field}</p>
-            <p className="text-sm text-gray-600">{slot.window || "Awaiting window"}</p>
+            <p className="text-sm text-gray-600">
+              {slot.window || "Awaiting window"}
+            </p>
           </div>
         ))}
-        {slots.length === 0 && <p className="text-sm text-gray-500">No upcoming cycles.</p>}
+        {slots.length === 0 && (
+          <p className="text-sm text-gray-500">No upcoming cycles.</p>
+        )}
       </div>
     );
   };
@@ -107,10 +139,15 @@ export default function IrrigationDetailModal({ irrigation, onClose }) {
                 <Icon className="w-6 h-6" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold">{titleMap[variant] || "Irrigation"}</h2>
+                <h2 className="text-2xl font-bold">
+                  {titleMap[variant] || "Irrigation"}
+                </h2>
               </div>
             </div>
-            <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-full transition">
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-white/20 rounded-full transition"
+            >
               <FaTimes className="w-5 h-5" />
             </button>
           </div>

@@ -20,6 +20,7 @@ import { setupAndroidNotificationChannel } from "@/utils/capacitorNotifications"
 import DeepLinkManager from "@/components/Deeplink/DeeplinkManager";
 import StatusBarManager from "@/components/mobile/StatusBarManager";
 import ScrollToTop from "../components/ScrollToTop";
+import AppShell from "@/components/mobile/AppShell";
 
 export default function ClientLayout({ children }) {
   const pathname = usePathname();
@@ -95,6 +96,7 @@ export default function ClientLayout({ children }) {
         }}
       />
       <AppProviders>
+        <AppShell />
         <ScrollToTop />
         <StatusBarManager />
         <TopLoader />

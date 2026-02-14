@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import SearchBar from "../SearchBar";
 import { supabase } from "@/lib/supabaseClient";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
+import { useBackPress } from "@/Context/BackHandlerContext";
 export default function MobileNavbar() {
   const { user } = useLogin();
   const unreadChats = useUnreadMessagesCount();
@@ -19,6 +20,18 @@ export default function MobileNavbar() {
   const { locale, setLocale, LOCALE_NAMES, SUPPORTED_LOCALES } = useLanguage();
   const [langOpen, setLangOpen] = useState(false);
   const { t } = useLanguage();
+
+  useBackPress(
+    () => {
+      if (langOpen) {
+        setLangOpen(false);
+        return true;
+      }
+      return false;
+    },
+    20,
+    langOpen,
+  );
 
   const langRef = useRef(null);
 
@@ -236,18 +249,18 @@ export default function MobileNavbar() {
           </Link>
 
           {/* Chats */}
-            <Link
-              href="/chats"
-              onClick={() => Haptics.impact({ style: ImpactStyle.Light })}
-              className="relative p-2 active:scale-95 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-            >
-              <FaComments className="text-[24px] text-zinc-800 dark:text-zinc-100" />
-              {unreadChats > 0 && (
-                <div className="absolute top-1 right-0">
-                  <NotificationBadge unreadCount={unreadChats} />
-                </div>
-              )}
-            </Link>
+          <Link
+            href="/chats"
+            onClick={() => Haptics.impact({ style: ImpactStyle.Light })}
+            className="relative p-2 active:scale-95 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+          >
+            <FaComments className="text-[24px] text-zinc-800 dark:text-zinc-100" />
+            {unreadChats > 0 && (
+              <div className="absolute top-1 right-0">
+                <NotificationBadge unreadCount={unreadChats} />
+              </div>
+            )}
+          </Link>
           {/* LANGUAGE DROPDOWN */}
           <div ref={langRef} className="relative">
             <button

@@ -1,10 +1,27 @@
 "use client";
 import { useState, useEffect } from "react";
 import { FaLanguage } from "react-icons/fa";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
-export default function AILanguageSelector({ languages, handleLanguageChange, defaultLanguage }) {
+export default function AILanguageSelector({
+  languages,
+  handleLanguageChange,
+  defaultLanguage,
+}) {
   const [open, setOpen] = useState(false);
   const [selectedLang, setSelectedLang] = useState(null);
+
+  useBackPress(
+    () => {
+      if (open) {
+        setOpen(false);
+        return true;
+      }
+      return false;
+    },
+    30,
+    open,
+  );
 
   // Set default language on mount or update
   useEffect(() => {
@@ -39,13 +56,15 @@ export default function AILanguageSelector({ languages, handleLanguageChange, de
 
       {/* Dropdown */}
       {open && (
-        <div className="
+        <div
+          className="
           absolute right-0 mt-2 w-40 p-1
           bg-white dark:bg-[#1a1a1a] 
           border border-gray-100 dark:border-white/10
           shadow-xl rounded-xl z-[10000]
           animate-in fade-in zoom-in-95 duration-200
-        ">
+        "
+        >
           {languages.map((l) => (
             <button
               key={l.code}
@@ -53,9 +72,10 @@ export default function AILanguageSelector({ languages, handleLanguageChange, de
                 w-full text-left px-3 py-2 rounded-lg text-sm font-medium
                 flex items-center justify-between
                 transition-colors
-                ${selectedLang?.code === l.code
-                  ? "bg-green-50 dark:bg-green-500/20 text-green-600 dark:text-green-400"
-                  : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5"
+                ${
+                  selectedLang?.code === l.code
+                    ? "bg-green-50 dark:bg-green-500/20 text-green-600 dark:text-green-400"
+                    : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5"
                 }
               `}
               onClick={() => {
@@ -65,7 +85,9 @@ export default function AILanguageSelector({ languages, handleLanguageChange, de
               }}
             >
               {l.label}
-              {selectedLang?.code === l.code && <div className="w-1.5 h-1.5 rounded-full bg-green-500" />}
+              {selectedLang?.code === l.code && (
+                <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
+              )}
             </button>
           ))}
         </div>

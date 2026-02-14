@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { Dialog, Transition } from "@headlessui/react";
 import { usePageTransition } from "@/hooks/usePageTransition";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 // Lazy load RichTextEditor - heavy editor component, browser-only
 const RichTextEditor = dynamic(() => import("@/components/RichTextEditor"), {
@@ -23,6 +24,58 @@ export default function StoryFormModal({ open, onClose, story }) {
   const router = useRouter();
   const { push } = usePageTransition();
   const { t } = useLanguage();
+
+  useEffect(() => {
+    if (open) {
+      // Lock scroll
+      const scrollY = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
+      document.body.style.width = "100%";
+      document.body.style.overflow = "hidden";
+      document.body.dataset.lockScrollY = scrollY;
+    } else {
+      // Unlock scroll
+      const scrollY = document.body.dataset.lockScrollY || 0;
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+      window.scrollTo(0, parseInt(scrollY));
+      delete document.body.dataset.lockScrollY;
+    }
+
+    // Cleanup (when component unmounts or isOpen changes)
+    return () => {
+      // Unlock scroll
+      const scrollY = document.body.dataset.lockScrollY || "0";
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+      window.scrollTo(0, parseInt(scrollY));
+      delete document.body.dataset.lockScrollY;
+    };
+  }, [open]);
+
+  useBackPress(
+    () => {
+      if (open) {
+        onClose();
+        return true;
+      }
+      return false;
+    },
+    20,
+    open,
+  );
+
   const [author, setAuthor] = useState("");
   const [title, setTitle] = useState("");
   const [contentHTML, setContentHTML] = useState("");

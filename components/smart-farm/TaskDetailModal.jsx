@@ -11,6 +11,7 @@ import {
   FaExclamationTriangle,
   FaBoxOpen,
 } from "react-icons/fa";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 const typeToIcon = {
   spray: FaSprayCan,
@@ -21,6 +22,18 @@ const typeToIcon = {
 };
 
 export default function TaskDetailModal({ task, onClose, onComplete }) {
+  useBackPress(
+    () => {
+      if (task) {
+        onClose();
+        return true;
+      }
+      return false;
+    },
+    20,
+    !!task,
+  );
+
   if (!task) return null;
 
   const handleComplete = () => {
@@ -34,7 +47,11 @@ export default function TaskDetailModal({ task, onClose, onComplete }) {
   const instructionList =
     task.instructions && task.instructions.length
       ? task.instructions
-      : ["Follow safety protocols", "Use recommended equipment", "Report completion status"];
+      : [
+          "Follow safety protocols",
+          "Use recommended equipment",
+          "Report completion status",
+        ];
 
   return (
     <AnimatePresence>
@@ -52,10 +69,15 @@ export default function TaskDetailModal({ task, onClose, onComplete }) {
               </div>
               <div>
                 <h2 className="text-2xl font-bold">Task Details</h2>
-                <p className="text-blue-100 text-sm capitalize">{task.type || "custom"} protocol</p>
+                <p className="text-blue-100 text-sm capitalize">
+                  {task.type || "custom"} protocol
+                </p>
               </div>
             </div>
-            <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-full transition">
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-white/20 rounded-full transition"
+            >
               <FaTimes className="w-5 h-5" />
             </button>
           </div>
@@ -64,7 +86,8 @@ export default function TaskDetailModal({ task, onClose, onComplete }) {
             <div className="bg-gray-50 p-4 rounded-lg">
               <h3 className="font-bold text-gray-800 mb-2">{task.text}</h3>
               <p className="text-gray-600 text-sm">
-                {task.description || "Complete this task to maintain optimal farm operations."}
+                {task.description ||
+                  "Complete this task to maintain optimal farm operations."}
               </p>
             </div>
 
@@ -87,7 +110,9 @@ export default function TaskDetailModal({ task, onClose, onComplete }) {
 
             {task.priority && (
               <div className="bg-orange-50 border-l-4 border-orange-500 p-4 rounded">
-                <p className="font-semibold text-orange-800">Priority: {task.priority}</p>
+                <p className="font-semibold text-orange-800">
+                  Priority: {task.priority}
+                </p>
               </div>
             )}
 

@@ -7,8 +7,21 @@ import {
   FaExclamationTriangle,
   FaShieldAlt,
 } from "react-icons/fa";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function PestDetailModal({ pest, onClose }) {
+  useBackPress(
+    () => {
+      if (pest) {
+        onClose();
+        return true;
+      }
+      return false;
+    },
+    20,
+    !!pest,
+  );
+
   if (!pest) return null;
 
   const detectedAt = pest.detectedAt
@@ -31,10 +44,15 @@ export default function PestDetailModal({ pest, onClose }) {
               </div>
               <div>
                 <h2 className="text-2xl font-bold">{pest.pathogen}</h2>
-                <p className="text-red-100">{pest.crop} · {pest.location}</p>
+                <p className="text-red-100">
+                  {pest.crop} · {pest.location}
+                </p>
               </div>
             </div>
-            <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-full transition">
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-white/20 rounded-full transition"
+            >
               <FaTimes className="w-5 h-5" />
             </button>
           </div>
@@ -51,7 +69,8 @@ export default function PestDetailModal({ pest, onClose }) {
                 </span>
               </div>
               <p className="text-gray-700">
-                Autonomous scouts detected pressure in {pest.location}. Recommended to intervene within next 6 hours.
+                Autonomous scouts detected pressure in {pest.location}.
+                Recommended to intervene within next 6 hours.
               </p>
             </div>
 
@@ -73,16 +92,24 @@ export default function PestDetailModal({ pest, onClose }) {
             </div>
 
             <div>
-              <h3 className="font-bold text-gray-800 mb-3">Recommended Actions</h3>
+              <h3 className="font-bold text-gray-800 mb-3">
+                Recommended Actions
+              </h3>
               <ul className="space-y-2">
-                {(pest.recommendedActions || ["Apply organic pesticide", "Monitor for 48h"]).map(
-                  (action, index) => (
-                    <li key={index} className="flex items-start gap-2 text-gray-700">
-                      <FaShieldAlt className="text-green-600 mt-1" />
-                      <span>{action}</span>
-                    </li>
-                  ),
-                )}
+                {(
+                  pest.recommendedActions || [
+                    "Apply organic pesticide",
+                    "Monitor for 48h",
+                  ]
+                ).map((action, index) => (
+                  <li
+                    key={index}
+                    className="flex items-start gap-2 text-gray-700"
+                  >
+                    <FaShieldAlt className="text-green-600 mt-1" />
+                    <span>{action}</span>
+                  </li>
+                ))}
               </ul>
             </div>
 

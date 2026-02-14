@@ -28,6 +28,7 @@ import { useTheme } from "@/Context/themecontext";
 // This does NOT replace existing logic - it only enhances UI transitions
 // NOTE: Logout redirect intentionally uses router.push() (no transition needed)
 import { usePageTransition } from "@/hooks/usePageTransition";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function UserSidebar({ onClose } = {}) {
   const router = useRouter();
@@ -39,6 +40,20 @@ export default function UserSidebar({ onClose } = {}) {
   const { t } = useLanguage();
   const [infoLoading, setInfoLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
+
+  useBackPress(
+    () => {
+      // This component is mounted via portal only when open,
+      // so we can just call onClose if it's mounted.
+      if (typeof onClose === "function") {
+        onClose();
+        return true;
+      }
+      return false;
+    },
+    20,
+    true,
+  );
 
   useEffect(() => {
     console.log("User is :", user);
