@@ -73,7 +73,7 @@ export default function ProfilePage() {
   const [visitorError, setVisitorError] = useState(null);
   const [followClick,setFollowClick] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
-
+  const [followed,setFollowed] = useState(false);
   useEffect(() => {
     if (!loading) setInfoLoading(false);
   }, [loading]);
@@ -118,53 +118,51 @@ export default function ProfilePage() {
     fetchVisitorProfile();
   }, [visitorId]);
 
-  useEffect(() => {
-    const checkFollowStatus = async () => {
-      if (!user?.id || !visitorId) return;
+  // useEffect(() => {
+  //   const checkFollowStatus = async () => {
+  //     if (!user?.id || !visitorId) return;
 
-      const { data } = await supabase
-        .from("user_follows")
-        .select("id")
-        .eq("follower_id", user.id)
-        .eq("following_id", visitorId)
-        .maybeSingle();
+  //     const { data } = await supabase
+  //       .from("user_follows")
+  //       .select("id")
+  //       .eq("follower_id", user.id)
+  //       .eq("following_id", visitorId)
+  //       .maybeSingle();
+  //     setFollowClick(!!data);
+  //   };
 
-      setFollowClick(!!data);
-    };
+  //   checkFollowStatus();
+  // }, [user?.id, visitorId]);
+  // const handleFollowClick = async () => {
+  //   if (!user?.id || !visitorId) return;
 
-    checkFollowStatus();
-  }, [user?.id, visitorId]);
+  //   setFollowLoading(true);
 
-  const handleFollowClick = async () => {
-    if (!user?.id || !visitorId) return;
+  //   try {
+  //     if (followClick) {
+  //       await supabase
+  //         .from("user_follows")
+  //         .delete()
+  //         .eq("follower_id", user.id)
+  //         .eq("following_id", visitorId);
 
-    setFollowLoading(true);
+  //       setFollowClick(false);
+  //     } else {
+  //       await supabase
+  //         .from("user_follows")
+  //         .insert({
+  //           follower_id: user.id,
+  //           following_id: visitorId
+  //         });
 
-    try {
-      if (followClick) {
-        await supabase
-          .from("user_follows")
-          .delete()
-          .eq("follower_id", user.id)
-          .eq("following_id", visitorId);
-
-        setFollowClick(false);
-      } else {
-        await supabase
-          .from("user_follows")
-          .insert({
-            follower_id: user.id,
-            following_id: visitorId
-          });
-
-        setFollowClick(true);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setFollowLoading(false);
-    }
-  };
+  //       setFollowClick(true);
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //   } finally {
+  //     setFollowLoading(false);
+  //   }
+  // };
 
 
 
@@ -310,7 +308,7 @@ export default function ProfilePage() {
                   </button>
                 ) : (
                   <>
-                    <button
+                    {/* <button
                       className={`flex-1 h-10 rounded-lg font-semibold text-sm text-white transition-all active:scale-[0.98] ${
                         followClick
                           ? "bg-gray-400"
@@ -326,9 +324,23 @@ export default function ProfilePage() {
                       ) : (
                         followClick ? t("following") : t("follow")
                       )}
+                    </button> */}
+                    <button
+                      disabled
+                      className="flex-1 h-10 rounded-lg font-semibold text-sm text-white 
+                                bg-green-600 shadow-lg shadow-green-600/20
+                                opacity-60 cursor-not-allowed"
+                    >
+                      {t("follow")}
                     </button>
 
-                    <button className="flex-1 h-10 bg-gray-100 dark:bg-[#1C1C1E] rounded-lg font-semibold text-sm text-gray-900 dark:text-white active:scale-[0.98] transition-transform">
+                    <button 
+                      className="flex-1 h-10 bg-gray-100 dark:bg-[#1C1C1E] 
+                                rounded-lg font-semibold text-sm 
+                                text-gray-400 dark:text-gray-500 
+                                cursor-not-allowed opacity-60"
+                      disabled
+                    >
                       {t("message_btn")}
                     </button>
                   </>
@@ -341,7 +353,8 @@ export default function ProfilePage() {
           </div>
 
           {/* Details Grid */}
-          {/* <div className="px-4 mt-2 grid grid-cols-1 gap-4">
+          {isOwnProfile && followed && 
+          <div className="px-4 mt-2 grid grid-cols-1 gap-4">
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider ml-1 mt-4 mb-2">
               {t("about") || "About"}
             </h3>
@@ -405,7 +418,8 @@ export default function ProfilePage() {
                 </div>
               </div>
             </div>
-          </div> */}
+          </div>
+          }
         </div>
       </MobilePageContainer>
     );
