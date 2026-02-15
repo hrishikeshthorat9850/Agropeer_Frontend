@@ -24,6 +24,7 @@ import useToast from "@/hooks/useToast";
 import AccountDeleteModal from "@/components/ui/AccountDeleteModal";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
 import BottomSelect from "@/components/ui/BottomSelect";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -34,6 +35,15 @@ export default function SettingsPage() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [loading, setLoading] = useState(false); // Restored unused state if it was there
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  useBackPress(
+    () => {
+      router.push("/profile");
+      return true;
+    },
+    10,
+    true,
+  );
 
   // Haptic Helper
   const triggerHaptic = async () => {
@@ -88,7 +98,7 @@ export default function SettingsPage() {
 
   return (
     <MobilePageContainer>
-      <div className="min-h-screen bg-[#F2F2F7] dark:bg-black pb-6 font-sans safe-area-inset-bottom">
+      <div className="bg-[#F2F2F7] dark:bg-black pb-6 font-sans safe-area-inset-bottom">
         {/* Premium Header with Blur */}
         <header className="sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50">
           <div className="flex items-center justify-between px-4 h-14">
@@ -234,7 +244,7 @@ export default function SettingsPage() {
           </div>
 
           {/* Privacy & Security Section */}
-          {user && ( 
+          {user && (
             <>
               <h3 className="px-4 py-2 mt-6 text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
                 {t("privacy")}
@@ -342,39 +352,39 @@ export default function SettingsPage() {
 
           {/* Danger Zone */}
           {user && (
-          <>
-            <h3 className="px-4 py-2 mt-6 text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
-              {t("danger_zone")}
-            </h3>
-            <div className="overflow-hidden bg-white dark:bg-[#1C1C1E] sm:rounded-xl shadow-sm">
-              <div
-                onClick={() => {
-                  triggerHaptic();
-                  handleDeleteAccountClick();
-                }}
-                className="flex flex-col p-4 bg-white dark:bg-[#1C1C1E] active:bg-gray-50 dark:active:bg-[#2C2C2E] transition-colors cursor-pointer"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-3 flex-1 min-w-0">
-                    <div className="p-2 rounded-full bg-red-50 dark:bg-red-900/20 text-red-600">
-                      <Trash2 size={20} strokeWidth={2} />
+            <>
+              <h3 className="px-4 py-2 mt-6 text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
+                {t("danger_zone")}
+              </h3>
+              <div className="overflow-hidden bg-white dark:bg-[#1C1C1E] sm:rounded-xl shadow-sm">
+                <div
+                  onClick={() => {
+                    triggerHaptic();
+                    handleDeleteAccountClick();
+                  }}
+                  className="flex flex-col p-4 bg-white dark:bg-[#1C1C1E] active:bg-gray-50 dark:active:bg-[#2C2C2E] transition-colors cursor-pointer"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <div className="p-2 rounded-full bg-red-50 dark:bg-red-900/20 text-red-600">
+                        <Trash2 size={20} strokeWidth={2} />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-base font-medium text-red-600 truncate">
+                          {t("delete_account")}
+                        </span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1">
+                          {t("delete_desc")}
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex flex-col">
-                      <span className="text-base font-medium text-red-600 truncate">
-                        {t("delete_account")}
-                      </span>
-                      <span className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1">
-                        {t("delete_desc")}
-                      </span>
+                    <div className="flex-shrink-0">
+                      <ChevronRight size={20} className="text-red-400" />
                     </div>
-                  </div>
-                  <div className="flex-shrink-0">
-                    <ChevronRight size={20} className="text-red-400" />
                   </div>
                 </div>
               </div>
-            </div>
-          </>
+            </>
           )}
         </main>
 

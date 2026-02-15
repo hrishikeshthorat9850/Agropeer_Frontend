@@ -12,6 +12,8 @@ import { FaFilter, FaTimes, FaRupeeSign, FaMapMarkerAlt } from "react-icons/fa";
  * @param {array} availableDistricts - List of available districts from products
  */
 import { useLanguage } from "@/Context/languagecontext";
+// Ensure BackHandlerContext is imported correctly - trying relative path
+import { useBackPress } from "../../../Context/BackHandlerContext";
 
 export default function ProductFilters({
   filters,
@@ -20,6 +22,18 @@ export default function ProductFilters({
 }) {
   const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
+
+  useBackPress(
+    () => {
+      if (isOpen) {
+        setIsOpen(false);
+        return true;
+      }
+      return false;
+    },
+    30,
+    isOpen,
+  );
 
   const handlePriceChange = (field, value) => {
     const numValue = value === "" ? null : parseFloat(value);
@@ -85,7 +99,6 @@ export default function ProductFilters({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-
             className="bg-white border border-gray-200 rounded-xl p-4 mb-6 dark:bg-[#1E1E1E] dark:border-[#333]"
           >
             <div className="space-y-6">
@@ -129,10 +142,11 @@ export default function ProductFilters({
                       <button
                         key={district}
                         onClick={() => handleDistrictChange(district)}
-                        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${filters.district === district
-                          ? "bg-green-600 text-white"
-                          : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-[#0a0a0a] dark:text-gray-300 dark:hover:bg-[#2C2C2C]"
-                          }`}
+                        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                          filters.district === district
+                            ? "bg-green-600 text-white"
+                            : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-[#0a0a0a] dark:text-gray-300 dark:hover:bg-[#2C2C2C]"
+                        }`}
                       >
                         {district}
                       </button>

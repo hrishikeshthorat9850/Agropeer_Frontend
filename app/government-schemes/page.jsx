@@ -45,11 +45,13 @@ export default function GovernmentSchemesPage() {
         router.push("/government-schemes");
         return true;
       }
-      return false;
+      // List View: Go back to previous page
+      router.back();
+      return true;
     },
     10,
-    !!selectedSchemeId,
-  ); // Priority 10 (same as default nav, but we handle it explicitly)
+    true, // Always active
+  );
 
   const [schemes, setSchemes] = useState([]);
   const [loading, setLoading] = useState(true);

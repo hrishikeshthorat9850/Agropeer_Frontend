@@ -12,6 +12,8 @@ import { useLanguage } from "@/Context/languagecontext";
 import { useLocation, LOCATION } from "@/components/mobile/hooks/useLocation";
 import { openAppSettings } from "@/components/mobile/utils/openAppSettings";
 import WeatherSkeleton from "@/components/skeletons/WeatherSkeleton"; // Added Skeleton
+import { useRouter } from "next/navigation";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function WeatherPage() {
   const {
@@ -24,6 +26,16 @@ export default function WeatherPage() {
   const { t } = useLanguage();
   const [showPersonalized, setShowPersonalized] = useState(false);
   const [selectedCrop, setSelectedCrop] = useState(null);
+  const router = useRouter();
+
+  useBackPress(
+    () => {
+      router.back();
+      return true;
+    },
+    10,
+    true,
+  );
   useEffect(() => {
     if (!position?.latitude || !position?.longitude) return;
     // Only fetch if we don't have weather data yet

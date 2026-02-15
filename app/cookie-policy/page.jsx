@@ -1,10 +1,31 @@
 "use client";
 import { motion } from "framer-motion";
-import { FaCookie, FaShieldAlt, FaCog, FaChartLine, FaUsers, FaMobileAlt, FaTrash } from "react-icons/fa";
+import {
+  FaCookie,
+  FaShieldAlt,
+  FaCog,
+  FaChartLine,
+  FaUsers,
+  FaMobileAlt,
+  FaTrash,
+} from "react-icons/fa";
 import { useLanguage } from "@/Context/languagecontext";
+
+import { useRouter } from "next/navigation";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function CookiePolicy() {
   const { t } = useLanguage();
+  const router = useRouter();
+
+  useBackPress(
+    () => {
+      router.back();
+      return true;
+    },
+    10,
+    true,
+  );
 
   const cookieTypes = [
     {
@@ -17,21 +38,21 @@ export default function CookiePolicy() {
           name: "sb-* (Supabase Session)",
           purpose: t("cp_auth"),
           duration: t("dur_session"),
-          type: t("type_first")
+          type: t("type_first"),
         },
         {
           name: "theme",
           purpose: t("cp_theme"),
           duration: t("dur_1_year"),
-          type: t("type_first")
+          type: t("type_first"),
         },
         {
           name: "locale",
           purpose: t("cp_locale"),
           duration: t("dur_1_year"),
-          type: t("type_first")
-        }
-      ]
+          type: t("type_first"),
+        },
+      ],
     },
     {
       category: t("cat_functional"),
@@ -43,15 +64,15 @@ export default function CookiePolicy() {
           name: "user_preferences",
           purpose: t("cp_user_pref"),
           duration: t("dur_1_year"),
-          type: t("type_first")
+          type: t("type_first"),
         },
         {
           name: "last_visited",
           purpose: t("cp_last_visited"),
           duration: t("dur_30_days"),
-          type: t("type_first")
-        }
-      ]
+          type: t("type_first"),
+        },
+      ],
     },
     {
       category: t("cat_analytics"),
@@ -63,15 +84,15 @@ export default function CookiePolicy() {
           name: "_ga, _gid (Google Analytics)",
           purpose: t("cp_ga"),
           duration: t("dur_2_years"),
-          type: t("type_third")
+          type: t("type_third"),
         },
         {
           name: "analytics_session",
           purpose: t("cp_analytics_sess"),
           duration: t("dur_30_min"),
-          type: t("type_first")
-        }
-      ]
+          type: t("type_first"),
+        },
+      ],
     },
     {
       category: t("cat_performance"),
@@ -83,10 +104,10 @@ export default function CookiePolicy() {
           name: "performance_metrics",
           purpose: t("cp_perf"),
           duration: t("dur_7_days"),
-          type: t("type_first")
-        }
-      ]
-    }
+          type: t("type_first"),
+        },
+      ],
+    },
   ];
 
   const sections = [
@@ -162,7 +183,12 @@ export default function CookiePolicy() {
             {t("cookie_policy_title")}
           </h1>
           <p className="text-farm-700 text-lg dark:text-gray-300">
-            {t("last_updated")} {new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+            {t("last_updated")}{" "}
+            {new Date().toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
           </p>
           <p className="text-farm-600 mt-2 dark:text-gray-400">
             {t("cookie_policy_intro_text")}
@@ -207,9 +233,14 @@ export default function CookiePolicy() {
             </h2>
             <div className="space-y-6">
               {cookieTypes.map((type, index) => (
-                <div key={index} className="border border-farm-200 rounded-xl p-6 dark:border-white/20">
+                <div
+                  key={index}
+                  className="border border-farm-200 rounded-xl p-6 dark:border-white/20"
+                >
                   <div className="flex items-center gap-3 mb-4">
-                    <div className={`w-10 h-10 bg-gradient-to-r ${type.color} rounded-lg flex items-center justify-center text-white`}>
+                    <div
+                      className={`w-10 h-10 bg-gradient-to-r ${type.color} rounded-lg flex items-center justify-center text-white`}
+                    >
                       {type.icon}
                     </div>
                     <div>
@@ -225,19 +256,38 @@ export default function CookiePolicy() {
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="border-b border-farm-200 dark:border-white/20">
-                          <th className="text-left py-2 px-3 font-semibold text-farm-900 dark:text-white">{t("th_cookie_name")}</th>
-                          <th className="text-left py-2 px-3 font-semibold text-farm-900 dark:text-white">{t("th_purpose")}</th>
-                          <th className="text-left py-2 px-3 font-semibold text-farm-900 dark:text-white">{t("th_duration")}</th>
-                          <th className="text-left py-2 px-3 font-semibold text-farm-900 dark:text-white">{t("th_type")}</th>
+                          <th className="text-left py-2 px-3 font-semibold text-farm-900 dark:text-white">
+                            {t("th_cookie_name")}
+                          </th>
+                          <th className="text-left py-2 px-3 font-semibold text-farm-900 dark:text-white">
+                            {t("th_purpose")}
+                          </th>
+                          <th className="text-left py-2 px-3 font-semibold text-farm-900 dark:text-white">
+                            {t("th_duration")}
+                          </th>
+                          <th className="text-left py-2 px-3 font-semibold text-farm-900 dark:text-white">
+                            {t("th_type")}
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
                         {type.cookies.map((cookie, cookieIndex) => (
-                          <tr key={cookieIndex} className="border-b border-farm-100 dark:border-white/10">
-                            <td className="py-2 px-3 text-farm-700 dark:text-gray-300 font-mono text-xs">{cookie.name}</td>
-                            <td className="py-2 px-3 text-farm-700 dark:text-gray-300">{cookie.purpose}</td>
-                            <td className="py-2 px-3 text-farm-700 dark:text-gray-300">{cookie.duration}</td>
-                            <td className="py-2 px-3 text-farm-700 dark:text-gray-300">{cookie.type}</td>
+                          <tr
+                            key={cookieIndex}
+                            className="border-b border-farm-100 dark:border-white/10"
+                          >
+                            <td className="py-2 px-3 text-farm-700 dark:text-gray-300 font-mono text-xs">
+                              {cookie.name}
+                            </td>
+                            <td className="py-2 px-3 text-farm-700 dark:text-gray-300">
+                              {cookie.purpose}
+                            </td>
+                            <td className="py-2 px-3 text-farm-700 dark:text-gray-300">
+                              {cookie.duration}
+                            </td>
+                            <td className="py-2 px-3 text-farm-700 dark:text-gray-300">
+                              {cookie.type}
+                            </td>
                           </tr>
                         ))}
                       </tbody>

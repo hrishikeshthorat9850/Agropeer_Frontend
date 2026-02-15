@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState, Suspense } from "react";
+import { useBackPress } from "@/Context/BackHandlerContext";
 import { useLanguage } from "@/Context/languagecontext";
 import { FaEye, FaEdit, FaTrash, FaPlus, FaBookReader } from "react-icons/fa";
 import dynamic from "next/dynamic";
@@ -27,6 +28,22 @@ export default function FarmerStoryPage() {
   const [view, setView] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [editStory, setEditStory] = useState(null);
+
+  useBackPress(
+    () => {
+      if (view) {
+        setView(null);
+        return true;
+      }
+      if (showForm) {
+        setShowForm(false);
+        return true;
+      }
+      return false; // Let default behavior happen (exit/back)
+    },
+    10,
+    !!(view || showForm),
+  );
 
   // Scroll lock implementation
   const open = !!view;

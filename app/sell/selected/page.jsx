@@ -7,6 +7,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 // ADDITIVE ENHANCEMENT: Import forward page transition hook for smooth UI transitions
 // This does NOT replace existing logic - it only enhances UI transitions
 import { usePageTransition } from "@/hooks/usePageTransition";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 // Lazy load SellForm - heavy form component
 const SellForm = dynamic(() => import("../../../components/SellForm"), {
@@ -21,6 +22,23 @@ export default function SelectedCategoryPage() {
   const { push } = usePageTransition();
   const searchParams = useSearchParams();
   const [category, setCategory] = useState("others");
+
+  useBackPress(
+    () => {
+      push("/sell/choose"); // Explicitly go back to choose category or just back? User asked for back.
+      // If we use push here, it acts like a back if we consider the flow.
+      // Actually, generic router.back() is safer for global consistency, BUT for this specific page,
+      // going back to 'choose' might be the intended "Up" navigation.
+      // However, sticking to router.back() (or push to parent) is fine.
+      // Let's use router.back() via explicit hook if we want "Back" behavior.
+      // But wait, the previous code had "push('/sell/choose')" on the custom back button.
+      // Let's replicate that behavior for the hardware back button too.
+      push("/sell/choose");
+      return true;
+    },
+    10,
+    true,
+  );
 
   const LABELS = {
     seeds: t("category_seeds"),

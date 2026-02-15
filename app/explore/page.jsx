@@ -5,6 +5,7 @@ import { FaUsers } from "react-icons/fa";
 import { motion } from "framer-motion";
 
 import { useLanguage } from "@/Context/languagecontext";
+import { useBackPress } from "@/Context/BackHandlerContext";
 import { CROP_DATABASE } from "@/data/CROP_DATABASE.multi";
 
 import CropDetailModal from "@/components/CropDetailModal";
@@ -46,6 +47,20 @@ export default function ExplorePage() {
   const [loadingPage, setLoadingPage] = useState(true);
   const [showStoryModal, setShowStoryModal] = useState(false);
   const [showAllCrops, setShowAllCrops] = useState(false);
+
+  useBackPress(
+    () => {
+      if (selectedCrop || showStoryModal || showAllCrops) {
+        setSelectedCrop(null);
+        setShowStoryModal(false);
+        setShowAllCrops(false);
+        return true;
+      }
+      return false;
+    },
+    20,
+    !!(selectedCrop || showStoryModal || showAllCrops),
+  );
 
   const { t, locale } = useLanguage();
   const router = useRouter();
@@ -162,7 +177,7 @@ export default function ExplorePage() {
             <div className="hidden md:block">
               <MarketSection router={router} />
             </div>
-            
+
             {/* 🌱 Crop Discovery (Categories + Grid) */}
             <CropDiscoverySection
               categories={categories}

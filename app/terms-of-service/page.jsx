@@ -1,73 +1,93 @@
 "use client";
 import { motion } from "framer-motion";
-import { FaGavel, FaUserCheck, FaBan, FaExclamationTriangle, FaBalanceScale, FaFileContract } from "react-icons/fa";
-import { useLanguage } from '@/Context/languagecontext';
+import {
+  FaGavel,
+  FaUserCheck,
+  FaBan,
+  FaExclamationTriangle,
+  FaBalanceScale,
+  FaFileContract,
+} from "react-icons/fa";
+import { useLanguage } from "@/Context/languagecontext";
+
+import { useRouter } from "next/navigation";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function TermsOfService() {
   const { language, t } = useLanguage();
+  const router = useRouter();
+
+  useBackPress(
+    () => {
+      router.back();
+      return true;
+    },
+    10,
+    true,
+  );
 
   const sections = [
     {
       icon: <FaFileContract className="w-6 h-6" />,
-      title: t('terms_sec_1_title'),
-      content: t('terms_sec_1_content'),
+      title: t("terms_sec_1_title"),
+      content: t("terms_sec_1_content"),
     },
     {
       icon: <FaUserCheck className="w-6 h-6" />,
-      title: t('terms_sec_2_title'),
-      content: t('terms_sec_2_content'),
+      title: t("terms_sec_2_title"),
+      content: t("terms_sec_2_content"),
     },
     {
-      title: t('terms_sec_3_title'),
-      content: t('terms_sec_3_content'),
+      title: t("terms_sec_3_title"),
+      content: t("terms_sec_3_content"),
     },
     {
       icon: <FaBan className="w-6 h-6" />,
-      title: t('terms_sec_4_title'),
-      content: t('terms_sec_4_content'),
+      title: t("terms_sec_4_title"),
+      content: t("terms_sec_4_content"),
     },
     {
-      title: t('terms_sec_5_title'),
-      content: t('terms_sec_5_content'),
+      title: t("terms_sec_5_title"),
+      content: t("terms_sec_5_content"),
     },
     {
-      title: t('terms_sec_6_title'),
-      content: t('terms_sec_6_content'),
+      title: t("terms_sec_6_title"),
+      content: t("terms_sec_6_content"),
     },
     {
       icon: <FaExclamationTriangle className="w-6 h-6" />,
-      title: t('terms_sec_7_title'),
-      content: t('terms_sec_7_content'),
+      title: t("terms_sec_7_title"),
+      content: t("terms_sec_7_content"),
     },
     {
-      title: t('terms_sec_8_title'),
-      content: t('terms_sec_8_content'),
+      title: t("terms_sec_8_title"),
+      content: t("terms_sec_8_content"),
     },
     {
-      title: t('terms_sec_9_title'),
-      content: t('terms_sec_9_content'),
+      title: t("terms_sec_9_title"),
+      content: t("terms_sec_9_content"),
     },
     {
       icon: <FaBalanceScale className="w-6 h-6" />,
-      title: t('terms_sec_10_title'),
-      content: t('terms_sec_10_content'),
+      title: t("terms_sec_10_title"),
+      content: t("terms_sec_10_content"),
     },
     {
-      title: t('terms_sec_11_title'),
-      content: t('terms_sec_11_content'),
+      title: t("terms_sec_11_title"),
+      content: t("terms_sec_11_content"),
     },
     {
-      title: t('terms_sec_12_title'),
-      content: t('terms_sec_12_content'),
+      title: t("terms_sec_12_title"),
+      content: t("terms_sec_12_content"),
     },
     {
-      title: t('terms_sec_13_title'),
-      content: t('terms_sec_13_content'),
+      title: t("terms_sec_13_title"),
+      content: t("terms_sec_13_content"),
     },
     {
       icon: <FaGavel className="w-6 h-6" />,
-      title: t('terms_sec_14_title'),
-      content: t('terms_sec_14_content'),
+      title: t("terms_sec_14_title"),
+      content: t("terms_sec_14_content"),
     },
   ];
 
@@ -86,13 +106,21 @@ export default function TermsOfService() {
             </div>
           </div>
           <h1 className="text-4xl md:text-5xl font-display font-bold text-farm-900 mb-4 dark:text-white">
-            {t('terms_of_service_title')}
+            {t("terms_of_service_title")}
           </h1>
           <p className="text-farm-700 text-lg dark:text-gray-300">
-            {t('last_updated')}: {new Date().toLocaleDateString(language === 'hi' ? 'hi-IN' : language === 'mr' ? 'mr-IN' : 'en-US', { year: "numeric", month: "long", day: "numeric" })}
+            {t("last_updated")}:{" "}
+            {new Date().toLocaleDateString(
+              language === "hi"
+                ? "hi-IN"
+                : language === "mr"
+                ? "mr-IN"
+                : "en-US",
+              { year: "numeric", month: "long", day: "numeric" },
+            )}
           </p>
           <p className="text-farm-600 mt-2 dark:text-gray-400">
-            {t('terms_intro_text')}
+            {t("terms_intro_text")}
           </p>
         </motion.div>
 
@@ -131,7 +159,7 @@ export default function TermsOfService() {
           className="mt-12 p-6 bg-farm-100 rounded-xl border border-farm-200 text-center dark:bg-[#1E1E1E] dark:border-white/20"
         >
           <p className="text-sm text-farm-700 dark:text-gray-400 whitespace-pre-line">
-            {t('terms_footer_text')}
+            {t("terms_footer_text")}
           </p>
         </motion.div>
       </div>

@@ -29,6 +29,7 @@ import MobilePageContainer from "@/components/mobile/MobilePageContainer";
 import { Capacitor } from "@capacitor/core";
 import { shareContent } from "@/utils/shareHandler";
 import { useLanguage } from "@/Context/languagecontext";
+import { useBackPress } from "@/Context/BackHandlerContext";
 export default function NewsPage() {
   const { t } = useLanguage();
   const router = useRouter();
@@ -38,6 +39,19 @@ export default function NewsPage() {
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
+
+  useBackPress(
+    () => {
+      if (articleId) {
+        router.push("/news");
+        return true;
+      }
+      router.back();
+      return true;
+    },
+    10,
+    true,
+  );
 
   const pagination = usePagination(1, 12);
 

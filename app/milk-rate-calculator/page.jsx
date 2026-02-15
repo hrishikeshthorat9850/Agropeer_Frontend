@@ -10,6 +10,7 @@ import {
   FaCalendar,
   FaChartLine,
 } from "react-icons/fa";
+import { useBackPress } from "@/Context/BackHandlerContext";
 import MilkRateSearch from "@/components/milk-rate/MilkRateSearch";
 import MilkRateFilters from "@/components/milk-rate/MilkRateFilters";
 import MilkRateList from "@/components/milk-rate/MilkRateList";
@@ -41,6 +42,20 @@ export default function MilkRateDashboardPage() {
   // Detail view state
   const companyId = searchParams.get("id");
   const [selectedCompany, setSelectedCompany] = useState(null);
+
+  useBackPress(
+    () => {
+      if (companyId) {
+        router.push("/milk-rate-calculator");
+        return true;
+      }
+      // Default: return false to let router.back() happen via AppShell or other handlers
+      router.back();
+      return true;
+    },
+    10,
+    true,
+  );
   const [companyLoading, setCompanyLoading] = useState(false);
   const [companyError, setCompanyError] = useState(null);
   const [fat, setFat] = useState(4.0);

@@ -30,6 +30,7 @@ import { Capacitor } from "@capacitor/core";
 import { shareContent } from "@/utils/shareHandler";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { apiRequest } from "@/utils/apiHelpers";
+import { useBackPress } from "@/Context/BackHandlerContext";
 // Lazy load heavy components that are only shown on user interaction or below the fold
 const SellForm = dynamic(() => import("@/components/SellForm"), {
   loading: () => <LoadingSpinner />,
@@ -106,6 +107,33 @@ export default function AgriMarket() {
     sellerId: null,
     sellerInfo: null,
   });
+
+  useBackPress(
+    () => {
+      // 1. Close Modals
+      if (chatModal.isOpen || productDetailChatModal.isOpen || editingProduct) {
+        setChatModal((prev) => ({ ...prev, isOpen: false }));
+        setProductDetailChatModal((prev) => ({ ...prev, isOpen: false }));
+        setEditingProduct(null);
+        return true;
+      }
+
+      // 2. Close Detail View (navigate back to main market list)
+      if (productId) {
+        router.push("/market");
+        return true;
+      }
+
+      return false;
+    },
+    20,
+    !!(
+      chatModal.isOpen ||
+      productDetailChatModal.isOpen ||
+      editingProduct ||
+      productId
+    ),
+  );
 
   // Filter state - NEW (initialize from URL params if present)
   const [selectedCategory, setSelectedCategory] = useState(() => {
@@ -703,24 +731,46 @@ export default function AgriMarket() {
       <MobilePageContainer noPadding>
         <div className="w-full flex flex-col items-center justify-start dark:bg-[#0a0a0a] py-6">
           <div className="w-full px-1">
-            <div className="flex items-center justify-center gap-3 mb-6">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-8 h-8 text-farm-600 dark:text-white"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
+            <div className="flex items-center justify-between mb-6 px-4">
+              <button
+                onClick={() => router.push("/market")}
+                className="p-2 rounded-full bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-white hover:bg-gray-200 dark:hover:bg-white/20 transition-colors"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 7M7 13l-2 8m2-8l2 8m10-8l2 8M9 21h6"
-                />
-              </svg>
-              <h1 className="text-2xl md:text-4xl font-bold text-farm-900 dark:text-white">
-                {t("product_details_insights")}
-              </h1>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                  />
+                </svg>
+              </button>
+              <div className="flex items-center gap-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-6 h-6 text-farm-600 dark:text-white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 7M7 13l-2 8m2-8l2 8m10-8l2 8M9 21h6"
+                  />
+                </svg>
+                <h1 className="text-xl md:text-2xl font-bold text-farm-900 dark:text-white">
+                  {t("product_details_insights")}
+                </h1>
+              </div>
+              <div className="w-9"></div> {/* Spacer for centering */}
             </div>
 
             <div className="w-full max-w-7xl mx-auto">

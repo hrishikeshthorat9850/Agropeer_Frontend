@@ -15,6 +15,7 @@ import { PostSkeleton } from "@/components/skeletons";
 import { supabase } from "@/lib/supabaseClient";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
 import { useLanguage } from "@/Context/languagecontext";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 const ClientModalWrapper = dynamic(
   () => import("@/components/ui/post/ClientModalWrapper"),
@@ -35,6 +36,18 @@ export default function PostsPage() {
     });
 
   const [isCreating, setIsCreating] = useState(false);
+
+  useBackPress(
+    () => {
+      if (isCreating) {
+        setIsCreating(false);
+        return true;
+      }
+      return false; // Let default behavior happen
+    },
+    10,
+    isCreating,
+  );
 
   // Detail view state
   const postId = searchParams.get("id");

@@ -50,6 +50,8 @@ import {
 } from "react-icons/fa";
 import { Capacitor } from "@capacitor/core";
 import { shareContent } from "@/utils/shareHandler";
+import { useRouter } from "next/navigation";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function FarmingTips() {
   const { t } = useLanguage();
@@ -57,7 +59,24 @@ export default function FarmingTips() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [savedTips, setSavedTips] = useState(new Set());
   const [selectedTip, setSelectedTip] = useState(null);
+  const router = useRouter();
 
+  useBackPress(
+    () => {
+      if (selectedTip) {
+        setSelectedTip(null);
+        return true;
+      }
+      router.back();
+      return true;
+    },
+    10,
+    true,
+  ); // Priority 10 (base page level), or could be dynamic.
+  // Since we handle both cases, 10 is fine as long as no other overlay (with >10) is open.
+  // Actually, if selectedTip is open, we might want higher priority?
+  // But wait, if selectedTip is open, it IS the top level thing on this page.
+  // So a single handler handling both states is correct.
 
   useEffect(() => {
     if (selectedTip) {
@@ -775,7 +794,7 @@ export default function FarmingTips() {
     } else {
       // Fallback: copy to clipboard
       navigator.clipboard.writeText(
-        `${tip.title}\n\n${tip.description}\n\n${window.location.href}`
+        `${tip.title}\n\n${tip.description}\n\n${window.location.href}`,
       );
       alert("Tip copied to clipboard!");
     }
@@ -817,10 +836,11 @@ export default function FarmingTips() {
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`flex items-center gap-1.5 px-4 py-2.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border ${selectedCategory === cat.id
-                  ? "bg-farm-600 border-farm-600 text-white shadow-md shadow-farm-500/20"
-                  : "bg-white dark:bg-[#121212] border-gray-100 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5"
-                  }`}
+                className={`flex items-center gap-1.5 px-4 py-2.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border ${
+                  selectedCategory === cat.id
+                    ? "bg-farm-600 border-farm-600 text-white shadow-md shadow-farm-500/20"
+                    : "bg-white dark:bg-[#121212] border-gray-100 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5"
+                }`}
               >
                 {cat.icon}
                 {cat.name}
@@ -900,10 +920,11 @@ export default function FarmingTips() {
                           e.stopPropagation();
                           toggleSave(tip.id);
                         }}
-                        className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${savedTips.has(tip.id)
-                          ? "bg-yellow-50 text-yellow-500 dark:bg-yellow-900/20"
-                          : "text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5"
-                          }`}
+                        className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+                          savedTips.has(tip.id)
+                            ? "bg-yellow-50 text-yellow-500 dark:bg-yellow-900/20"
+                            : "text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5"
+                        }`}
                       >
                         {savedTips.has(tip.id) ? (
                           <FaBookmarkSolid className="w-4 h-4" />
@@ -1011,10 +1032,11 @@ export default function FarmingTips() {
                 <div className="flex gap-3">
                   <button
                     onClick={() => toggleSave(selectedTip.id)}
-                    className={`flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm transition-all active:scale-[0.98] ${savedTips.has(selectedTip.id)
-                      ? "bg-yellow-50 text-yellow-800 border border-yellow-200 dark:bg-yellow-900/40 dark:text-yellow-300 dark:border-yellow-700/50"
-                      : "bg-gray-100 text-gray-900 border border-transparent dark:bg-[#27272a] dark:text-white hover:bg-gray-200 dark:hover:bg-[#3f3f46]"
-                      }`}
+                    className={`flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm transition-all active:scale-[0.98] ${
+                      savedTips.has(selectedTip.id)
+                        ? "bg-yellow-50 text-yellow-800 border border-yellow-200 dark:bg-yellow-900/40 dark:text-yellow-300 dark:border-yellow-700/50"
+                        : "bg-gray-100 text-gray-900 border border-transparent dark:bg-[#27272a] dark:text-white hover:bg-gray-200 dark:hover:bg-[#3f3f46]"
+                    }`}
                   >
                     {savedTips.has(selectedTip.id) ? (
                       <FaBookmarkSolid className="w-4 h-4" />

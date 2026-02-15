@@ -1,10 +1,30 @@
 "use client";
 import { motion } from "framer-motion";
-import { FaShieldAlt, FaLock, FaUserShield, FaGlobe, FaMobileAlt, FaDatabase } from "react-icons/fa";
+import {
+  FaShieldAlt,
+  FaLock,
+  FaUserShield,
+  FaGlobe,
+  FaMobileAlt,
+  FaDatabase,
+} from "react-icons/fa";
 import { useLanguage } from "@/Context/languagecontext";
+
+import { useRouter } from "next/navigation";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function PrivacyPolicy() {
   const { t } = useLanguage();
+  const router = useRouter();
+
+  useBackPress(
+    () => {
+      router.back();
+      return true;
+    },
+    10,
+    true,
+  );
 
   const sections = [
     {
@@ -89,7 +109,12 @@ export default function PrivacyPolicy() {
             {t("privacy_policy_title")}
           </h1>
           <p className="text-farm-700 text-lg dark:text-gray-300">
-            {t("last_updated")}: {new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+            {t("last_updated")}:{" "}
+            {new Date().toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
           </p>
           <p className="text-farm-600 mt-2 dark:text-gray-400">
             {t("privacy_intro_text")}

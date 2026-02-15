@@ -13,6 +13,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 // ADDITIVE ENHANCEMENT: Import back transition hook for smooth UI transitions
 // This does NOT replace existing logic - it only enhances UI transitions
 import { useBackTransition } from "@/hooks/useBackTransition";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function EditProfilePage() {
   const { user } = useLogin();
@@ -22,6 +23,19 @@ export default function EditProfilePage() {
   const { routerBack } = useBackTransition();
   const { t } = useLanguage();
   const { showToast } = useToast();
+
+  useBackPress(
+    () => {
+      routerBack(); // Use the smooth transition version
+      return true;
+    },
+    10,
+    true,
+  );
+  // Import context differently if needed or just use require?
+  // Wait, I can't add import in the middle of function.
+  // I need to add import at top and hook usage here.
+  // I will split this into two edits.
 
   const BIO_LIMIT = 500;
   const fileInputRef = useRef(null);
