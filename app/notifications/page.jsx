@@ -19,6 +19,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 // ADDITIVE ENHANCEMENT: Import forward page transition hook for smooth UI transitions
 // This does NOT replace existing logic - it only enhances UI transitions
 import { usePageTransition } from "@/hooks/usePageTransition";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function NotificationsPage() {
   const { t } = useLanguage();
@@ -41,6 +42,23 @@ export default function NotificationsPage() {
   const [localNotifications, setLocalNotifications] = useState([]);
   const [pendingDelete, setPendingDelete] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
+
+  // Handle Back Press for Delete Confirmation Modals
+  useBackPress(
+    () => {
+      if (showConfirm) {
+        setShowConfirm(false);
+        return true;
+      }
+      if (showBulkConfirm) {
+        setShowBulkConfirm(false);
+        return true;
+      }
+      return false;
+    },
+    20,
+    showConfirm || showBulkConfirm,
+  );
 
   const [showUndo, setShowUndo] = useState(false);
   const [lastDeleted, setLastDeleted] = useState(null);

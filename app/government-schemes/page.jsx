@@ -29,12 +29,27 @@ import { apiRequest } from "@/utils/apiHelpers";
 import { Capacitor } from "@capacitor/core";
 import { shareContent } from "@/utils/shareHandler";
 import { useLanguage } from "@/Context/languagecontext";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function GovernmentSchemesPage() {
   const { t } = useLanguage();
   const router = useRouter();
   const searchParams = useSearchParams();
   const selectedSchemeId = searchParams.get("id");
+
+  // Handle Back Press for Detail View
+  // If detail view is open (selectedSchemeId exists), go back to list
+  useBackPress(
+    () => {
+      if (selectedSchemeId) {
+        router.push("/government-schemes");
+        return true;
+      }
+      return false;
+    },
+    10,
+    !!selectedSchemeId,
+  ); // Priority 10 (same as default nav, but we handle it explicitly)
 
   const [schemes, setSchemes] = useState([]);
   const [loading, setLoading] = useState(true);

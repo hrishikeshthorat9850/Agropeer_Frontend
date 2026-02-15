@@ -214,7 +214,7 @@ export default function ToolsSection({
   );
 
   return (
-    <section className="mb-8">
+    <section className="py-6 mb-8">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-full text-blue-600 dark:text-blue-400">
