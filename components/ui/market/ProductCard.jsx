@@ -223,7 +223,6 @@ export default function ProductCard({
           </Link>
 
           {showChatButton &&
-            currentUserId &&
             product.user_id !== currentUserId && (
               <motion.button
                 whileHover={{ scale: 1.05 }}

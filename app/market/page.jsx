@@ -169,7 +169,6 @@ export default function AgriMarket() {
   }, [allProducts]);
 
   useEffect(() => {
-    console.log("User in market page is :", user?.id);
     if (!loading && user?.id) fetchFavorites();
   }, [user?.id]);
 

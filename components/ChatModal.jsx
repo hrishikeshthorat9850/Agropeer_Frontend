@@ -12,6 +12,7 @@ import { FaCheck, FaCheckDouble } from "react-icons/fa";
 import useToast from "@/hooks/useToast";
 import { useLanguage } from "@/Context/languagecontext";
 import { useBackPress } from "@/Context/BackHandlerContext";
+import { createPortal } from "react-dom";
 
 export default function ChatModal({
   isOpen,
@@ -556,7 +557,7 @@ export default function ChatModal({
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <AnimatePresence>
       <motion.div
         initial={{ opacity: 0 }}
@@ -617,6 +618,6 @@ export default function ChatModal({
           </div>
         </motion.div>
       </motion.div>
-    </AnimatePresence>
+    </AnimatePresence>,document.body
   );
 }
