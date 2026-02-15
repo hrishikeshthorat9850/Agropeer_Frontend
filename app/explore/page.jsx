@@ -1,7 +1,7 @@
 "use client";
 import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { FaUsers } from "react-icons/fa";
+import { FaUsers, FaTools } from "react-icons/fa";
 import { motion } from "framer-motion";
 
 import { useLanguage } from "@/Context/languagecontext";
@@ -11,12 +11,10 @@ import { CROP_DATABASE } from "@/data/CROP_DATABASE.multi";
 import CropDetailModal from "@/components/CropDetailModal";
 import StoryFormModal from "@/components/StoryFormModal";
 import MarketSection from "@/components/explore/MarketPricesInsight";
-import ToolsSection from "@/components/explore/Tools&Calculator";
 import FarmerStories from "@/components/explore/FarmerStories";
 import CropDiscoverySection from "@/components/explore/CropDiscoverySection";
 import AllCropsModal from "@/components/explore/AllCropsModal";
-import ExploreSkeleton from "@/components/skeletons/ExploreSkeleton"; // Added Skeleton
-import LoadingSpinner from "@/components/LoadingSpinner";
+import ExploreSkeleton from "@/components/skeletons/ExploreSkeleton";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
 
 // ✅ Number formatter
@@ -34,16 +32,6 @@ export default function ExplorePage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCrop, setSelectedCrop] = useState(null);
 
-  const [tool, setTool] = useState(null);
-  const [selectedToolCrop, setSelectedToolCrop] = useState("");
-  const [areaInput, setAreaInput] = useState("");
-  const [soilN, setSoilN] = useState("");
-  const [soilP, setSoilP] = useState("");
-  const [soilK, setSoilK] = useState("");
-  const [marketPrice, setMarketPrice] = useState("");
-  const [toolResult, setToolResult] = useState(null);
-  const [loadingTool, setLoadingTool] = useState(false);
-  const [errors, setErrors] = useState({});
   const [loadingPage, setLoadingPage] = useState(true);
   const [showStoryModal, setShowStoryModal] = useState(false);
   const [showAllCrops, setShowAllCrops] = useState(false);
@@ -190,31 +178,45 @@ export default function ExplorePage() {
               SkeletonCard={SkeletonCard}
             />
 
-            {/* ⚙️ Tools Grid */}
-            <ToolsSection
-              tool={tool}
-              setTool={setTool}
-              selectedToolCrop={selectedToolCrop}
-              setSelectedToolCrop={setSelectedToolCrop}
-              areaInput={areaInput}
-              setAreaInput={setAreaInput}
-              soilN={soilN}
-              soilP={soilP}
-              soilK={soilK}
-              setSoilN={setSoilN}
-              setSoilP={setSoilP}
-              setSoilK={setSoilK}
-              marketPrice={marketPrice}
-              setMarketPrice={setMarketPrice}
-              toolResult={toolResult}
-              setToolResult={setToolResult}
-              loadingTool={loadingTool}
-              setLoadingTool={setLoadingTool}
-              errors={errors}
-              setErrors={setErrors}
-              uniqueCrops={localizedCrops}
-              LoadingSpinner={LoadingSpinner}
-            />
+            {/* ⚙️ Tools & Calculators - Coming Soon (disabled) */}
+            <section className="py-6 mb-8 relative">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-full text-blue-600 dark:text-blue-400">
+                    <FaTools className="w-5 h-5" style={{ opacity: 0.8 }} />
+                  </div>
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                    {t("tools_section_title")}
+                  </h2>
+                  <span className="ml-2 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                    {t("coming_soon")}
+                  </span>
+                </div>
+              </div>
+              <div
+                className="grid grid-cols-2 md:grid-cols-3 gap-3 pointer-events-none select-none opacity-60"
+                aria-hidden="true"
+              >
+                {[
+                  { key: "seed", icon: "🌱", labelKey: "seed_calculator" },
+                  { key: "fertilizer", icon: "🧪", labelKey: "fertilizer_planner" },
+                  { key: "water", icon: "💧", labelKey: "water_requirement" },
+                  { key: "density", icon: "📏", labelKey: "planting_density" },
+                  { key: "yield", icon: "🚜", labelKey: "yield_estimator" },
+                  { key: "cost", icon: "💰", labelKey: "cost_profit_analysis" },
+                ].map((item) => (
+                  <div
+                    key={item.key}
+                    className="flex flex-col items-center justify-center p-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 h-28"
+                  >
+                    <span className="mb-2 text-2xl">{item.icon}</span>
+                    <span className="text-sm font-semibold leading-tight text-center">
+                      {t(item.labelKey)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </section>
 
             {/* 📚 Farmer Stories & Community */}
             <FarmerStories
