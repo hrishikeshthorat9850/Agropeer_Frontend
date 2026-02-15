@@ -24,7 +24,6 @@ import useToast from "@/hooks/useToast";
 import AccountDeleteModal from "@/components/ui/AccountDeleteModal";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
 import BottomSelect from "@/components/ui/BottomSelect";
-import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -35,15 +34,6 @@ export default function SettingsPage() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [loading, setLoading] = useState(false); // Restored unused state if it was there
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-
-  useBackPress(
-    () => {
-      router.push("/profile");
-      return true;
-    },
-    10,
-    true,
-  );
 
   // Haptic Helper
   const triggerHaptic = async () => {

@@ -120,7 +120,7 @@ export default function AgriMarket() {
 
       // 2. Close Detail View (navigate back to main market list)
       if (productId) {
-        router.push("/market");
+        router.back();
         return true;
       }
 
@@ -234,7 +234,7 @@ export default function AgriMarket() {
         // Check if product is in favorites
         if (user?.id) {
           const { data: favData } = await supabase
-            .from("saved")
+            .from("user_favorites")
             .select("id")
             .eq("user_id", user.id)
             .eq("product_id", data.id)
@@ -562,14 +562,14 @@ export default function AgriMarket() {
     try {
       if (productFavorite) {
         await supabase
-          .from("saved")
+          .from("user_favorites")
           .delete()
           .eq("user_id", user.id)
           .eq("product_id", selectedProduct.id);
         setProductFavorite(false);
         showToast("error", t("removed_from_favorites"));
       } else {
-        await supabase.from("saved").insert({
+        await supabase.from("user_favorites").insert({
           user_id: user.id,
           product_id: selectedProduct.id,
         });
@@ -770,7 +770,6 @@ export default function AgriMarket() {
                   {t("product_details_insights")}
                 </h1>
               </div>
-              <div className="w-9"></div> {/* Spacer for centering */}
             </div>
 
             <div className="w-full max-w-7xl mx-auto">
