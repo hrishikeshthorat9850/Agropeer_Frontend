@@ -12,9 +12,11 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { useLanguage } from "@/Context/languagecontext";
 import { useBackPress } from "@/Context/BackHandlerContext";
+import { useRouter } from "next/navigation";
 
 export default function CropDetailModal({ crop, onClose }) {
   const { t } = useLanguage();
+  const router = useRouter();
 
   // ✅ Handle Android Back Press
   useBackPress(
@@ -235,7 +237,7 @@ export default function CropDetailModal({ crop, onClose }) {
                 {/* 🦶 Fixed Bottom Action */}
                 <div className="p-4 border-t border-gray-100 dark:border-white/5 bg-white dark:bg-[#121212] pt-2 pb-safe">
                   <button
-                    onClick={() => (window.location.href = "/farmer-dashboard")}
+                    onClick={() => router.push("/farmer-dashboard")}
                     className="w-full py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-2xl shadow-lg shadow-green-200 dark:shadow-none active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                   >
                     <span>{t("add_crop_button")}</span>
