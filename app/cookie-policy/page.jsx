@@ -20,7 +20,7 @@ export default function CookiePolicy() {
 
   useBackPress(
     () => {
-      router.back();
+      router.push("/settings");
       return true;
     },
     10,

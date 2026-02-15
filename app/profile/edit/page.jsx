@@ -26,7 +26,7 @@ export default function EditProfilePage() {
 
   useBackPress(
     () => {
-      routerBack(); // Use the smooth transition version
+      router.push("/profile");
       return true;
     },
     10,

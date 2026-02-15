@@ -89,7 +89,7 @@ export default function RelatedProducts({
 
       try {
         const { data, error: favError } = await supabase
-          .from("saved")
+          .from("user_favorites")
           .select("product_id")
           .eq("user_id", user.id);
 
@@ -191,7 +191,9 @@ export default function RelatedProducts({
           {t("related_products")}
         </h2>
         <div className="text-center py-8">
-          <p className="text-gray-600 dark:text-gray-400">{t("no_related_products")}</p>
+          <p className="text-gray-600 dark:text-gray-400">
+            {t("no_related_products")}
+          </p>
         </div>
       </div>
     );
