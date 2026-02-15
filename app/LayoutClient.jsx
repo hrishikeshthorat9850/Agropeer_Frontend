@@ -22,6 +22,7 @@ import StatusBarManager from "@/components/mobile/StatusBarManager";
 import ScrollToTop from "../components/ScrollToTop";
 import AppShell from "@/components/mobile/AppShell";
 import { useTheme } from "@/Context/themecontext";
+import ChatBackHandler from "@/components/chat/ChatBackHandler";
 
 export default function ClientLayout({ children }) {
   const { theme } = useTheme();
@@ -136,6 +137,7 @@ export default function ClientLayout({ children }) {
         }}
       />
       <AppProviders>
+        <ChatBackHandler />
         <AppShell />
         <ScrollToTop />
         <StatusBarManager />

@@ -35,11 +35,17 @@ export default function NotificationsPage() {
   } = useNotifications(user?.id, 50);
   const { showToast } = useToast();
   const [markingAsRead, setMarkingAsRead] = useState(false);
-
+  const [showUndo, setShowUndo] = useState(false);
+  const [lastDeleted, setLastDeleted] = useState(null);
+    const [localNotifications, setLocalNotifications] = useState([]);
+  const [localNotificationsCount, setLocalNotificationsCount] = useState(
+    localNotifications.length,
+  );
+  const [showBulkConfirm, setShowBulkConfirm] = useState(false);
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   // -----------------------------------------------------
   // 🔥 NEW UI STATES FOR DELETE SYSTEM
   // -----------------------------------------------------
-  const [localNotifications, setLocalNotifications] = useState([]);
   const [pendingDelete, setPendingDelete] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -60,13 +66,6 @@ export default function NotificationsPage() {
     showConfirm || showBulkConfirm,
   );
 
-  const [showUndo, setShowUndo] = useState(false);
-  const [lastDeleted, setLastDeleted] = useState(null);
-  const [localNotificationsCount, setLocalNotificationsCount] = useState(
-    localNotifications.length,
-  );
-  const [showBulkConfirm, setShowBulkConfirm] = useState(false);
-  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   useEffect(() => {
     if (notifications?.length) {
