@@ -10,7 +10,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { useBackTransition } from "@/hooks/useBackTransition";
 
 export default function SelectedChat() {
-  const { selected, messages, sendMessage, loadConversation } = useChat();
+  const { selected, messages, messagesLoading, sendMessage, loadConversation } = useChat();
   const { socket } = useSocket();
   const router = useRouter();
   // ADDITIVE ENHANCEMENT: Get back transition handler
@@ -62,6 +62,7 @@ export default function SelectedChat() {
     <ChatArea
       selected={selected}
       messages={messages}
+      messagesLoading={messagesLoading}
       sendMessage={sendMessage}
     />
   );

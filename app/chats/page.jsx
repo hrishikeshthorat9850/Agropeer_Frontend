@@ -39,6 +39,7 @@ export default function ChatsPage() {
   const [contactToConversationMap, setContactToConversationMap] = useState({});
   const [dark, setDark] = useState(false);
   const [contacts, setContacts] = useState([]);
+  const [contactsLoading, setContactsLoading] = useState(true);
   const [selected, setSelected] = useState(null);
   const [showContacts, setShowContacts] = useState(true);
   const [msg, setMsg] = useState("");
@@ -55,6 +56,7 @@ export default function ChatsPage() {
   const fetchMessages = useCallback(async () => {
     if (!loggedInUser?.id) return;
 
+    setContactsLoading(true);
     try {
       //id, firstName, lastName, profile_url
       const { data, error } = await supabase
@@ -86,6 +88,7 @@ export default function ChatsPage() {
 
       if (error) {
         console.error("❌ Error fetching conversations:", error.message);
+        setContactsLoading(false);
         return;
       }
 
@@ -93,6 +96,7 @@ export default function ChatsPage() {
         setConversations([]);
         setContacts([]);
         setContactToConversationMap({});
+        setContactsLoading(false);
         return;
       }
 
@@ -224,6 +228,8 @@ export default function ChatsPage() {
       setConversations([]);
       setContacts([]);
       setContactToConversationMap({});
+    } finally {
+      setContactsLoading(false);
     }
   }, [loggedInUser?.id]);
 
@@ -1145,6 +1151,7 @@ export default function ChatsPage() {
             showContacts={showContacts}
             handleFaTimesClick={handleFaTimesClick}
             contacts={contacts}
+            contactsLoading={contactsLoading}
             SAMPLE_USERS={contacts}
             onSelectUser={handleSelectUser}
             selected={selected}

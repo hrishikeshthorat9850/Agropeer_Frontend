@@ -20,6 +20,7 @@ export function ChatProvider({ children }) {
 
   const [contacts, setContacts] = useState([]);
   const [selected, setSelected] = useState(null);
+  const [messagesLoading, setMessagesLoading] = useState(false);
   const selectedRef = useRef(selected);
   selectedRef.current = selected;
 
@@ -49,6 +50,7 @@ export function ChatProvider({ children }) {
     async ({ conversationId, chatPartner }) => {
       if (!conversationId || !chatPartner || !loggedInUser?.id) return;
 
+      setMessagesLoading(true);
       setSelected({
         ...chatPartner,
         conversation_id: conversationId,
@@ -57,16 +59,20 @@ export function ChatProvider({ children }) {
       joinConversation(conversationId);
       markAsRead(conversationId);
 
-      // Load existing messages from DB (exclude soft-deleted)
-      const { data: msgs, error } = await supabase
-        .from('messages')
-        .select('*')
-        .eq('conversation_id', conversationId)
-        .is('deleted_at', null)
-        .order('created_at', { ascending: true });
+      try {
+        // Load existing messages from DB (exclude soft-deleted)
+        const { data: msgs, error } = await supabase
+          .from('messages')
+          .select('*')
+          .eq('conversation_id', conversationId)
+          .is('deleted_at', null)
+          .order('created_at', { ascending: true });
 
-      if (!error && msgs) {
-        loadMessages(conversationId, msgs);
+        if (!error && msgs) {
+          loadMessages(conversationId, msgs);
+        }
+      } finally {
+        setMessagesLoading(false);
       }
     },
     [joinConversation, markAsRead, loggedInUser?.id, loadMessages]
@@ -160,6 +166,7 @@ export function ChatProvider({ children }) {
         setContacts,
         selected,
         messages, // 🔥 UI always updates
+        messagesLoading,
         selectConversation,
         loadConversation,
         sendMessage,

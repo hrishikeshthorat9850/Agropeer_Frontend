@@ -4,11 +4,13 @@ import ContactRow from "./ContactRow";
 import UnreadBadge from "./UnreadBadge";
 import { useLanguage } from "@/Context/languagecontext";
 import Link from "next/link";
+import Skeleton from "@/components/ui/Skeleton";
 
 export default function ChatSidebar({
   showContacts,
   handleFaTimesClick,
   contacts,
+  contactsLoading = false,
   onSelectUser,
   selected,
 }) {
@@ -96,7 +98,22 @@ export default function ChatSidebar({
                 : "0px",
             }}
           >
-            {!contacts?.length ? (
+            {contactsLoading ? (
+              <div className="space-y-2">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-3 p-3 rounded-xl"
+                  >
+                    <Skeleton className="w-12 h-12 rounded-full flex-shrink-0" />
+                    <div className="flex-1 space-y-2 min-w-0">
+                      <Skeleton className="h-4 w-3/4 rounded-md" />
+                      <Skeleton className="h-3 w-1/2 rounded-md" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : !contacts?.length ? (
               <div className="flex flex-col items-center justify-center py-10 px-4 text-center min-h-[200px]">
                 <div className="w-14 h-14 rounded-full bg-sky-100 dark:bg-sky-900/40 flex items-center justify-center mb-4">
                   <FaComments className="w-7 h-7 text-sky-600 dark:text-sky-400" />

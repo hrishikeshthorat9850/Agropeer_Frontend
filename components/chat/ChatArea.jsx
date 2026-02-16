@@ -9,8 +9,9 @@ import { Capacitor } from "@capacitor/core";
 import { useSocket } from "@/Context/SocketContext";
 import { useLanguage } from "@/Context/languagecontext";
 import { FaCommentSlash } from "react-icons/fa";
+import Skeleton from "@/components/ui/Skeleton";
 
-export default function ChatArea({ messages = [], selected, sendMessage }) {
+export default function ChatArea({ messages = [], selected, sendMessage, messagesLoading = false }) {
   const { user } = useLogin();
   const { socket } = useSocket();
   const { t } = useLanguage();
@@ -86,7 +87,20 @@ export default function ChatArea({ messages = [], selected, sendMessage }) {
             paddingBottom: "20px",
           }}
         >
-          {showClearedEmptyState ? (
+          {messagesLoading ? (
+            <div className="flex-1 p-4 space-y-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div
+                  key={i}
+                  className={`flex ${i % 2 === 0 ? "justify-end" : "justify-start"}`}
+                >
+                  <Skeleton
+                    className={`h-12 w-48 rounded-2xl ${i % 2 === 0 ? "rounded-tr-none" : "rounded-tl-none"}`}
+                  />
+                </div>
+              ))}
+            </div>
+          ) : showClearedEmptyState ? (
             <div className="flex-1 flex flex-col items-center justify-center py-12 px-4 text-center">
               <div className="w-14 h-14 rounded-full bg-sky-100 dark:bg-sky-900/40 flex items-center justify-center mb-4">
                 <FaCommentSlash className="w-7 h-7 text-sky-600 dark:text-sky-400" />
