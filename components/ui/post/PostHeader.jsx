@@ -262,6 +262,7 @@ export default function PostHeader({
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={onOptionsClick}
+                style={{ touchAction: "manipulation" }}
                 className="p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors"
               >
                 <FaEllipsisH className="w-4 h-4 dark:text-gray-300" />

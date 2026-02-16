@@ -13,8 +13,11 @@ import { styled } from "@mui/material/styles";
 import { FaEdit, FaTrashAlt, FaFlag } from "react-icons/fa";
 import { useLogin } from "@/Context/logincontext";
 import { useBackPress } from "@/Context/BackHandlerContext";
+import { Capacitor } from "@capacitor/core";
 
 const IGNORE_CLOSE_MS = 150;
+/** On Capacitor Android/iOS, ignore backdrop clicks for this long so the same tap that opened the menu doesn't close it. */
+const NATIVE_BACKDROP_IGNORE_MS = 400;
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -75,7 +78,12 @@ export default function OptionsPopup({
   }, [open]);
 
   const handleClose = (event, reason) => {
-    if (openedAtRef.current && Date.now() - openedAtRef.current < IGNORE_CLOSE_MS) {
+    const openedAgo = openedAtRef.current ? Date.now() - openedAtRef.current : Infinity;
+    // On native (Capacitor Android/iOS), the same tap that opens the menu can be reported as a backdrop click; ignore it for a short window.
+    if (reason === "backdropClick" && Capacitor.isNativePlatform() && openedAgo < NATIVE_BACKDROP_IGNORE_MS) {
+      return;
+    }
+    if (openedAgo < IGNORE_CLOSE_MS) {
       return;
     }
     onClose();

@@ -118,9 +118,12 @@ export default function AgriMarket() {
         return true;
       }
 
-      // 2. Close Detail View (navigate back to main market list)
+      // 2. Close Detail View: go to market list explicitly (Capacitor Android history can send router.back() to home)
       if (productId) {
-        router.back();
+        if (typeof sessionStorage !== "undefined") {
+          sessionStorage.setItem("marketScrollToProductId", productId);
+        }
+        router.replace("/market");
         return true;
       }
 
@@ -199,6 +202,28 @@ export default function AgriMarket() {
   useEffect(() => {
     if (!loading && user?.id) fetchFavorites();
   }, [user?.id]);
+
+  // When returning to list from product detail, scroll to the product we came from (after grid is rendered)
+  useEffect(() => {
+    if (productId || !clientLoaded) return;
+    const scrollToId =
+      typeof sessionStorage !== "undefined"
+        ? sessionStorage.getItem("marketScrollToProductId")
+        : null;
+    if (!scrollToId) return;
+    // Run when we have products so the grid is (or will be) rendered; delay so DOM is ready
+    const delayMs = products.length > 0 ? 300 : 600;
+    const t = setTimeout(() => {
+      const el = document.getElementById(`product-${scrollToId}`);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+      if (typeof sessionStorage !== "undefined") {
+        sessionStorage.removeItem("marketScrollToProductId");
+      }
+    }, delayMs);
+    return () => clearTimeout(t);
+  }, [productId, clientLoaded, products.length]);
 
   // Fetch product detail when id query param is present
   useEffect(() => {
@@ -733,7 +758,12 @@ export default function AgriMarket() {
           <div className="w-full px-1">
             <div className="flex items-center justify-between mb-6 px-4">
               <button
-                onClick={() => router.push("/market")}
+                onClick={() => {
+                  if (typeof sessionStorage !== "undefined" && productId) {
+                    sessionStorage.setItem("marketScrollToProductId", productId);
+                  }
+                  router.replace("/market");
+                }}
                 className="p-2 rounded-full bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-white hover:bg-gray-200 dark:hover:bg-white/20 transition-colors"
               >
                 <svg
@@ -985,21 +1015,22 @@ export default function AgriMarket() {
                 const isFav = favorites.includes(product.id);
 
                 return (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    isFavorite={isFav}
-                    menuOpen={menuOpen === product.id}
-                    currentUserId={user?.id}
-                    showChatButton={true}
-                    onFavoriteClick={toggleFavorite}
-                    onMenuClick={(productId) =>
-                      setMenuOpen(menuOpen === productId ? null : productId)
-                    }
-                    onEditClick={handleEditClick}
-                    onDeleteClick={handleDelete}
-                    onChatClick={handleChatClick}
-                  />
+                  <div key={product.id} id={`product-${product.id}`}>
+                    <ProductCard
+                      product={product}
+                      isFavorite={isFav}
+                      menuOpen={menuOpen === product.id}
+                      currentUserId={user?.id}
+                      showChatButton={true}
+                      onFavoriteClick={toggleFavorite}
+                      onMenuClick={(productId) =>
+                        setMenuOpen(menuOpen === productId ? null : productId)
+                      }
+                      onEditClick={handleEditClick}
+                      onDeleteClick={handleDelete}
+                      onChatClick={handleChatClick}
+                    />
+                  </div>
                 );
               })}
 
