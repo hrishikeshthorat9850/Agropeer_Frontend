@@ -137,8 +137,8 @@ export default function MobileBottomNav({ onAI }) {
           <button
             onClick={() => {
               Haptics.impact({ style: ImpactStyle.Light });
-              // ENHANCED: Use push() with smooth transition instead of router.push()
-              // PRESERVED: All other behavior unchanged (haptics, styling, etc.)
+              // Already on home: skip navigation to avoid screen flash from transition
+              if (pathname === "/") return;
               push("/");
             }}
             className="flex-1 flex flex-col items-center group"

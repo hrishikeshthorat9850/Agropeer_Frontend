@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -13,6 +13,8 @@ import { styled } from "@mui/material/styles";
 import { FaEdit, FaTrashAlt, FaFlag } from "react-icons/fa";
 import { useLogin } from "@/Context/logincontext";
 import { useBackPress } from "@/Context/BackHandlerContext";
+
+const IGNORE_CLOSE_MS = 150;
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -66,6 +68,18 @@ export default function OptionsPopup({
   post,
 }) {
   const { user } = useLogin();
+  const openedAtRef = useRef(null);
+
+  useEffect(() => {
+    if (open) openedAtRef.current = Date.now();
+  }, [open]);
+
+  const handleClose = (event, reason) => {
+    if (openedAtRef.current && Date.now() - openedAtRef.current < IGNORE_CLOSE_MS) {
+      return;
+    }
+    onClose();
+  };
 
   useBackPress(() => {
     if (open) {
@@ -80,7 +94,7 @@ export default function OptionsPopup({
       {user && (
         <StyledDialog
           open={open}
-          onClose={onClose}
+          onClose={handleClose}
           keepMounted
           TransitionComponent={Transition}
           transformOrigin={{ vertical: "top", horizontal: "right" }}

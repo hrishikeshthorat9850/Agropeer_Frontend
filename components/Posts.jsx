@@ -673,8 +673,8 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
   }, []);
 
   const onOptionsClick = useCallback(() => {
-    setShowOptions(!showOptions);
-  }, [showOptions]);
+    setShowOptions((prev) => !prev);
+  }, []);
 
   const onDelete = useCallback(async () => {
     onOptionsClick();
