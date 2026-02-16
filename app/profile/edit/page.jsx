@@ -26,7 +26,7 @@ export default function EditProfilePage() {
 
   useBackPress(
     () => {
-      router.push("/profile");
+      router.replace("/profile");
       return true;
     },
     10,

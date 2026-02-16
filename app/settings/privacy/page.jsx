@@ -34,8 +34,9 @@ export default function PrivacySettingsPage() {
 
   useBackPress(
     () => {
-      router.push("/settings");
+      router.replace("/settings");
       return true;
+      es;
     },
     10,
     true,

@@ -19,7 +19,7 @@ export default function PrivacyPolicy() {
 
   useBackPress(
     () => {
-      router.push("/settings");
+      router.replace("/settings");
       return true;
     },
     10,

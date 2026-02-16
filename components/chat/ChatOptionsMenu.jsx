@@ -51,7 +51,6 @@ function ConfirmModal({
           }}
           onMouseDown={(e) => {
             e.stopPropagation();
-            e.preventDefault();
           }}
         >
           <motion.div
@@ -63,7 +62,6 @@ function ConfirmModal({
             onClick={(e) => e.stopPropagation()}
             onMouseDown={(e) => {
               e.stopPropagation();
-              e.preventDefault();
             }}
           >
             <div
@@ -472,7 +470,10 @@ export default function ChatOptionsMenu({ conversationId }) {
           cancelLabel={t("cancel_btn") || "Cancel"}
           color="bg-red-600"
           onClose={() => setModal(null)}
-          onConfirm={() => setModal(null)}
+          onConfirm={() => {
+            setModal(null);
+            setReportReason("");
+          }}
         >
           <textarea
             value={reportReason}

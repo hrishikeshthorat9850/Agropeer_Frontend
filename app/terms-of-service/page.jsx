@@ -19,7 +19,7 @@ export default function TermsOfService() {
 
   useBackPress(
     () => {
-      router.push("/settings");
+      router.replace("/settings");
       return true;
     },
     10,
