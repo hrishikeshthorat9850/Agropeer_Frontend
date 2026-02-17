@@ -52,6 +52,7 @@ import { Capacitor } from "@capacitor/core";
 import { shareContent } from "@/utils/shareHandler";
 import { useRouter } from "next/navigation";
 import { useBackPress } from "@/Context/BackHandlerContext";
+import Portal from "@/components/ui/Portal";
 
 export default function FarmingTips() {
   const { t } = useLanguage();
@@ -951,113 +952,117 @@ export default function FarmingTips() {
       </div>
 
       {/* Tip Detail Modal - Bottom Sheet Style on Mobile */}
-      <AnimatePresence>
-        {selectedTip && (
-          <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center pointer-events-none">
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSelectedTip(null)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm pointer-events-auto"
-            />
+      <Portal>
+        <AnimatePresence>
+          {selectedTip && (
+            <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center pointer-events-none">
+              {/* Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setSelectedTip(null)}
+                className="absolute inset-0 bg-black/60 backdrop-blur-sm pointer-events-auto"
+              />
 
-            {/* Modal Content */}
-            <motion.div
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="w-full sm:w-[500px] max-h-[90vh] sm:max-h-[85vh] sm:rounded-3xl rounded-t-3xl shadow-2xl overflow-hidden pointer-events-auto flex flex-col ring-1 ring-gray-200 dark:ring-white/10 relative z-50 bg-white dark:bg-[#18181b]"
-            >
-              {/* Modal Header Image/Icon Area */}
-              <div
-                className={`h-40 ${selectedTip.bgColor} dark:bg-[#27272a] flex items-center justify-center relative shrink-0`}
+              {/* Modal Content */}
+              <motion.div
+                initial={{ y: "100%" }}
+                animate={{ y: 0 }}
+                exit={{ y: "100%" }}
+                transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                className="w-full sm:w-[500px] max-h-[90vh] sm:max-h-[85vh] sm:rounded-3xl rounded-t-3xl shadow-2xl overflow-hidden pointer-events-auto flex flex-col ring-1 ring-gray-200 dark:ring-white/10 relative z-50 bg-white dark:bg-[#18181b]"
               >
-                <div className="w-12 h-1.5 bg-black/20 dark:bg-white/20 rounded-full absolute top-3"></div>
-
-                {/* Decorative background circle */}
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/5 dark:to-black/20" />
-
+                {/* Modal Header Image/Icon Area */}
                 <div
-                  className={`w-24 h-24 bg-white dark:bg-[#2C2C2E] shadow-xl rounded-full flex items-center justify-center ${selectedTip.iconColor} relative z-10 transform translate-y-2`}
+                  className={`h-40 ${selectedTip.bgColor} dark:bg-[#27272a] flex items-center justify-center relative shrink-0`}
                 >
-                  <div className="scale-125">{selectedTip.icon}</div>
-                </div>
+                  <div className="w-12 h-1.5 bg-black/20 dark:bg-white/20 rounded-full absolute top-3"></div>
 
-                <button
-                  onClick={() => setSelectedTip(null)}
-                  className="absolute top-4 right-4 w-9 h-9 bg-white/30 hover:bg-white/50 dark:bg-black/20 dark:hover:bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center text-gray-800 dark:text-white transition-colors border border-white/20"
-                >
-                  <span className="text-xl leading-none">&times;</span>
-                </button>
-              </div>
+                  {/* Decorative background circle */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/5 dark:to-black/20" />
 
-              {/* Content Scrollable */}
-              <div className="p-6 overflow-y-auto flex-1 bg-white dark:bg-[#18181b]">
-                <div className="mb-6 text-center">
-                  <div className="flex flex-wrap gap-2 mb-4 justify-center">
-                    <span className="px-3 py-1 rounded-full bg-gray-100 dark:bg-[#27272a] text-gray-900 dark:text-white text-xs font-bold border border-gray-200 dark:border-white/10">
-                      {
-                        categories.find((c) => c.id === selectedTip.category)
-                          ?.name
-                      }
-                    </span>
-                    <span className="px-3 py-1 rounded-full bg-gray-100 dark:bg-[#27272a] text-gray-900 dark:text-white text-xs font-bold capitalize border border-gray-200 dark:border-white/10">
-                      {t(`difficulty_${selectedTip.difficulty}`)}
-                    </span>
+                  <div
+                    className={`w-24 h-24 bg-white dark:bg-[#2C2C2E] shadow-xl rounded-full flex items-center justify-center ${selectedTip.iconColor} relative z-10 transform translate-y-2`}
+                  >
+                    <div className="scale-125">{selectedTip.icon}</div>
                   </div>
-                  <h2 className="text-2xl font-bold text-black dark:text-white mb-3">
-                    {selectedTip.title}
-                  </h2>
-                  <p className="text-gray-900 dark:text-gray-200 text-base leading-relaxed font-medium">
-                    {selectedTip.description}
-                  </p>
-                </div>
 
-                <div className="bg-gray-50 dark:bg-[#27272a] rounded-2xl p-5 border border-gray-200 dark:border-white/10">
-                  <h3 className="font-bold text-black dark:text-white mb-3 text-sm uppercase tracking-wide flex items-center gap-2">
-                    <FaBookOpen className="w-4 h-4" />
-                    {t("detailed_information")}
-                  </h3>
-                  <p className="text-gray-900 dark:text-gray-200 text-sm leading-relaxed whitespace-pre-wrap font-medium">
-                    {selectedTip.details}
-                  </p>
-                </div>
-              </div>
-
-              {/* Bottom Actions Sticky */}
-              <div className="p-4 border-t border-gray-100 dark:border-white/10 bg-white dark:bg-[#18181b] shrink-0 z-20 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-                <div className="flex gap-3">
                   <button
-                    onClick={() => toggleSave(selectedTip.id)}
-                    className={`flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm transition-all active:scale-[0.98] ${
-                      savedTips.has(selectedTip.id)
-                        ? "bg-yellow-50 text-yellow-800 border border-yellow-200 dark:bg-yellow-900/40 dark:text-yellow-300 dark:border-yellow-700/50"
-                        : "bg-gray-100 text-gray-900 border border-transparent dark:bg-[#27272a] dark:text-white hover:bg-gray-200 dark:hover:bg-[#3f3f46]"
-                    }`}
+                    onClick={() => setSelectedTip(null)}
+                    className="absolute top-4 right-4 w-9 h-9 bg-white/30 hover:bg-white/50 dark:bg-black/20 dark:hover:bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center text-gray-800 dark:text-white transition-colors border border-white/20"
                   >
-                    {savedTips.has(selectedTip.id) ? (
-                      <FaBookmarkSolid className="w-4 h-4" />
-                    ) : (
-                      <FaBookmark className="w-4 h-4" />
-                    )}
-                    {savedTips.has(selectedTip.id) ? t("saved") : t("save_tip")}
-                  </button>
-                  <button
-                    onClick={() => handleShare(selectedTip)}
-                    className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm bg-farm-600 text-white hover:bg-farm-700 active:scale-[0.98] transition-all shadow-lg shadow-farm-500/20"
-                  >
-                    <FaShare className="w-4 h-4" />
-                    {t("share")}
+                    <span className="text-xl leading-none">&times;</span>
                   </button>
                 </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+
+                {/* Content Scrollable */}
+                <div className="p-6 overflow-y-auto flex-1 bg-white dark:bg-[#18181b]">
+                  <div className="mb-6 text-center">
+                    <div className="flex flex-wrap gap-2 mb-4 justify-center">
+                      <span className="px-3 py-1 rounded-full bg-gray-100 dark:bg-[#27272a] text-gray-900 dark:text-white text-xs font-bold border border-gray-200 dark:border-white/10">
+                        {
+                          categories.find((c) => c.id === selectedTip.category)
+                            ?.name
+                        }
+                      </span>
+                      <span className="px-3 py-1 rounded-full bg-gray-100 dark:bg-[#27272a] text-gray-900 dark:text-white text-xs font-bold capitalize border border-gray-200 dark:border-white/10">
+                        {t(`difficulty_${selectedTip.difficulty}`)}
+                      </span>
+                    </div>
+                    <h2 className="text-2xl font-bold text-black dark:text-white mb-3">
+                      {selectedTip.title}
+                    </h2>
+                    <p className="text-gray-900 dark:text-gray-200 text-base leading-relaxed font-medium">
+                      {selectedTip.description}
+                    </p>
+                  </div>
+
+                  <div className="bg-gray-50 dark:bg-[#27272a] rounded-2xl p-5 border border-gray-200 dark:border-white/10">
+                    <h3 className="font-bold text-black dark:text-white mb-3 text-sm uppercase tracking-wide flex items-center gap-2">
+                      <FaBookOpen className="w-4 h-4" />
+                      {t("detailed_information")}
+                    </h3>
+                    <p className="text-gray-900 dark:text-gray-200 text-sm leading-relaxed whitespace-pre-wrap font-medium">
+                      {selectedTip.details}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Bottom Actions Sticky */}
+                <div className="p-4 border-t border-gray-100 dark:border-white/10 bg-white dark:bg-[#18181b] shrink-0 z-20 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => toggleSave(selectedTip.id)}
+                      className={`flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm transition-all active:scale-[0.98] ${
+                        savedTips.has(selectedTip.id)
+                          ? "bg-yellow-50 text-yellow-800 border border-yellow-200 dark:bg-yellow-900/40 dark:text-yellow-300 dark:border-yellow-700/50"
+                          : "bg-gray-100 text-gray-900 border border-transparent dark:bg-[#27272a] dark:text-white hover:bg-gray-200 dark:hover:bg-[#3f3f46]"
+                      }`}
+                    >
+                      {savedTips.has(selectedTip.id) ? (
+                        <FaBookmarkSolid className="w-4 h-4" />
+                      ) : (
+                        <FaBookmark className="w-4 h-4" />
+                      )}
+                      {savedTips.has(selectedTip.id)
+                        ? t("saved")
+                        : t("save_tip")}
+                    </button>
+                    <button
+                      onClick={() => handleShare(selectedTip)}
+                      className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm bg-farm-600 text-white hover:bg-farm-700 active:scale-[0.98] transition-all shadow-lg shadow-farm-500/20"
+                    >
+                      <FaShare className="w-4 h-4" />
+                      {t("share")}
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+      </Portal>
     </div>
   );
 }

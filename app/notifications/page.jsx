@@ -20,6 +20,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 // This does NOT replace existing logic - it only enhances UI transitions
 import { usePageTransition } from "@/hooks/usePageTransition";
 import { useBackPress } from "@/Context/BackHandlerContext";
+import Portal from "@/components/ui/Portal";
 
 export default function NotificationsPage() {
   const { t } = useLanguage();
@@ -37,7 +38,7 @@ export default function NotificationsPage() {
   const [markingAsRead, setMarkingAsRead] = useState(false);
   const [showUndo, setShowUndo] = useState(false);
   const [lastDeleted, setLastDeleted] = useState(null);
-    const [localNotifications, setLocalNotifications] = useState([]);
+  const [localNotifications, setLocalNotifications] = useState([]);
   const [localNotificationsCount, setLocalNotificationsCount] = useState(
     localNotifications.length,
   );
@@ -65,7 +66,6 @@ export default function NotificationsPage() {
     20,
     showConfirm || showBulkConfirm,
   );
-
 
   useEffect(() => {
     if (notifications?.length) {
@@ -359,82 +359,86 @@ export default function NotificationsPage() {
         {/* -------------------------------------------------- */}
 
         {/* Delete Single Confirm */}
-        {showConfirm && (
-          <div className="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-md flex items-center justify-center z-[9999] px-4">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, rotateX: 10 }}
-              animate={{ opacity: 1, scale: 1, rotateX: 0 }}
-              className="bg-white dark:bg-[#1E1E1E] p-6 rounded-3xl shadow-2xl w-full max-w-sm border border-gray-100 dark:border-white/10"
-            >
-              <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-500 mx-auto mb-4">
-                <FaTrashAlt className="text-xl" />
-              </div>
-              <h2 className="text-xl font-black text-center text-gray-900 dark:text-white mb-2">
-                {t("delete_confirmation_title")}
-              </h2>
-              <p className="text-center text-gray-500 dark:text-gray-400 mb-8 text-sm">
-                {t("delete_confirmation_desc")}
-              </p>
+        <Portal>
+          {showConfirm && (
+            <div className="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-md flex items-center justify-center z-[9999] px-4">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, rotateX: 10 }}
+                animate={{ opacity: 1, scale: 1, rotateX: 0 }}
+                className="bg-white dark:bg-[#1E1E1E] p-6 rounded-3xl shadow-2xl w-full max-w-sm border border-gray-100 dark:border-white/10"
+              >
+                <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-500 mx-auto mb-4">
+                  <FaTrashAlt className="text-xl" />
+                </div>
+                <h2 className="text-xl font-black text-center text-gray-900 dark:text-white mb-2">
+                  {t("delete_confirmation_title")}
+                </h2>
+                <p className="text-center text-gray-500 dark:text-gray-400 mb-8 text-sm">
+                  {t("delete_confirmation_desc")}
+                </p>
 
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setShowConfirm(false)}
-                  className="flex-1 px-4 py-3.5 rounded-2xl font-bold bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
-                >
-                  {t("cancel")}
-                </button>
-                <button
-                  onClick={() => {
-                    setShowConfirm(false);
-                    handleDeleteUI(pendingDelete);
-                  }}
-                  className="flex-1 px-4 py-3.5 rounded-2xl font-bold bg-red-500 text-white shadow-lg shadow-red-500/30 hover:bg-red-600 transition-colors"
-                >
-                  {t("delete")}
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setShowConfirm(false)}
+                    className="flex-1 px-4 py-3.5 rounded-2xl font-bold bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                  >
+                    {t("cancel")}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowConfirm(false);
+                      handleDeleteUI(pendingDelete);
+                    }}
+                    className="flex-1 px-4 py-3.5 rounded-2xl font-bold bg-red-500 text-white shadow-lg shadow-red-500/30 hover:bg-red-600 transition-colors"
+                  >
+                    {t("delete")}
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </Portal>
 
         {/* Delete All Confirm */}
-        {showBulkConfirm && (
-          <div className="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-md flex items-center justify-center z-[9999] px-4">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, rotateX: 10 }}
-              animate={{ opacity: 1, scale: 1, rotateX: 0 }}
-              className="bg-white dark:bg-[#1E1E1E] p-6 rounded-3xl shadow-2xl w-full max-w-sm border border-gray-100 dark:border-white/10"
-            >
-              <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-500 mx-auto mb-4">
-                <FaTrashAlt className="text-xl" />
-              </div>
-              <h2 className="text-xl font-black text-center text-gray-900 dark:text-white mb-2">
-                {t("delete_all_confirmation_title")}
-              </h2>
-              <p className="text-center text-gray-500 dark:text-gray-400 mb-8 text-sm">
-                {t("delete_all_confirmation_desc")}
-              </p>
+        <Portal>
+          {showBulkConfirm && (
+            <div className="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-md flex items-center justify-center z-[9999] px-4">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, rotateX: 10 }}
+                animate={{ opacity: 1, scale: 1, rotateX: 0 }}
+                className="bg-white dark:bg-[#1E1E1E] p-6 rounded-3xl shadow-2xl w-full max-w-sm border border-gray-100 dark:border-white/10"
+              >
+                <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-500 mx-auto mb-4">
+                  <FaTrashAlt className="text-xl" />
+                </div>
+                <h2 className="text-xl font-black text-center text-gray-900 dark:text-white mb-2">
+                  {t("delete_all_confirmation_title")}
+                </h2>
+                <p className="text-center text-gray-500 dark:text-gray-400 mb-8 text-sm">
+                  {t("delete_all_confirmation_desc")}
+                </p>
 
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setShowBulkConfirm(false)}
-                  className="flex-1 px-4 py-3.5 rounded-2xl font-bold bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
-                >
-                  {t("cancel")}
-                </button>
-                <button
-                  onClick={() => {
-                    setShowBulkConfirm(false);
-                    tempBulkDelete();
-                  }}
-                  className="flex-1 px-4 py-3.5 rounded-2xl font-bold bg-red-500 text-white shadow-lg shadow-red-500/30 hover:bg-red-600 transition-colors"
-                >
-                  {t("delete_all")}
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setShowBulkConfirm(false)}
+                    className="flex-1 px-4 py-3.5 rounded-2xl font-bold bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                  >
+                    {t("cancel")}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowBulkConfirm(false);
+                      tempBulkDelete();
+                    }}
+                    className="flex-1 px-4 py-3.5 rounded-2xl font-bold bg-red-500 text-white shadow-lg shadow-red-500/30 hover:bg-red-600 transition-colors"
+                  >
+                    {t("delete_all")}
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </Portal>
 
         {/* Undo Toast */}
         {showUndo && (
