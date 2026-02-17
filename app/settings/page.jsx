@@ -24,6 +24,7 @@ import useToast from "@/hooks/useToast";
 import AccountDeleteModal from "@/components/ui/AccountDeleteModal";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
 import BottomSelect from "@/components/ui/BottomSelect";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -85,6 +86,17 @@ export default function SettingsPage() {
   const handleDeleteAccountClick = () => {
     setShowDeleteModal(true);
   };
+
+  // Handle back button press - navigate to home page
+  useBackPress(
+    () => {
+      triggerHaptic();
+      router.replace("/");
+      return true;
+    },
+    10,
+    true,
+  );
 
   return (
     <MobilePageContainer>
