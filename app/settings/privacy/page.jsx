@@ -22,7 +22,7 @@ import useToast from "@/hooks/useToast";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import BottomSelect from "@/components/ui/BottomSelect";
-// import { useBackPress } from "@/Context/BackHandlerContext";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function PrivacySettingsPage() {
   const router = useRouter();
@@ -32,15 +32,15 @@ export default function PrivacySettingsPage() {
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
   const { showToast } = useToast();
 
-  // useBackPress(
-  //   () => {
-  //     router.replace("/settings");
-  //     return true;
-  //       es;
-  //   },
-  //   10,
-  //   true,
-  // );
+  useBackPress(
+    () => {
+      router.replace("/settings");
+      return true;
+      es;
+    },
+    10,
+    true,
+  );
 
   // Haptic Helper
   const triggerHaptic = async () => {

@@ -11,20 +11,20 @@ import {
 import { useLanguage } from "@/Context/languagecontext";
 
 import { useRouter } from "next/navigation";
-// import { useBackPress } from "@/Context/BackHandlerContext";
+import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function TermsOfService() {
   const { language, t } = useLanguage();
   const router = useRouter();
 
-  // useBackPress(
-  //   () => {
-  //     router.replace("/settings");
-  //     return true;
-  //   },
-  //   10,
-  //   true,
-  // );
+  useBackPress(
+    () => {
+      router.replace("/settings");
+      return true;
+    },
+    10,
+    true,
+  );
 
   const sections = [
     {
