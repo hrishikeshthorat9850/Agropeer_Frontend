@@ -232,6 +232,13 @@ export default function MarketPricesPage() {
 
       {/* 🟢 Main Content Area */}
       <div className="max-w-lg mx-auto w-full">
+        {/* Data Source Disclaimer */}
+        <div className="px-4 py-2 text-center">
+          <p className="text-[12px] text-gray-500 dark:text-gray-400 italic">
+            {t("market_data_source")}
+          </p>
+        </div>
+
         {/* Market Filters (Internal Sticky) */}
         <MarketFilters
           data={displayRecords}
