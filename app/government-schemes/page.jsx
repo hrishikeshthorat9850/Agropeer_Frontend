@@ -100,7 +100,24 @@ export default function GovernmentSchemesPage() {
           return;
         }
 
-        setSchemes(data?.data || []);
+        const list = data?.data || [];
+        console.log("[GovernmentSchemes] List response:", {
+          raw: data,
+          count: list.length,
+          pagination: data?.pagination,
+          firstItem: list[0] ? { ...list[0] } : null,
+        });
+        if (list[0]) {
+          console.log("[GovernmentSchemes] First item array fields (raw strings):", {
+            benefits: list[0].benefits,
+            eligibility: list[0].eligibility,
+            documents: list[0].documents,
+            application_steps: list[0].application_steps,
+            official_links: list[0].official_links,
+            faqs: list[0].faqs,
+          });
+        }
+        setSchemes(list);
         setTotalRef.current(data?.pagination?.total || 0);
       } catch (err) {
         console.error("Unexpected error:", err);
@@ -135,7 +152,22 @@ export default function GovernmentSchemesPage() {
           setDetailError(apiError.message || "Failed to load scheme details");
           return;
         }
-        setDetailScheme(data?.data);
+        const scheme = data?.data;
+        console.log("[GovernmentSchemes] Detail response:", {
+          raw: data,
+          scheme: scheme ? { ...scheme } : null,
+        });
+        if (scheme) {
+          console.log("[GovernmentSchemes] Detail array fields (raw):", {
+            benefits: scheme.benefits,
+            eligibility: scheme.eligibility,
+            documents: scheme.documents,
+            application_steps: scheme.application_steps,
+            official_links: scheme.official_links,
+            faqs: scheme.faqs,
+          });
+        }
+        setDetailScheme(scheme);
 
         // Fetch related schemes from same category
         if (data?.data?.category) {
@@ -197,6 +229,32 @@ export default function GovernmentSchemesPage() {
     } catch {
       return typeof field === "string" ? field.split("\n").filter(Boolean) : [];
     }
+  };
+
+  /** Safely get a string for display from a list item (string or object with text/farmer/title/etc). */
+  const toDisplayString = (value) => {
+    if (value == null) return "";
+    if (typeof value === "string") return value;
+    if (typeof value !== "object") return String(value);
+    // Check common keys found in the API data structure
+    const s =
+      value.text ??
+      value.farmer ??
+      value.benefit ??
+      value.details ??
+      value.step ??
+      value.document ??
+      value.doc ??
+      value.criteria ??
+      value.question ??
+      value.answer ??
+      value.title ??
+      value.label ??
+      value.name ??
+      value.description ??
+      value.q ??
+      value.a;
+    return typeof s === "string" ? s : "";
   };
 
   const handleSearch = (query) => {
@@ -370,9 +428,7 @@ export default function GovernmentSchemesPage() {
                         ✓
                       </span>
                       <span className="text-farm-700 dark:text-gray-300 flex-1">
-                        {typeof benefit === "string"
-                          ? benefit
-                          : benefit.text || benefit}
+                        {toDisplayString(benefit)}
                       </span>
                     </li>
                   ))}
@@ -398,7 +454,7 @@ export default function GovernmentSchemesPage() {
                         •
                       </span>
                       <span className="text-farm-700 dark:text-gray-300 flex-1">
-                        {typeof item === "string" ? item : item.text || item}
+                        {toDisplayString(item)}
                       </span>
                     </li>
                   ))}
@@ -425,7 +481,7 @@ export default function GovernmentSchemesPage() {
                         •
                       </span>
                       <span className="text-farm-700 dark:text-gray-300 flex-1">
-                        {typeof doc === "string" ? doc : doc.text || doc}
+                        {toDisplayString(doc)}
                       </span>
                     </li>
                   ))}
@@ -448,7 +504,7 @@ export default function GovernmentSchemesPage() {
                 <ol className="space-y-3 list-decimal list-inside">
                   {applicationSteps.map((step, idx) => (
                     <li key={idx} className="text-farm-700 dark:text-gray-300">
-                      {typeof step === "string" ? step : step.text || step}
+                      {toDisplayString(step)}
                     </li>
                   ))}
                 </ol>
@@ -480,7 +536,7 @@ export default function GovernmentSchemesPage() {
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 px-4 py-2 bg-farm-500 hover:bg-farm-600 text-white rounded-lg transition-colors dark:bg-farm-600 dark:hover:bg-farm-500"
                       >
-                        <span>{linkObj.text || linkObj.url || link}</span>
+                        <span>{toDisplayString(linkObj.text) || linkObj.url || (typeof link === "string" ? link : "")}</span>
                         <FaExternalLinkAlt className="w-4 h-4" />
                       </a>
                     );
@@ -506,8 +562,8 @@ export default function GovernmentSchemesPage() {
                       typeof faq === "string"
                         ? { question: faq, answer: "" }
                         : {
-                            question: faq.question || faq.q || "",
-                            answer: faq.answer || faq.a || "",
+                            question: toDisplayString(faq.question ?? faq.q),
+                            answer: toDisplayString(faq.answer ?? faq.a),
                           };
                     return (
                       <div
