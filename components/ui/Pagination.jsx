@@ -64,20 +64,23 @@ export default function Pagination({
   const pageNumbers = getPageNumbers();
 
   return (
-    <div className={`flex items-center justify-center gap-2 ${className}`}>
+    <div
+      className={`flex items-center justify-center gap-1 sm:gap-2 ${className}`}
+    >
       {/* Previous Button */}
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => onPageChange(currentPage - 1)}
         disabled={!hasPreviousPage}
-        className={`flex items-center gap-1 px-4 py-2 rounded-lg font-medium transition-all ${hasPreviousPage
-          ? "bg-farm-500 text-white hover:bg-farm-600"
-          : "bg-gray-200 text-gray-400 cursor-not-allowed"
-          }`}
+        className={`flex items-center gap-1 px-2 py-1 sm:px-4 sm:py-2 rounded-lg font-medium transition-all ${
+          hasPreviousPage
+            ? "bg-farm-500 text-white hover:bg-farm-600"
+            : "bg-gray-200 text-gray-400 cursor-not-allowed"
+        }`}
       >
-        <FaChevronLeft className="w-4 h-4" />
-        {t("ui_pagination_prev")}
+        <FaChevronLeft className="w-4 h-5 sm:w-4 sm:h-4" />
+        <span className="hidden sm:inline">{t("ui_pagination_prev")}</span>
       </motion.button>
 
       {/* Page Numbers */}
@@ -85,7 +88,10 @@ export default function Pagination({
         {pageNumbers.map((pageNum, index) => {
           if (pageNum === "...") {
             return (
-              <span key={`ellipsis-${index}`} className="px-2 text-gray-400">
+              <span
+                key={`ellipsis-${index}`}
+                className="px-1 sm:px-2 text-gray-400 text-xs sm:text-base"
+              >
                 ...
               </span>
             );
@@ -99,10 +105,11 @@ export default function Pagination({
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => onPageChange(pageNum)}
-              className={`w-10 h-10 rounded-lg font-medium transition-all ${isActive
-                ? "bg-farm-600 text-white shadow-lg"
-                : "bg-white text-farm-700 hover:bg-farm-50 border border-farm-200"
-                }`}
+              className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg font-medium text-sm sm:text-base transition-all ${
+                isActive
+                  ? "bg-farm-600 text-white shadow-lg"
+                  : "bg-white text-farm-700 hover:bg-farm-50 border border-farm-200"
+              }`}
             >
               {pageNum}
             </motion.button>
@@ -116,15 +123,15 @@ export default function Pagination({
         whileTap={{ scale: 0.95 }}
         onClick={() => onPageChange(currentPage + 1)}
         disabled={!hasNextPage}
-        className={`flex items-center gap-1 px-4 py-2 rounded-lg font-medium transition-all ${hasNextPage
-          ? "bg-farm-500 text-white hover:bg-farm-600"
-          : "bg-gray-200 text-gray-400 cursor-not-allowed"
-          }`}
+        className={`flex items-center gap-1 px-2 py-1 sm:px-4 sm:py-2 rounded-lg font-medium transition-all ${
+          hasNextPage
+            ? "bg-farm-500 text-white hover:bg-farm-600"
+            : "bg-gray-200 text-gray-400 cursor-not-allowed"
+        }`}
       >
-        {t("ui_pagination_next")}
-        <FaChevronRight className="w-4 h-4" />
+        <span className="hidden sm:inline">{t("ui_pagination_next")}</span>
+        <FaChevronRight className="w-4 h-5 sm:w-4 sm:h-4" />
       </motion.button>
     </div>
   );
 }
-
