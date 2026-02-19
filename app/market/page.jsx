@@ -756,7 +756,7 @@ export default function AgriMarket() {
       <MobilePageContainer noPadding>
         <div className="w-full flex flex-col items-center justify-start dark:bg-[#0a0a0a] py-6">
           <div className="w-full px-1">
-            <div className="flex items-center justify-between mb-6 px-4">
+            <div className="flex items-center mb-6 px-4">
               <button
                 onClick={() => {
                   if (typeof sessionStorage !== "undefined" && productId) {
