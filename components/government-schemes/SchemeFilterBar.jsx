@@ -3,6 +3,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/Context/languagecontext";
 import { FaFilter, FaTimes } from "react-icons/fa";
+import BottomSelect from "@/components/ui/BottomSelect";
 
 const CATEGORIES = [
   "All",
@@ -94,43 +95,22 @@ export default function SchemeFilterBar({
         <div className="w-px h-6 bg-gray-300 dark:bg-white/20 mx-1 flex-shrink-0" />
 
         {/* State Dropdown as Chip */}
-        <div className="relative flex-shrink-0">
-          <select
+        <div className="relative flex-shrink-0 min-w-[160px]">
+          <BottomSelect
             value={selectedState || "All States"}
-            onChange={(e) =>
-              onStateChange(
-                e.target.value === "All States" ? null : e.target.value,
-              )
-            }
-            className={`appearance-none pl-4 pr-8 py-2 rounded-full text-sm font-bold transition-all duration-300 border cursor-pointer focus:outline-none ${
+            onChange={(val) => onStateChange(val === "All States" ? null : val)}
+            options={INDIAN_STATES.map((state) => ({
+              label: t(`state_${state.replace(/\s+/g, "_")}`) || state,
+              value: state,
+            }))}
+            className="!space-y-0"
+            triggerClassName={`!py-2 !rounded-full !text-sm !font-bold !border ${
               selectedState
-                ? "bg-farm-600 text-white border-farm-600 shadow-lg shadow-farm-500/30"
-                : "bg-white dark:bg-[#1E1E1E] text-gray-600 dark:text-gray-300 border-gray-200 dark:border-white/10 hover:border-farm-300"
+                ? "!bg-farm-600 !text-white !border-farm-600 !shadow-lg !shadow-farm-500/30"
+                : "!bg-white dark:!bg-[#1E1E1E] !text-gray-600 dark:!text-gray-300 !border-gray-200 dark:!border-white/10 hover:!border-farm-300"
             }`}
-          >
-            {INDIAN_STATES.map((state) => (
-              <option
-                key={state}
-                value={state}
-                className="bg-white text-gray-900 dark:bg-[#1E1E1E] dark:text-gray-200"
-              >
-                {t(`state_${state.replace(/\s+/g, "_")}`) || state}
-              </option>
-            ))}
-          </select>
-          <div
-            className={`absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none ${
-              selectedState ? "text-white" : "text-gray-500"
-            }`}
-          >
-            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
+            placeholder={t("select_state") || "Select State"}
+          />
         </div>
       </div>
     </div>
