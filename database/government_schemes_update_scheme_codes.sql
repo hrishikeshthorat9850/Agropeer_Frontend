@@ -1,0 +1,54 @@
+-- Update existing English records with scheme_code
+-- Run this AFTER government_schemes_add_language.sql (columns language, scheme_code exist)
+-- Only updates rows where scheme_code is NULL or empty
+
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'pm-kisan-samman-nidhi' WHERE title = 'PM-Kisan Samman Nidhi' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'pmfby' WHERE title = 'Pradhan Mantri Fasal Bima Yojana (PMFBY)' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'kisan-credit-card' WHERE title = 'Kisan Credit Card (KCC)' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'agriculture-infrastructure-fund' WHERE title = 'Agriculture Infrastructure Fund (AIF)' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'pm-kisan-maan-dhan' WHERE title = 'Pradhan Mantri Kisan Maan Dhan Yojana (PM-KMY)' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'soil-health-card' WHERE title = 'Soil Health Card Scheme' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'e-nam' WHERE title = 'National Agriculture Market (e-NAM)' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'rkvy' WHERE title = 'Rashtriya Krishi Vikas Yojana (RKVY)' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'pkvy' WHERE title = 'Paramparagat Krishi Vikas Yojana (PKVY)' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'nfsm' WHERE title = 'National Food Security Mission (NFSM)' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'pmksy' WHERE title = 'Pradhan Mantri Krishi Sinchai Yojana (PMKSY)' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'midh' WHERE title = 'Mission for Integrated Development of Horticulture (MIDH)' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'nmoop' WHERE title = 'National Mission on Oilseeds and Oil Palm (NMOOP)' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'nmsa' WHERE title = 'National Mission for Sustainable Agriculture (NMSA)' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'smam' WHERE title = 'Sub-Mission on Agricultural Mechanization (SMAM)' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'nlm' WHERE title = 'National Livestock Mission (NLM)' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'nbhm' WHERE title = 'National Beekeeping and Honey Mission (NBHM)' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'pmmsy' WHERE title = 'Pradhan Mantri Matsya Sampada Yojana (PMMSY)' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'nbm' WHERE title = 'National Bamboo Mission (NBM)' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'nmeo-op' WHERE title = 'National Mission on Edible Oils - Oil Palm (NMEO-OP)' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'rythu-bandhu' WHERE title = 'Rythu Bandhu Scheme' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'ysr-rythu-bharosa' WHERE title = 'YSR Rythu Bharosa' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'kalia' WHERE title = 'Krushak Assistance for Livelihood and Income Augmentation (KALIA)' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'mukhyamantri-krishi-ashirwad' WHERE title = 'Mukhyamantri Krishi Ashirwad Yojana' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'bhavantar-bharpai' WHERE title = 'Bhavantar Bharpai Yojana' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'krishi-bhagya' WHERE title = 'Krishi Bhagya' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'biju-krushak-kalyan' WHERE title = 'Biju Krushak Kalyan Yojana' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'krishak-bandhu' WHERE title = 'Krishak Bandhu' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'gujarat-krishi-mahotsav' WHERE title = 'Gujarat Krishi Mahotsav' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'up-krishi-yojana' WHERE title = 'UP Krishi Yojana' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'rajasthan-krishi-yojana' WHERE title = 'Rajasthan Krishi Yojana' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'maharashtra-shetkari-yojana' WHERE title = 'Maharashtra Shetkari Yojana' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'bihar-beej-yojana' WHERE title = 'Bihar Beej Yojana' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'punjab-crop-diversification' WHERE title = 'Punjab Crop Diversification' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'assam-samagra-gramya' WHERE title = 'Assam Chief Minister Samagra Gramya' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'kerala-karshaka-kshema' WHERE title = 'Kerala Karshaka Kshema' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'uzhavar-pathukappu' WHERE title = 'Uzhavar Pathukappu Thittam' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'mukhyamantri-krishi-sinchai' WHERE title = 'Mukhyamantri Krishi Sinchai' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'bhavantar-mp' WHERE title = 'Bhavantar Yojana MP' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'rajiv-gandhi-kisan-nyay' WHERE title = 'Rajiv Gandhi Kisan Nyay Yojana' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'annadata-sukhibhava' WHERE title = 'Annadata Sukhibhava' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'nmsa-rad' WHERE title = 'National Mission for Sustainable Agriculture - Rainfed Area Development' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'pm-kusum' WHERE title = 'Pradhan Mantri Kisan Urja Suraksha evam Utthaan Mahabhiyan (PM-KUSUM)' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'nmmi' WHERE title = 'National Mission on Micro Irrigation' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'nmaet' WHERE title = 'National Mission on Agricultural Extension and Technology' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'nmspm' WHERE title = 'National Mission on Seed and Planting Material' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'nmam' WHERE title = 'National Mission on Agricultural Marketing' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'nmop' WHERE title = 'National Mission on Oil Palm' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'nmps' WHERE title = 'National Mission on Protein Supplements' AND (scheme_code IS NULL OR scheme_code = '');
+UPDATE public.government_schemes SET language = 'en', scheme_code = 'nmab' WHERE title = 'National Mission on Agricultural Biosecurity' AND (scheme_code IS NULL OR scheme_code = '');

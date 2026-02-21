@@ -233,8 +233,8 @@ export default function MarketPricesPage() {
       {/* 🟢 Main Content Area */}
       <div className="max-w-lg mx-auto w-full">
         {/* Data Source Disclaimer */}
-        <div className="px-4 py-2 text-center bg-green-50">
-          <p className="text-[12px] text-gray-500 dark:text-gray-400 italic">
+        <div className="mx-4 mt-3 mb-1 rounded-xl border border-emerald-100/80 bg-gradient-to-r from-emerald-50/90 to-green-50/90 px-4 py-3 dark:border-white/10 dark:from-emerald-950/30 dark:to-emerald-950/20 dark:shadow-none shadow-sm">
+          <p className="text-center text-xs font-medium tracking-wide text-emerald-800/90 dark:text-emerald-200/90">
             {t("market_data_source")}
           </p>
         </div>

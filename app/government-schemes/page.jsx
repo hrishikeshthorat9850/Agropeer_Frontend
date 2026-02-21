@@ -32,7 +32,7 @@ import { useLanguage } from "@/Context/languagecontext";
 import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function GovernmentSchemesPage() {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const router = useRouter();
   const searchParams = useSearchParams();
   const selectedSchemeId = searchParams.get("id");
@@ -90,6 +90,7 @@ export default function GovernmentSchemesPage() {
         if (searchQuery) params.append("search", searchQuery);
         if (selectedCategory) params.append("category", selectedCategory);
         if (selectedState) params.append("state", selectedState);
+        params.append("language", locale);
 
         const { data, error: apiError } = await apiRequest(
           `${BASE_URL}/api/government-schemes?${params.toString()}`,
@@ -126,7 +127,7 @@ export default function GovernmentSchemesPage() {
         setLoading(false);
       }
     },
-    [pagination.limit, searchQuery, selectedCategory, selectedState],
+    [pagination.limit, searchQuery, selectedCategory, selectedState, locale],
   );
 
   useEffect(() => {
@@ -169,12 +170,15 @@ export default function GovernmentSchemesPage() {
         }
         setDetailScheme(scheme);
 
-        // Fetch related schemes from same category
+        // Fetch related schemes from same category and language
         if (data?.data?.category) {
+          const relatedParams = new URLSearchParams({
+            category: data.data.category,
+            limit: "4",
+            language: locale,
+          });
           const { data: relatedData } = await apiRequest(
-            `${BASE_URL}/api/government-schemes?category=${encodeURIComponent(
-              data.data.category,
-            )}&limit=4`,
+            `${BASE_URL}/api/government-schemes?${relatedParams.toString()}`,
           );
           setRelatedSchemes(
             (relatedData?.data || [])
@@ -192,7 +196,7 @@ export default function GovernmentSchemesPage() {
       }
     };
     fetchSchemeDetails();
-  }, [selectedSchemeId]);
+  }, [selectedSchemeId, locale]);
 
   const handleShare = (scheme) => {
     if (Capacitor.isNativePlatform()) {
