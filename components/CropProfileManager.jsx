@@ -394,6 +394,7 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return;
     setLoading(true);
 
     const currentUserId = user?.id;
@@ -563,6 +564,7 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
       notes: pickCropValue(crop, "notes", "notes", ""),
     });
     setShowAddForm(true);
+    window.scrollTo({ top: 200, behavior: "smooth" });
   };
 
   const handleDelete = async (cropId) => {
@@ -1114,10 +1116,15 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                     {t("cancel_btn")}
                   </button>
                   <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileHover={!loading ? { scale: 1.05 } : {}}
+                    whileTap={!loading ? { scale: 0.95 } : {}}
                     type="submit"
-                    className="px-6 py-3 bg-gradient-to-r from-farm-500 to-farm-700 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
+                    disabled={loading}
+                    className={`px-6 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 flex items-center gap-2 ${
+                      loading
+                        ? "bg-gray-400 text-white cursor-not-allowed opacity-70"
+                        : "bg-gradient-to-r from-farm-500 to-farm-700 text-white hover:shadow-xl"
+                    }`}
                   >
                     <FaCheck className="w-4 h-4" />
                     {editingCrop ? t("update_crop_btn") : t("add_crop_btn")}
