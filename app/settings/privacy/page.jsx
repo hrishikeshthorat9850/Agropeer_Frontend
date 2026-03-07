@@ -36,7 +36,6 @@ export default function PrivacySettingsPage() {
     () => {
       router.replace("/settings");
       return true;
-      es;
     },
     10,
     true,

@@ -12,6 +12,7 @@ import {
   ChevronRight,
   ShieldAlert,
   Settings,
+  FileText,
 } from "lucide-react";
 import { FaShieldAlt, FaFileContract, FaCookie } from "react-icons/fa";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
@@ -335,7 +336,7 @@ export default function SettingsPage() {
                   triggerHaptic();
                   router.push("/cookie-policy");
                 }}
-                className="flex items-center justify-between gap-3 p-4 active:bg-gray-50 dark:active:bg-[#2C2C2E] transition-colors cursor-pointer"
+                className="flex items-center justify-between gap-3 p-4 active:bg-gray-50 dark:active:bg-[#2C2C2E] transition-colors cursor-pointer border-b border-gray-100 dark:border-[#2C2C2E]"
               >
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   <div className="p-2 rounded-full bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400">
@@ -344,6 +345,30 @@ export default function SettingsPage() {
                   <div className="flex flex-col">
                     <span className="text-base font-medium text-gray-900 dark:text-white truncate">
                       {t("cookie_policy")}
+                    </span>
+                  </div>
+                </div>
+                <ChevronRight size={20} className="text-gray-400" />
+              </div>
+
+              {/* Delete account information (Google Play data safety) */}
+              <div
+                onClick={() => {
+                  triggerHaptic();
+                  router.push("/delete-account-info");
+                }}
+                className="flex items-center justify-between gap-3 p-4 active:bg-gray-50 dark:active:bg-[#2C2C2E] transition-colors cursor-pointer"
+              >
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="p-2 rounded-full bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400">
+                    <FileText size={20} strokeWidth={2} />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-base font-medium text-gray-900 dark:text-white truncate">
+                      {t("delete_account_info")}
+                    </span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1">
+                      {t("delete_account_info_title")}
                     </span>
                   </div>
                 </div>
