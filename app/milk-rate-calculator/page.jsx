@@ -24,6 +24,7 @@ import { apiRequest } from "@/utils/apiHelpers";
 import { formatDistanceToNow } from "date-fns";
 
 import { useLanguage } from "@/Context/languagecontext";
+import { dateFormat } from "@/utils/dateFormat.js";
 
 export default function MilkRateDashboardPage() {
   const { t } = useLanguage();
@@ -210,13 +211,7 @@ export default function MilkRateDashboardPage() {
 
       return {
         relative: formatDistanceToNow(date, { addSuffix: true }),
-        full: date.toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
+        full: dateFormat(dateString),
       };
     } catch {
       return fallback;
@@ -461,7 +456,7 @@ export default function MilkRateDashboardPage() {
                           className="flex items-center justify-between p-3 bg-gray-50 dark:bg-white/5 rounded-lg text-sm"
                         >
                           <div className="text-gray-500">
-                            {new Date(rate.created_at).toLocaleDateString()}
+                            {dateFormat(rate.created_at)}
                           </div>
                           <div className="font-bold text-gray-900 dark:text-white">
                             ₹

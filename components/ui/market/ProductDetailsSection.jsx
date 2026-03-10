@@ -1,6 +1,7 @@
 "use client";
 import { FaTag, FaList, FaCalendarAlt, FaMapMarkerAlt } from "react-icons/fa";
 import { useLanguage } from "@/Context/languagecontext";
+import { dateFormat } from "@/utils/dateFormat.js";
 
 export default function ProductDetailsSection({ product }) {
   const { t } = useLanguage();
@@ -51,13 +52,7 @@ export default function ProductDetailsSection({ product }) {
               {t("label_listed_on")}
             </p>
             <p className="font-semibold text-[#1b2e1b] dark:text-gray-200">
-              {product.date
-                ? new Date(product.date).toLocaleDateString("en-IN", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                })
-                : "-"}
+              {product.date ? dateFormat(product.date) : "-"}
             </p>
           </div>
         </div>

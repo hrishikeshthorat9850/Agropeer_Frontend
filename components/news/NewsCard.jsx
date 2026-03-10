@@ -6,6 +6,7 @@ import { FaArrowRight, FaTag, FaCalendar } from "react-icons/fa";
 import { formatDistanceToNow } from "date-fns";
 
 import { useLanguage } from "@/Context/languagecontext";
+import { dateFormat } from "@/utils/dateFormat.js";
 
 export default function NewsCard({ article, index = 0 }) {
   const { t } = useLanguage();
@@ -17,7 +18,7 @@ export default function NewsCard({ article, index = 0 }) {
       return formatDistanceToNow(date, { addSuffix: true });
     } catch {
       try {
-        return new Date(dateString).toLocaleDateString();
+        return dateFormat(dateString);
       } catch {
         return t("recently");
       }

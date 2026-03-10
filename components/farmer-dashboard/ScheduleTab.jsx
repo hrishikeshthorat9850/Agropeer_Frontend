@@ -14,6 +14,7 @@ import {
   FaFilter,
 } from "react-icons/fa";
 import { useLanguage } from "@/Context/languagecontext";
+import { dateFormat } from "@/utils/dateFormat.js";
 
 const typeMeta = {
   irrigation: { icon: FaTint, color: "from-cyan-400 to-cyan-600" },
@@ -219,12 +220,7 @@ const ScheduleTab = ({ data, loading, error }) => {
               <div className="flex items-center gap-3 mb-4">
                 <FaCalendarAlt className="text-purple-500" />
                 <h3 className="text-xl font-bold text-farm-900 dark:text-white">
-                  {new Date(date).toLocaleDateString("en-US", {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
+                  {dateFormat(date)}
                 </h3>
                 <span className="px-3 py-1 bg-purple-100 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 rounded-full text-sm font-medium">
                   {tasksByDate[date].length} {tasksByDate[date].length === 1 ? t("task") || "task" : t("tasks") || "tasks"}

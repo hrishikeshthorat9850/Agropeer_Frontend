@@ -30,6 +30,7 @@ import { Capacitor } from "@capacitor/core";
 import { shareContent } from "@/utils/shareHandler";
 import { useLanguage } from "@/Context/languagecontext";
 import { useBackPress } from "@/Context/BackHandlerContext";
+import { dateFormat } from "@/utils/dateFormat.js";
 export default function NewsPage() {
   const { t } = useLanguage();
   const router = useRouter();
@@ -189,13 +190,7 @@ export default function NewsPage() {
       const date = new Date(dateString);
       return {
         relative: formatDistanceToNow(date, { addSuffix: true }),
-        full: date.toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
+        full: dateFormat(dateString),
       };
     } catch {
       return {

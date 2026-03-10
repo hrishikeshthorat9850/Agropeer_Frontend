@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useView } from "@/Context/ViewContext";
 import Image from "next/image";
 import Link from "next/link";
+import { dateFormat } from "@/utils/dateFormat.js";
 
 export default function News() {
   const { view, setView } = useView();
@@ -57,7 +58,7 @@ export default function News() {
                   priority={article.id}
                 />
                 <div className="absolute top-2 right-2 bg-black/50 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded-md">
-                  {new Date(article.date).toLocaleDateString()}
+                  {dateFormat(article.date)}
                 </div>
               </div>
               <div className="p-4 flex flex-col h-[140px]">

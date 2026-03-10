@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { useLanguage } from "@/Context/languagecontext";
+import { dateFormat } from "@/utils/dateFormat.js";
 
 export default function DateSeparator({ date }) {
   const { t } = useLanguage();
@@ -19,11 +20,7 @@ export default function DateSeparator({ date }) {
     if (diffDays < 7) {
       return msgDate.toLocaleDateString("en-US", { weekday: "long" });
     }
-    return msgDate.toLocaleDateString("en-GB", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
+    return dateFormat(inputDate);
   };
 
   return (

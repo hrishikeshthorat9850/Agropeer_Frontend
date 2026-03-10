@@ -9,7 +9,7 @@ import {
   FaFileContract,
 } from "react-icons/fa";
 import { useLanguage } from "@/Context/languagecontext";
-
+import { dateFormat } from "@/utils/dateFormat.js";
 import { useRouter } from "next/navigation";
 import { useBackPress } from "@/Context/BackHandlerContext";
 
@@ -110,14 +110,7 @@ export default function TermsOfService() {
           </h1>
           <p className="text-farm-700 text-lg dark:text-gray-300">
             {t("last_updated")}:{" "}
-            {new Date().toLocaleDateString(
-              language === "hi"
-                ? "hi-IN"
-                : language === "mr"
-                ? "mr-IN"
-                : "en-US",
-              { year: "numeric", month: "long", day: "numeric" },
-            )}
+            {dateFormat(new Date())}
           </p>
           <p className="text-farm-600 mt-2 dark:text-gray-400">
             {t("terms_intro_text")}

@@ -8,6 +8,7 @@ import {
   FaShieldAlt,
 } from "react-icons/fa";
 import { useBackPress } from "@/Context/BackHandlerContext";
+import { dateFormat } from "@/utils/dateFormat.js";
 
 export default function PestDetailModal({ pest, onClose }) {
   useBackPress(
@@ -25,7 +26,7 @@ export default function PestDetailModal({ pest, onClose }) {
   if (!pest) return null;
 
   const detectedAt = pest.detectedAt
-    ? new Date(pest.detectedAt).toLocaleString()
+    ? dateFormat(pest.detectedAt)
     : "recent telemetry";
 
   return (

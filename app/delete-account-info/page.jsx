@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useBackPress } from "@/Context/BackHandlerContext";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
+import { dateFormat } from "@/utils/dateFormat.js";
 
 export default function DeleteAccountInfoPage() {
   const { t } = useLanguage();
@@ -93,11 +94,7 @@ export default function DeleteAccountInfoPage() {
             </p>
             <p className="text-gray-500 dark:text-gray-500 text-xs mt-2">
               {t("last_updated")}:{" "}
-              {new Date().toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
+              {dateFormat(new Date())}
             </p>
           </motion.div>
 

@@ -16,6 +16,7 @@ import {
 import { ReviewSkeleton } from "@/components/skeletons";
 import { useLanguage } from "@/Context/languagecontext";
 import useToast from "@/hooks/useToast";
+import { dateFormat } from "@/utils/dateFormat.js";
 
 export default function ReviewsPage() {
   const { t } = useLanguage();
@@ -189,7 +190,7 @@ export default function ReviewsPage() {
     if (diffDays < 365)
       return `${Math.floor(diffDays / 30)} ${t("date_months_ago")}`;
 
-    return date.toLocaleDateString();
+    return dateFormat(date);
   };
 
   return (

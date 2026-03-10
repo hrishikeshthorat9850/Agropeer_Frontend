@@ -1,3 +1,5 @@
+import { dateFormat } from "./dateFormat.js";
+
 export function formatLastSeen(timestamp) {
   const date = new Date(timestamp);
   const now = new Date();
@@ -17,7 +19,7 @@ export function formatLastSeen(timestamp) {
     return `yesterday at ${date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
   }
 
-  return date.toLocaleDateString() +
+  return dateFormat(date) +
     " " +
     date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }

@@ -24,7 +24,8 @@ import { supabase } from "@/lib/supabaseClient";
 import useToast from "@/hooks/useToast";
 import { useLanguage } from "@/Context/languagecontext";
 import BottomSelect from "./ui/BottomSelect";
-
+import { DatePickerField } from "./ui/DatePickerModal";
+import { dateFormat } from "@/utils/dateFormat.js";
 const priceLookup = {
   Cereal: 22,
   Millet: 18,
@@ -44,17 +45,6 @@ const addDays = (dateString, days) => {
   if (Number.isNaN(base.getTime())) return null;
   base.setDate(base.getDate() + days);
   return base.toISOString().split("T")[0];
-};
-
-const formatDateForDisplay = (dateString) => {
-  if (!dateString) return "—";
-  const date = new Date(dateString);
-  if (Number.isNaN(date.getTime())) return "—";
-  return new Intl.DateTimeFormat("en-IN", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  }).format(date);
 };
 
 const findCropInfo = (cropName) => {
@@ -218,7 +208,7 @@ const defaultFormState = {
 const createInitialFormState = () => ({ ...defaultFormState });
 const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
   const { user, accessToken } = useLogin();
-  const { t,locale,DEFAULT_LOCALE } = useLanguage();
+  const { t, locale, DEFAULT_LOCALE } = useLanguage();
   const { showToast } = useToast();
   const [crops, setCrops] = useState([]);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -894,13 +884,13 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                   <label className="block text-sm font-semibold text-farm-700 dark:text-gray-300 mb-2">
                     {t("planting_date_label")}
                   </label>
-                  <input
-                    type="date"
-                    name="plantingDate"
+                  <DatePickerField
                     value={formData.plantingDate}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full p-3 rounded-xl border text-farm-500 dark:text-gray-100 border-farm-200 dark:border-gray-700 bg-white dark:bg-[#2C2C2C] focus:outline-none focus:ring-2 focus:ring-farm-400 dark:focus:ring-emerald-500/50"
+                    onChange={(iso) =>
+                      setFormData((prev) => ({ ...prev, plantingDate: iso }))
+                    }
+                    placeholder="dd-mm-yyyy"
+                    title={t("planting_date_label")}
                   />
                 </div>
 
@@ -1054,7 +1044,7 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                     {[
                       {
                         label: t("expected_harvest_label"),
-                        value: formatDateForDisplay(
+                        value: dateFormat(
                           calculatedData.expected_harvest ||
                             displayData.expectedHarvest,
                         ),
@@ -1062,7 +1052,7 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                       },
                       {
                         label: t("fertilization_label"),
-                        value: formatDateForDisplay(
+                        value: dateFormat(
                           calculatedData.next_fertilization_date ||
                             displayData.nextFertilizationDate,
                         ),
@@ -1241,9 +1231,7 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                   <FaCalendarAlt className="w-4 h-4 text-gray-400 dark:text-gray-500" />
                   <span>
                     {t("planted_label")}{" "}
-                    {plantingDate
-                      ? new Date(plantingDate).toLocaleDateString()
-                      : "—"}
+                    {plantingDate ? dateFormat(plantingDate) : "—"}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -1298,7 +1286,7 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                     <FaClock className="w-4 h-4 text-gray-400 dark:text-gray-500" />
                     <span>
                       {t("next_fertilization_label")}{" "}
-                      {new Date(nextFertilization).toLocaleDateString()}
+                      {dateFormat(nextFertilization)}
                     </span>
                   </div>
                 )}

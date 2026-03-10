@@ -2,9 +2,8 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { FaArrowRight, FaCalendar, FaTag } from "react-icons/fa";
-import { formatDistanceToNow } from "date-fns";
-
 import { useLanguage } from "@/Context/languagecontext";
+import { dateFormat } from "@/utils/dateFormat.js";
 
 export default function MilkCompanyCard({ company, index = 0 }) {
   const { t } = useLanguage();
@@ -23,7 +22,7 @@ export default function MilkCompanyCard({ company, index = 0 }) {
     try {
       const date = new Date(dateString);
       if (isNaN(date.getTime())) return t("recent");
-      return formatDistanceToNow(date, { addSuffix: true });
+      return dateFormat(dateString);
     } catch {
       return t("recent");
     }

@@ -27,6 +27,7 @@ import {
   Wheat,
 } from "lucide-react";
 import { useLanguage } from "@/Context/languagecontext";
+import { dateFormat } from "@/utils/dateFormat.js";
 import { useLocation, LOCATION } from "./mobile/hooks/useLocation";
 import { openAppSettings } from "./mobile/utils/openAppSettings";
 import WeatherSkeleton from "@/components/skeletons/WeatherSkeleton";
@@ -230,21 +231,10 @@ export default function WeatherForecast() {
     fetchWeatherApi(position.latitude, position.longitude);
   }, [position?.latitude, position?.longitude, loading, error]);
 
-  // Helper to format date based on language
+  // Format date as dd-mm-yyyy everywhere
   const formatDate = (isoString) => {
     if (!isoString) return "";
-    const date = new Date(isoString);
-    const locale =
-      currentLanguage === "hi"
-        ? "hi-IN"
-        : currentLanguage === "mr"
-        ? "mr-IN"
-        : "en-US";
-    return date.toLocaleDateString(locale, {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-    });
+    return dateFormat(isoString);
   };
 
   // Render loading/error states or the main UI

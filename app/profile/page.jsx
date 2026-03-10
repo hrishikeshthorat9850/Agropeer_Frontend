@@ -20,7 +20,8 @@ import { useLanguage } from "@/Context/languagecontext";
 import { ProfileSkeleton } from "@/components/skeletons";
 import { supabase } from "@/lib/supabaseClient";
 import MobilePageContainer from "@/components/mobile/MobilePageContainer";
-import {shareContent} from "@/utils/shareHandler"
+import {shareContent} from "@/utils/shareHandler";
+import { dateFormat } from "@/utils/dateFormat.js";
 // ADDITIVE ENHANCEMENT: Import back transition hook for smooth UI transitions
 // This does NOT replace existing logic - it only enhances UI transitions
 import { useBackTransition } from "@/hooks/useBackTransition";
@@ -412,7 +413,7 @@ export default function ProfilePage() {
                   </p>
                   <p className="text-sm font-medium text-gray-900 dark:text-white">
                     {visitorInfo?.created_at
-                      ? new Date(visitorInfo.created_at).toLocaleDateString()
+                      ? dateFormat(visitorInfo.created_at)
                       : t("not_added")}
                   </p>
                 </div>
@@ -652,7 +653,7 @@ export default function ProfilePage() {
                 </p>
                 <p className="text-sm font-medium text-gray-900 dark:text-white">
                   {user?.created_at
-                    ? new Date(user.created_at).toLocaleDateString()
+                    ? dateFormat(user.created_at)
                     : "-"}
                 </p>
               </div>

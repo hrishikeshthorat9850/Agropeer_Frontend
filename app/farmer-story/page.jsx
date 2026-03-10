@@ -15,11 +15,11 @@ function formatDateTime(ts) {
   const d = new Date(ts);
   const dd = String(d.getDate()).padStart(2, "0");
   const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const yy = String(d.getFullYear()).slice(-2);
+  const yyyy = d.getFullYear();
   const hh = String(d.getHours()).padStart(2, "0");
   const mi = String(d.getMinutes()).padStart(2, "0");
   const ss = String(d.getSeconds()).padStart(2, "0");
-  return { date: `${dd}/${mm}/${yy}`, time: `${hh}:${mi}:${ss}` };
+  return { date: `${dd}-${mm}-${yyyy}`, time: `${hh}:${mi}:${ss}` };
 }
 
 export default function FarmerStoryPage() {

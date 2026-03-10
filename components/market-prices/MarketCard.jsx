@@ -9,6 +9,7 @@ import {
 } from "react-icons/fa";
 import { useLanguage } from "@/Context/languagecontext";
 import { CROP_TRANSLATIONS } from "@/lib/cropTranslations";
+import { dateFormat } from "@/utils/dateFormat.js";
 
 export default function MarketCard({ data }) {
   const { t, locale } = useLanguage();
@@ -58,15 +59,15 @@ export default function MarketCard({ data }) {
       maximumFractionDigits: 0,
     }).format(price);
 
-  // Format date
+  // Format date as dd-mm-yyyy (arrival_date may be "dd/mm/yyyy" or ISO)
   const formatDate = (dateString) => {
-    const [day, month, year] = dateString.split("/");
-    const date = new Date(`${year}-${month}-${day}`);
-    return date.toLocaleDateString("en-IN", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
+    if (!dateString) return "—";
+    if (dateString.includes("/")) {
+      const [day, month, year] = dateString.split("/");
+      const date = new Date(`${year}-${month}-${day}`);
+      return isNaN(date.getTime()) ? "—" : dateFormat(date);
+    }
+    return dateFormat(dateString);
   };
 
   return (

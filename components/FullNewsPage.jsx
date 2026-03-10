@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabaseClient";
 import LoadingSpinner from "./LoadingSpinner";
 import Image from "next/image";
 import { useLanguage } from "@/Context/languagecontext";
+import { dateFormat } from "@/utils/dateFormat.js";
 
 export default function FullNewsPage() {
   const searchParams = useSearchParams();
@@ -79,7 +80,7 @@ export default function FullNewsPage() {
           <div className="flex items-center gap-3 text-white/90 text-sm font-medium">
             <span className="flex items-center gap-1.5">
               {article.date
-                ? new Date(article.date).toLocaleDateString()
+                ? dateFormat(article.date)
                 : "Recently"}
             </span>
           </div>
