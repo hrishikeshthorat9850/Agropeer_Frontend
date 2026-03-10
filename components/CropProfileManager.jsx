@@ -18,7 +18,7 @@ import {
   FaClock,
   FaWater,
 } from "react-icons/fa";
-import { CROP_DATABASE } from "../data/CROP_DATABASE";
+import { CROP_DATABASE } from "../data/CROP_DATABASE.multi.js";
 import Select from "react-select";
 import { supabase } from "@/lib/supabaseClient";
 import useToast from "@/hooks/useToast";
@@ -224,7 +224,6 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingCrop, setEditingCrop] = useState(null);
   const [loading, setLoading] = useState(false);
-
   // Load crops for this user when component mounts or user changes
   useEffect(() => {
     if (!user?.id) return;
@@ -603,8 +602,8 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
     const crop = Object.values(CROP_DATABASE).find((c) => c.name === cropType);
     return crop?.name || cropType;
   };
-
-  const cropOptions = Object.values(CROP_DATABASE)
+  const userLanguage = user?.user_metadata?.language;
+  const cropOptions = Object.values(CROP_DATABASE[userLanguage])
     .filter(
       (crop, index, self) =>
         index === self.findIndex((c) => c.name === crop.name),

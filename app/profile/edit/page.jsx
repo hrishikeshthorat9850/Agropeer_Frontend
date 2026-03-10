@@ -16,14 +16,14 @@ import { useBackTransition } from "@/hooks/useBackTransition";
 import { useBackPress } from "@/Context/BackHandlerContext";
 
 export default function EditProfilePage() {
-  const { user } = useLogin();
+  const { user,userinfo } = useLogin();
   const router = useRouter();
   // ADDITIVE ENHANCEMENT: Get back transition handler
   // Original router.back() still available, this adds smooth transitions
   const { routerBack } = useBackTransition();
   const { t } = useLanguage();
   const { showToast } = useToast();
-
+  console.log("Userinfo is :",userinfo);
   useBackPress(
     () => {
       router.replace("/profile");
@@ -55,14 +55,14 @@ export default function EditProfilePage() {
   useEffect(() => {
     if (user) {
       setFormData({
-        full_name: user?.user_metadata?.full_name || "",
-        phone: user?.user_metadata?.phone || "",
+        full_name: user?.user_metadata?.full_name || userinfo?.firstName + " " + userinfo?.lastName,
+        phone: user?.user_metadata?.phone || userinfo?.mobile,
         location: user?.user_metadata?.location || "",
         bio: user?.user_metadata?.bio || "",
       });
       // Set initial preview
       setPreviewUrl(
-        user?.user_metadata?.avatar_url || user?.user_metadata?.avatar || null,
+        user?.user_metadata?.avatar_url || user?.user_metadata?.avatar || userinfo?.avatar_url || userinfo?.profile_url,
       );
     }
   }, [user]);
@@ -151,6 +151,7 @@ export default function EditProfilePage() {
       setLoading(false);
     }
   };
+
   return (
     <MobilePageContainer noPadding>
       <div className="bg-white dark:bg-black font-sans">

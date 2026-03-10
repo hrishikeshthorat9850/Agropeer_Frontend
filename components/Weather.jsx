@@ -106,7 +106,7 @@ export default function WeatherForecast() {
         wind: data.windspeed ? `${data.windspeed.toFixed(1)} km/h` : "N/A",
         humidity: data.humidity ? `${data.humidity}%` : "N/A",
         sunrise: (() => {
-          if (!data.sunrise) return "—";
+          if (!data?.sunrise) return "—";
           try {
             const date = new Date(data.sunrise);
             if (isNaN(date.getTime())) return "—";
@@ -615,10 +615,10 @@ export default function WeatherForecast() {
                 </div>
 
                 {/* 3. BOTTOM SECTION: Sunrise & Sunset Container */}
-                <div className="px-6 pb-6">
-                  <div className="bg-gray-50 dark:bg-white/5 rounded-2xl py-4 px-4 flex items-center justify-between">
+                {/* <div className="px-6 pb-6"> */}
+                  {/* <div className="bg-gray-50 dark:bg-white/5 rounded-2xl py-4 px-4 flex items-center justify-between"> */}
                     {/* Sunrise */}
-                    <div className="flex flex-col items-center flex-1">
+                    {/* <div className="flex flex-col items-center flex-1">
                       <div className="flex items-center gap-1.5 mb-1 opacity-70">
                         <FaSun className="text-amber-500 text-xs" />
                         <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
@@ -626,15 +626,15 @@ export default function WeatherForecast() {
                         </span>
                       </div>
                       <span className="text-sm font-bold text-gray-700 dark:text-white">
-                        {weather.sunrise}
+                        {weather?.sunrise}
                       </span>
-                    </div>
+                    </div> */}
 
                     {/* Divider */}
-                    <div className="w-px h-8 bg-gray-200 dark:bg-white/10 mx-2" />
+                    {/* <div className="w-px h-8 bg-gray-200 dark:bg-white/10 mx-2" /> */}
 
                     {/* Sunset */}
-                    <div className="flex flex-col items-center flex-1">
+                    {/* <div className="flex flex-col items-center flex-1">
                       <div className="flex items-center gap-1.5 mb-1 opacity-70">
                         <FaSun className="text-orange-500 text-xs" />
                         <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
@@ -644,9 +644,9 @@ export default function WeatherForecast() {
                       <span className="text-sm font-bold text-gray-700 dark:text-white">
                         {weather.sunset}
                       </span>
-                    </div>
-                  </div>
-                </div>
+                    </div> */}
+                  {/* </div> */}
+                {/* </div> */}
               </div>
 
               {/* Integrated Location Controls in Simple View - Keep these as fallback below card */}

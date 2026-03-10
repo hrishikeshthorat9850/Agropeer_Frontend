@@ -27,7 +27,6 @@ export function WeatherProvider({ children }) {
       });
 
       const data = await res.json();
-
       if (!res.ok) {
         const errorMsg = data.error || "Failed Fetch Weather";
         setError(errorMsg);
