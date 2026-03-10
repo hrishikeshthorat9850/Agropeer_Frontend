@@ -218,7 +218,7 @@ const defaultFormState = {
 const createInitialFormState = () => ({ ...defaultFormState });
 const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
   const { user, accessToken } = useLogin();
-  const { t } = useLanguage();
+  const { t,locale,DEFAULT_LOCALE } = useLanguage();
   const { showToast } = useToast();
   const [crops, setCrops] = useState([]);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -602,7 +602,7 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
     const crop = Object.values(CROP_DATABASE).find((c) => c.name === cropType);
     return crop?.name || cropType;
   };
-  const userLanguage = user?.user_metadata?.language;
+  const userLanguage = locale || DEFAULT_LOCALE;
   const cropOptions = Object.values(CROP_DATABASE[userLanguage])
     .filter(
       (crop, index, self) =>
