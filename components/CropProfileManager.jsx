@@ -26,6 +26,7 @@ import { useLanguage } from "@/Context/languagecontext";
 import BottomSelect from "./ui/BottomSelect";
 import { DatePickerField } from "./ui/DatePickerModal";
 import { dateFormat } from "@/utils/dateFormat.js";
+import Link from "next/link";
 const priceLookup = {
   Cereal: 22,
   Millet: 18,
@@ -629,14 +630,14 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
           {t("my_crop_profiles")}
         </h2>
 
-        <motion.button
+        {/* <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={() => setShowAddForm(true)}
           className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white rounded-xl text-sm md:text-base font-bold shadow-lg shadow-green-500/30 hover:shadow-green-500/40 transition-all transform hover:scale-[1.02] active:scale-[0.98] border border-white/10"
         >
           <FaPlus className="text-[14px]" />
           {t("add_crop_btn")}
-        </motion.button>
+        </motion.button> */}
       </div>
 
       {/* Add/Edit Form */}
@@ -1344,10 +1345,10 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => setShowAddForm(true)}
+            onClick={() => user && setShowAddForm(true)}
             className="px-6 py-3 bg-gradient-to-r from-farm-500 to-farm-700 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
           >
-            {t("add_first_crop_btn")}
+            {user ? t("add_first_crop_btn") : <Link href="/login">{t("login")}</Link>}
           </motion.button>
         </motion.div>
       )}
