@@ -232,7 +232,7 @@ export default function MobileNavbar() {
         </div> */}
 
         {/* RIGHT SIDE ICONS */}
-        <div className="flex items-center gap-1 flex-shrink-0">
+        <div className="flex items-center gap-1.5 flex-shrink-0">
           {/* Notifications */}
 
           <Link
