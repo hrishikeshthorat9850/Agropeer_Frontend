@@ -1027,10 +1027,10 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                           <Icon className="w-4 h-4 text-farm-600" />
                         </div>
                         <div>
-                          <p className="text-xs uppercase tracking-wider text-farm-500">
+                          <p className="text-xs uppercase tracking-wider text-farm-500 dark:text-white">
                             {label}
                           </p>
-                          <p className="text-base font-semibold text-farm-900">
+                          <p className="text-base font-semibold text-farm-900 dark:text-white">
                             {formatDisplayValue(value)}
                           </p>
                         </div>
