@@ -326,24 +326,34 @@ export default function ProfilePage() {
                         followClick ? t("following") : t("follow")
                       )}
                     </button> */}
-                    <button
-                      disabled
-                      className="flex-1 h-10 rounded-lg font-semibold text-sm text-white 
-                                bg-green-600 shadow-lg shadow-green-600/20
-                                opacity-60 cursor-not-allowed"
-                    >
-                      {t("follow")}
-                    </button>
+                    <div className="relative flex-1">
+                      <button
+                        disabled
+                        className="w-full h-10 rounded-lg font-semibold text-sm text-white 
+                                  bg-green-600 shadow-lg shadow-green-600/20
+                                  opacity-60 cursor-not-allowed"
+                      >
+                        {t("follow")}
+                      </button>
+                      <span className="absolute -top-2.5 -right-2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full border-2 border-white dark:border-black shadow-sm z-10 whitespace-nowrap pointer-events-none">
+                        Coming Soon
+                      </span>
+                    </div>
 
-                    <button 
-                      className="flex-1 h-10 bg-gray-100 dark:bg-[#1C1C1E] 
-                                rounded-lg font-semibold text-sm 
-                                text-gray-400 dark:text-gray-500 
-                                cursor-not-allowed opacity-60"
-                      disabled
-                    >
-                      {t("message_btn")}
-                    </button>
+                    <div className="relative flex-1">
+                      <button 
+                        className="w-full h-10 bg-gray-100 dark:bg-[#1C1C1E] 
+                                  rounded-lg font-semibold text-sm 
+                                  text-gray-400 dark:text-gray-500 
+                                  cursor-not-allowed opacity-60"
+                        disabled
+                      >
+                        {t("message_btn")}
+                      </button>
+                      <span className="absolute -top-2.5 -right-2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full border-2 border-white dark:border-black shadow-sm z-10 whitespace-nowrap pointer-events-none">
+                        Coming Soon
+                      </span>
+                    </div>
                   </>
                 )}
                 <button className="h-10 w-10 bg-gray-100 dark:bg-[#1C1C1E] rounded-lg flex items-center justify-center text-gray-900 dark:text-white active:scale-[0.98] transition-transform">

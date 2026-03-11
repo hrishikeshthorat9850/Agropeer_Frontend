@@ -643,14 +643,14 @@ export default function GovernmentSchemesPage() {
             </div>
 
             {/* Horizontal Scrollable Filters */}
-            <div className="bg-gray-50/95 dark:bg-black/95 backdrop-blur-sm py-2 px-4 border-b border-gray-100 dark:border-white/5">
+            {/* <div className="bg-gray-50/95 dark:bg-black/95 backdrop-blur-sm py-2 px-4 border-b border-gray-100 dark:border-white/5">
               <SchemeFilterBar
                 onCategoryChange={handleCategoryChange}
                 onStateChange={handleStateChange}
                 selectedCategory={selectedCategory}
                 selectedState={selectedState}
               />
-            </div>
+            </div> */}
           </div>
         </div>
 
