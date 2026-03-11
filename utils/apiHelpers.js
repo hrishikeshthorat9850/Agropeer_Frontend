@@ -16,7 +16,7 @@ export function getApiBaseUrl() {
   // Server-side: construct absolute URL
   return process.env.BASE_URL || process.env.NEXT_PUBLIC_APP_URL 
     || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null)
-    || 'http://localhost:3000';
+    || 'http://localhost:3000' || 'http://localhost:8000';
 }
 
 /**
