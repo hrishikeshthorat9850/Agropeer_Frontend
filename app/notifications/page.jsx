@@ -161,11 +161,12 @@ export default function NotificationsPage() {
     }
   };
 
-  const handleNotificationClick = (notification) => {
+  const handleNotificationClick = async (notification) => {
     if (notification.link) {
       // ENHANCED: Use push() with smooth transition instead of router.push()
       // PRESERVED: All other behavior unchanged (link validation, etc.)
       push(notification.link);
+      await markSingleNotificationAsRead(notification?.id)
     }
   };
 
