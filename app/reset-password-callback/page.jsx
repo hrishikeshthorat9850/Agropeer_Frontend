@@ -21,7 +21,6 @@ export default function ResetPasswordCallback() {
 
         // Get the current URL with hash/query params
         const currentUrl = window.location.href;
-        console.log("Reset password callback URL:", currentUrl);
 
         // Extract hash from URL if present (Supabase uses hash for tokens)
         const hashIndex = currentUrl.indexOf("#");
@@ -46,13 +45,11 @@ export default function ResetPasswordCallback() {
           // On mobile app (Capacitor), redirect to deep link with hash/query params
           // This allows the MobileResetPasswordHandler to process it
           const deepLinkUrl = `agropeer://reset-password${queryParams}${hash}`;
-          console.log("Redirecting to deep link from app:", deepLinkUrl);
 
           // Try to close browser if open
           try {
             await Browser.close();
           } catch {
-            console.log("Browser already closed or not open");
           }
 
           // Small delay to ensure browser closes before redirect
@@ -64,13 +61,11 @@ export default function ResetPasswordCallback() {
           // On mobile browser (not in app), redirect to deep link
           // This will open the app if installed
           const deepLinkUrl = `agropeer://reset-password${queryParams}${hash}`;
-          console.log("Redirecting to deep link from mobile browser:", deepLinkUrl);
 
           if (isAndroid) {
             // Use Intent URL format for Android browsers (more reliable)
             // This will open the app if installed, or fallback to Play Store
             const intentUrl = `intent://reset-password${queryParams}${hash}#Intent;scheme=agropeer;package=com.hrishikesh.agrogram;end`;
-            console.log("Using Android Intent URL:", intentUrl);
             window.location.replace(intentUrl);
 
             // Fallback: try direct deep link after a delay

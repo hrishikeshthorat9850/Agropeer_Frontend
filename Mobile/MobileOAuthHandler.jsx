@@ -11,8 +11,6 @@ export function MobileOAuthHandler() {
 
   useEffect(() => {
     const handleAppUrl = async ({ url }) => {
-      console.log("🔥 appUrlOpen fired");
-      console.log("URL:", url);
 
       // Check if this is an OAuth callback
       const isOAuthCallback =
@@ -31,7 +29,6 @@ export function MobileOAuthHandler() {
           try {
             await Browser.close();
           } catch (e) {
-            console.log("Browser already closed or not open");
           }
 
           // Wait a moment for the URL to be fully processed
@@ -145,7 +142,6 @@ export function MobileOAuthHandler() {
           }
 
           // Success - redirect to home
-          console.log("✅ OAuth login successful, redirecting to home");
           router.push("/");
         } catch (err) {
           console.error("OAuth handler error:", err);

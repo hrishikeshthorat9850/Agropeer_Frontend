@@ -37,8 +37,6 @@ export default function ForgotPasswordPage() {
         ? "agropeer://reset-password" // Android app (deep link)
         : `${window.location.origin}/reset-password`; // Web & localhost
 
-      console.log("Reset password redirect URL:", redirectTo);
-
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo,
       });

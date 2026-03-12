@@ -29,9 +29,6 @@ export default function EditPostModal({
   const textareaRef = useRef(null);
 
   const MAX_IMAGES = 12;
-  useEffect(() => {
-    console.log("post is :", post);
-  }, []);
 
   useEffect(() => {
     if (isOpen) {

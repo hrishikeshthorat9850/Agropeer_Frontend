@@ -90,7 +90,6 @@ export default function NotificationsPage() {
       });
       if (!response.ok) console.error("Error in notification delete api");
       const data = await response.json();
-      console.log("deleted notification is", data);
     } catch (e) {
       console.error("Error in catch block delete notification", e);
     }
@@ -118,9 +117,8 @@ export default function NotificationsPage() {
         body: JSON.stringify(payload),
       });
       const data = await response.json();
-      console.log("Data is", data);
     } catch (e) {
-      console.log("Error in frontend");
+      console.error("Error in frontend");
     }
   };
 

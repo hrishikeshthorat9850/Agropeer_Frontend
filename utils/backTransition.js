@@ -429,7 +429,6 @@ export function initBackTransition() {
   // 3. The popstate listener was causing the enter animation to fire twice
   // If needed for browser back button (non-Capacitor), handle it separately
 
-  console.log("[backTransition] Initialized");
 }
 
 // Auto-initialize if in browser

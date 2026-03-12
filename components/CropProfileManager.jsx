@@ -577,7 +577,6 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
       setCrops((prev) => prev.filter((crop) => crop.id !== cropId));
       showToast("success", t("delete_success"));
     } catch (e) {
-      console.log("Error is :", e);
       showToast("error", "Failed to delete crop. Please try again.");
     } finally {
       setLoading(false);

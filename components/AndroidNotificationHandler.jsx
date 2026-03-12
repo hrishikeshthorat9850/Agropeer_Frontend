@@ -108,15 +108,10 @@ export default function AndroidNotificationHandler() {
 
   useEffect(() => {
     if (!nativeToken) return;
-    console.log(
-      "✅ Native FCM token ready:",
-      nativeToken.substring(0, 24) + "…"
-    );
   }, [nativeToken]);
 
   useEffect(() => {
     if (!isAndroid) return;
-    console.log("📲 Native push permission:", permission);
   }, [isAndroid, permission]);
 
   return null;

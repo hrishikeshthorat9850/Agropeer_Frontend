@@ -24,12 +24,6 @@ export default function ChatHeader({ selected }) {
     });
   }, [onlineUsers, lastSeen, selected?.id]);
 
-  useEffect(() => {
-    console.log("onlineUsers are :", onlineUsers);
-    console.log("lastSeen is :", lastSeen);
-    console.log("Selected is :", selected);
-  }, [selected]);
-
   if (!selected) {
     return (
       <div

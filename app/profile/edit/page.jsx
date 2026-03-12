@@ -23,7 +23,6 @@ export default function EditProfilePage() {
   const { routerBack } = useBackTransition();
   const { t } = useLanguage();
   const { showToast } = useToast();
-  console.log("Userinfo is :",userinfo);
   useBackPress(
     () => {
       router.replace("/profile");

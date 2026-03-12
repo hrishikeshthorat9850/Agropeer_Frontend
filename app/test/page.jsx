@@ -11,7 +11,6 @@ export default function Test(){
         },
         body: JSON.stringify({ trigger: "manual" }),
         });
-        console.log("Response is :",res.json());
     }
     return(
         <button 

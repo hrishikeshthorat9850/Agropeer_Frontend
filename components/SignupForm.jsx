@@ -76,13 +76,11 @@ export default function SignupForm() {
     e.preventDefault();
     setErrorMsg("");
     setLoading(true);
-    console.log("Signup FOrmData is :", form);
     try {
       const { data, error } = await supabase.auth.signUp({
         email: form.email,
         password: form.password,
       });
-      console.log("Error in signup is :", error);
       if (error) throw error;
       if (!data?.user?.id) throw new Error(t("user_id_missing"));
 

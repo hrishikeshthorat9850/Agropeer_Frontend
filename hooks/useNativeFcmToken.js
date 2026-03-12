@@ -22,7 +22,6 @@ async function registerNativeToken(token, userId, accessToken) {
     if (!response.ok) {
       console.warn("⚠️ Failed to register native FCM token");
     } else {
-      console.log("✅ Native FCM token registered with backend");
     }
   } catch (error) {
     console.error("❌ Error registering native FCM token:", error);
@@ -53,7 +52,6 @@ export default function useNativeFcmToken(options = {}) {
         }
 
         let permStatus = await PushNotifications.checkPermissions();
-        console.log("Permission Status is :",permStatus);
         let receiveState = permStatus.receive;
         if (receiveState !== "granted") {
           permStatus = await PushNotifications.requestPermissions();
@@ -75,7 +73,6 @@ export default function useNativeFcmToken(options = {}) {
           await PushNotifications.addListener("registration", async (tokenResult) => {
             if (!isMounted) return;
             const nativeToken = tokenResult.value;
-            console.log("🔍 TEST_TRACE [useNativeFcmToken]: Received Token", nativeToken);
             setToken(nativeToken);
             await registerNativeToken(nativeToken, user?.id, accessToken);
           })
@@ -89,7 +86,6 @@ export default function useNativeFcmToken(options = {}) {
 
         listenerHandles.push(
           await PushNotifications.addListener("pushNotificationReceived", (notification) => {
-            console.log("📨 Native push notification received:", notification);
             if (onMessage) {
               onMessage(notification);
             }
@@ -98,7 +94,6 @@ export default function useNativeFcmToken(options = {}) {
 
         listenerHandles.push(
           await PushNotifications.addListener("pushNotificationActionPerformed", (notification) => {
-            console.log("👆 Native push action performed:", notification);
 
             if (onAction) {
               onAction(notification);

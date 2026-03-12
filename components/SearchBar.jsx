@@ -51,8 +51,6 @@ export default function SearchBar({ inline = false }) {
     try {
       const res = await fetch(`${BASE_URL}/api/search?q=${encodeURIComponent(trimmed)}`);
       const result = await res.json();
-      console.log("Search results are :", result);
-      console.log("First result structure:", result.results?.[0]);
       setSearchResults(result.results || []);
       const newRecent = [trimmed, ...recentSearches.filter((s) => s !== trimmed)].slice(0, 5);
       setRecentSearches(newRecent);

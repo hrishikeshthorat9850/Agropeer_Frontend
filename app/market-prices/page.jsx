@@ -80,11 +80,9 @@ export default function MarketPricesPage() {
       Array.isArray(statesData.states)
     ) {
       setAllStates(statesData.states);
-      console.log(`✅ Loaded ${statesData.states.length} states`);
     } else if (statesData?.states && Array.isArray(statesData.states)) {
       // Fallback if success flag is missing
       setAllStates(statesData.states);
-      console.log(`✅ Loaded ${statesData.states.length} states (fallback)`);
     }
   }, [statesData]);
 
@@ -121,11 +119,6 @@ export default function MarketPricesPage() {
   // Update accumulated records when data changes
   useEffect(() => {
     if (data?.data) {
-      console.log(
-        `📊 Market prices data received: ${
-          data.data.length
-        } records (page ${page}, total: ${data.total || 0})`,
-      );
       setAllRecords((prev) => {
         if (page === 1) {
           return data.data;

@@ -77,13 +77,10 @@ export default function FavoritesPage() {
             .in("id", productIds)
         : { data: [] },
     ]);
-    console.log("postsData are :", postsData);
-    console.log("Products data are :", productsData);
     const combined = [
       ...(postsData.data || []).map((p) => ({ ...p, type: "post" })),
       ...(productsData.data || []).map((p) => ({ ...p, type: "product" })),
     ];
-    console.log("Combined are :", combined);
     setFavorites(combined);
     setLoading(false);
   };

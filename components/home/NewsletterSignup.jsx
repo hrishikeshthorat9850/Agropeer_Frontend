@@ -37,7 +37,6 @@ const NewsletterSignup = () => {
         console.error("Supabase function error:", data);
         alert(t("subscription_failed") + (data.error || "Unknown error"));
       } else {
-        console.log("Subscribed successfully:", data);
         setIsSubscribed(true);
         setTimeout(() => setIsSubscribed(false), 3000);
       }

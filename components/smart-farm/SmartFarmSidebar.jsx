@@ -27,7 +27,6 @@ export default function SmartFarmSidebar({ activeView, setActiveView }) {
     setActiveView(item.id);
     // In a real app, you would navigate to different pages
     // router.push(item.path);
-    console.log(`Navigating to ${item.label}`);
   };
 
   return (

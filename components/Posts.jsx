@@ -482,11 +482,9 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
 
     // 📌 Utility returned results - you just respond:
     if (result.platform === "native") {
-      console.log("✔ Shared via native bottom sheet");
     }
 
     if (result.platform === "web") {
-      console.log("🌍 Shared via browser share dialog");
     }
 
     if (result.platform === "copy") {
