@@ -469,11 +469,9 @@ export default function ProfilePage() {
       route: "profile",
     });
     if (result.platform === "native") {
-      console.log("✔ Shared via native bottom sheet");
     }
 
     if (result.platform === "web") {
-      console.log("🌍 Shared via browser share dialog");
     }
 
     if (result.platform === "copy") {
@@ -483,7 +481,6 @@ export default function ProfilePage() {
     if (!result.success) {
       return;
     }
-    console.log("Share response is :", share);
   };
 
   return (

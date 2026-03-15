@@ -9,7 +9,6 @@ export default function OpenRedirectPage() {
 
   
   useEffect(() => {
-    console.log("🚀 /open page EXECUTED!");
     const type = params.get("type");
     const id = params.get("id");
 

@@ -102,22 +102,6 @@ export default function GovernmentSchemesPage() {
         }
 
         const list = data?.data || [];
-        console.log("[GovernmentSchemes] List response:", {
-          raw: data,
-          count: list.length,
-          pagination: data?.pagination,
-          firstItem: list[0] ? { ...list[0] } : null,
-        });
-        if (list[0]) {
-          console.log("[GovernmentSchemes] First item array fields (raw strings):", {
-            benefits: list[0].benefits,
-            eligibility: list[0].eligibility,
-            documents: list[0].documents,
-            application_steps: list[0].application_steps,
-            official_links: list[0].official_links,
-            faqs: list[0].faqs,
-          });
-        }
         setSchemes(list);
         setTotalRef.current(data?.pagination?.total || 0);
       } catch (err) {
@@ -154,20 +138,6 @@ export default function GovernmentSchemesPage() {
           return;
         }
         const scheme = data?.data;
-        console.log("[GovernmentSchemes] Detail response:", {
-          raw: data,
-          scheme: scheme ? { ...scheme } : null,
-        });
-        if (scheme) {
-          console.log("[GovernmentSchemes] Detail array fields (raw):", {
-            benefits: scheme.benefits,
-            eligibility: scheme.eligibility,
-            documents: scheme.documents,
-            application_steps: scheme.application_steps,
-            official_links: scheme.official_links,
-            faqs: scheme.faqs,
-          });
-        }
         setDetailScheme(scheme);
 
         // Fetch related schemes from same category and language
@@ -207,11 +177,9 @@ export default function GovernmentSchemesPage() {
         route: "government-schemes",
       });
       if (result.platform === "native") {
-        console.log("✔ Shared via native bottom sheet");
       }
 
       if (result.platform === "web") {
-        console.log("🌍 Shared via browser share dialog");
       }
 
       if (result.platform === "copy") {

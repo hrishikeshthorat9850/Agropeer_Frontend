@@ -39,10 +39,6 @@ export default function FullNewsPage() {
     fetchFullNews();
   }, [id]);
 
-  useEffect(() => {
-    console.log("Full Single News is :", article);
-  }, []);
-
   // Detail view (standalone)
 
   if (loading) {

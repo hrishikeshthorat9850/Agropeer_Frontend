@@ -16,7 +16,6 @@ export default function News() {
       const jsonData = await res.json();
       setNews(jsonData.articles);
       localStorage.setItem("articles", JSON.stringify(jsonData.articles));
-      console.log(jsonData.articles);
     } catch (err) {
       console.error("Error fetching news:", err);
     }

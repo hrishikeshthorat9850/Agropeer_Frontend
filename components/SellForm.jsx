@@ -501,7 +501,6 @@ export default function SellForm({
     setLLoading(true);
     setProgress(0);
     try {
-      console.log("User id is :", user?.id);
       const uploadedUrls = await uploadPhotosToSupabase();
       const listingPayload = {
         user_id: user?.id,

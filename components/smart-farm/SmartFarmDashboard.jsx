@@ -403,7 +403,6 @@ export default function SmartFarmDashboard() {
           task={selectedTask}
           onClose={() => setSelectedTask(null)}
           onComplete={(taskId) => {
-            console.log("Task completed:", taskId);
             setSelectedTask(null);
           }}
         />

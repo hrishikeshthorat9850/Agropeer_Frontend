@@ -12,7 +12,6 @@ export function MobileResetPasswordHandler() {
   useEffect(() => {
 
     const handleResetPassword = async ({ url }) => {
-      console.log("🔑 Deep link received:", url);
 
       // 1. Check if it's a reset password link (agropeer://reset-password OR agropeer://reset-password-callback)
       //    Supabase might redirect to the callback URL which then redirects to the app scheme
@@ -50,13 +49,11 @@ export function MobileResetPasswordHandler() {
 
         if (code) {
           // 4a. Handle PKCE Flow
-          console.log("🔄 Detected PKCE code. Exchanging for session...");
           const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
           if (exchangeError) throw exchangeError;
           sessionData = data.session;
         } else if (hash && hash.includes("access_token")) {
           // 4b. Handle Implicit Flow
-          console.log("🔄 Detected Implicit flow tokens in hash.");
           // Parse hash manually
           const hashParams = new URLSearchParams(hash.substring(1)); // remove #
           const access_token = hashParams.get("access_token");
@@ -80,7 +77,6 @@ export function MobileResetPasswordHandler() {
         }
 
         if (sessionData) {
-          console.log("✅ Session established via Deep Link.");
           router.push("/reset-password");
         } else {
           console.warn("⚠️ No session established from link.");

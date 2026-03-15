@@ -20,7 +20,6 @@ export default function AuthCallback() {
 
         // Get the current URL with hash/query params
         const currentUrl = window.location.href;
-        console.log("Callback URL:", currentUrl);
 
         // Extract hash from URL if present (Supabase uses hash for tokens)
         const hashIndex = currentUrl.indexOf("#");
@@ -103,7 +102,6 @@ export default function AuthCallback() {
         }
 
         // Success - redirect to home
-        console.log("✅ OAuth callback successful");
         router.replace("/");
       } catch (err) {
         console.error("Auth callback error:", err);

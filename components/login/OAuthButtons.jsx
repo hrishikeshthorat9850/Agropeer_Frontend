@@ -38,10 +38,6 @@ export default function OAuthButtons() {
           ? "agropeer://login-callback"
           : `${window.location.origin}/auth/callback`;
       }
-
-      console.log("OAuth started. Native:", isNative);
-      console.log("Redirect URL:", redirectTo);
-
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {

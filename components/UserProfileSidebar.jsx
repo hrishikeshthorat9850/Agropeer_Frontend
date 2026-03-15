@@ -56,15 +56,6 @@ export default function UserSidebar({ onClose } = {}) {
   );
 
   useEffect(() => {
-    console.log("User is :", user);
-    console.log("Userinfo is :", userinfo);
-    console.log(
-      "Google Avatar Url is :",
-      user?.identities[0]?.identity_data?.avatar_url,
-    );
-  });
-
-  useEffect(() => {
     setMounted(true);
     if (!loading) setInfoLoading(false);
     return () => setMounted(false);

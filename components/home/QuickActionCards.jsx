@@ -43,19 +43,15 @@ const QuickActionCards = () => {
   const handleQuickActionButton = (title) => {
     switch (title) {
       case "View Weather":
-        console.log("Weather button clicked");
         router.push("/weather");
         break;
       case "View Prices":
         router.push("/market-prices");
-        console.log("Prices button clicked");
         break;
       case "Get Tips":
         router.push("/explore");
-        console.log("Tips button clicked");
         break;
       default:
-        console.log("Unknown action");
     }
   };
 

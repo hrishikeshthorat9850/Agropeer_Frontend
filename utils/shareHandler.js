@@ -19,7 +19,6 @@ export async function shareContent({ title, text, id,route }) {
 
     return { success: true };
   } catch (err) {
-    console.log("❌ Share Error:", err);
     return { success: false, error: err.message };
   }
 }

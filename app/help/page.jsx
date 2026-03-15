@@ -49,7 +49,6 @@ export default function HelpSupport() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Support Message Sent:", formData);
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 3000);
     setFormData({ name: "", email: "", message: "" });

@@ -538,7 +538,6 @@ export default function AgriMarket() {
       showToast("error", t("login_to_chat_error"));
       return;
     }
-    console.log("product is  :", product);
 
     if (product.user_id === user?.id) {
       showToast("error", t("chat_with_self_error"));
@@ -552,7 +551,6 @@ export default function AgriMarket() {
         .eq("id", product.user_id)
         .single();
       if (error) throw error;
-      console.log("Data of seller is :", sellerInfo);
       setChatModal({
         isOpen: true,
         product: product,
@@ -619,11 +617,9 @@ export default function AgriMarket() {
 
       // 📌 Utility returned results - you just respond:
       if (result.platform === "native") {
-        console.log("✔ Shared via native bottom sheet");
       }
 
       if (result.platform === "web") {
-        console.log("🌍 Shared via browser share dialog");
       }
 
       if (result.platform === "copy") {

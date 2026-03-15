@@ -63,7 +63,6 @@ export default function PrivacySettingsPage() {
   useEffect(() => {
     if (user) {
       const saved = user.user_metadata?.privacy_settings;
-      console.log("Saved privacy settings :", saved);
       if (saved) {
         setPrivacySettings({ ...privacySettings, ...saved });
       }

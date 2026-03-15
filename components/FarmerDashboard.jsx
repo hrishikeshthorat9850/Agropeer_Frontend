@@ -139,7 +139,6 @@ const FarmerDashboard = () => {
           
           // Handle cached response
           if (data._meta?.cached) {
-            console.log(`[FarmerDashboard] Cache hit (age: ${data._meta.cacheAge}s)`);
             // Remove meta before setting state
             delete data._meta;
           }

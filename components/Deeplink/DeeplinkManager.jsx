@@ -13,8 +13,6 @@ export default function DeepLinkManager({ navState }) {
     if (!Capacitor.isNativePlatform()) return;
     const listener = App.addListener("appUrlOpen", async ({ url }) => {
       if (!url) return;
-      console.log("📩 Deep link:", url);
-
       // Normalize
       const clean = url
         .replace("agropeer://", "https://dplink/")
@@ -28,7 +26,6 @@ export default function DeepLinkManager({ navState }) {
          🔐 1) OAUTH HASH TOKEN FLOW
       ─────────────────────────────────────────── */
       if (url.includes("login-callback") && url.includes("#access_token")) {
-        console.log("🔑 OAuth hash callback detected");
         try { await Browser.close(); } catch { }
 
         const oauthUrl = new URL(url.replace("agropeer://", "https://callback/"));
@@ -43,7 +40,6 @@ export default function DeepLinkManager({ navState }) {
           });
 
           if (!error) {
-            console.log("✅ OAuth session set");
             router.replace("/");
             return; // ❗ STOP EXECUTION HERE
           }
@@ -59,7 +55,6 @@ export default function DeepLinkManager({ navState }) {
       ─────────────────────────────────────────── */
       if (url.includes("login-callback") && parsed.searchParams.has("code")) {
         const code = parsed.searchParams.get("code");
-        console.log("🔁 OAuth PKCE code detected");
         try {
           await supabase.auth.exchangeCodeForSession(code);
           router.replace("/");
@@ -74,14 +69,12 @@ export default function DeepLinkManager({ navState }) {
          🔑 3) RESET PASSWORD
       ─────────────────────────────────────────── */
       if (pathname.includes("reset-password")) {
-        console.log("🛠 Reset password deep link");
 
         try { await Browser.close(); } catch { }
         const hash = parsed.hash?.substring(1) || "";
         const code = parsed.searchParams.get("code");
 
         if (code) {
-          console.log("🔁 PKCE Reset Flow");
           try {
             await supabase.auth.exchangeCodeForSession(code);
             router.replace("/reset-password");

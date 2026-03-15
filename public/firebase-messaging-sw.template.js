@@ -15,7 +15,6 @@ firebase.initializeApp({
 // Background messages handler
 const messaging = firebase.messaging();
 messaging.onBackgroundMessage((payload) => {
-  console.log('[firebase-messaging-sw.js] Received background message ', payload);
   
   // Customize the notification
   const notificationTitle = payload.notification?.title || payload.data?.title || 'New Notification';
@@ -35,7 +34,6 @@ messaging.onBackgroundMessage((payload) => {
 
 // Handle notification clicks
 self.addEventListener('notificationclick', (event) => {
-  console.log('[firebase-messaging-sw.js] Notification click received.');
   
   event.notification.close();
 

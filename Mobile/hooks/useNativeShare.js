@@ -20,7 +20,6 @@ export function useNativeShare() {
           // Fallback to clipboard
           await navigator.clipboard.writeText(url || text);
           // Optional: Show a web toast here if needed
-          console.log("Copied to clipboard");
         }
       }
     } catch (error) {

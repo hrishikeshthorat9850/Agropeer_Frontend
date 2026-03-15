@@ -281,11 +281,9 @@ export default function RecentPost({
       });
 
       if (result.platform === "native") {
-        console.log("✔ Shared via native bottom sheet");
       }
 
       if (result.platform === "web") {
-        console.log("🌍 Shared via browser share dialog");
       }
 
       if (result.platform === "copy") {

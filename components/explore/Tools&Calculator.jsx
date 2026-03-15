@@ -139,7 +139,6 @@ export default function ToolsSection({
     try {
       if (!BASE_URL) console.warn("Missing NEXT_PUBLIC_BASE_URL");
       const url = endpointMap[tool];
-      console.log("Fetching tool:", url, body);
 
       const res = await fetch(url, {
         method: "POST",
