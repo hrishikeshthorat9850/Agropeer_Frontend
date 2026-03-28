@@ -8,6 +8,7 @@ import PostActions from "./ui/post/PostActions";
 import PostBackground from "./ui/post/PostBackground";
 import CommentInput from "./ui/post/CommentInput";
 import CommentsSection from "./ui/post/CommentsSection";
+import DeleteConfirmModal from "./ui/DeleteConfirmModal";
 import useToast from "@/hooks/useToast";
 import { supabase } from "@/lib/supabaseClient";
 import {
@@ -51,6 +52,8 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
 
   const [loadingComments, setLoadingComments] = useState(false);
   const [isMediaZoomed, setIsMediaZoomed] = useState(false); // Track zoom state
+  const [deleteModal, setDeleteModal] = useState({ isOpen: false, type: null, data: null });
+  const [isDeleting, setIsDeleting] = useState(false);
   const [loadingLike, setLoadingLike] = useState(false);
   const [loadingBookmark, setLoadingBookmark] = useState(false);
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
@@ -674,35 +677,53 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
     setShowOptions((prev) => !prev);
   }, []);
 
-  const onDelete = useCallback(async () => {
+  const onDelete = useCallback(() => {
     onOptionsClick();
+    setDeleteModal({
+      isOpen: true,
+      type: "post",
+      data: post?.id
+    });
+  }, [post?.id, onOptionsClick]);
 
-    if (!confirm(t("delete_post_confirm"))) {
-      return;
-    }
+  const handleDeleteConfirm = useCallback(async () => {
+    if (!deleteModal.type || !deleteModal.data) return;
 
+    setIsDeleting(true);
     try {
-      const { error } = await supabase
-        .from("posts")
-        .delete()
-        .eq("id", post?.id)
-        .eq("user_id", user?.id);
+      if (deleteModal.type === "post") {
+        const { error } = await supabase
+          .from("posts")
+          .delete()
+          .eq("id", deleteModal.data)
+          .eq("user_id", user?.id);
 
-      if (error) {
-        console.error("Error deleting post:", error);
-        showToast("error", t("failed_delete_post"));
-      } else {
-        showToast("success", t("post_deleted_success"));
-        // Optionally trigger a refresh in parent component
-        if (typeof window !== "undefined") {
-          window.location.reload();
+        if (error) {
+          showToast("error", t("failed_delete_post"));
+        } else {
+          showToast("success", t("post_deleted_success"));
+          if (typeof window !== "undefined") {
+            window.location.reload();
+          }
         }
+      } else if (deleteModal.type === "comment") {
+        const { error } = await supabase
+          .from("post_comments")
+          .delete()
+          .eq("id", deleteModal.data);
+
+        if (error) throw error;
+        showToast("success", t("comment_deleted_success"));
+        await refreshComments();
       }
     } catch (err) {
-      console.error("Unexpected error deleting post:", err);
-      showToast("error", t("error_deleting_post"));
+      console.error(`Error deleting ${deleteModal.type}:`, err);
+      showToast("error", t(`error_deleting_${deleteModal.type}`));
+    } finally {
+      setIsDeleting(false);
+      setDeleteModal({ isOpen: false, type: null, data: null });
     }
-  }, [post?.id, user?.id, onOptionsClick, showToast, t]);
+  }, [deleteModal, user?.id, showToast, t, refreshComments]);
 
   const onPostUpdated = useCallback((newCaption) => {
     setPostCaption(newCaption);
@@ -826,35 +847,12 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
             );
           }
         }}
-        onDeleteComment={async (commentId) => {
-          if (
-            !confirm(
-              t("delete_comment_confirm") ||
-                "Are you sure you want to delete this comment?",
-            )
-          )
-            return;
-          try {
-            const { error } = await supabase
-              .from("post_comments")
-              .delete()
-              .eq("id", commentId);
-
-            if (error) throw error;
-
-            showToast(
-              "success",
-              t("comment_deleted_success") || "Comment deleted",
-            );
-            // Optimistic update could go here, but refresh is safer for threading
-            await refreshComments();
-          } catch (err) {
-            console.error("Error deleting comment:", err);
-            showToast(
-              "error",
-              t("comment_delete_failed") || "Failed to delete comment",
-            );
-          }
+        onDeleteComment={(commentId) => {
+          setDeleteModal({
+            isOpen: true,
+            type: "comment",
+            data: commentId
+          });
         }}
         onToggleShowAll={() => setShowAllComments(!showAllComments)}
         totalCommentCount={commentInfo.length}
@@ -874,6 +872,15 @@ export default function PostCard({ post, comment, idx, refreshPosts }) {
           inputRef={commentIconRef}
         />
       )}
+      {/* Reusable Delete Confirmation Modal */}
+      <DeleteConfirmModal
+        isOpen={deleteModal.isOpen}
+        onClose={() => setDeleteModal({ isOpen: false, type: null, data: null })}
+        onConfirm={handleDeleteConfirm}
+        loading={isDeleting}
+        title={deleteModal.type === "post" ? t("delete_post_title") : t("delete_comment_title")}
+        message={deleteModal.type === "post" ? t("delete_post_confirm") : t("delete_comment_confirm")}
+      />
     </motion.article>
   );
 }

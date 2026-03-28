@@ -114,7 +114,9 @@ export default function PostCreation({ onSuccess }) {
     }
     setFiles(total);
     setPreviews(total);
+    setIsExpanded(true); // Automatically expand to show previews when files are selected
   };
+
   const removeImage = (idx) => {
     setFiles((f) => f.filter((_, i) => i !== idx));
     setPreviews((p) => p.filter((_, i) => i !== idx));
@@ -398,6 +400,23 @@ export default function PostCreation({ onSuccess }) {
           </div>
 
           <div className="relative z-10">
+            {/* Hidden File Inputs - Moved here to prevent Ref null errors during state transitions */}
+            <input
+              ref={photoinputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              className="hidden"
+              onChange={handleFiles}
+            />
+            <input
+              ref={videoinputRef}
+              type="file"
+              accept="video/*"
+              className="hidden"
+              onChange={handleFiles}
+            />
+
             {/* Header */}
             <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6 flex-wrap">
               <div className="relative">
@@ -484,22 +503,8 @@ export default function PostCreation({ onSuccess }) {
                         >
                           <FaMapMarkerAlt className="w-4 h-4 sm:w-5 sm:h-5 text-farm-600 dark:text-emerald-400" />
                         </motion.button> */}
-                        <input
-                          ref={photoinputRef}
-                          type="file"
-                          accept="image/*"
-                          multiple
-                          className="hidden"
-                          onChange={handleFiles}
-                        />
-                        <input
-                          ref={videoinputRef}
-                          type="file"
-                          accept="video/*"
-                          className="hidden"
-                          onChange={handleFiles}
-                        />
                       </div>
+
 
                       <div className="flex items-center gap-2 sm:gap-3 flex-wrap justify-end">
                         <motion.button
@@ -566,36 +571,23 @@ export default function PostCreation({ onSuccess }) {
             {!isExpanded && (
               <div className="flex flex-wrap items-center justify-between mt-4 gap-2">
                 <div className="flex items-center gap-2 sm:gap-4">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-sky-100 dark:bg-sky-900/30 hover:bg-sky-200 dark:hover:bg-sky-900/50 text-sky-700 dark:text-sky-300 text-sm sm:text-base font-medium"
-                    onClick={() => photoinputRef.current.click()}
-                  >
-                    <FaImage className="w-4 h-4" /> {t("photo_btn")}
-                  </motion.button>
-                  <input
-                    ref={photoinputRef}
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    className="hidden"
-                    onChange={handleFiles}
-                  />
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-orange-100 dark:bg-orange-900/30 hover:bg-orange-200 dark:hover:bg-orange-900/50 text-orange-700 dark:text-orange-300 text-sm sm:text-base font-medium"
-                    onClick={() => videoinputRef.current.click()}
-                  >
-                    <FaVideo className="w-4 h-4 text-orange-600 dark:text-orange-400" />{" "}
-                    {t("video_btn")}
-                  </motion.button>
-                  <input
-                    ref={videoinputRef}
-                    type="file"
-                    accept="video/*"
-                    className="hidden"
-                    onChange={handleFiles}
-                  />
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-sky-100 dark:bg-sky-900/30 hover:bg-sky-200 dark:hover:bg-sky-900/50 text-sky-700 dark:text-sky-300 text-sm sm:text-base font-medium"
+                      onClick={() => photoinputRef.current?.click()}
+                    >
+                      <FaImage className="w-4 h-4" /> {t("photo_btn")}
+                    </motion.button>
+
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-orange-100 dark:bg-orange-900/30 hover:bg-orange-200 dark:hover:bg-orange-900/50 text-orange-700 dark:text-orange-300 text-sm sm:text-base font-medium"
+                      onClick={() => videoinputRef.current?.click()}
+                    >
+                      <FaVideo className="w-4 h-4 text-orange-600 dark:text-orange-400" />{" "}
+                      {t("video_btn")}
+                    </motion.button>
+
                 </div>
                 <motion.button
                   whileHover={{ scale: 1.05 }}

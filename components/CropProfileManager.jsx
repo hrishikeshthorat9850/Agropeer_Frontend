@@ -27,6 +27,7 @@ import BottomSelect from "./ui/BottomSelect";
 import { DatePickerField } from "./ui/DatePickerModal";
 import { dateFormat } from "@/utils/dateFormat.js";
 import Link from "next/link";
+import DeleteConfirmModal from "./ui/DeleteConfirmModal";
 const priceLookup = {
   Cereal: 22,
   Millet: 18,
@@ -215,6 +216,7 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingCrop, setEditingCrop] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [cropToDelete, setCropToDelete] = useState(null);
   // Load crops for this user when component mounts or user changes
   useEffect(() => {
     if (!user?.id) return;
@@ -563,8 +565,13 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
     setShowAddForm(true);
   };
 
-  const handleDelete = async (cropId) => {
-    if (!confirm(t("delete_confirm"))) return;
+  const handleDeleteRequest = (crop) => {
+    setCropToDelete(crop);
+  };
+
+  const confirmDelete = async () => {
+    if (!cropToDelete) return;
+    const cropId = cropToDelete.id;
 
     setLoading(true);
     try {
@@ -575,17 +582,17 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      const data = await res.json();
       if (!res.ok) {
         showToast("error", "Failed to delete crop");
         return;
       }
-      setCrops((prev) => prev.filter((crop) => crop.id !== cropId));
+      setCrops((prev) => prev.filter((c) => c.id !== cropId));
       showToast("success", t("delete_success"));
     } catch (e) {
       showToast("error", "Failed to delete crop. Please try again.");
     } finally {
       setLoading(false);
+      setCropToDelete(null);
     }
   };
 
@@ -1028,7 +1035,7 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                     ].map(({ label, value, icon: Icon }) => (
                       <div
                         key={label}
-                        className="bg-white/60 dark:bg-[#1a1a1a] rounded-xl p-4 border border-white/20 shadow-sm flex items-start gap-3"
+                        className="bg-white/60 dark:bg-[#2C2C2C] rounded-xl p-4 border border-white/20 shadow-sm flex items-start gap-3"
                       >
                         <div className="p-2 rounded-lg bg-farm-100">
                           <Icon className="w-4 h-4 text-farm-600" />
@@ -1085,16 +1092,16 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                     ].map(({ label, value, icon: Icon }) => (
                       <div
                         key={label}
-                        className="bg-white/60 dark:bg-[#1a1a1a] rounded-xl p-4 border border-white/20 shadow-sm flex items-start gap-3"
+                        className="bg-white/60 dark:bg-[#2C2C2C] rounded-xl p-4 border border-white/20 shadow-sm flex items-start gap-3"
                       >
                         <div className="p-2 rounded-lg bg-farm-100">
                           <Icon className="w-4 h-4 text-farm-600" />
                         </div>
                         <div>
-                          <p className="text-xs uppercase tracking-wider text-farm-500">
+                          <p className="text-xs uppercase tracking-wider text-farm-500 dark:text-white">
                             {label}
                           </p>
-                          <p className="text-base font-semibold text-farm-900">
+                          <p className="text-base font-semibold text-farm-900 dark:text-white">
                             {formatDisplayValue(value)}
                           </p>
                         </div>
@@ -1225,7 +1232,7 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
                     <FaEdit className="w-4 h-4 text-gray-600 dark:text-gray-300" />
                   </button>
                   <button
-                    onClick={() => handleDelete(crop?.id)}
+                    onClick={() => handleDeleteRequest(crop)}
                     className="p-2 rounded-lg bg-red-50 dark:bg-red-900/10 hover:bg-red-100 dark:hover:bg-red-900/20 transition-colors border border-red-50 dark:border-red-900/20"
                   >
                     <FaTrash className="w-4 h-4 text-red-500 dark:text-red-400" />
@@ -1354,10 +1361,26 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
             onClick={() => user && setShowAddForm(true)}
             className="px-6 py-3 bg-gradient-to-r from-farm-500 to-farm-700 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
           >
-            {user ? t("add_first_crop_btn") : <Link href="/login">{t("login")}</Link>}
+            {user ? (
+              t("add_first_crop_btn")
+            ) : (
+              <Link href="/login">{t("login")}</Link>
+            )}
           </motion.button>
         </motion.div>
       )}
+      {/* Common Delete Modal */}
+      <DeleteConfirmModal
+        isOpen={!!cropToDelete}
+        onClose={() => setCropToDelete(null)}
+        onConfirm={confirmDelete}
+        title={t("delete_confirm_title") || "Delete Crop?"}
+        message={`${
+          t("delete_confirm_message") ||
+          "Are you sure you want to delete this crop profile?"
+        } (${cropToDelete?.field_name || cropToDelete?.crop_type || ""})`}
+        loading={loading}
+      />
     </div>
   );
 };
