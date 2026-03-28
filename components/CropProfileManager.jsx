@@ -457,6 +457,13 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
     }
   };
 
+  // Auto-scroll to top when form is opened for mobile/UX
+  useEffect(() => {
+    if (showAddForm) {
+      window.scrollTo({ top: 200, behavior: "smooth" });
+    }
+  }, [showAddForm, editingCrop]);
+
   const handleEdit = (crop) => {
     setEditingCrop(crop);
     const coordinates = crop?.coordinates || null;
@@ -554,7 +561,6 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
       notes: pickCropValue(crop, "notes", "notes", ""),
     });
     setShowAddForm(true);
-    window.scrollTo({ top: 200, behavior: "smooth" });
   };
 
   const handleDelete = async (cropId) => {
