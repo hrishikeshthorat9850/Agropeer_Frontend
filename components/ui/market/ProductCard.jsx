@@ -17,6 +17,7 @@ import { useLogin } from "@/Context/logincontext";
 import { useLanguage } from "@/Context/languagecontext";
 import { useNativeShare } from "@/Mobile/hooks/useNativeShare";
 import { FaShareAlt } from "react-icons/fa";
+import DeleteConfirmModal from "../DeleteConfirmModal";
 
 export default function ProductCard({
   product,
@@ -34,6 +35,7 @@ export default function ProductCard({
   const { t } = useLanguage();
   const { share } = useNativeShare();
   const [imageError, setImageError] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const firstPhoto =
     product.photos?.length > 0 && !imageError
       ? product.photos[0]
@@ -134,7 +136,7 @@ export default function ProductCard({
                     <motion.button
                       whileHover={{ backgroundColor: "#fef2f2" }}
                       onClick={() => {
-                        onDeleteClick?.(product.id);
+                        setIsDeleteModalOpen(true);
                         onMenuClick?.(product.id);
                       }}
                       className="flex items-center gap-2 px-4 py-3 w-full text-red-600 hover:bg-red-50 font-medium transition-colors border-t border-gray-100"
@@ -243,6 +245,16 @@ export default function ProductCard({
             )}
         </div>
       </div>
+      <DeleteConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={() => {
+          onDeleteClick?.(product.id);
+          setIsDeleteModalOpen(false);
+        }}
+        title={t("delete_product_title")}
+        message={t("delete_product_confirm")}
+      />
     </motion.div>
   );
 }

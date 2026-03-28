@@ -23,8 +23,9 @@ export default function ChatInputComposer({ sendMessage }) {
   const [input, setInput] = useState("");
   const emojiRef = useRef(null);
 
-  const inputRef = useRef(null); // <-- add this
-
+  const inputRef = useRef(null);
+  
+  // Auto-focus chat input on mount
   useEffect(() => {
     const handler = (e) => {
       if (
@@ -36,7 +37,16 @@ export default function ChatInputComposer({ sendMessage }) {
       }
     };
     document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    
+    // Auto-focus on mount with slight delay for Android keyboard
+    const timer = setTimeout(() => {
+      inputRef.current?.focus();
+    }, 400);
+
+    return () => {
+      document.removeEventListener("mousedown", handler);
+      clearTimeout(timer);
+    };
   }, []);
 
   return (

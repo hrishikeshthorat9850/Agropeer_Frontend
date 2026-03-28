@@ -515,9 +515,7 @@ export default function AgriMarket() {
       showToast("error", t("generic_error"));
     }
   };
-
   const handleDelete = async (id) => {
-    if (!confirm(t("delete_product_confirm"))) return;
     const { error } = await supabase
       .from("agri_products")
       .delete()

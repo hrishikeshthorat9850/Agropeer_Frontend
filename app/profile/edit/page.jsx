@@ -48,23 +48,30 @@ export default function EditProfilePage() {
 
   const [loading, setLoading] = useState(false);
   const [avatarFile, setAvatarFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
-
-  // Load user data in form
+  const [previewUrl, setPreviewUrl] = useState(null);  // Load user data into form
   useEffect(() => {
     if (user) {
+      const firstName = userinfo?.firstName || "";
+      const lastName = userinfo?.lastName || "";
+      const derivedFullName = (firstName || lastName) ? `${firstName} ${lastName}`.trim() : "";
+
       setFormData({
-        full_name: user?.user_metadata?.full_name || userinfo?.firstName + " " + userinfo?.lastName,
-        phone: user?.user_metadata?.phone || userinfo?.mobile,
-        location: user?.user_metadata?.location || "",
-        bio: user?.user_metadata?.bio || "",
+        full_name: user?.user_metadata?.full_name || derivedFullName || "",
+        phone: user?.user_metadata?.phone || userinfo?.mobile || "",
+        location: user?.user_metadata?.location || userinfo?.country || userinfo?.location || "",
+        bio: user?.user_metadata?.bio || userinfo?.bio || "",
       });
+      
       // Set initial preview
       setPreviewUrl(
-        user?.user_metadata?.avatar_url || user?.user_metadata?.avatar || userinfo?.avatar_url || userinfo?.profile_url,
+        user?.user_metadata?.avatar_url || 
+        user?.user_metadata?.avatar || 
+        userinfo?.avatar_url || 
+        userinfo?.profile_url || 
+        null
       );
     }
-  }, [user]);
+  }, [user, userinfo]); // Added userinfo to dependencies
 
   const handleImageSelect = async (e) => {
     const file = e.target.files?.[0];
