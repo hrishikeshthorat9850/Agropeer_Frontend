@@ -230,7 +230,7 @@ export default function MarketPricesPage() {
           <p className="text-center text-xs font-medium tracking-wide text-emerald-800/90 dark:text-emerald-200/90">
             {t("market_data_source")}{" "}
             <a
-              href="https://api.data.gov.in/resource/35985678-0d79-46b4-9ed6-6f13308a1d24"
+              href="https://www.data.gov.in"
               target="_blank"
               rel="noopener noreferrer"
               className="underline font-semibold hover:opacity-90"
