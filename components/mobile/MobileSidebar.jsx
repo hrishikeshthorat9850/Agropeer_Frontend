@@ -187,9 +187,9 @@ export default function MobileSidebar() {
             transition={{ type: "tween", duration: 0.2, ease: "easeOut" }}
           >
             {/* HEADER - GREEN GRADIENT */}
-            <div className="relative px-6 h-[180px] pt-safe-top pb-8 flex justify-between items-end z-10 bg-gradient-to-br from-green-600 to-emerald-800 text-white">
+            <div className="relative px-6 h-[180px] pt-safe-top pb-4 flex justify-between items-end z-10 bg-gradient-to-br from-green-600 to-emerald-800 text-white">
               <div className="flex items-center gap-0.5">
-                <img src="/logo.png" alt="AgroPeer Logo" className="w-14 h-14 object-contain" />
+                <img src="/logo.png" alt="AgroPeer Logo" className="w-20 h-20 object-contain" />
                 <div>
                   <h2 className="text-2xl font-bold text-white">AgroPeer AI</h2>
                   <p className="text-xs text-green-100/80 tracking-wider uppercase mt-1">
