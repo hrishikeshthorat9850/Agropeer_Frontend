@@ -634,15 +634,16 @@ const CropProfileManager = ({ onSelectCrop, selectedCrop }) => {
         <h2 className="text-lg font-extrabold text-gray-900 dark:text-white tracking-tight">
           {t("my_crop_profiles")}
         </h2>
-
-        {/* <motion.button
+        {user && crops.length > 0 &&
+        <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={() => setShowAddForm(true)}
           className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white rounded-xl text-sm md:text-base font-bold shadow-lg shadow-green-500/30 hover:shadow-green-500/40 transition-all transform hover:scale-[1.02] active:scale-[0.98] border border-white/10"
         >
           <FaPlus className="text-[14px]" />
           {t("add_crop_btn")}
-        </motion.button> */}
+        </motion.button>
+        }
       </div>
 
       {/* Add/Edit Form */}
